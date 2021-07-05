@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="paramaanjingcraft:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/paramaanjingcraft_jar</output-path>
+    <root id="root">
+      <element id="archive" name="paramaanjingcraft.jar">
+        <element id="module-output" name="paramaanjingcraft" />
+      </element>
+      <element id="file-copy" path="$USER_HOME$/Documents/mcserverspigot/plugin/spigot-api-1.17.jar" />
+    </root>
+  </artifact>
+</component>

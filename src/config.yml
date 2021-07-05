@@ -1,0 +1,52 @@
+mobs:
+  zombie:
+    health: 50
+    damage: 10
+    lectrum: 3
+    exp: 25
+  spider:
+    damage: 6
+    health: 30
+    lectrum: 3
+    exp: 25
+  skeleton:
+    health: 30
+    arrowbonusdamage: 5
+    lectrum: 2
+    exp: 20
+  creeper:
+    health: 40
+    explosionradius: 6
+    maxfuseticks: 10
+    lectrum: 5
+    exp: 30
+  witch:
+    health: 40
+    lectrum: 2
+    exp: 25
+players:
+destinylevelunlock:
+  magic:
+    1: Fling Earth
+    2: Ignite
+    3: Gust
+    4: Life Drain
+    5: Blink
+    6: Summon Lightning
+    7: Illusory Orb
+    8: Dragon's Breath
+    9: Voices of the Damned
+    10: Nova
+levelupmessage:
+  magic:
+    2: You begin to fathom the essence of fire.
+    3: The wind whispers in your ear.
+    4: You start to feel the life of lesser beings.
+    5: The world appears to shrink before you.
+    6: The secrets of thunder are revealed to you.
+    7: You begin to study arcanery from other worlds.
+    8: Even the power of mighty dragons serve you.
+    9: You hear wails of pain from deep below.
+    10: Your mastery of magic is now unparalleled.
+
+
