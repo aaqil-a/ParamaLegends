@@ -91,6 +91,9 @@ public class ExperienceListener implements Listener {
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     skill = "swordsmanship";
                 }
+                case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
+                    skill = "reaper";
+                }
             }
             //Check mob killed
             switch (event.getEntityType()) {
@@ -111,7 +114,7 @@ public class ExperienceListener implements Listener {
                 }
             }
             //Grant exp and lectrum to player according to mob killed
-            if(!mob.equals("")){
+            if(!mob.equals("") && !skill.equals("")){
                 addExp(player, skill, data.getConfig().getInt("mobs."+mob+".exp"));
                 addLectrum(player, data.getConfig().getInt("mobs."+mob+".lectrum"));
             }
@@ -127,6 +130,9 @@ public class ExperienceListener implements Listener {
             switch (player.getInventory().getItemInMainHand().getType()) {
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     addExp(player, "swordsmanship", 1);
+                }
+                case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
+                    addExp(player, "reaper", 1);
                 }
             }
         }

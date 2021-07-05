@@ -32,8 +32,8 @@ public class DestinyListener implements Listener {
             data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", 0);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".mining", 1);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".miningexp", 0);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".farming", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".farmingexp", 0);
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", 1);
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", 0);
             data.saveConfig();
         }
 

@@ -73,7 +73,7 @@ public class CommandStartGame implements CommandExecutor {
             v.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
 
             //Create Odd Reseller NPC
-            LivingEntity mob2 = (LivingEntity)player.getWorld().spawnEntity(location.add(2, 0, 2), EntityType.VILLAGER);
+            LivingEntity mob2 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(2, 0, 2), EntityType.VILLAGER);
             Villager shop = (Villager) mob2;
 
             shop.setCustomName("§2Odd Reseller");
@@ -83,7 +83,7 @@ public class CommandStartGame implements CommandExecutor {
             shop.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
 
             //Create Banished Magus NPC
-            LivingEntity mob3 = (LivingEntity)player.getWorld().spawnEntity(location.add(-2, 0, 2), EntityType.VILLAGER);
+            LivingEntity mob3 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(-2, 0, 2), EntityType.VILLAGER);
             Villager mage = (Villager) mob3;
 
             mage.setCustomName("§5Banished Magus");
@@ -91,6 +91,16 @@ public class CommandStartGame implements CommandExecutor {
             mage.setVillagerType(Villager.Type.SWAMP);
             mage.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
             mage.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
+
+            //Create SusNPC NPC
+            LivingEntity mob4 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(2, 0, -2), EntityType.VILLAGER);
+            Villager sus = (Villager) mob4;
+
+            sus.setCustomName("§1Suspicious Peasant");
+            sus.setCustomNameVisible(true);
+            sus.setVillagerType(Villager.Type.SNOW);
+            sus.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
+            sus.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
 
             // Create safe zone region
             World worldGuard = BukkitAdapter.adapt(player.getWorld());

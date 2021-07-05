@@ -10,7 +10,18 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Documents/mcserverspigot/plugin/spigot-api-1.17.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Spigot/spigot-1.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../Spigot/spigot-1.17.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../Spigot/worldguard-bukkit-7.0.5-dist.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -19,16 +30,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Documents/mcserverspigot/server/plugins/worldguard-bukkit-7.0.5-dist.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Documents/mcserverspigot/server/plugins/worldedit-bukkit-7.2.5-dist.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Spigot/worldedit-bukkit-7.2.5-dist.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
