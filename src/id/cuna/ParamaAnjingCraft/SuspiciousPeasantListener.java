@@ -190,12 +190,12 @@ public class SuspiciousPeasantListener implements Listener {
         // Hidden Strike
         item.setType(Material.DIAMOND_HOE);
         meta.setDisplayName(ChatColor.RESET + "§5Hidden Strike");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Stab the enemy");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "at a Critical location causing");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Critical damage also inflicting");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "'Coated Blade' upon next attack.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Stab the enemy at a critical");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location causing critical damage");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Damage : Normal Attack + 50% of Normal Attack");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown : 10 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -205,11 +205,10 @@ public class SuspiciousPeasantListener implements Listener {
         // Blinding Sand
         item.setType(Material.DIAMOND_HOE);
         meta.setDisplayName(ChatColor.RESET + "§5Blinding Sand");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Sets targets ablaze within a");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "small area, dealing damage");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "over time.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 7 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration : 7 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 16 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -219,10 +218,12 @@ public class SuspiciousPeasantListener implements Listener {
         // Gut Punch
         item.setType(Material.DIAMOND_HOE);
         meta.setDisplayName(ChatColor.RESET + "§5Gut Punch");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Pushes away targets within an");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area of where you are facing.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deal base damage on the");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponents current HP and");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflict high discomfort on");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration : 3 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -233,10 +234,12 @@ public class SuspiciousPeasantListener implements Listener {
         // Forbidden Slash
         item.setType(Material.DIAMOND_HOE);
         meta.setDisplayName(ChatColor.RESET + "§5Forbidden Slash");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Periodically drains the life of");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20 per second");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Making a decisive slash at");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the enemy dealing damage and");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Damage : Normal attack + Critical Armor");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration : 4 Seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
