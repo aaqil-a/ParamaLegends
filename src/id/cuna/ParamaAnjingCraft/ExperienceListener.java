@@ -155,7 +155,7 @@ public class ExperienceListener implements Listener {
 
     // Add exp to player and check if player levelled up
     public void addExp(@Nullable Player player, String skill, int amount){
-        if(player != null){
+        if(player != null && !skill.equals("")){
             int currLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill);
             int currExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill+"exp");
             currExp += amount;
