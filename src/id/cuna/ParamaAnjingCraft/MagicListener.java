@@ -1,6 +1,8 @@
 package id.cuna.ParamaAnjingCraft;
 
+import com.sk89q.worldedit.world.block.BlockType;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -9,6 +11,7 @@ import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
@@ -34,19 +37,29 @@ public class MagicListener implements Listener {
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,1,2,3,3,4,5,6,7,8};
     private final List<EnderPearl> castedOrb = new ArrayList<EnderPearl>();
-    private final List<Player> playerOrbCooldowns = new ArrayList<Player>();
-    private final List<Player> playerBallCooldowns = new ArrayList<Player>();
-    private final List<Player> playerIgniteCooldowns = new ArrayList<Player>();
-    private final List<Player> playerGustCooldowns = new ArrayList<Player>();
-    private final List<Player> playerBlinkCooldowns = new ArrayList<Player>();
-    private final List<Player> playerLightningCooldowns = new ArrayList<Player>();
+    private final List<String> playerOrbCooldowns = new ArrayList<String>();
+    private final List<String> playerBallCooldowns = new ArrayList<String>();
+    private final List<String> playerIgniteCooldowns = new ArrayList<String>();
+    private final List<String> playerGustCooldowns = new ArrayList<String>();
+    private final List<String> playerBlinkCooldowns = new ArrayList<String>();
+    private final List<String> playerLightningCooldowns = new ArrayList<String>();
+    private final List<String> playerDragonBreathCooldowns = new ArrayList<String>();
+    private final List<String> playerVoicesCooldowns = new ArrayList<String>();
+    private final List<String> playerNovaCooldowns = new ArrayList<String>();
     private final HashMap<EnderPearl, BukkitTask> orbFlashTasks = new HashMap<>();
     private final HashMap<Entity, BukkitTask> entityIgnitedTasks = new HashMap<>();
     private final HashMap<Entity, Integer> entityIgnitedDuration = new HashMap<>();
     private final HashMap<Player, Vector> ballOffsetVectors = new HashMap<>();
+    private final HashMap<Player, Integer> ballLoadingProgress = new HashMap<>();
+    private final HashMap<Player, Integer> novaLoadingProgress = new HashMap<>();
+    private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
+    private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
+    private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
     private final HashMap<Player, BukkitTask> playerLifeDrainTasks = new HashMap<>();
     private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
     private final HashMap<Player, Integer> playerMagicLevel = new HashMap<Player, Integer>();
+    private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
+    //private final HashMap<Location, Material> blocksReplacedByBeacon = new HashMap<>();
 
 
 
@@ -101,6 +114,21 @@ public class MagicListener implements Listener {
                             castIllusoryOrb(player);
                         }
                         break;
+                    case "§5Dragon's Breath":
+                        if(checkLevel(player, 8)){
+                            castDragonBreath(player);
+                        }
+                        break;
+                    case "§5Voices of the Damned":
+                        if(checkLevel(player, 9)){
+                            castVoicesOfTheDamned(player);
+                        }
+                        break;
+                    case "§5Nova":
+                        if(checkLevel(player, 10)){
+                            castNova(player);
+                        }
+                        break;
                 }
             }
         }
@@ -112,7 +140,11 @@ public class MagicListener implements Listener {
         Player player = event.getPlayer();
         playerMagicLevel.put(player, data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic"));
         player.setExp(0);
-        player.setLevel(maxMana[playerMagicLevel.get(player)]);
+        if(playerCurrentLevel.containsKey(player.getUniqueId().toString())){
+            player.setLevel(playerCurrentLevel.get(player.getUniqueId().toString()));
+        } else {
+            player.setLevel(maxMana[playerMagicLevel.get(player)]);
+        }
         //Create task to regenerate mana over time
         playerManaRegenTasks.put(player,
             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -123,6 +155,7 @@ public class MagicListener implements Listener {
                         curMana = maxMana[playerMagicLevel.get(player)];
                     player.setExp(0);
                     player.setLevel(curMana);
+                    playerCurrentLevel.put(player.getUniqueId().toString(), curMana);
                 }
             }, 0, 20)
         );
@@ -134,7 +167,7 @@ public class MagicListener implements Listener {
         event.setAmount(0);
     }
 
-    //Remove player from plugin memory on leave
+    //Remove player from plugin memory on leave but store player current mana
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
@@ -168,14 +201,69 @@ public class MagicListener implements Listener {
             }
         } else if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
             event.setCancelled(true);
+            ArmorStand source = (ArmorStand) projectile.getShooter();
+            Player player = plugin.getServer().getPlayer(source.getName());
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(ballsDirt.get(player) != null)
+                    ballsDirt.get(player).remove();
+                ballsDirt.remove(player);
+            }, 20);
+            ballOffsetVectors.remove(player);
+            ballLoadingProgress.remove(player);
+            ballsThrown.remove(player);
+            cancelFlingEarthTasks(player);
             if(projectile.getCustomName().equals("iceball")){
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
-                        ArmorStand source = (ArmorStand) projectile.getShooter();
-                        Player player = plugin.getServer().getPlayer(source.getName());
                         plugin.experienceListener.addExp(player, "magic", 1);
                         Damageable hit = (Damageable) event.getHitEntity();
                         hit.damage(5.069, player);
+                    }
+                }
+            }
+        }
+    }
+
+    //Check if damned soul hit entity
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+        if(event.getDamager() instanceof Phantom){
+            if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
+                Player summoner = null;
+                for (Player player: Bukkit.getOnlinePlayers())
+                    if(event.getDamager().hasMetadata(player.getName()))
+                        summoner = player;
+                plugin.experienceListener.addExp(summoner, "magic", 1);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    event.getDamager().getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                    event.getDamager().remove();
+                }, 60);
+
+                //Check if phantom killed enemy and give exp if so
+                Damageable victim = (Damageable) event.getEntity();
+                if(event.getFinalDamage() > victim.getHealth()){
+                    String mob = "";
+                    switch (event.getEntityType()) {
+                        case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> {
+                            mob = "zombie";
+                        }
+                        case WITCH -> {
+                            mob = "witch";
+                        }
+                        case SKELETON, STRAY -> {
+                            mob = "skeleton";
+                        }
+                        case CREEPER -> {
+                            mob = "creeper";
+                        }
+                        case SPIDER, CAVE_SPIDER -> {
+                            mob = "spider";
+                        }
+                    }
+                    //Grant exp and lectrum to player according to mob killed
+                    if(!mob.equals("")){
+                        plugin.experienceListener.addExp(summoner, "magic", data.getConfig().getInt("mobs."+mob+".exp"));
+                        plugin.experienceListener.addLectrum(summoner, data.getConfig().getInt("mobs."+mob+".lectrum"));
                     }
                 }
             }
@@ -186,6 +274,15 @@ public class MagicListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event){
         if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL)){
+            event.setCancelled(true);
+        }
+    }
+
+    //Make damned not burn
+    @EventHandler
+    public void onEntityBurn(EntityCombustEvent event){
+        Entity entity = event.getEntity();
+        if(entity.getCustomName() != null && entity.getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
             event.setCancelled(true);
         }
     }
@@ -222,6 +319,53 @@ public class MagicListener implements Listener {
         player.sendMessage(ChatColor.GRAY + "Out of range to cast spell.");
     }
 
+    public void cancelFlingEarthTasks(Player player){
+        if(ballsThrownTasks.get(player) != null)
+            ballsThrownTasks.get(player).cancel();
+        ballsThrownTasks.remove(player);
+    }
+//
+//    public void createBeaconAndRemove(Location location) {
+//        int x = location.getBlockX();
+//        int y = location.getBlockY() - 30;
+//        int z = location.getBlockZ();
+//
+//        World world = location.getWorld();
+//        blocksReplacedByBeacon.put(world.getBlockAt(x,y,z).getLocation(), world.getBlockAt(x,y,z).getType());
+//        world.getBlockAt(x,y,z).setType(Material.BEACON);
+//
+//        Material replace = world.getHighestBlockAt(x,z).getType();
+//
+//        for (int i = 0; i <= 29; ++i) {
+//            blocksReplacedByBeacon.put(world.getBlockAt(x,(y+1)+i,z).getLocation(), world.getBlockAt(x,(y+1)+i,z).getType());
+//            world.getBlockAt(x, (y + 1) + i, z).setType(Material.AIR);
+//        }
+//        for (int xPoint = x-1; xPoint <= x+1 ; xPoint++) {
+//            for (int zPoint = z-1 ; zPoint <= z+1; zPoint++) {
+//                blocksReplacedByBeacon.put(world.getBlockAt(xPoint,y-1,zPoint).getLocation(), world.getBlockAt(xPoint,y-1,zPoint).getType());
+//                world.getBlockAt(xPoint, y-1, zPoint).setType(Material.IRON_BLOCK);
+//            }
+//        }
+//
+//        Entity replaceBlock = world.spawnFallingBlock(new Location(world, x, y+30, z), replace.createBlockData());
+//        replaceBlock.setGravity(false);
+//
+//        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//            replaceBlock.remove();
+//            world.getBlockAt(x,y,z).setType(
+//                    blocksReplacedByBeacon.get(world.getBlockAt(x,y,z).getLocation()));
+//
+//            for (int i = 0; i <= 29; ++i) {
+//                world.getBlockAt(x, (y + 1) + i, z).setType(blocksReplacedByBeacon.get(world.getBlockAt(x,(y+1)+i,z).getLocation()));
+//            }
+//            for (int xPoint = x-1; xPoint <= x+1 ; xPoint++) {
+//                for (int zPoint = z-1 ; zPoint <= z+1; zPoint++) {
+//                    world.getBlockAt(xPoint, y-1, zPoint).setType(blocksReplacedByBeacon.get(world.getBlockAt(xPoint,y-1,zPoint).getLocation()));
+//                }
+//            }
+//        }, 200);
+//    }
+
     //Teleports player to a safe area near a location if exists
     public void teleportToAir(Player player, Location location){
         if(location.getBlock().getType().isAir()){
@@ -242,36 +386,58 @@ public class MagicListener implements Listener {
     }
 
     public void castFlingEarth(Player player){
-        if(playerBallCooldowns.contains(player)){
+        if(playerBallCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Fling Earth");
         } else if (subtractMana(player, 10)) {
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
             location.add(offset);
             ArmorStand dummy = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
+            ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
             dummy.setCustomName(player.getName());
+            dummyText.setCustomName(ChatColor.GREEN+"||"+ChatColor.GRAY+"||||||||||||||||||");
+            dummyText.setCustomNameVisible(true);
+            dummyText.setVisible(false);
             dummy.setVisible(false);
+            dummyText.setGravity(false);
             dummy.setGravity(false);
+            dummyText.setInvulnerable(true);
             dummy.setInvulnerable(true);
-            playerBallCooldowns.add(player);
+            playerBallCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
+                dummyText.teleport(location.add(new Vector(0,-1.5,0)));
                 dummy.getLocation().add(new Vector(0,1,0));
-            }, 2);
+            }, 1);
+            ballLoadingProgress.put(player, 2);
             BukkitTask ballEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 Location newLocation = player.getEyeLocation();
                 Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
                 newLocation.add(newOffset);
                 ballOffsetVectors.put(player, newOffset);
+
+                StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
+                int ballProgress = ballLoadingProgress.get(player);
+                int ballToLoad = 20-ballProgress;
+                dummyTextName.append("|".repeat(ballProgress));
+                dummyTextName.append(ChatColor.GRAY);
+                if(ballToLoad>0){
+                    dummyTextName.append("|".repeat(ballToLoad));
+                }
+
                 dummy.teleport(newLocation);
-                dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.SNOW_BLOCK.createBlockData());
+                dummyText.teleport(newLocation.add(new Vector(0,-1.5,0)));
+                dummyText.setCustomName(dummyTextName.toString());
+
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.STONE.createBlockData());
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.DIRT.createBlockData());
-            },3, 3);
+                ballLoadingProgress.put(player, ballProgress+1);
+            },2, 1);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(dummy.getLocation().add(new Vector(0,-2,0)));
                 Snowball ball = dummy.launchProjectile(Snowball.class, ballOffsetVectors.get(player));
                 dummy.remove();
+                dummyText.remove();
                 ball.setCustomName("iceball");
                 Vector velocity = ball.getVelocity();
                 velocity.multiply(0.5);
@@ -279,18 +445,32 @@ public class MagicListener implements Listener {
                 ballEffect.cancel();
                 ball.setGravity(true);
                 ball.setVelocity(velocity);
+                ballsThrown.put(player, ball);
             }, 20);
+            ballsThrownTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                if(ballsDirt.containsKey(player)){
+                    ballsDirt.get(player).remove();
+                    ballsDirt.remove(player);
+                }
+                Snowball ball = ballsThrown.get(player);
+                if(ball != null) {
+                    ballsDirt.put(player, ball.getWorld().spawnFallingBlock(ball.getLocation(), Material.DIRT.createBlockData()));
+                    ballsDirt.get(player).setGravity(false);
+                } else {
+                    cancelFlingEarthTasks(player);
+                }
+            }, 21, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerBallCooldowns.contains(player)){
+                if(playerBallCooldowns.contains(player.getUniqueId().toString())){
                     sendNoLongerCooldownMessage(player, "Fling Earth");
-                    playerBallCooldowns.remove(player);
+                    playerBallCooldowns.remove(player.getUniqueId().toString());
                 }
             }, 60);
         }
     }
 
     public void castIgnite(Player player){
-        if(playerIgniteCooldowns.contains(player)){
+        if(playerIgniteCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Ignite");
         } else if (subtractMana(player, 20)) {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
@@ -332,21 +512,21 @@ public class MagicListener implements Listener {
                             }, 0, 20));
                 }
             }
-            playerIgniteCooldowns.add(player);
+            playerIgniteCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerIgniteCooldowns.contains(player)){
+                if(playerIgniteCooldowns.contains(player.getUniqueId().toString())){
                     sendNoLongerCooldownMessage(player, "Ignite");
-                    playerIgniteCooldowns.remove(player);
+                    playerIgniteCooldowns.remove(player.getUniqueId().toString());
                 }
             }, 140);
         }
     }
 
     public void castGust(Player player){
-        if(playerGustCooldowns.contains(player)){
+        if(playerGustCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Gust");
         } else if (subtractMana(player, 10)) {
-            playerGustCooldowns.add(player);
+            playerGustCooldowns.add(player.getUniqueId().toString());
             Location location = player.getLocation();
             double playerX = location.getX();
             double playerY = location.getY();
@@ -418,9 +598,9 @@ public class MagicListener implements Listener {
                 }
             }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerGustCooldowns.contains(player)){
+                if(playerGustCooldowns.contains(player.getUniqueId().toString())){
                     sendNoLongerCooldownMessage(player, "Gust");
-                    playerGustCooldowns.remove(player);
+                    playerGustCooldowns.remove(player.getUniqueId().toString());
                 }
             }, 200);
         }
@@ -435,7 +615,7 @@ public class MagicListener implements Listener {
             player.sendMessage(ChatColor.GREEN + "Life Drain activated.");
             playerLifeDrainTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 if(subtractMana(player, 10)){
-                    player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation(), 8, 1, 0.5, 1, 0);
+                    player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 8, 1, 0.5, 1, 0);
                     List<Entity> entities = player.getNearbyEntities(2,2,2);
                     int count = 0;
                     for(Entity drained : entities){
@@ -468,7 +648,7 @@ public class MagicListener implements Listener {
     }
 
     public void castBlink(Player player){
-        if(playerBlinkCooldowns.contains(player)){
+        if(playerBlinkCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Blink");
         } else if (subtractMana(player, 10)) {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
@@ -484,24 +664,24 @@ public class MagicListener implements Listener {
             } else{
                 location = player.getEyeLocation().add(player.getLocation().getDirection().multiply(20));
             }
-            playerBlinkCooldowns.add(player);
+            playerBlinkCooldowns.add(player.getUniqueId().toString());
             location.setDirection(player.getLocation().getDirection());
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation(), 10, 0.5, 0.5, 0.5);
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, location.add(new Vector(0,2,0)), 10, 0.5, 0.5, 0.5);
             teleportToAir(player, location);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerBlinkCooldowns.contains(player)){
+                if(playerBlinkCooldowns.contains(player.getUniqueId().toString())){
                     sendNoLongerCooldownMessage(player, "Blink");
-                    playerBlinkCooldowns.remove(player);
+                    playerBlinkCooldowns.remove(player.getUniqueId().toString());
                 }
             }, 300);
         }
     }
 
     public void castSummonLightning(Player player){
-        if(playerLightningCooldowns.contains(player)){
+        if(playerLightningCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Summon Lightning");
-        } else if (subtractMana(player, 150)) {
+        } else {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 50, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -516,26 +696,29 @@ public class MagicListener implements Listener {
                 sendOutOfRangeMessage(player);
                 return;
             }
-            playerLightningCooldowns.add(player);
-            player.getWorld().strikeLightningEffect(location);
-            player.getWorld().spawnParticle(Particle.FLASH, location.add(new Vector(0,1,0)), 5);
-            player.getWorld().getHighestBlockAt(location.add(1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
-            player.getWorld().getHighestBlockAt(location.add(0,0,1)).getRelative(BlockFace.UP).setType(Material.FIRE);
-            player.getWorld().getHighestBlockAt(location.add(-1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
-            player.getWorld().getHighestBlockAt(location.add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
-            List<Entity> entities = player.getWorld().getNearbyEntities(location, 4,4,4).stream().toList();
-            for(Entity ignited : entities){
-                if(ignited instanceof Damageable){
-                    plugin.experienceListener.addExp(player, "magic", 1);
-                    ((Damageable) ignited).damage(20.069, player);
+            if (subtractMana(player, 150)) {
+
+                playerLightningCooldowns.add(player.getUniqueId().toString());
+                player.getWorld().strikeLightningEffect(location);
+                player.getWorld().spawnParticle(Particle.FLASH, location.add(new Vector(0,1,0)), 5);
+                player.getWorld().getHighestBlockAt(location.add(1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.add(0,0,1)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.add(-1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                List<Entity> entities = player.getWorld().getNearbyEntities(location, 4,4,4).stream().toList();
+                for(Entity ignited : entities){
+                    if(ignited instanceof Damageable){
+                        plugin.experienceListener.addExp(player, "magic", 1);
+                        ((Damageable) ignited).damage(20.069, player);
+                    }
                 }
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerLightningCooldowns.contains(player.getUniqueId().toString())){
+                        sendNoLongerCooldownMessage(player, "Summon Lightning");
+                        playerLightningCooldowns.remove(player.getUniqueId().toString());
+                    }
+                }, 300);
             }
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerLightningCooldowns.contains(player)){
-                    sendNoLongerCooldownMessage(player, "Summon Lightning");
-                    playerLightningCooldowns.remove(player);
-                }
-            }, 300);
         }
     }
 
@@ -560,11 +743,11 @@ public class MagicListener implements Listener {
                 orbFlashTasks.get(orb).cancel();
             }
         } else {
-            if(playerOrbCooldowns.contains(player)){
+            if(playerOrbCooldowns.contains(player.getUniqueId().toString())){
                 sendCooldownMessage(player, "Illusory Orb");
             } else if (subtractMana(player, 100)) {
                 EnderPearl newOrb = player.launchProjectile(EnderPearl.class);
-                playerOrbCooldowns.add(player);
+                playerOrbCooldowns.add(player.getUniqueId().toString());
                 Vector velocity = newOrb.getVelocity();
                 velocity.multiply(0.5);
                 newOrb.setCustomName("illusoryorb");
@@ -584,12 +767,262 @@ public class MagicListener implements Listener {
                     }
                 }, 40);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerOrbCooldowns.contains(player)){
+                    if(playerOrbCooldowns.contains(player.getUniqueId().toString())){
                         sendNoLongerCooldownMessage(player, "Illusory Orb");
-                        playerOrbCooldowns.remove(player);
+                        playerOrbCooldowns.remove(player.getUniqueId().toString());
                     }
                 }, 200);
             }
         }
     }
+
+    public void castDragonBreath(Player player){
+        if(playerDragonBreathCooldowns.contains(player.getUniqueId().toString())){
+            sendCooldownMessage(player, "Dragon's Breath");
+        } else if (subtractMana(player, 200)) {
+            playerDragonBreathCooldowns.add(player.getUniqueId().toString());
+            Location location = player.getLocation();
+            double playerX = location.getX();
+            double playerY = location.getY();
+            double playerZ = location.getZ();
+            double boxX1 = playerX, boxX2 = playerX, boxZ1 = playerZ, boxZ2 = playerZ;
+            double boxY1 = playerY - 3, boxY2 = playerY + 3;
+            Vector direction = player.getLocation().getDirection();
+            direction.setY(0);
+            direction.normalize();
+            if(direction.getX() < Math.sin(Math.PI/8) && direction.getX() > -1*Math.sin(Math.PI/8)){
+                if(direction.getZ() >= 0){
+                    boxX1 += 3;
+                    boxX2 -= 3;
+                    boxZ2 += 8;
+                } else {
+                    boxX1 -= 3;
+                    boxX2 += 3;
+                    boxZ2 -= 8;
+                }
+            } else if(direction.getZ() < Math.sin(Math.PI/8) && direction.getZ() > -1*Math.sin(Math.PI/8)) {
+                if(direction.getX() >= 0){
+                    boxZ1 += 3;
+                    boxZ2 -= 3;
+                    boxX2 += 8;
+                } else {
+                    boxZ1 -= 3;
+                    boxZ2 += 3;
+                    boxX2 -= 8;
+                }
+            } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)){
+                boxX2 += 5;
+                boxZ2 += 5;
+            } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
+                boxX2 -= 5;
+                boxZ2 += 5;
+            } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
+                boxX2 -= 5;
+                boxZ2 -= 5;
+            } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)) {
+                boxX2 += 5;
+                boxZ2 -= 5;
+            }
+            BoundingBox gustBox = new BoundingBox(boxX1,boxY1, boxZ1, boxX2, boxY2, boxZ2);
+            Location breathLocation = player.getLocation().add(player.getLocation().getDirection().setY(0).normalize().multiply(5));
+            breathLocation.add(0,0.5,0);
+
+            //test
+            BukkitTask dragonBreath = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                player.getWorld().spawnParticle(Particle.DRAGON_BREATH, breathLocation, 64, 1, 0, 1, 0);
+                List<Entity> entities = player.getWorld().getNearbyEntities(gustBox).stream().toList();
+                for(Entity knocked : entities){
+                    if(knocked.equals(player)){
+                        continue;
+                    }
+                    if(knocked instanceof Damageable){
+                        plugin.experienceListener.addExp(player, "magic", 1);
+                        ((Damageable) knocked).damage(10.069, player);
+                    }
+                }
+            }, 3, 20);
+            Bukkit.getScheduler().runTaskLater(plugin, dragonBreath::cancel, 125);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(playerDragonBreathCooldowns.contains(player.getUniqueId().toString())){
+                    sendNoLongerCooldownMessage(player, "Dragon's Breath");
+                    playerDragonBreathCooldowns.remove(player.getUniqueId().toString());
+                }
+            }, 400);
+        }
+    }
+
+    public void castVoicesOfTheDamned(Player player){
+        if(playerVoicesCooldowns.contains(player.getUniqueId().toString())){
+            sendCooldownMessage(player, "Voices of the Damned");
+        } else if (subtractMana(player, 400)) {
+            Location location = player.getEyeLocation();
+            Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(5);
+            location.add(offset);
+            ArmorStand dummy = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
+            dummy.setVisible(false);
+            dummy.setCustomName(ChatColor.DARK_PURPLE + player.getName() +"'s Portal");
+            dummy.setCustomNameVisible(true);
+            dummy.setGravity(false);
+            dummy.setInvulnerable(true);
+            playerVoicesCooldowns.add(player.getUniqueId().toString());
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                dummy.teleport(location);
+                dummy.getLocation().add(new Vector(0,1,0));
+            }, 2);
+            BukkitTask portalEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    dummy.getWorld().spawnParticle(Particle.CLOUD, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
+                    dummy.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
+                    dummy.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, dummy.getLocation(), 1, 0.25, 1, 0.25,0);
+            },3, 3);
+            List<Phantom> damnedListPhantom = new ArrayList<Phantom>();
+            BukkitTask portalSpawnPhantom = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                Phantom damned = (Phantom) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.PHANTOM);
+                damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
+                damned.setCustomNameVisible(true);
+                damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(20.069);
+                damned.setTarget(null);
+                damnedListPhantom.add(damned);
+            },3, 100);
+            BukkitTask setDamnedTarget = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                List<Entity> entities = player.getNearbyEntities(10,10,10).stream().toList();
+                double closestDistance = Double.MAX_VALUE;
+                Entity closestEntity = null;
+                for(Entity entity : entities){
+                    if(entity instanceof Villager || entity instanceof Player || entity instanceof Vex
+                            || entity instanceof ArmorStand || entity instanceof Phantom)
+                        continue;
+                    if(entity instanceof LivingEntity){
+                        double distance = entity.getLocation().distance(player.getLocation());
+                        if(distance < closestDistance){
+                            closestDistance = distance;
+                            closestEntity = entity;
+                        }
+                    }
+                }
+                if(closestEntity != null){
+                    for(Phantom damned : damnedListPhantom)
+                        if(damned.getTarget() == null)
+                            damned.setTarget((LivingEntity) closestEntity);
+                }
+            },3, 20);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                portalEffect.cancel();
+                portalSpawnPhantom.cancel();
+                dummy.remove();
+            }, 600);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                setDamnedTarget.cancel();
+                for(Phantom damned : damnedListPhantom)
+                    damned.remove();
+            }, 1200);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(playerVoicesCooldowns.contains(player.getUniqueId().toString())){
+                    sendNoLongerCooldownMessage(player, "Voices of the Damned");
+                    playerVoicesCooldowns.remove(player.getUniqueId().toString());
+                }
+            }, 1200);
+        }
+    }
+
+
+    public void castNova(Player player){
+        if(playerNovaCooldowns.contains(player.getUniqueId().toString())){
+            sendCooldownMessage(player, "Nova");
+        } else {
+            Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 50, FluidCollisionMode.NEVER, true, 0,
+                    notPlayer);
+            Location locationExplosion = new Location(player.getWorld(),0,0,0);
+            if(rayTrace != null) {
+                if (rayTrace.getHitEntity() != null) {
+                    locationExplosion = rayTrace.getHitEntity().getLocation();
+                } else if (rayTrace.getHitBlock() != null) {
+                    locationExplosion = rayTrace.getHitBlock().getLocation();
+                }
+            } else{
+                sendOutOfRangeMessage(player);
+                return;
+            }
+            if(locationExplosion.distance(player.getLocation())<10){
+                player.sendMessage(ChatColor.GRAY+"Target too close to caster.");
+                return;
+            }
+            if (subtractMana(player, 600)) {
+
+                Location location = player.getEyeLocation();
+                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
+                location.add(offset);
+                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
+                dummyText.setCustomName(ChatColor.GREEN+"|"+ChatColor.GRAY+"|||||||||||||||||");
+                dummyText.setCustomNameVisible(true);
+                dummyText.setVisible(false);
+                dummyText.setGravity(false);
+                dummyText.setInvulnerable(true);
+                playerNovaCooldowns.add(player.getUniqueId().toString());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    dummyText.teleport(location.add(new Vector(0,-2,0)));
+                }, 1);
+                novaLoadingProgress.put(player, 1);
+
+                Location finalLocationExplosion = locationExplosion.clone().add(0,1,0);
+                Location startExplosionFlash = locationExplosion.clone().add(0,40,0);
+                player.getWorld().strikeLightningEffect(finalLocationExplosion);
+                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
+                    int ballProgress = novaLoadingProgress.get(player);
+                    int ballToLoad = 18-ballProgress;
+                    dummyTextName.append("|".repeat(ballProgress));
+                    dummyTextName.append(ChatColor.GRAY);
+                    if(ballToLoad>0){
+                        dummyTextName.append("|".repeat(ballToLoad));
+                    }
+                    dummyText.setCustomName(dummyTextName.toString());
+                    novaLoadingProgress.put(player, ballProgress+1);
+                },2, 10);
+                BukkitTask preExplosionEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, finalLocationExplosion, 16, 0.5,0.5,0.5,0);
+                    player.getWorld().spawnParticle(Particle.SMOKE_LARGE, finalLocationExplosion, 16, 0.5,2,0.5,0);
+                },2, 10);
+                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    Location newLocation = player.getEyeLocation();
+                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
+                    newLocation.add(newOffset);
+
+                    dummyText.teleport(newLocation.add(new Vector(0,-1.5,0)));
+                },2, 1);
+                BukkitTask flashEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    player.getWorld().spawnParticle(Particle.FLASH, finalLocationExplosion, 8, 0,0,0,0);
+                },102, 10);
+                BukkitTask flashEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0,-2,0), 16, 0,0,0,0);
+                },182, 1);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    loadingEffect.cancel();
+                    followPlayer.cancel();
+                    dummyText.remove();
+                }, 182);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    preExplosionEffect.cancel();
+                    flashEffect.cancel();
+                    flashEffect2.cancel();
+                    player.getWorld().createExplosion(finalLocationExplosion, 8F, true, true, player);
+                    List<Entity> entities = player.getWorld().getNearbyEntities(finalLocationExplosion, 8,10,8).stream().toList();
+                    for(Entity exploded : entities){
+                        if(exploded instanceof Damageable){
+                            plugin.experienceListener.addExp(player, "magic", 1);
+                            ((Damageable) exploded).damage(60.069, player);
+                        }
+                    }
+                }, 205);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerNovaCooldowns.contains(player.getUniqueId().toString())){
+                        sendNoLongerCooldownMessage(player, "Nova");
+                        playerNovaCooldowns.remove(player.getUniqueId().toString());
+                    }
+                }, 2400);
+            }
+        }
+    }
+
 }

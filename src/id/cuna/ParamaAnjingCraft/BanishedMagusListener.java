@@ -103,6 +103,9 @@ public class BanishedMagusListener implements Listener {
             case 8 -> 60;
             case 10 -> 80;
             case 12,14 -> 200;
+            case 16 -> 300;
+            case 20 -> 400;
+            case 24 -> 600;
             default -> Integer.MAX_VALUE;
         };
 
@@ -285,20 +288,48 @@ public class BanishedMagusListener implements Listener {
         gui.setItem(14, item);
         lore.clear();
 
-        // Illusory orb
+        // Dragon breath
         item.setType(Material.ENCHANTED_BOOK);
-        meta.setDisplayName(ChatColor.RESET + "§5Illusory Orb");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Casts an arcane orb that hurts");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "any being it comes into contact");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with. Casting the spell while an");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "orb is travelling teleports the");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "caster to its location.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
+        meta.setDisplayName(ChatColor.RESET + "§5Dragon's Breath");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Imbuing your essence with draconic");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "powers, you unleash a wide dragon");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "breath attack in front of you");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that harms all beings it comes");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "into contact with.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(16, item);
+        lore.clear();
+
+        // Voices of the Damned
+        item.setType(Material.ENCHANTED_BOOK);
+        meta.setDisplayName(ChatColor.RESET + "§5Voices of the Damned");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a portal to the realm of");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the damned. Creatures will appear");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any creatures");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that are in sight.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 30 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 400");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(20, item);
+        lore.clear();
+
+        // Nova
+        item.setType(Material.ENCHANTED_BOOK);
+        meta.setDisplayName(ChatColor.RESET + "§5Nova");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "爆裂, 爆裂, la la la");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 600");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(24, item);
         lore.clear();
 
     }

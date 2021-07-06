@@ -88,7 +88,11 @@ public class WiseOldManListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (!event.getClickedInventory().equals(gui))
+        if(event.getInventory().equals(gui2)){
+            event.setCancelled(true);
+            return;
+        }
+        if (!event.getClickedInventory().equals(gui) && !event.getClickedInventory().equals(gui2))
             return;
         if (event.getCurrentItem() == null)
             return;
@@ -106,6 +110,7 @@ public class WiseOldManListener implements Listener {
             player.openInventory(gui2);
         }
     }
+
 
     //Create main gui
     public void createGui(Player player){

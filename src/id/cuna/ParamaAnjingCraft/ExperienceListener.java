@@ -82,6 +82,10 @@ public class ExperienceListener implements Listener {
                     skill = "magic";
                 }
             }
+            //Check if entity was exploded by magic
+            if(event.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
+                skill = "magic";
+            }
 
             //Check if damage source is from archery or swordsmanship
             switch (player.getInventory().getItemInMainHand().getType()) {
