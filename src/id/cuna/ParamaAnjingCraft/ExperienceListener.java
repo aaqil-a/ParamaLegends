@@ -80,6 +80,8 @@ public class ExperienceListener implements Listener {
                 String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
                 if(key.equals(".069") || key.equals(".068")){
                     skill = "magic";
+                } else if (key.equals(".034") || key.equals(".033") || key.equals(".035")) {
+                    skill = "reaper";
                 }
             }
             //Check if entity was exploded by magic

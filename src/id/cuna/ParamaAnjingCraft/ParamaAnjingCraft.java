@@ -16,6 +16,7 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public MagicListener magicListener;
     public CommandStartGame commandStartGame;
     public SuspiciousPeasantListener suspiciousPeasantListener;
+    public ReaperListener reaperListener;
 
     @Override
     public void onEnable() {
@@ -30,6 +31,8 @@ public class ParamaAnjingCraft extends JavaPlugin {
         magicListener = new MagicListener(this);
         commandStartGame = new CommandStartGame(this);
         suspiciousPeasantListener = new SuspiciousPeasantListener(this);
+        reaperListener = new ReaperListener(this);
+
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
@@ -41,7 +44,9 @@ public class ParamaAnjingCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(banishedMagusListener, this);
         getServer().getPluginManager().registerEvents(magicListener, this);
         getServer().getPluginManager().registerEvents(suspiciousPeasantListener, this);
+        getServer().getPluginManager().registerEvents(reaperListener, this);
     }
+
     @Override
     public void onDisable() {
     }

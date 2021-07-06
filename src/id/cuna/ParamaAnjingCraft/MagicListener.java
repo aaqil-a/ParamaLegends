@@ -71,7 +71,7 @@ public class MagicListener implements Listener {
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
         if(event.getHand() == EquipmentSlot.OFF_HAND){
             return;
         }
