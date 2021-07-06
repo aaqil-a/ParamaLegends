@@ -98,51 +98,117 @@ public class SuspiciousPeasantListener implements Listener {
 
         // Gets price of clicked item
         int price = switch (event.getSlot()) {
-            case 2 -> 10;
-            case 4 -> 20;
-            case 6 -> 30;
-            case 8 -> 60;
-            case 10 -> 80;
-            case 12,14 -> 200;
+            case 4 -> 5;
+            case 10 -> 20;
+            case 12 -> 30;
+            case 14 -> 60;
+            case 16 -> 80;
             default -> Integer.MAX_VALUE;
         };
 
         // Check if player has empty tome
         boolean hasHoe = false;
+        boolean hasScythe = false;
         ItemStack hoe  = null;
+        ItemStack scythe = null;
         int hoeSlot = 0;
+        int scytheSlot = 0;
         ItemStack[] playerInv = player.getInventory().getStorageContents();
         for (ItemStack item : playerInv) {
-            if(item != null && !item.hasItemMeta()){
+            if(item != null){
                 if(item.getType().equals(Material.IRON_HOE) || item.getType().equals(Material.WOODEN_HOE) || item.getType().equals(Material.STONE_HOE)
                 || item.getType().equals(Material.DIAMOND_HOE) || item.getType().equals(Material.GOLDEN_HOE) || item.getType().equals(Material.NETHERITE_HOE)){
-                    hasHoe = true;
-                    hoe = item;
-                    break;
+                    if (item.hasItemMeta() && item.getItemMeta().getDisplayName().contains("Scythe")){
+                        hasScythe = true;
+                        scythe = item;
+                    } else if (!item.hasItemMeta()) {
+                        hasHoe = true;
+                        hoe = item;
+                    }
                 }
             }
-            hoeSlot++;
+            if(!hasScythe) scytheSlot++;
+            if(!hasHoe) hoeSlot++;
         }
-
-        //Purchase specified tome
-        if (event.getSlot() != 0){
-            if (!hasHoe) {
+        if (lectrum < price) {
+            player.closeInventory();
+            player.sendMessage(ChatColor.RED + "Not enough lectrum!");
+        }
+        if (event.getSlot()== 4){
+           if (hasHoe){
+               lectrum -= price;
+               data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
+               data.saveConfig();
+               updateLectrum(event);
+               hoeToScythe(event, hoe);
+               player.getInventory().clear(hoeSlot);
+           }else {
+               player.closeInventory();
+               player.sendMessage(ChatColor.RED + "A hoe is required to upgrade!");
+           }
+            //Purchase specified tome
+        }else if (event.getSlot() != 0){
+            if (!hasScythe) {
                 player.closeInventory();
-                player.sendMessage(ChatColor.RED + "A hoe is required to enchant!");
-            } else if (lectrum < price) {
-                player.closeInventory();
-                player.sendMessage(ChatColor.RED + "Not enough lectrum!");
-            } else {
+                player.sendMessage(ChatColor.RED + "A scythe is required to enchant!");
+            }else {
                 lectrum -= price;
                 data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
                 data.saveConfig();
                 updateLectrum(event);
-                enchantItem(event, event.getCurrentItem(), hoe);
-                player.getInventory().clear(hoeSlot);
+                enchantItem(event, event.getCurrentItem(), scythe);
+                player.getInventory().clear(scytheSlot);
             }
         }
     }
 
+
+    public void hoeToScythe (InventoryClickEvent event, ItemStack item){
+        ItemStack newItem = item.clone();
+        int newDamage = 0;
+        String name = "";
+        switch (newItem.getType()) {
+            case WOODEN_HOE -> {
+                newDamage = 4;
+                name = "§4Wooden Scythe";
+            }
+            case GOLDEN_HOE -> {
+                newDamage = 4;
+                name = "§4Golden Scythe";
+            }
+            case IRON_HOE -> {
+                newDamage = 6;
+                name = "§4Iron Scythe";
+            }
+            case STONE_HOE -> {
+                newDamage = 5;
+                name = "§4Stone Scythe";
+            }
+            case DIAMOND_HOE -> {
+                newDamage = 7;
+                name = "§4Diamond Scythe";
+            }
+            case NETHERITE_HOE -> {
+                newDamage = 8;
+                name = "§4Netherite Scythe";
+            }
+        }
+        if (newDamage > 0){
+            ItemMeta meta = newItem.getItemMeta();
+            List<String> lore = meta.getLore();
+            if(lore == null) {
+                lore = new ArrayList<String>();
+                lore.add("");
+                lore.add(ChatColor.GRAY+ "When in Main Hand:");
+                lore.add(" " + ChatColor.DARK_GREEN + "" + newDamage + " Attack Damage");
+            }
+            meta.setLore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            meta.setDisplayName(name);
+            newItem.setItemMeta(meta);
+        }
+        event.getWhoClicked().getInventory().addItem(newItem);
+    }
 
     //Update lectrum count after purchasing
     public void updateLectrum(InventoryClickEvent event){
@@ -189,9 +255,18 @@ public class SuspiciousPeasantListener implements Listener {
         gui.setItem(0, item);
         lore.clear();
 
+        item.setType(Material.ANVIL);
+        meta.setDisplayName(ChatColor.RESET + "§4Enchant to Scythe");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Upgrade hoe to scythe.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "5 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(4, item);
+        lore.clear();
+
         // Hidden Strike
         item.setType(Material.DIAMOND_HOE);
-        meta.setDisplayName(ChatColor.RESET + "§5Hidden Strike");
+        meta.setDisplayName(ChatColor.RESET + "§4Hidden Strike");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Stab the enemy at a critical");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location causing critical damage");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
@@ -201,12 +276,12 @@ public class SuspiciousPeasantListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(2, item);
+        gui.setItem(10, item);
         lore.clear();
 
         // Blinding Sand
         item.setType(Material.DIAMOND_HOE);
-        meta.setDisplayName(ChatColor.RESET + "§5Blinding Sand");
+        meta.setDisplayName(ChatColor.RESET + "§4Blinding Sand");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration : 7 seconds");
@@ -214,12 +289,12 @@ public class SuspiciousPeasantListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(4, item);
+        gui.setItem(12, item);
         lore.clear();
 
         // Gut Punch
         item.setType(Material.DIAMOND_HOE);
-        meta.setDisplayName(ChatColor.RESET + "§5Gut Punch");
+        meta.setDisplayName(ChatColor.RESET + "§4Gut Punch");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deal base damage on the");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponents current HP and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflict high discomfort on");
@@ -229,13 +304,13 @@ public class SuspiciousPeasantListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(6, item);
+        gui.setItem(14, item);
         lore.clear();
 
 
         // Forbidden Slash
         item.setType(Material.DIAMOND_HOE);
-        meta.setDisplayName(ChatColor.RESET + "§5Forbidden Slash");
+        meta.setDisplayName(ChatColor.RESET + "§4Forbidden Slash");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Making a decisive slash at");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the enemy dealing damage and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage.");
@@ -245,7 +320,7 @@ public class SuspiciousPeasantListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(8, item);
+        gui.setItem(16, item);
         lore.clear();
 
     }

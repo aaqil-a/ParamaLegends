@@ -68,6 +68,27 @@ destinylevelunlock:
     9t: Active
     10: Calamity
     10t: Active
+  reaper:
+    1: Coated Blade
+    1t: Passive
+    2: Hidden Strike
+    2t: Active
+    3: Blinding Sand
+    3t: Active
+    4: Why are you hitting yourself?
+    4t: Passive
+    5: Too slow!
+    5t: Passive
+    6: Second Wind
+    6t: Passive
+    7: Bloody Fervour
+    7t: Passive
+    8: Gut Punch
+    8t: Active
+    9: Forbidden Slash
+    9t: Active
+    10: Memento Mori
+    10t: Passive
 passivedescriptions:
   swordsmanship:
     1: Increased crit damage and crit rate.
