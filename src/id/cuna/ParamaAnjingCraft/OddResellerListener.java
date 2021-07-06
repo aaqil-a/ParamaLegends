@@ -58,6 +58,7 @@ public class OddResellerListener implements Listener {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§2Odd Reseller")){
+                event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Wares from all over the world are for sale.");
                 createGui(player);
                 player.openInventory(gui);

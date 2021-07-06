@@ -28,15 +28,51 @@ players:
 destinylevelunlock:
   magic:
     1: Fling Earth
+    1t: Active
     2: Ignite
+    2t: Active
     3: Gust
+    3t: Active
     4: Life Drain
+    4t: Active
     5: Blink
+    5t: Active
     6: Summon Lightning
+    6t: Active
     7: Illusory Orb
+    7t: Active
     8: Dragon's Breath
+    8t: Active
     9: Voices of the Damned
+    9t: Active
     10: Nova
+    10t: Active
+  swordsmanship:
+    1: Precise Blade
+    1t: Passive
+    2: Crippling Blow
+    2t: Passive
+    3: Shields Up
+    3t: Active
+    4: Reaver
+    4t: Passive
+    5: Phoenix Dive
+    5t: Active
+    6: Enrage
+    6t: Active
+    7: Onslaught
+    7t: Active
+    8: Terrifying Cruelty
+    8t: Active
+    9: Superconducted
+    9t: Active
+    10: Calamity
+    10t: Active
+passivedescriptions:
+  swordsmanship:
+    1: Increased crit damage and crit rate.
+    2: Each third attack cripples         enemies.
+    4: Increased cleave damage,  crit damage and crit rate.
 levelupmessage:
   magic:
     2: You begin to fathom the essence of fire.

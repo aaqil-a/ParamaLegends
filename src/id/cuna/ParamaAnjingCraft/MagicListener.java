@@ -17,6 +17,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -323,6 +324,17 @@ public class MagicListener implements Listener {
         if(ballsThrownTasks.get(player) != null)
             ballsThrownTasks.get(player).cancel();
         ballsThrownTasks.remove(player);
+    }
+
+    public void createFireworkEffect(Location location, Player player) {
+        Firework firework = (Firework) player.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        FireworkMeta meta = firework.getFireworkMeta();
+        meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BURST)
+                .flicker(false).trail(false).withColor(Color.WHITE, Color.YELLOW).build());
+        meta.setPower(0);
+        firework.setFireworkMeta(meta);
+        firework.setSilent(true);
+        Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 1);
     }
 //
 //    public void createBeaconAndRemove(Location location) {
@@ -961,7 +973,7 @@ public class MagicListener implements Listener {
                 dummyText.setInvulnerable(true);
                 playerNovaCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    dummyText.teleport(location.add(new Vector(0,-2,0)));
+                    dummyText.teleport(location.add(new Vector(0,-3,0)));
                 }, 1);
                 novaLoadingProgress.put(player, 1);
 
@@ -989,22 +1001,34 @@ public class MagicListener implements Listener {
                     Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
                     newLocation.add(newOffset);
 
-                    dummyText.teleport(newLocation.add(new Vector(0,-1.5,0)));
+                    dummyText.teleport(newLocation.add(new Vector(0,-3,0)));
                 },2, 1);
-                BukkitTask flashEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    player.getWorld().spawnParticle(Particle.FLASH, finalLocationExplosion, 8, 0,0,0,0);
-                },102, 10);
+                BukkitTask fireworkEffect1 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    createFireworkEffect(finalLocationExplosion, player);
+                },20, 40);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    fireworkEffect1.cancel();
+                }, 102);
+                BukkitTask fireworkEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    createFireworkEffect(finalLocationExplosion, player);
+                },122, 20);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    fireworkEffect2.cancel();
+                }, 144);
+                BukkitTask fireworkEffect3 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    createFireworkEffect(finalLocationExplosion, player);
+                },152, 10);
                 BukkitTask flashEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0,-2,0), 16, 0,0,0,0);
                 },182, 1);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    fireworkEffect3.cancel();
                     loadingEffect.cancel();
                     followPlayer.cancel();
                     dummyText.remove();
                 }, 182);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     preExplosionEffect.cancel();
-                    flashEffect.cancel();
                     flashEffect2.cancel();
                     player.getWorld().createExplosion(finalLocationExplosion, 8F, true, true, player);
                     List<Entity> entities = player.getWorld().getNearbyEntities(finalLocationExplosion, 8,10,8).stream().toList();

@@ -32,31 +32,28 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.Random;
 
-public class ReaperListener implements Listener{
+public class SwordsmanListener implements Listener{
     private final ParamaAnjingCraft plugin;
     public DataManager data;
-    private final List<String> playerCoatedBladeCooldowns = new ArrayList<String>();
-    private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
-    private final HashMap<Player, Integer> playerReaperLevel = new HashMap<Player, Integer>();
-    private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
+    private final HashMap<Player, Integer> playerSwordsmanLevel = new HashMap<Player, Integer>();
 
-    public ReaperListener(ParamaAnjingCraft plugin) {
+    public SwordsmanListener(ParamaAnjingCraft plugin) {
         this.plugin = plugin;
         data = plugin.getData();
     }
 
-    //Get player's Reaper level and set exp level to max mana on join
+    //Get player's Sworrdsman level and set exp level to max mana on join
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        playerReaperLevel.put(player, data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper"));
+        playerSwordsmanLevel.put(player, data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper"));
     }
 
     //Remove player from plugin memory on leave
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        playerReaperLevel.remove(player);
+        playerSwordsmanLevel.remove(player);
     }
 
     // Mana Handler
@@ -79,45 +76,16 @@ public class ReaperListener implements Listener{
         player.sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.DARK_GREEN + " is no longer on cooldown.");
     }
 
-    public void castCoatedBlade (Player attacker, Entity entity) {
-        if (playerCoatedBladeCooldowns.contains(attacker.getUniqueId().toString())){
-            return;
-        } else if (subtractMana(attacker, 0)) {
-            if (entity instanceof LivingEntity) {
-                BukkitTask poison = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    ((LivingEntity) entity).damage(1.034, attacker);
-                }, 0, 20);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    poison.cancel();
-                }, 42);
-                attacker.sendMessage(ChatColor.GREEN + "Pisonya ada poison");
-                playerCoatedBladeCooldowns.add(attacker.getUniqueId().toString());
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCoatedBladeCooldowns.contains(attacker.getUniqueId().toString())){
-                        playerCoatedBladeCooldowns.remove(attacker.getUniqueId().toString());
-                    }
-                }, 80);
-            }
-        }
-    }
-
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             Random rand = new Random();
-            int coatedRandom = rand.nextInt(5);
+            int coatedRandom = rand.nextInt(100);
             switch (item.getType()){
-                case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
-                    if (coatedRandom == 1) {
-                        castCoatedBlade(attacker, event.getEntity());
-                    }else if(item.getItemMeta() != null){
-                        switch (item.getItemMeta().getDisplayName()){
-                            case "Hidden Strike":
-                                break;
-                        }
-                    }
+                case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
+
                 }
             }
         }

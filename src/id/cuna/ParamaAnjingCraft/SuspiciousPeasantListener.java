@@ -68,6 +68,7 @@ public class SuspiciousPeasantListener implements Listener {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§1Suspicious Peasant")){
+                event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Lu Goblok Ini peasant");
                 createGui(player);
                 player.openInventory(gui);
@@ -112,7 +113,7 @@ public class SuspiciousPeasantListener implements Listener {
         int hoeSlot = 0;
         ItemStack[] playerInv = player.getInventory().getStorageContents();
         for (ItemStack item : playerInv) {
-            if(item != null){
+            if(item != null && !item.hasItemMeta()){
                 if(item.getType().equals(Material.IRON_HOE) || item.getType().equals(Material.WOODEN_HOE) || item.getType().equals(Material.STONE_HOE)
                 || item.getType().equals(Material.DIAMOND_HOE) || item.getType().equals(Material.GOLDEN_HOE) || item.getType().equals(Material.NETHERITE_HOE)){
                     hasHoe = true;
@@ -136,7 +137,7 @@ public class SuspiciousPeasantListener implements Listener {
                 data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
                 data.saveConfig();
                 updateLectrum(event);
-                enchantItem(event, event.getCurrentItem());
+                enchantItem(event, event.getCurrentItem(), hoe);
                 player.getInventory().clear(hoeSlot);
             }
         }
@@ -159,15 +160,16 @@ public class SuspiciousPeasantListener implements Listener {
     }
 
     //Give purchased item and erase price from lore
-    public void enchantItem(InventoryClickEvent event, ItemStack item){
+    public void enchantItem(InventoryClickEvent event, ItemStack item, ItemStack hoe){
         ItemStack newItem = item.clone();
         ItemMeta meta = newItem.getItemMeta();
         List<String> lore = meta.getLore();
         lore.remove(lore.size()-1);
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        newItem.setItemMeta(meta);
-        event.getWhoClicked().getInventory().addItem(newItem);
+        ItemStack newHoe = hoe.clone();
+        newHoe.setItemMeta(meta);
+        event.getWhoClicked().getInventory().addItem(newHoe);
     }
 
     //Create shop gui
@@ -194,7 +196,7 @@ public class SuspiciousPeasantListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location causing critical damage");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Damage : Normal Attack + 50% of Normal Attack");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Crit Damage : 50%");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown : 10 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);

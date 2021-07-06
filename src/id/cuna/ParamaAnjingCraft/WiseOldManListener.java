@@ -71,6 +71,7 @@ public class WiseOldManListener implements Listener {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§6Wise Peculier")){
+                event.setCancelled(true);
                 createGui(player);
                 player.openInventory(gui);
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Your destiny unravels before you.");
@@ -103,7 +104,9 @@ public class WiseOldManListener implements Listener {
 
         //Open destiny gui depending on item pressed
         if (event.getSlot() == 0){
-            player.sendMessage("i am penis");
+            createGui2(player, "swordsmanship");
+            player.closeInventory();
+            player.openInventory(gui2);
         } else if (event.getSlot() == 4){
             createGui2(player, "magic");
             player.closeInventory();
@@ -201,10 +204,21 @@ public class WiseOldManListener implements Listener {
 
 
         // Level 1
+        String passiveDesc = "";
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level 1");
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + 1));
+        String type = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + 1+"t");
+        lore.add(type);
+        if(type.equals(ChatColor.RESET + "" + ChatColor.DARK_GRAY +"Passive"))
+            passiveDesc = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("passivedescriptions." + skill + "." + 1);
+            for(int j = 0; j < Math.ceil(passiveDesc.length()/30f); j++)
+                if(j == Math.floor(passiveDesc.length()/30f)) {
+                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30).strip());
+                } else {
+                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30, (j+1)*30).strip());
+                }
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui2.setItem(itemLocations[1], item);
@@ -219,6 +233,17 @@ public class WiseOldManListener implements Listener {
             }
             meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level "+i);
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + i));
+            type = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + i+"t");
+            lore.add(type);
+            if(type.equals(ChatColor.RESET + "" + ChatColor.DARK_GRAY +"Passive")){
+                passiveDesc = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("passivedescriptions." + skill + "." + i);
+                for(int j = 0; j < Math.ceil(passiveDesc.length()/30f); j++)
+                    if(j == Math.floor(passiveDesc.length()/30f)) {
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30).strip());
+                    } else {
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j * 30, (j + 1) * 30).strip());
+                    }
+            }
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui2.setItem(itemLocations[i], item);
