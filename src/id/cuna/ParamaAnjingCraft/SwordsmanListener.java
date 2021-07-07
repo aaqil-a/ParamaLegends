@@ -41,6 +41,7 @@ public class SwordsmanListener implements Listener{
     public DataManager data;
     private final HashMap<Player, Integer> playerSwordsmanLevel = new HashMap<Player, Integer>();
     private final HashMap<Player, Integer> playerCrippleAttackCount = new HashMap<Player, Integer>();
+    private final HashMap<Player, Integer> calamityLoadingProgress = new HashMap<Player, Integer>();
     private final HashMap<Player, BukkitTask> playerCheckVelocityTasks = new HashMap<Player, BukkitTask>();
     private final List<String> playerShieldCooldown = new ArrayList<String>();
     private final List<String> playerPhoenixCooldown = new ArrayList<String>();
@@ -209,6 +210,8 @@ public class SwordsmanListener implements Listener{
             Player player = (Player) event.getEntity();
             //Reduce damage if shields up
             if(playersShielded.contains(player)){
+                player.getWorld().spawnParticle(Particle.BLOCK_CRACK, player.getLocation().add(0,1,0), 8, 0.25, 0.25, 0.25, 0, Material.IRON_BLOCK.createBlockData());
+                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.4f, 0f);
                 event.setDamage(event.getDamage()*0.2);
             }
         }
@@ -281,12 +284,20 @@ public class SwordsmanListener implements Listener{
         } else {
             if(subtractMana(player, 50)){
                 player.sendMessage(ChatColor.GREEN+"Shields Up activated.");
-                player.getWorld().spawnParticle(Particle.TOTEM, player.getEyeLocation(), 8, 1, 0.5, 1, 0);
                 playersShielded.add(player);
+//                BukkitTask shieldEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+//                    Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1.5,0), EntityType.AREA_EFFECT_CLOUD);
+//                    AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
+//                    cloud.setParticle(Particle.TOTEM);
+//                    cloud.setDuration(1);
+//                    cloud.setGravity(false);
+//                    //player.getWorld().spawnParticle(Particle.TOTEM, player.getEyeLocation(), 8, 0.5, 0.5, 0);
+//                }, 0, 10);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     player.sendMessage(ChatColor.GREEN+"Shields Up wore off.");
                     playersShielded.remove(player);
-                }, 120);
+                    //shieldEffect.cancel();
+                }, 122);
                 playerShieldCooldown.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerShieldCooldown.contains(player.getUniqueId().toString())){
@@ -312,7 +323,7 @@ public class SwordsmanListener implements Listener{
                     if(player.getVelocity().getX() == 0d && player.getVelocity().getZ() == 0d){
                         player.getWorld().spawnParticle(Particle.LAVA, player.getLocation(), 16, 1, 0.5, 1, 0);
                         player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation(), 16, 1, 0.5, 1, 0);
-                        List<Entity> entities = player.getNearbyEntities(2,2,2);
+                        List<Entity> entities = player.getNearbyEntities(2.5,2.5,2.5);
                         for(Entity burned : entities){
                             if(burned instanceof Player){
                                 continue;
@@ -406,18 +417,19 @@ public class SwordsmanListener implements Listener{
         } else {
             if(subtractMana(player, 200)){
                 List<Entity> entities = player.getNearbyEntities(3,3,3);
-                Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1,0), EntityType.AREA_EFFECT_CLOUD);
-                AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
-                cloud.setParticle(Particle.DAMAGE_INDICATOR);
-                cloud.setDuration(1);
+                player.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, player.getLocation().add(0,1,0), 8, 0.5, 0.5, 0.5, 0);
                 for(Entity hit : entities){
                     if(hit instanceof Damageable){
+                        BukkitTask hitEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            hit.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, hit.getLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
+                        }, 20, 20);
                         plugin.experienceListener.addExp(player, "swordsmanship", 1);
                         entitiesTerrified.add(hit);
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            entitiesTerrified.remove(hit);
+                            hitEffect.cancel();
+                        }, 120);
                     }
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        entitiesTerrified.remove(hit);
-                    }, 120);
                 }
                 playerCrueltyCooldown.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -447,7 +459,7 @@ public class SwordsmanListener implements Listener{
         } else {
             if(subtractMana(player, 300)){
                 List<Entity> entities = player.getNearbyEntities(5,4,5);
-                player.getWorld().spawnParticle(Particle.FLASH, player.getEyeLocation().add(0,1,0), 1, 0, 0, 0, 0);
+                createFireworkEffect(player.getLocation(), player);
                 List<Entity> toDamage = new ArrayList<Entity>();
                 for(Entity hit : entities){
                     if(hit instanceof LivingEntity && !(hit instanceof Player)){
@@ -456,7 +468,7 @@ public class SwordsmanListener implements Listener{
                         toDamage.add(hit);
                     }
                 }
-                int delay = 0;
+                int delay = 10;
                 for(Entity damaged : toDamage){
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         if(damaged instanceof Damageable){
@@ -491,11 +503,50 @@ public class SwordsmanListener implements Listener{
         } else {
             if(subtractMana(player, 500)){
                 playersCalamity.add(player);
+
+                Location location = player.getEyeLocation();
+                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
+                location.add(offset);
+                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
+                dummyText.setCustomName(ChatColor.GRAY+"||||||||||||");
+                dummyText.setCustomNameVisible(true);
+                dummyText.setVisible(false);
+                dummyText.setGravity(false);
+                dummyText.setInvulnerable(true);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    dummyText.teleport(location.add(new Vector(0,-3,0)));
+                }, 1);
+                calamityLoadingProgress.put(player,0);
+                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
+                    int ballProgress = calamityLoadingProgress.get(player);
+                    int ballToLoad = 12-ballProgress;
+                    dummyTextName.append("|".repeat(ballProgress));
+                    dummyTextName.append(ChatColor.GRAY);
+                    if(ballToLoad>0){
+                        dummyTextName.append("|".repeat(ballToLoad));
+                    }
+                    dummyText.setCustomName(dummyTextName.toString());
+                    calamityLoadingProgress.put(player, ballProgress+2);
+                },2, 10);
+                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    Location newLocation = player.getEyeLocation();
+                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
+                    newLocation.add(newOffset);
+
+                    dummyText.teleport(newLocation.add(new Vector(0,-3,0)));
+                },2, 1);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    loadingEffect.cancel();
+                    followPlayer.cancel();
+                    dummyText.remove();
+                }, 62);
+
                 BukkitTask calamity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     List<Entity> entities = player.getNearbyEntities(10,10,10);
                     List<Entity> toDamage = new ArrayList<Entity>();
                     for(Entity hit : entities){
-                        if(hit instanceof LivingEntity && !(hit instanceof Player)) {
+                        if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof ArmorStand)) {
                             toDamage.add(hit);
                         }
                     }
@@ -510,7 +561,7 @@ public class SwordsmanListener implements Listener{
                         ((Damageable) striked).damage(30.072, player);
                         plugin.experienceListener.addExp(player, "swordsmanship", 1);
                     }
-                }, 0, 20);
+                }, 62, 20);
                 BukkitTask calamityEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation().add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
                     player.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, player.getEyeLocation().add(0,1.5,0), 1, 0.5, 0.5, 0.5, 0);

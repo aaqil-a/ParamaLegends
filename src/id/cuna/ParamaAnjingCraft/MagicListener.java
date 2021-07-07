@@ -933,7 +933,7 @@ public class MagicListener implements Listener {
                 Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
                 location.add(offset);
                 ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
-                dummyText.setCustomName(ChatColor.GREEN+"|"+ChatColor.GRAY+"|||||||||||||||||");
+                dummyText.setCustomName(ChatColor.GRAY+"||||||||||");
                 dummyText.setCustomNameVisible(true);
                 dummyText.setVisible(false);
                 dummyText.setGravity(false);
@@ -942,7 +942,7 @@ public class MagicListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     dummyText.teleport(location.add(new Vector(0,-3,0)));
                 }, 1);
-                novaLoadingProgress.put(player, 1);
+                novaLoadingProgress.put(player, 0);
 
                 Location finalLocationExplosion = locationExplosion.clone().add(0,1,0);
                 Location startExplosionFlash = locationExplosion.clone().add(0,40,0);
@@ -950,7 +950,7 @@ public class MagicListener implements Listener {
                 BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
                     int ballProgress = novaLoadingProgress.get(player);
-                    int ballToLoad = 18-ballProgress;
+                    int ballToLoad = 10-ballProgress;
                     dummyTextName.append("|".repeat(ballProgress));
                     dummyTextName.append(ChatColor.GRAY);
                     if(ballToLoad>0){
@@ -970,30 +970,24 @@ public class MagicListener implements Listener {
 
                     dummyText.teleport(newLocation.add(new Vector(0,-3,0)));
                 },2, 1);
-                BukkitTask fireworkEffect1 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                BukkitTask fireworkEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     createFireworkEffect(finalLocationExplosion, player);
-                },20, 40);
+                },0, 20);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    fireworkEffect1.cancel();
-                }, 102);
-                BukkitTask fireworkEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    createFireworkEffect(finalLocationExplosion, player);
-                },122, 20);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    fireworkEffect2.cancel();
-                }, 144);
+                    fireworkEffect.cancel();
+                }, 62);
                 BukkitTask fireworkEffect3 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     createFireworkEffect(finalLocationExplosion, player);
-                },152, 10);
+                },70, 10);
                 BukkitTask flashEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0,-2,0), 16, 0,0,0,0);
-                },182, 1);
+                },102, 1);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     fireworkEffect3.cancel();
                     loadingEffect.cancel();
                     followPlayer.cancel();
                     dummyText.remove();
-                }, 182);
+                }, 102);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     preExplosionEffect.cancel();
                     flashEffect2.cancel();
@@ -1005,7 +999,7 @@ public class MagicListener implements Listener {
                             ((Damageable) exploded).damage(60.069, player);
                         }
                     }
-                }, 205);
+                }, 125);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerNovaCooldowns.contains(player.getUniqueId().toString())){
                         sendNoLongerCooldownMessage(player, "Nova");
