@@ -76,7 +76,7 @@ public class CommandStartGame implements CommandExecutor {
             LivingEntity mob2 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(2, 0, 2), EntityType.VILLAGER);
             Villager shop = (Villager) mob2;
 
-            shop.setCustomName("§2Odd Reseller");
+            shop.setCustomName("§eOdd Reseller");
             shop.setCustomNameVisible(true);
             shop.setVillagerType(Villager.Type.TAIGA);
             shop.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
@@ -96,7 +96,7 @@ public class CommandStartGame implements CommandExecutor {
             LivingEntity mob4 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(2, 0, -2), EntityType.VILLAGER);
             Villager sus = (Villager) mob4;
 
-            sus.setCustomName("§1Suspicious Peasant");
+            sus.setCustomName("§4Suspicious Peasant");
             sus.setCustomNameVisible(true);
             sus.setVillagerType(Villager.Type.SNOW);
             sus.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
@@ -106,7 +106,7 @@ public class CommandStartGame implements CommandExecutor {
             LivingEntity mob5 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(-2, 0, -2), EntityType.VILLAGER);
             Villager swordman = (Villager) mob5;
 
-            swordman.setCustomName("§8Retired Weaponsmith");
+            swordman.setCustomName("§2Retired Weaponsmith");
             swordman.setCustomNameVisible(true);
             swordman.setVillagerType(Villager.Type.SNOW);
             swordman.setVillagerLevel(5);

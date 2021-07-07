@@ -31,6 +31,7 @@ public class MobSpawnListener implements Listener {
                 return;
             }
         }
+        boolean hostile = true;
         switch (event.getEntityType()) {
             case ZOMBIE -> {
                 Zombie z = (Zombie) event.getEntity();
@@ -111,6 +112,12 @@ public class MobSpawnListener implements Listener {
             case VINDICATOR, EVOKER, PILLAGER, ENDERMAN -> {
                 event.setCancelled(true);
             }
+            default -> {
+                hostile = false;
+            }
+        }
+        if(hostile){
+            event.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.7);
         }
     }
 

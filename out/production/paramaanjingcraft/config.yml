@@ -92,7 +92,7 @@ destinylevelunlock:
 passivedescriptions:
   swordsmanship:
     1: Increased crit damage and crit rate.
-    2: Each third attack cripples         enemies.
+    2: Each fifth attack cripples         enemies.
     4: Increased cleave damage,  crit damage and crit rate.
 levelupmessage:
   magic:

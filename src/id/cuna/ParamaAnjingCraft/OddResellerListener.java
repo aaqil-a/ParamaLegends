@@ -37,7 +37,7 @@ public class OddResellerListener implements Listener {
     // Cancel damage to npc
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§2Odd Reseller")){
+        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§eOdd Reseller")){
             event.setCancelled(true);
         }
     }
@@ -46,7 +46,7 @@ public class OddResellerListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event){
         Entity damager = event.getDamager();
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§2Odd Reseller")) {
+        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§eOdd Reseller")) {
             damager.sendMessage(ChatColor.GOLD + "He appears to be safeguarded by a sturdy shield.");
             event.setCancelled(true);
         }
@@ -57,7 +57,7 @@ public class OddResellerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof Villager) {
-            if (event.getRightClicked().getName().equals("§2Odd Reseller")){
+            if (event.getRightClicked().getName().equals("§eOdd Reseller")){
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Wares from all over the world are for sale.");
                 createGui(player);
@@ -138,7 +138,7 @@ public class OddResellerListener implements Listener {
 
     //Create gui of shop
     public void createGui(Player player){
-        gui = Bukkit.createInventory(null,9, "§5Odd Reseller's Wares");
+        gui = Bukkit.createInventory(null,9, "§eOdd Reseller's Wares");
 
 
         ItemStack item = new ItemStack(Material.EMERALD);

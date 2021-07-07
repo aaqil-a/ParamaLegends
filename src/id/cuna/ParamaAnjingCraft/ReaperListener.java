@@ -53,7 +53,6 @@ public class ReaperListener implements Listener{
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
         playerReaperLevel.put(player, data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper"));
-        modifyLore(player);
     }
 
     //Remove player from plugin memory on leave
@@ -100,46 +99,6 @@ public class ReaperListener implements Listener{
                         playerCoatedBladeCooldowns.remove(attacker.getUniqueId().toString());
                     }
                 }, 80);
-            }
-        }
-    }
-
-    public void modifyLore(Player player){
-        Inventory playerInv = player.getInventory();
-        ItemStack[] itemArray = playerInv.getStorageContents();
-        for (ItemStack item : itemArray){
-            if (item != null){
-                int newDamage = 0;
-                switch (item.getType()) {
-                    case WOODEN_HOE, GOLDEN_HOE -> {
-                        newDamage = 4;
-                    }
-                    case IRON_HOE -> {
-                        newDamage = 6;
-                    }
-                    case STONE_HOE -> {
-                        newDamage = 5;
-                    }
-                    case DIAMOND_HOE -> {
-                        newDamage = 7;
-                    }
-                    case NETHERITE_HOE -> {
-                        newDamage = 8;
-                    }
-                }
-                if (newDamage > 0){
-                    ItemMeta meta = item.getItemMeta();
-                    List<String> lore = meta.getLore();
-                    if(lore == null) {
-                        lore = new ArrayList<String>();
-                        lore.add("");
-                        lore.add(ChatColor.GRAY+ "When in Main Hand:");
-                        lore.add(" " + ChatColor.DARK_GREEN + "" + newDamage + " Attack Damage");
-                    }
-                    meta.setLore(lore);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                    item.setItemMeta(meta);
-                }
             }
         }
     }

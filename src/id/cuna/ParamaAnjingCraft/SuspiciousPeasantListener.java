@@ -31,7 +31,7 @@ public class SuspiciousPeasantListener implements Listener {
     //Cancel damage of npc event
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§1Suspicious Peasant")){
+        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§4Suspicious Peasant")){
             event.setCancelled(true);
         }
     }
@@ -40,7 +40,7 @@ public class SuspiciousPeasantListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event){
         Entity damager = event.getDamager();
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§1Suspicious Peasant")) {
+        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§4Suspicious Peasant")) {
             if(damager instanceof Player){
                 Entity cloudEntity = damager.getLocation().getWorld().spawnEntity(damager.getLocation().add(0,1,0), EntityType.AREA_EFFECT_CLOUD);
                 AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
@@ -67,7 +67,7 @@ public class SuspiciousPeasantListener implements Listener {
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof Villager) {
-            if (event.getRightClicked().getName().equals("§1Suspicious Peasant")){
+            if (event.getRightClicked().getName().equals("§4Suspicious Peasant")){
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Lu Goblok Ini peasant");
                 createGui(player);

@@ -26,7 +26,7 @@ public class ExperienceListener implements Listener {
 
     private final ParamaAnjingCraft plugin;
     public DataManager data;
-    private final int[] xpNeeded = {0,230,370,480,580,600,720,750,890,930, Integer.MAX_VALUE};
+    private final int[] xpNeeded = {0,460,740,960,1160,1200,1440,1500,1780,1860, Integer.MAX_VALUE};
 
     public ExperienceListener(final ParamaAnjingCraft plugin){
         this.plugin = plugin;
@@ -78,10 +78,10 @@ public class ExperienceListener implements Listener {
             //Check if damage source is from magic
             if(damageString.substring(damageString.indexOf(".")).length() >= 4){
                 String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
-                if(key.equals(".069") || key.equals(".068")){
-                    skill = "magic";
-                } else if (key.equals(".034") || key.equals(".033") || key.equals(".035")) {
-                    skill = "reaper";
+                switch (key) {
+                    case ".069", ".068" -> skill = "magic";
+                    case ".034", ".033", ".035" -> skill = "reaper";
+                    case ".072", ".073", ".071" -> skill = "swordsmanship";
                 }
             }
             //Check if entity was exploded by magic
@@ -166,7 +166,7 @@ public class ExperienceListener implements Listener {
             int currExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill+"exp");
             currExp += amount;
             if(amount >= 10){
-                player.sendMessage(ChatColor.GRAY + "+" + amount +" EXP");
+                player.sendMessage(ChatColor.GRAY + "+"+amount +" "+skill.substring(0,1).toUpperCase() + skill.substring(1) +" EXP");
             }
             if(currExp >= xpNeeded[currLevel]){
                 currExp -= xpNeeded[currLevel];

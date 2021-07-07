@@ -69,6 +69,15 @@ public class MagicListener implements Listener {
         data = plugin.getData();
     }
 
+    public boolean isSilenced(Player player){
+        if(!plugin.playersSilenced.contains(player)) {
+            return false;
+        } else {
+            player.sendMessage(ChatColor.DARK_RED + "You are silenced!");
+            return true;
+        }
+    }
+
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
@@ -76,57 +85,59 @@ public class MagicListener implements Listener {
         if(event.getHand() == EquipmentSlot.OFF_HAND){
             return;
         }
-        //Check if player is holding an enchanted book
+        //Check if held item is book
+
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (item.getType().equals(Material.ENCHANTED_BOOK)){
             if(item.getItemMeta() != null){
                 //Call cast spell function according to book name
                 switch(item.getItemMeta().getDisplayName()){
                     case "§5Fling Earth":
-                        castFlingEarth(player);
+                        if(!isSilenced(player))
+                            castFlingEarth(player);
                         break;
                     case "§5Ignite":
-                        if(checkLevel(player, 2)){
+                        if(checkLevel(player, 2) && !isSilenced(player)){
                             castIgnite(player);
                         }
                         break;
                     case "§5Gust":
-                        if(checkLevel(player, 3)){
+                        if(checkLevel(player, 3) && !isSilenced(player)){
                             castGust(player);
                         }
                         break;
                     case "§5Life Drain":
-                        if(checkLevel(player, 4)){
+                        if(checkLevel(player, 4) && !isSilenced(player)){
                             castLifeDrain(player);
                         }
                         break;
                     case "§5Blink":
-                        if(checkLevel(player, 5)){
+                        if(checkLevel(player, 5) && !isSilenced(player)){
                             castBlink(player);
                         }
                         break;
                     case "§5Summon Lightning":
-                        if(checkLevel(player, 6)){
+                        if(checkLevel(player, 6) && !isSilenced(player)){
                             castSummonLightning(player);
                         }
                         break;
                     case "§5Illusory Orb":
-                        if(checkLevel(player, 7)){
+                        if(checkLevel(player, 7) && !isSilenced(player)){
                             castIllusoryOrb(player);
                         }
                         break;
                     case "§5Dragon's Breath":
-                        if(checkLevel(player, 8)){
+                        if(checkLevel(player, 8) && !isSilenced(player)){
                             castDragonBreath(player);
                         }
                         break;
                     case "§5Voices of the Damned":
-                        if(checkLevel(player, 9)){
+                        if(checkLevel(player, 9) && !isSilenced(player)){
                             castVoicesOfTheDamned(player);
                         }
                         break;
                     case "§5Nova":
-                        if(checkLevel(player, 10)){
+                        if(checkLevel(player, 10) && !isSilenced(player)){
                             castNova(player);
                         }
                         break;
@@ -135,25 +146,32 @@ public class MagicListener implements Listener {
         }
     }
 
+
     //Get player's magic level and set exp level to max mana on join
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        playerMagicLevel.put(player, data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic"));
+        int magicLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
+        int swordsLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
+        int miningLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".mining");
+        int archeryLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
+        int reaperLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
+        int manaLevel = (magicLevel+swordsLevel+miningLevel+archeryLevel+reaperLevel)/5;
+        playerMagicLevel.put(player, magicLevel);
         player.setExp(0);
         if(playerCurrentLevel.containsKey(player.getUniqueId().toString())){
             player.setLevel(playerCurrentLevel.get(player.getUniqueId().toString()));
         } else {
-            player.setLevel(maxMana[playerMagicLevel.get(player)]);
+            player.setLevel(maxMana[manaLevel]);
         }
         //Create task to regenerate mana over time
         playerManaRegenTasks.put(player,
             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 int curMana = player.getLevel();
-                if(curMana < maxMana[playerMagicLevel.get(player)]){
-                    curMana += manaRegen[playerMagicLevel.get(player)] ;
-                    if(curMana > maxMana[playerMagicLevel.get(player)])
-                        curMana = maxMana[playerMagicLevel.get(player)];
+                if(curMana < maxMana[manaLevel]){
+                    curMana += manaRegen[manaLevel] ;
+                    if(curMana > maxMana[manaLevel])
+                        curMana = maxMana[manaLevel];
                     player.setExp(0);
                     player.setLevel(curMana);
                     playerCurrentLevel.put(player.getUniqueId().toString(), curMana);
@@ -245,21 +263,11 @@ public class MagicListener implements Listener {
                 if(event.getFinalDamage() > victim.getHealth()){
                     String mob = "";
                     switch (event.getEntityType()) {
-                        case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> {
-                            mob = "zombie";
-                        }
-                        case WITCH -> {
-                            mob = "witch";
-                        }
-                        case SKELETON, STRAY -> {
-                            mob = "skeleton";
-                        }
-                        case CREEPER -> {
-                            mob = "creeper";
-                        }
-                        case SPIDER, CAVE_SPIDER -> {
-                            mob = "spider";
-                        }
+                        case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> mob = "zombie";
+                        case WITCH -> mob = "witch";
+                        case SKELETON, STRAY -> mob = "skeleton";
+                        case CREEPER -> mob = "creeper";
+                        case SPIDER, CAVE_SPIDER -> mob = "spider";
                     }
                     //Grant exp and lectrum to player according to mob killed
                     if(!mob.equals("")){
@@ -336,47 +344,6 @@ public class MagicListener implements Listener {
         firework.setSilent(true);
         Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 1);
     }
-//
-//    public void createBeaconAndRemove(Location location) {
-//        int x = location.getBlockX();
-//        int y = location.getBlockY() - 30;
-//        int z = location.getBlockZ();
-//
-//        World world = location.getWorld();
-//        blocksReplacedByBeacon.put(world.getBlockAt(x,y,z).getLocation(), world.getBlockAt(x,y,z).getType());
-//        world.getBlockAt(x,y,z).setType(Material.BEACON);
-//
-//        Material replace = world.getHighestBlockAt(x,z).getType();
-//
-//        for (int i = 0; i <= 29; ++i) {
-//            blocksReplacedByBeacon.put(world.getBlockAt(x,(y+1)+i,z).getLocation(), world.getBlockAt(x,(y+1)+i,z).getType());
-//            world.getBlockAt(x, (y + 1) + i, z).setType(Material.AIR);
-//        }
-//        for (int xPoint = x-1; xPoint <= x+1 ; xPoint++) {
-//            for (int zPoint = z-1 ; zPoint <= z+1; zPoint++) {
-//                blocksReplacedByBeacon.put(world.getBlockAt(xPoint,y-1,zPoint).getLocation(), world.getBlockAt(xPoint,y-1,zPoint).getType());
-//                world.getBlockAt(xPoint, y-1, zPoint).setType(Material.IRON_BLOCK);
-//            }
-//        }
-//
-//        Entity replaceBlock = world.spawnFallingBlock(new Location(world, x, y+30, z), replace.createBlockData());
-//        replaceBlock.setGravity(false);
-//
-//        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-//            replaceBlock.remove();
-//            world.getBlockAt(x,y,z).setType(
-//                    blocksReplacedByBeacon.get(world.getBlockAt(x,y,z).getLocation()));
-//
-//            for (int i = 0; i <= 29; ++i) {
-//                world.getBlockAt(x, (y + 1) + i, z).setType(blocksReplacedByBeacon.get(world.getBlockAt(x,(y+1)+i,z).getLocation()));
-//            }
-//            for (int xPoint = x-1; xPoint <= x+1 ; xPoint++) {
-//                for (int zPoint = z-1 ; zPoint <= z+1; zPoint++) {
-//                    world.getBlockAt(xPoint, y-1, zPoint).setType(blocksReplacedByBeacon.get(world.getBlockAt(xPoint,y-1,zPoint).getLocation()));
-//                }
-//            }
-//        }, 200);
-//    }
 
     //Teleports player to a safe area near a location if exists
     public void teleportToAir(Player player, Location location){
