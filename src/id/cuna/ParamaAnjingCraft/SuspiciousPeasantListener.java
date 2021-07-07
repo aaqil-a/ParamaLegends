@@ -121,7 +121,10 @@ public class SuspiciousPeasantListener implements Listener {
                     if (item.hasItemMeta() && item.getItemMeta().getDisplayName().contains("Scythe")){
                         hasScythe = true;
                         scythe = item;
-                    } else if (!item.hasItemMeta()) {
+                    } else if (item.hasItemMeta() && item.getItemMeta().getDisplayName().contains("Hoe")) {
+                        hasHoe = true;
+                        hoe = item;
+                    } else if (!item.hasItemMeta()){
                         hasHoe = true;
                         hoe = item;
                     }

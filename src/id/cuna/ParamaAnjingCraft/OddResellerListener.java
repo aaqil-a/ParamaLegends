@@ -96,15 +96,33 @@ public class OddResellerListener implements Listener {
 
         //Purchase item
         if(event.getSlot() != 0) {
-            if(lectrum < price){
+            if (event.getSlot() == 4) {
                 player.closeInventory();
-                player.sendMessage(ChatColor.RED + "Not enough lectrum!");
-            } else {
-                lectrum -= price;
-                data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
-                data.saveConfig();
-                updateLectrum(event);
-                purchaseItem(event, event.getCurrentItem());
+                creategui2(player);
+                player.openInventory(gui2);
+                if (event.getSlot()==2){
+                    if(lectrum < price){
+                        player.closeInventory();
+                        player.sendMessage(ChatColor.RED + "Not enough lectrum!");
+                    } else {
+                        lectrum -= price;
+                        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+                        data.saveConfig();
+                        updateLectrum(event);
+                        purchaseItem(event, event.getCurrentItem());
+                    }
+                }
+            } else if (event.getSlot() == 2){
+                if(lectrum < price){
+                    player.closeInventory();
+                    player.sendMessage(ChatColor.RED + "Not enough lectrum!");
+                } else {
+                    lectrum -= price;
+                    data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+                    data.saveConfig();
+                    updateLectrum(event);
+                    purchaseItem(event, event.getCurrentItem());
+                }
             }
         }
     }
@@ -154,7 +172,6 @@ public class OddResellerListener implements Listener {
         gui.setItem(0, item);
         lore.clear();
 
-
         // Empty Tome
         item.setType(Material.BOOK);
         meta.setDisplayName(ChatColor.RESET + "§5Empty Tome");
@@ -166,9 +183,40 @@ public class OddResellerListener implements Listener {
         gui.setItem(2, item);
         lore.clear();
 
-
+        item.setType(Material.DIAMOND_HOE);
+        meta.setDisplayName(ChatColor.RESET + "Hoe Menu");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(4, item);
+        lore.clear();
     }
 
+    public void creategui2(Player player){
+        gui2 = Bukkit.createInventory(null, 27, "Hoe Seller");
 
+        ItemStack item = new ItemStack(Material.DIAMOND_HOE);
+        ItemMeta meta = item.getItemMeta();
+        item.setItemMeta(meta);
+        gui2.setItem(10, item);
 
+        item.setType(Material.WOODEN_HOE);
+        item.setItemMeta(meta);
+        gui2.setItem(2, item);
+
+        item.setType(Material.STONE_HOE);
+        item.setItemMeta(meta);
+        gui2.setItem(4, item);
+
+        item.setType(Material.IRON_HOE);
+        item.setItemMeta(meta);
+        gui2.setItem(6, item);
+
+        item.setType(Material.GOLDEN_HOE);
+        item.setItemMeta(meta);
+        gui2.setItem(8, item);
+
+        item.setType(Material.NETHERITE_HOE);
+        item.setItemMeta(meta);
+        gui2.setItem(12, item);
+    }
 }
