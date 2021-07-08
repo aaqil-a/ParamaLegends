@@ -39,6 +39,7 @@ public class ReaperListener implements Listener{
     private final ParamaAnjingCraft plugin;
     public DataManager data;
     private final List<String> playerCoatedBladeCooldowns = new ArrayList<String>();
+    private final List<String> playerBladeMailCooldowns = new ArrayList<String>();
     private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
     private final HashMap<Player, Integer> playerReaperLevel = new HashMap<Player, Integer>();
     private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
@@ -73,6 +74,21 @@ public class ReaperListener implements Listener{
             return false;
         }
     }
+
+    public boolean checkLevel(Player player, int level){
+        if(playerReaperLevel.get(player) < level){
+            player.sendMessage(ChatColor.GRAY + "You do not understand how to use this yet.");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void levelUp(Player player){
+        int curLevel = playerReaperLevel.get(player);
+        playerReaperLevel.replace(player, curLevel+1);
+    }
+
     //Cooldown Handler
     public void sendCooldownMessage(Player player, String spell){
         player.sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown.");
@@ -92,18 +108,36 @@ public class ReaperListener implements Listener{
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     poison.cancel();
                 }, 42);
-                attacker.sendMessage(ChatColor.GREEN + "Pisonya ada poison");
-                playerCoatedBladeCooldowns.add(attacker.getUniqueId().toString());
+                attacker.sendMessage(ChatColor.GREEN + "BladeMail Active.");
+                playerBladeMailCooldowns.add(attacker.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCoatedBladeCooldowns.contains(attacker.getUniqueId().toString())){
-                        playerCoatedBladeCooldowns.remove(attacker.getUniqueId().toString());
+                    if(playerBladeMailCooldowns.contains(attacker.getUniqueId().toString())){
+                        playerBladeMailCooldowns.remove(attacker.getUniqueId().toString());
                     }
                 }, 80);
             }
         }
     }
 
-    @EventHandler
+    public void castBladeMail (Player player, Entity entity, double damage){
+        if (playerBladeMailCooldowns.contains(player.getUniqueId().toString())){
+            return;
+        } else if (subtractMana(player, 0)) {
+            if (entity instanceof LivingEntity){
+                damage = damage * (10/100);
+                ((LivingEntity) entity).damage(damage + 0.34, player);
+            }
+            player.sendMessage("BladeMail Active");
+            playerCoatedBladeCooldowns.add(player.getUniqueId().toString());
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(playerCoatedBladeCooldowns.contains(player.getUniqueId().toString())){
+                    playerCoatedBladeCooldowns.remove(player.getUniqueId().toString());
+                }
+            }, 82);
+        }
+    }
+
+    @EventHandler (priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
@@ -114,12 +148,23 @@ public class ReaperListener implements Listener{
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
                     if (coatedRandom == 1) {
                         castCoatedBlade(attacker, event.getEntity());
-                    } else if (item.getItemMeta() != null) {
-                        switch (item.getItemMeta().getDisplayName()) {
-                            case "Hidden Strike":
-                                break;
-                        }
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntitySkill(EntityDamageByEntityEvent event){
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity){
+            Player defender = (Player) event.getEntity();
+            LivingEntity attacker = (LivingEntity) event.getDamager();
+            if (checkLevel(defender, 4)) {
+                Random rand = new Random();
+                int bladeMailRandom = rand.nextInt(5);
+                if (bladeMailRandom == 1) {
+                    double damage = event.getDamage();
+                    castBladeMail(defender, attacker, damage);
                 }
             }
         }
