@@ -202,53 +202,183 @@ public class WiseOldManListener implements Listener {
         ItemStack item = new ItemStack(Material.LIME_WOOL);
         ItemMeta meta = item.getItemMeta();
 
-
-        // Level 1
-        String passiveDesc = "";
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level 1");
-        List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + 1));
-        String type = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + 1+"t");
-        lore.add(type);
-        if(type.equals(ChatColor.RESET + "" + ChatColor.DARK_GRAY +"Passive"))
-            passiveDesc = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("passivedescriptions." + skill + "." + 1);
-            for(int j = 0; j < Math.ceil(passiveDesc.length()/30f); j++)
-                if(j == Math.floor(passiveDesc.length()/30f)) {
-                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30).strip());
-                } else {
-                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30, (j+1)*30).strip());
-                }
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui2.setItem(itemLocations[1], item);
-        lore.clear();
+        List<String> lore;
 
-        //Level 2-10
-        for(int i = 2; i <= 10; i++){
+        for(int i = 1; i <= 10; i++){
             if(playerLevel >= i){
                 item.setType(Material.LIME_WOOL);
             } else {
                 item.setType(Material.RED_WOOL);
             }
             meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level "+i);
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + i));
-            type = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("destinylevelunlock." + skill + "." + i+"t");
-            lore.add(type);
-            if(type.equals(ChatColor.RESET + "" + ChatColor.DARK_GRAY +"Passive")){
-                passiveDesc = ChatColor.RESET + "" + ChatColor.DARK_GRAY + "" + data.getConfig().getString("passivedescriptions." + skill + "." + i);
-                for(int j = 0; j < Math.ceil(passiveDesc.length()/30f); j++)
-                    if(j == Math.floor(passiveDesc.length()/30f)) {
-                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j*30).strip());
-                    } else {
-                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + passiveDesc.substring(j * 30, (j + 1) * 30).strip());
-                    }
-            }
+            lore = getLores(skill, i);
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui2.setItem(itemLocations[i], item);
             lore.clear();
         }
+    }
+
+    public List<String> getLores(String skill, int level){
+        List <String> lore = new ArrayList<>();
+        switch(skill){
+            case "magic" -> {
+                switch(level){
+                    case 1 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Fling Earth");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Gathers nearby earth into");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "a dense cube, then flinging");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "it towards whatever may be");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "in its path.");
+                    }
+                    case 2 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Ignite");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Sets targets ablaze within a");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "small area, dealing damage");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "over time.");
+                    }
+                    case 3 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Gust");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Pushes away targets within an");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "area of where you are facing.");
+                    }
+                    case 4 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Life Drain");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Periodically drains the life of");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "nearby beings when activated.");
+                    }
+                    case 5 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Blink");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Instantaneously teleport to");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "the targeted location.");
+                    }
+                    case 6 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Summon Lightning");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Call upon the wrath of the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "thundergod to summon lightning");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "and smite all enemies in an");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "area.");
+                    }
+                    case 7 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Illusory Orb");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Casts an arcane orb that hurts");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "any being it comes into contact");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "with. Casting the spell while an");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "orb is travelling teleports the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "caster to its location.");
+                    }
+                    case 8 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Dragon's Breath");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Imbuing your essence with draconic");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "powers, you unleash a wide dragon");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "breath attack in front of you");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "that harms all beings it comes");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "into contact with.");
+                    }
+                    case 9 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Voices of the Damned");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Summons a portal to the realm of");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "the damned. Creatures will appear");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "from the portal and attack any");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "creatures that are in sight.");
+                    }
+                    case 10 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Nova");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "爆裂, 爆裂, la la la");
+                    }
+                }
+            }
+            case "swordsmanship" -> {
+                switch (level){
+                    case 1 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Precise Blade");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Causes attacks to occasionally");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "deal extra critical damage.");
+                    }
+                    case 2 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Crippling Blow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Every fifth attack bleeds and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "cripples enemies.");
+                    }
+                    case 3 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Shields Up");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Reduces incoming damage and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "reflects some back at the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "enemy.");
+                    }
+                    case 4 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Reaver");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Increases cleave damage, critical");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "chance and critical damage.");
+                    }
+                    case 5 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Phoenix Dive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Leaps through the air and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "deals burn damage over time");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "upon landing.");
+                    }case 6 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Enrage");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Tremendously increase critical");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "damage and critical chance but");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "be unable to cast abilities");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "during the duration.");
+                    }
+                    case 7 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Onslaught");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Strike enemies around you");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "with a flurry of attacks");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "of astonishing speed.");
+                    }
+                    case 8 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Terrifying Cruelty");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Radiate an intimidating aura");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "causing enemies to be afraid,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "taking more damage and missing");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "their attacks.");
+                    }
+                    case 9 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Superconducted");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Shocks all enemies around");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "you with chaotic discharges that");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "temporarily blinds them.");
+                    }
+                    case 10 -> {
+                        lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Calamity");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Summon a raging chaotic storm");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "that strikes down enemies around");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "you. Your hits are guaranteed");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "critical and incoming damage is");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "reduced for its duration.");
+                    }
+                }
+            }
+            case "archery" -> {
+
+            }
+        }
+
+        return lore;
     }
 
 }

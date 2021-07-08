@@ -114,6 +114,18 @@ public class CommandStartGame implements CommandExecutor {
             swordman.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
             swordman.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
 
+            //Create archery NPC
+            LivingEntity mob6 = (LivingEntity)player.getWorld().spawnEntity(location.clone().add(-4, 0, -2), EntityType.VILLAGER);
+            Villager archer = (Villager) mob6;
+
+            archer.setCustomName("§aAdept Ranger");
+            archer.setCustomNameVisible(true);
+            archer.setVillagerType(Villager.Type.PLAINS);
+            archer.setVillagerLevel(5);
+            archer.setProfession(Villager.Profession.FLETCHER);
+            archer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
+            archer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100));
+
             // Create safe zone region
             World worldGuard = BukkitAdapter.adapt(player.getWorld());
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();

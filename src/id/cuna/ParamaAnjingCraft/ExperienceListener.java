@@ -59,12 +59,6 @@ public class ExperienceListener implements Listener {
             }
 
         }
-        if (b.getBlockData() instanceof Ageable){
-            Ageable age = (Ageable) b.getBlockData();
-            if (age.getAge() == age.getMaximumAge()){
-                addExp(player, "farming", 10);
-            }
-        }
     }
 
     //Handle xp gained from killing mobs
@@ -82,6 +76,7 @@ public class ExperienceListener implements Listener {
                     case ".069", ".068" -> skill = "magic";
                     case ".034", ".033", ".035" -> skill = "reaper";
                     case ".072", ".073", ".071" -> skill = "swordsmanship";
+                    case ".016", ".015", ".017" -> skill = "archery";
                 }
             }
             //Check if entity was exploded by magic
@@ -146,7 +141,7 @@ public class ExperienceListener implements Listener {
             Arrow arrow = (Arrow) damager;
             if (arrow.getShooter() instanceof Player) {
                 Player player = (Player) arrow.getShooter();
-                addExp(player, "archery", 3);
+                addExp(player, "archery", 2);
             }
         }
     }
@@ -172,8 +167,10 @@ public class ExperienceListener implements Listener {
                 currExp -= xpNeeded[currLevel];
                 currLevel += 1;
                 levelUpMessage(player, skill, currLevel);
-                if(skill.equals("magic")){
-                    plugin.levelUpMagic(player);
+                switch (skill) {
+                    case "magic" -> plugin.levelUpMagic(player);
+                    case "swordsmanship" -> plugin.levelUpSwordsmanship(player);
+                    case "archery" -> plugin.levelUpArchery(player);
                 }
             }
             data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill, currLevel);

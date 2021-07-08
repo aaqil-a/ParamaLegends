@@ -1,5 +1,6 @@
 package id.cuna.ParamaAnjingCraft;
 
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.arch.Processor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +24,8 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public ReaperListener reaperListener;
     public RetiredWeaponsmithListener retiredWeaponsmithListener;
     public SwordsmanListener swordsmanListener;
+    public SeniorRangerListener seniorRangerListener;
+    public ArcheryListener archeryListener;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
 
@@ -42,6 +45,8 @@ public class ParamaAnjingCraft extends JavaPlugin {
         reaperListener = new ReaperListener(this);
         retiredWeaponsmithListener = new RetiredWeaponsmithListener(this);
         swordsmanListener = new SwordsmanListener(this);
+        seniorRangerListener = new SeniorRangerListener(this);
+        archeryListener = new ArcheryListener(this);
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -57,6 +62,8 @@ public class ParamaAnjingCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(reaperListener, this);
         getServer().getPluginManager().registerEvents(retiredWeaponsmithListener, this);
         getServer().getPluginManager().registerEvents(swordsmanListener, this);
+        getServer().getPluginManager().registerEvents(seniorRangerListener, this);
+        getServer().getPluginManager().registerEvents(archeryListener, this);
     }
 
     @Override
@@ -66,7 +73,27 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public void levelUpMagic(Player player){
         magicListener.levelUp(player);
     }
+    public void levelUpSwordsmanship(Player player){
+        swordsmanListener.levelUp(player);
+    }
+    public void levelUpArchery(Player player){
+        archeryListener.levelUp(player);
+    }
 
+    public double increasedIncomingDamage(double damage, double multiplier){
+        String damageString = String.valueOf(damage);
+        double toAdd = 0;
+        if(damageString.substring(damageString.indexOf(".")).length() >= 4){
+            String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
+            switch (key) {
+                case ".069", ".068" -> toAdd = 0.069;
+                case ".034", ".033", ".035" -> toAdd = 0.034;
+                case ".072", ".073", ".071" -> toAdd = 0.072;
+                case ".016", ".015", ".017" -> toAdd = 0.016;
+            }
+        }
+        return damage*multiplier+toAdd;
+    }
     public DataManager getData(){
         return data;
     }

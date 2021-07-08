@@ -176,6 +176,12 @@ public class MagicListener implements Listener {
                     player.setLevel(curMana);
                     playerCurrentLevel.put(player.getUniqueId().toString(), curMana);
                 }
+                if(player.getInventory().getItemInOffHand().getType().equals(Material.SHIELD)){
+                    ItemStack item = player.getInventory().getItemInOffHand();
+                    player.getInventory().setItemInOffHand(null);
+                    player.getInventory().addItem(item);
+                    player.sendMessage(ChatColor.GRAY + "The shield feels much to heavy to use on one hand.");
+                }
             }, 0, 20)
         );
     }
@@ -219,19 +225,19 @@ public class MagicListener implements Listener {
                 }
             }
         } else if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
-            event.setCancelled(true);
-            ArmorStand source = (ArmorStand) projectile.getShooter();
-            Player player = plugin.getServer().getPlayer(source.getName());
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(ballsDirt.get(player) != null)
-                    ballsDirt.get(player).remove();
-                ballsDirt.remove(player);
-            }, 20);
-            ballOffsetVectors.remove(player);
-            ballLoadingProgress.remove(player);
-            ballsThrown.remove(player);
-            cancelFlingEarthTasks(player);
             if(projectile.getCustomName().equals("iceball")){
+                event.setCancelled(true);
+                ArmorStand source = (ArmorStand) projectile.getShooter();
+                Player player = plugin.getServer().getPlayer(source.getName());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(ballsDirt.get(player) != null)
+                        ballsDirt.get(player).remove();
+                    ballsDirt.remove(player);
+                }, 2);
+                ballOffsetVectors.remove(player);
+                ballLoadingProgress.remove(player);
+                ballsThrown.remove(player);
+                cancelFlingEarthTasks(player);
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
                         plugin.experienceListener.addExp(player, "magic", 1);
@@ -246,7 +252,7 @@ public class MagicListener implements Listener {
     //Check if damned soul hit entity
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(event.getDamager() instanceof Phantom){
+        if(event.getDamager() instanceof Phantom || event.getDamager() instanceof Silverfish){
             if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
                 Player summoner = null;
                 for (Player player: Bukkit.getOnlinePlayers())
@@ -254,11 +260,15 @@ public class MagicListener implements Listener {
                         summoner = player;
                 plugin.experienceListener.addExp(summoner, "magic", 1);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    event.getDamager().getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                    if(event.getDamager() instanceof Phantom){
+                        event.getDamager().getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                    } else {
+                        event.getDamager().getWorld().spawnParticle(Particle.SMOKE_NORMAL, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                    }
                     event.getDamager().remove();
                 }, 60);
 
-                //Check if phantom killed enemy and give exp if so
+                //Check if damned killed enemy and give exp if so
                 Damageable victim = (Damageable) event.getEntity();
                 if(event.getFinalDamage() > victim.getHealth()){
                     String mob = "";
@@ -375,7 +385,7 @@ public class MagicListener implements Listener {
             ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
             dummy.setCustomName(player.getName());
             dummyText.setCustomName(ChatColor.GREEN+"||"+ChatColor.GRAY+"||||||||||||||||||");
-            dummyText.setCustomNameVisible(true);
+            //dummyText.setCustomNameVisible(true);
             dummyText.setVisible(false);
             dummy.setVisible(false);
             dummyText.setGravity(false);
@@ -504,7 +514,7 @@ public class MagicListener implements Listener {
     public void castGust(Player player){
         if(playerGustCooldowns.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Gust");
-        } else if (subtractMana(player, 10)) {
+        } else if (subtractMana(player, 30)) {
             playerGustCooldowns.add(player.getUniqueId().toString());
             Location location = player.getLocation();
             double playerX = location.getX();
@@ -863,12 +873,22 @@ public class MagicListener implements Listener {
                 damned.setTarget(null);
                 damnedListPhantom.add(damned);
             },3, 100);
+            List<Silverfish> damnedListSilverfish = new ArrayList<Silverfish>();
+            BukkitTask portalSpawnSilverfish = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                Silverfish damned = (Silverfish) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.SILVERFISH);
+                damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
+                damned.setCustomNameVisible(true);
+                damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(10.069);
+                damned.setTarget(null);
+                damnedListSilverfish.add(damned);
+            },53, 100);
             BukkitTask setDamnedTarget = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 List<Entity> entities = player.getNearbyEntities(10,10,10).stream().toList();
                 double closestDistance = Double.MAX_VALUE;
                 Entity closestEntity = null;
                 for(Entity entity : entities){
-                    if(entity instanceof Villager || entity instanceof Player || entity instanceof Vex
+                    if(entity instanceof Villager || entity instanceof Player || entity instanceof Silverfish
                             || entity instanceof ArmorStand || entity instanceof Phantom)
                         continue;
                     if(entity instanceof LivingEntity){
@@ -883,16 +903,22 @@ public class MagicListener implements Listener {
                     for(Phantom damned : damnedListPhantom)
                         if(damned.getTarget() == null)
                             damned.setTarget((LivingEntity) closestEntity);
+                    for(Silverfish damned : damnedListSilverfish)
+                        if(damned.getTarget() == null)
+                            damned.setTarget((LivingEntity) closestEntity);
                 }
             },3, 20);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 portalEffect.cancel();
                 portalSpawnPhantom.cancel();
+                portalSpawnSilverfish.cancel();
                 dummy.remove();
             }, 600);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 setDamnedTarget.cancel();
                 for(Phantom damned : damnedListPhantom)
+                    damned.remove();
+                for(Silverfish damned : damnedListSilverfish)
                     damned.remove();
             }, 1200);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -929,47 +955,47 @@ public class MagicListener implements Listener {
             }
             if (subtractMana(player, 600)) {
 
-                Location location = player.getEyeLocation();
-                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
-                location.add(offset);
-                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
-                dummyText.setCustomName(ChatColor.GRAY+"||||||||||");
-                dummyText.setCustomNameVisible(true);
-                dummyText.setVisible(false);
-                dummyText.setGravity(false);
-                dummyText.setInvulnerable(true);
-                playerNovaCooldowns.add(player.getUniqueId().toString());
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    dummyText.teleport(location.add(new Vector(0,-3,0)));
-                }, 1);
-                novaLoadingProgress.put(player, 0);
-
+ //               Location location = player.getEyeLocation();
+//                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
+//                location.add(offset);
+//                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
+//                dummyText.setCustomName(ChatColor.GRAY+"||||||||||");
+//                dummyText.setCustomNameVisible(true);
+//                dummyText.setVisible(false);
+//                dummyText.setGravity(false);
+//                dummyText.setInvulnerable(true);
+//                playerNovaCooldowns.add(player.getUniqueId().toString());
+//                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//                    dummyText.teleport(location.add(new Vector(0,-2,0)));
+//                }, 1);
+//                novaLoadingProgress.put(player, 0);
+//
                 Location finalLocationExplosion = locationExplosion.clone().add(0,1,0);
                 Location startExplosionFlash = locationExplosion.clone().add(0,40,0);
                 player.getWorld().strikeLightningEffect(finalLocationExplosion);
-                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
-                    int ballProgress = novaLoadingProgress.get(player);
-                    int ballToLoad = 10-ballProgress;
-                    dummyTextName.append("|".repeat(ballProgress));
-                    dummyTextName.append(ChatColor.GRAY);
-                    if(ballToLoad>0){
-                        dummyTextName.append("|".repeat(ballToLoad));
-                    }
-                    dummyText.setCustomName(dummyTextName.toString());
-                    novaLoadingProgress.put(player, ballProgress+1);
-                },2, 10);
+//                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+//                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
+//                    int ballProgress = novaLoadingProgress.get(player);
+//                    int ballToLoad = 10-ballProgress;
+//                    dummyTextName.append("|".repeat(ballProgress));
+//                    dummyTextName.append(ChatColor.GRAY);
+//                    if(ballToLoad>0){
+//                        dummyTextName.append("|".repeat(ballToLoad));
+//                    }
+//                    dummyText.setCustomName(dummyTextName.toString());
+//                    novaLoadingProgress.put(player, ballProgress+1);
+//                },2, 10);
                 BukkitTask preExplosionEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, finalLocationExplosion, 16, 0.5,0.5,0.5,0);
                     player.getWorld().spawnParticle(Particle.SMOKE_LARGE, finalLocationExplosion, 16, 0.5,2,0.5,0);
                 },2, 10);
-                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    Location newLocation = player.getEyeLocation();
-                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
-                    newLocation.add(newOffset);
-
-                    dummyText.teleport(newLocation.add(new Vector(0,-3,0)));
-                },2, 1);
+//                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+//                    Location newLocation = player.getEyeLocation();
+//                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
+//                    newLocation.add(newOffset);
+//
+//                    dummyText.teleport(newLocation.add(new Vector(0,-2,0)));
+//                },2, 1);
                 BukkitTask fireworkEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     createFireworkEffect(finalLocationExplosion, player);
                 },0, 20);
@@ -984,9 +1010,9 @@ public class MagicListener implements Listener {
                 },102, 1);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     fireworkEffect3.cancel();
-                    loadingEffect.cancel();
-                    followPlayer.cancel();
-                    dummyText.remove();
+//                    loadingEffect.cancel();
+//                    followPlayer.cancel();
+//                    dummyText.remove();
                 }, 102);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     preExplosionEffect.cancel();

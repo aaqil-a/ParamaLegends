@@ -47,6 +47,7 @@ public class RetiredWeaponsmithListener implements Listener {
                 cloud.setParticle(Particle.DAMAGE_INDICATOR);
                 cloud.setDuration(1);
                 ((Player) damager).damage(10, event.getEntity());
+                ((Player) damager).playSound(damager.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 1f);
             } else if(damager instanceof Arrow){
                 Arrow arrow = (Arrow) damager;
                 if (arrow.getShooter() instanceof Player) {
@@ -108,29 +109,10 @@ public class RetiredWeaponsmithListener implements Listener {
             default -> Integer.MAX_VALUE;
         };
 
-        // Check if player has empty tome
-        boolean hasSword = false;
-        ItemStack sword  = null;
-        int swordSlot = 0;
-        ItemStack[] playerInv = player.getInventory().getStorageContents();
-        for (ItemStack item : playerInv) {
-            if(item != null && !item.hasItemMeta()){
-                if(item.getType().equals(Material.IRON_SWORD) || item.getType().equals(Material.WOODEN_SWORD) || item.getType().equals(Material.STONE_SWORD)
-                        || item.getType().equals(Material.DIAMOND_SWORD) || item.getType().equals(Material.GOLDEN_SWORD) || item.getType().equals(Material.NETHERITE_SWORD)){
-                    hasSword = true;
-                    sword = item;
-                    break;
-                }
-            }
-            swordSlot++;
-        }
 
         //Purchase specified tome
         if (event.getSlot() != 0){
-            if (!hasSword) {
-                player.closeInventory();
-                player.sendMessage(ChatColor.RED + "A sword is required to refine!");
-            } else if (lectrum < price) {
+            if (lectrum < price) {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
             } else {
@@ -138,8 +120,7 @@ public class RetiredWeaponsmithListener implements Listener {
                 data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
                 data.saveConfig();
                 updateLectrum(event);
-                enchantItem(event, event.getCurrentItem(), sword);
-                player.getInventory().clear(swordSlot);
+                enchantItem(event, event.getCurrentItem());
             }
         }
     }
@@ -161,22 +142,21 @@ public class RetiredWeaponsmithListener implements Listener {
     }
 
     //Give purchased item and erase price from lore
-    public void enchantItem(InventoryClickEvent event, ItemStack item, ItemStack sword){
+    public void enchantItem(InventoryClickEvent event, ItemStack item){
         ItemStack newItem = item.clone();
         ItemMeta meta = newItem.getItemMeta();
         List<String> lore = meta.getLore();
         lore.remove(lore.size()-1);
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        ItemStack newSword = sword.clone();
-        newSword.setItemMeta(meta);
-        event.getWhoClicked().getInventory().addItem(newSword);
+        newItem.setItemMeta(meta);
+        event.getWhoClicked().getInventory().addItem(newItem);
     }
 
 
     //Create shop gui
     public void createGui(Player player){
-        gui = Bukkit.createInventory(null,18, "§2Refine Blade");
+        gui = Bukkit.createInventory(null,18, "§2Swordsman Buffs");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -192,7 +172,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Shields Up
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.SHIELD);
         meta.setDisplayName(ChatColor.RESET + "§2Shields Up");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Reduces incoming damage and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reflects some back at the");
@@ -200,7 +180,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 6 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 50");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 3");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 3");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -208,14 +188,14 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Phoenix Dive
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.FIRE_CHARGE);
         meta.setDisplayName(ChatColor.RESET + "§2Phoenix Dive");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Leaps through the air and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "deals burn damage over time");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "upon landing.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 5");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 5");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "100 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -223,7 +203,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Enrage
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.BLAZE_POWDER);
         meta.setDisplayName(ChatColor.RESET + "§2Enrage");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Tremendously increase critical");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and critical chance but");
@@ -232,7 +212,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 11 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 45 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 6");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 6");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -240,14 +220,14 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Onslaught
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.GUNPOWDER);
         meta.setDisplayName(ChatColor.RESET + "§2Onslaught");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike enemies around you");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with a flurry of attacks");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "of astonishing speed.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 12 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 7");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 7");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "250 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -255,7 +235,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Terrifying Cruelty
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.MAGMA_CREAM);
         meta.setDisplayName(ChatColor.RESET + "§2Terrifying Cruelty");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Radiate an intimidating aura");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "causing enemies to be afraid,");
@@ -263,7 +243,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "their attacks.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 8");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 8");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -272,13 +252,15 @@ public class RetiredWeaponsmithListener implements Listener {
 
         // Superconducted
         item.setType(Material.IRON_SWORD);
+        meta.addEnchant(Enchantment.DURABILITY, 10, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "§2Superconducted");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Shocks all enemies around");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you with chaotic discharges that");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "temporarily blinds them.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 9");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 9");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -286,7 +268,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.clear();
 
         // Calamity
-        item.setType(Material.IRON_SWORD);
+        item.setType(Material.NETHER_STAR);
         meta.setDisplayName(ChatColor.RESET + "§2Calamity");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summon a raging chaotic storm");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that strikes down enemies around");
@@ -296,7 +278,7 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 15 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 500");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 10");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 10");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "500 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);

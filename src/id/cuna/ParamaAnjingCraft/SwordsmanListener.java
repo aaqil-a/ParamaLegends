@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -26,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -108,6 +110,17 @@ public class SwordsmanListener implements Listener{
 
     public void spawnCritParticles(Location location){
         location.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, location.add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
+        location.getWorld().playSound(location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 1f, 1f);
+    }
+
+    //Change player's level in playerMagicLevel hashmap when leveling up
+    public void levelUp(Player player){
+        int curLevel = playerSwordsmanLevel.get(player);
+        playerSwordsmanLevel.replace(player, curLevel+1);
+    }
+
+    public void playCritSound(Player player){
+        player.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_ATTACK, 1f, 1f);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -129,12 +142,14 @@ public class SwordsmanListener implements Listener{
                         if(critRoll < 90){
                             damage = event.getDamage()*2.6;
                             spawnCritParticles(event.getEntity().getLocation());
+                            playCritSound(attacker);
                         }
                     } else if(playersCalamity.contains(attacker)){
                         if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){
                             damage = event.getDamage()*1.4;
                         } else {
                             damage = event.getDamage()*1.7;
+                            playCritSound(attacker);
                         }
                         spawnCritParticles(event.getEntity().getLocation());
                     } else if(playerLevel < 4){
@@ -144,6 +159,7 @@ public class SwordsmanListener implements Listener{
                         if(critRoll < 20){
                             damage = event.getDamage()*1.4;
                             spawnCritParticles(event.getEntity().getLocation());
+                            playCritSound(attacker);
                         }
                     } else {
                         if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){
@@ -151,6 +167,7 @@ public class SwordsmanListener implements Listener{
                         } else if(critRoll < 35){
                             damage = event.getDamage()*1.7;
                             spawnCritParticles(event.getEntity().getLocation());
+                            playCritSound(attacker);
                         }
                     }
                     //Check if attack cripples and add to counter
@@ -174,7 +191,7 @@ public class SwordsmanListener implements Listener{
                 }
             }
             if(entitiesTerrified.contains(event.getEntity())){
-                damage *= 1.5;
+                damage = plugin.increasedIncomingDamage(damage, 1.5);
             }
             event.setDamage(damage);
         }
@@ -235,46 +252,120 @@ public class SwordsmanListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-        switch (item.getType()) {
-            case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
-                //check if silenced
-                if(!plugin.playersSilenced.contains(player)){
-                    if(item.getItemMeta() != null)
-                        switch(item.getItemMeta().getDisplayName()){
-                            case "§2Shields Up" -> {
-                                if(checkLevel(player, 3) && !isSilenced(player))
-                                    castShieldsUp(player);
-                            }
-                            case "§2Phoenix Dive" -> {
-                                if(checkLevel(player, 5) &&!isSilenced(player))
-                                    castPhoenixDive(player);
-                            }
-                            case "§2Enrage" -> {
-                                if(checkLevel(player, 6) &&!isSilenced(player))
-                                    castEnrage(player);
-                            }
-                            case "§2Onslaught" -> {
-                                if(checkLevel(player, 7) &&!isSilenced(player))
-                                    castOnslaught(player);
-                            }
-                            case "§2Terrifying Cruelty" -> {
-                                if(checkLevel(player, 8) &&!isSilenced(player))
-                                    castTerrifyingCruelty(player);
-                            }
-                            case "§2Superconducted" -> {
-                                if(checkLevel(player, 9) &&!isSilenced(player))
-                                    castSuperconducted(player);
-                            }
-                            case "§2Calamity" -> {
-                                if(checkLevel(player, 10) &&!isSilenced(player))
-                                    castCalamity(player);
-                            }
-                        }
-                } else {
-                    player.sendMessage(ChatColor.DARK_RED + "You are silenced!");
+
+        if (item.getItemMeta() != null)
+            switch (item.getItemMeta().getDisplayName()) {
+                case "§2Shields Up" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 3) && !isSilenced(player))
+                        castShieldsUp(player);
+                }
+                case "§2Phoenix Dive" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 5) && !isSilenced(player))
+                        castPhoenixDive(player);
+                }
+                case "§2Enrage" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 6) && !isSilenced(player))
+                        castEnrage(player);
+                }
+                case "§2Onslaught" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 7) && !isSilenced(player))
+                        castOnslaught(player);
+                }
+                case "§2Terrifying Cruelty" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 8) && !isSilenced(player))
+                        castTerrifyingCruelty(player);
+                }
+                case "§2Superconducted" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 9) && !isSilenced(player))
+                        castSuperconducted(player);
+                }
+                case "§2Calamity" -> {
+                    event.setCancelled(true);
+                    if (checkLevel(player, 10) && !isSilenced(player))
+                        castCalamity(player);
                 }
             }
-        }
+
+
+    }
+
+
+    public void shieldAnimation(Player player){
+        ArmorStand sword1 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(-90,0);
+            armorStand.setArms(true);
+            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+        });
+        ArmorStand sword2 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(90,0);
+            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+        });
+        ArmorStand sword3 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(180,0);
+            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+        });
+        ArmorStand sword4 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(0,0);
+            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+        });
+
+        Location swordLocation1 = player.getLocation().add(0.5,1,-0.8);
+        swordLocation1.setDirection(new Vector(1, 0, 0));
+        Location swordLocation2 = player.getLocation().add(-0.5,1,0.8);
+        swordLocation2.setDirection(new Vector(-1, 0, 0));
+        Location swordLocation3 = player.getLocation().add(-0.8,1,-0.5);
+        swordLocation3.setDirection(new Vector(0, 0, -1));
+        Location swordLocation4 = player.getLocation().add(0.8,1,0.5);
+        swordLocation4.setDirection(new Vector(0, 0, 1));
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            sword1.teleport(swordLocation1);
+            sword2.teleport(swordLocation2);
+            sword3.teleport(swordLocation3);
+            sword4.teleport(swordLocation4);
+        }, 1);
+        BukkitTask swordAnimation = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+            sword1.teleport(sword1.getLocation().add(0, -0.6, 0));
+            sword2.teleport(sword2.getLocation().add(0,-0.6,0));
+            sword3.teleport(sword3.getLocation().add(0,-0.6,0));
+            sword4.teleport(sword4.getLocation().add(0,-0.6,0));
+        }, 0, 1);
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            swordAnimation.cancel();
+            sword1.remove();
+            sword2.remove();
+            sword3.remove();
+            sword4.remove();
+        }, 10);
 
     }
 
@@ -284,6 +375,7 @@ public class SwordsmanListener implements Listener{
         } else {
             if(subtractMana(player, 50)){
                 player.sendMessage(ChatColor.GREEN+"Shields Up activated.");
+                shieldAnimation(player);
                 playersShielded.add(player);
 //                BukkitTask shieldEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 //                    Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1.5,0), EntityType.AREA_EFFECT_CLOUD);
@@ -382,15 +474,89 @@ public class SwordsmanListener implements Listener{
         }
     }
 
+    public void swordsAnimation(Player player){
+        ArmorStand sword1 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(-90,0);
+            armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        });
+        ArmorStand sword2 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(90,0);
+            armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        });
+        ArmorStand sword3 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(180,0);
+            armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        });
+        ArmorStand sword4 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setRotation(0,0);
+            armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+
+            EntityEquipment equipment1 = armorStand.getEquipment();
+            equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        });
+
+        Location swordLocation1 = player.getLocation().add(0,-0.2,-0.8);
+        swordLocation1.setDirection(new Vector(1, 0, 0));
+        Location swordLocation2 = player.getLocation().add(0,-0.2,0.8);
+        swordLocation2.setDirection(new Vector(-1, 0, 0));
+        Location swordLocation3 = player.getLocation().add(-0.8,-0.2,0);
+        swordLocation3.setDirection(new Vector(0, 0, -1));
+        Location swordLocation4 = player.getLocation().add(0.8,-0.2,0);
+        swordLocation4.setDirection(new Vector(0, 0, 1));
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            sword1.teleport(swordLocation1);
+            sword2.teleport(swordLocation2);
+            sword3.teleport(swordLocation3);
+            sword4.teleport(swordLocation4);
+        }, 1);
+        BukkitTask swordAnimation = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+            sword1.teleport(sword1.getLocation().add(0.5, 0, 0));
+            sword2.teleport(sword2.getLocation().add(-0.5,0,0));
+            sword3.teleport(sword3.getLocation().add(0,0,-0.5));
+            sword4.teleport(sword4.getLocation().add(0,0,0.5));
+        }, 0, 1);
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            swordAnimation.cancel();
+            sword1.remove();
+            sword2.remove();
+            sword3.remove();
+            sword4.remove();
+        }, 10);
+
+    }
+
     public void castOnslaught(Player player){
         if(playerOnslaughtCooldown.contains(player.getUniqueId().toString())){
             sendCooldownMessage(player, "Onslaught");
         } else {
             if(subtractMana(player, 150)){
-                List<Entity> entities = player.getNearbyEntities(1.5,3,1.5);
+                swordsAnimation(player);
+
+                List<Entity> entities = player.getNearbyEntities(2,3,2);
                 BukkitTask onslaught = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     for(Entity hit : entities){
-                        if(hit instanceof Damageable){
+                        if(hit instanceof Damageable && !(hit instanceof ArmorStand)){
                             plugin.experienceListener.addExp(player, "swordsmanship", 1);
                             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, hit.getLocation().add(0, 1,0), 1, 0, 0, 0, 0);
                             ((Damageable) hit).damage(4.072, player);
@@ -462,7 +628,7 @@ public class SwordsmanListener implements Listener{
                 createFireworkEffect(player.getLocation(), player);
                 List<Entity> toDamage = new ArrayList<Entity>();
                 for(Entity hit : entities){
-                    if(hit instanceof LivingEntity && !(hit instanceof Player)){
+                    if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof ArmorStand)){
                         entitiesBlinded.add(hit);
                         ((LivingEntity) hit).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 8, 5, false, false, false));
                         toDamage.add(hit);
@@ -504,43 +670,43 @@ public class SwordsmanListener implements Listener{
             if(subtractMana(player, 500)){
                 playersCalamity.add(player);
 
-                Location location = player.getEyeLocation();
-                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
-                location.add(offset);
-                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
-                dummyText.setCustomName(ChatColor.GRAY+"||||||||||||");
-                dummyText.setCustomNameVisible(true);
-                dummyText.setVisible(false);
-                dummyText.setGravity(false);
-                dummyText.setInvulnerable(true);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    dummyText.teleport(location.add(new Vector(0,-3,0)));
-                }, 1);
-                calamityLoadingProgress.put(player,0);
-                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
-                    int ballProgress = calamityLoadingProgress.get(player);
-                    int ballToLoad = 12-ballProgress;
-                    dummyTextName.append("|".repeat(ballProgress));
-                    dummyTextName.append(ChatColor.GRAY);
-                    if(ballToLoad>0){
-                        dummyTextName.append("|".repeat(ballToLoad));
-                    }
-                    dummyText.setCustomName(dummyTextName.toString());
-                    calamityLoadingProgress.put(player, ballProgress+2);
-                },2, 10);
-                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    Location newLocation = player.getEyeLocation();
-                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
-                    newLocation.add(newOffset);
-
-                    dummyText.teleport(newLocation.add(new Vector(0,-3,0)));
-                },2, 1);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    loadingEffect.cancel();
-                    followPlayer.cancel();
-                    dummyText.remove();
-                }, 62);
+//                Location location = player.getEyeLocation();
+//                Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(2.5);
+//                location.add(offset);
+//                ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);;
+//                dummyText.setCustomName(ChatColor.GRAY+"||||||||||||");
+//                dummyText.setCustomNameVisible(true);
+//                dummyText.setVisible(false);
+//                dummyText.setGravity(false);
+//                dummyText.setInvulnerable(true);
+//                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//                    dummyText.teleport(location.add(new Vector(0,-2,0)));
+//                }, 1);
+//                calamityLoadingProgress.put(player,0);
+//                BukkitTask loadingEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+//                    StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
+//                    int ballProgress = calamityLoadingProgress.get(player);
+//                    int ballToLoad = 12-ballProgress;
+//                    dummyTextName.append("|".repeat(ballProgress));
+//                    dummyTextName.append(ChatColor.GRAY);
+//                    if(ballToLoad>0){
+//                        dummyTextName.append("|".repeat(ballToLoad));
+//                    }
+//                    dummyText.setCustomName(dummyTextName.toString());
+//                    calamityLoadingProgress.put(player, ballProgress+2);
+//                },2, 10);
+//                BukkitTask followPlayer = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+//                    Location newLocation = player.getEyeLocation();
+//                    Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
+//                    newLocation.add(newOffset);
+//
+//                    dummyText.teleport(newLocation.add(new Vector(0,-2,0)));
+//                },2, 1);
+//                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//                    loadingEffect.cancel();
+//                    followPlayer.cancel();
+//                    dummyText.remove();
+//                }, 62);
 
                 BukkitTask calamity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     List<Entity> entities = player.getNearbyEntities(10,10,10);

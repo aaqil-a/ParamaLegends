@@ -110,27 +110,9 @@ public class BanishedMagusListener implements Listener {
             default -> Integer.MAX_VALUE;
         };
 
-        // Check if player has empty tome
-        boolean hasTome = false;
-        ItemStack tome = null;
-        ItemStack[] playerInv = player.getInventory().getStorageContents();
-        for (ItemStack item : playerInv) {
-            if(item != null){
-                if(item.hasItemMeta()){
-                    if (item.getItemMeta().getDisplayName().contains("§5Empty Tome")) {
-                        hasTome = true;
-                        tome = item;
-                    }
-                }
-            }
-        }
-
         //Purchase specified tome
         if (event.getSlot() != 0){
-            if (!hasTome) {
-                player.closeInventory();
-                player.sendMessage(ChatColor.RED + "An empty tome is required to enchant!");
-            } else if (lectrum < price) {
+            if (lectrum < price) {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
             } else {
@@ -139,7 +121,6 @@ public class BanishedMagusListener implements Listener {
                 data.saveConfig();
                 updateLectrum(event);
                 enchantItem(event, event.getCurrentItem());
-                tome.setAmount(tome.getAmount()-1);
             }
         }
     }
@@ -174,7 +155,7 @@ public class BanishedMagusListener implements Listener {
 
     //Create shop gui
     public void createGui(Player player){
-        gui = Bukkit.createInventory(null,27, "§5Enchant Tomes");
+        gui = Bukkit.createInventory(null,27, "§5Magic Tomes");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -198,7 +179,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "in its path.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 3 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 1");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 1");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -213,7 +194,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "over time.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 7 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 2");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 2");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -225,9 +206,9 @@ public class BanishedMagusListener implements Listener {
         meta.setDisplayName(ChatColor.RESET + "§5Gust");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Pushes away targets within an");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area of where you are facing.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 3");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 3");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -242,7 +223,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20 per second");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 4");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 4");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -256,7 +237,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the targeted location.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 5");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 5");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -272,7 +253,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 6");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 6");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -289,7 +270,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "caster to its location.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 7");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 7");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -306,7 +287,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "into contact with.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 8");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 8");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -318,12 +299,12 @@ public class BanishedMagusListener implements Listener {
         meta.setDisplayName(ChatColor.RESET + "§5Voices of the Damned");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a portal to the realm of");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the damned. Creatures will appear");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any creatures");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that are in sight.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "creatures that are in sight.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 30 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 400");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 9");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 9");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -336,7 +317,7 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "爆裂, 爆裂, la la la");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 600");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 10");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 10");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);

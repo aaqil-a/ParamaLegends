@@ -22,11 +22,10 @@ public class WorldRuleListener implements Listener {
         data = plugin.getData();
     }
 
-    //Disable silk touch enchantment
+    //Disable enchanting
     @EventHandler
     public void enchantItem(EnchantItemEvent event){
-        if(event.getEnchantsToAdd().toString().contains("silk_touch"))
-            event.getEnchantsToAdd().remove(Enchantment.SILK_TOUCH);
+        event.setCancelled(true);
     }
 
     //Disable breeding
