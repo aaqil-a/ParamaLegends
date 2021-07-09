@@ -111,6 +111,10 @@ public class WiseOldManListener implements Listener {
             createGui2(player, "magic");
             player.closeInventory();
             player.openInventory(gui2);
+        } else if (event.getSlot() == 2){
+            createGui2(player, "archery");
+            player.closeInventory();
+            player.openInventory(gui2);
         }
     }
 
@@ -180,9 +184,9 @@ public class WiseOldManListener implements Listener {
 
         // Farming
         item.setType(Material.IRON_HOE);
-        meta.setDisplayName(ChatColor.RESET + "Farming");
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".farming");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".farmingexp");
+        meta.setDisplayName(ChatColor.RESET + "Reaper");
+        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
+        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaperexp");
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
@@ -374,7 +378,95 @@ public class WiseOldManListener implements Listener {
                 }
             }
             case "archery" -> {
-
+                switch(level) {
+                    case 1 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Hunter's Eye");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Tag an enemy, revealing them");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "for some time and increasing");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "its incoming damage.");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Archer's Blessing");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "The further you are from the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "enemy, the higher damage your");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "arrows deal.");
+                    }
+                    case 2 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Viper's Bite");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Poisons your target for a short");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "duration.");
+                    }
+                    case 3 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Totsuka's Creation");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Throw a web to the targeted");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "location, rooting enemies caught");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "in its location.");
+                    }
+                    case 4 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Wind Boost");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Harness the power of wind to");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "boost your arrows, dealing more");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "damage and knockback.");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Nimble");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Movement speed lightly increased.");
+                    }
+                    case 5 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Neurotoxin");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Imbue your arrow with neurotoxin,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "poisoning and slowing targets for");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "a medium duration.");
+                    }
+                    case 6 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Soulstring");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Summons a bow companion that");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "periodically shoots very sharp");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "arrows at nearby enemies.");
+                    }
+                    case 7 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Retreat");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Shoots two arrows with the first");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "dealing less damage. After shooting,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "you fall back a short distance and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "your speed is temporarily increased.");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Huayra's Fury");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "You reawaken the wrath of Huayra,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "sacrificing some of your life force");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "to shoot 20 consecutive arrows at");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "great speeds without consuming mana.");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "You cannot move while firing.");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Advanced Archery");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Your arrows have a slight chance of");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "dealing extra damage.");
+                    }
+                    case 8 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Blast");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Imbue your arrow with gunpowder,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "making it explode on impact.");
+                    }
+                    case 9->{
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Royal Artillery");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Calls in a continuous arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "barrage on the targeted location.");
+                    }
+                    case 10->{
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Whistling Wind");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Arrow");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "An arrow that directs itself towards");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "every enemy around its shooter and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "returns after.");
+                    }
+                }
             }
         }
 

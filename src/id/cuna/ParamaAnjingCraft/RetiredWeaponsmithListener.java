@@ -177,7 +177,6 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Reduces incoming damage and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reflects some back at the");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 6 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 50");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 3");
@@ -209,7 +208,6 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and critical chance but");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "be unable to cast abilities");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "during the duration.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 11 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 45 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 6");
@@ -275,7 +273,6 @@ public class RetiredWeaponsmithListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you. Your hits are guaranteed");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "critical and incoming damage is");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reduced for its duration.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 15 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 500");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 10");

@@ -51,8 +51,6 @@ public class MagicListener implements Listener {
     private final HashMap<Entity, BukkitTask> entityIgnitedTasks = new HashMap<>();
     private final HashMap<Entity, Integer> entityIgnitedDuration = new HashMap<>();
     private final HashMap<Player, Vector> ballOffsetVectors = new HashMap<>();
-    private final HashMap<Player, Integer> ballLoadingProgress = new HashMap<>();
-    private final HashMap<Player, Integer> novaLoadingProgress = new HashMap<>();
     private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
     private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
     private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
@@ -235,7 +233,6 @@ public class MagicListener implements Listener {
                     ballsDirt.remove(player);
                 }, 2);
                 ballOffsetVectors.remove(player);
-                ballLoadingProgress.remove(player);
                 ballsThrown.remove(player);
                 cancelFlingEarthTasks(player);
                 if(event.getHitEntity() != null){
@@ -301,8 +298,9 @@ public class MagicListener implements Listener {
     @EventHandler
     public void onEntityBurn(EntityCombustEvent event){
         Entity entity = event.getEntity();
-        if(entity.getCustomName() != null && entity.getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
-            event.setCancelled(true);
+        if(entity.getCustomName() != null){
+            if(entity.getCustomName().contains("Damned Soul") || entity.getCustomName().contains("Soulstring"))
+                    event.setCancelled(true);
         }
     }
 
@@ -382,51 +380,30 @@ public class MagicListener implements Listener {
             Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
             location.add(offset);
             ArmorStand dummy = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
-            ArmorStand dummyText = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
             dummy.setCustomName(player.getName());
-            dummyText.setCustomName(ChatColor.GREEN+"||"+ChatColor.GRAY+"||||||||||||||||||");
-            //dummyText.setCustomNameVisible(true);
-            dummyText.setVisible(false);
             dummy.setVisible(false);
-            dummyText.setGravity(false);
             dummy.setGravity(false);
-            dummyText.setInvulnerable(true);
             dummy.setInvulnerable(true);
             playerBallCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
-                dummyText.teleport(location.add(new Vector(0,-1.5,0)));
                 dummy.getLocation().add(new Vector(0,1,0));
             }, 1);
-            ballLoadingProgress.put(player, 2);
             BukkitTask ballEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 Location newLocation = player.getEyeLocation();
                 Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
                 newLocation.add(newOffset);
                 ballOffsetVectors.put(player, newOffset);
 
-                StringBuilder dummyTextName = new StringBuilder(ChatColor.GREEN + "");
-                int ballProgress = ballLoadingProgress.get(player);
-                int ballToLoad = 20-ballProgress;
-                dummyTextName.append("|".repeat(ballProgress));
-                dummyTextName.append(ChatColor.GRAY);
-                if(ballToLoad>0){
-                    dummyTextName.append("|".repeat(ballToLoad));
-                }
-
                 dummy.teleport(newLocation);
-                dummyText.teleport(newLocation.add(new Vector(0,-1.5,0)));
-                dummyText.setCustomName(dummyTextName.toString());
 
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.STONE.createBlockData());
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.DIRT.createBlockData());
-                ballLoadingProgress.put(player, ballProgress+1);
             },2, 1);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(dummy.getLocation().add(new Vector(0,-2,0)));
                 Snowball ball = dummy.launchProjectile(Snowball.class, ballOffsetVectors.get(player));
                 dummy.remove();
-                dummyText.remove();
                 ball.setCustomName("iceball");
                 Vector velocity = ball.getVelocity();
                 velocity.multiply(0.5);
@@ -690,13 +667,14 @@ public class MagicListener implements Listener {
                 playerLightningCooldowns.add(player.getUniqueId().toString());
                 player.getWorld().strikeLightningEffect(location);
                 player.getWorld().spawnParticle(Particle.FLASH, location.add(new Vector(0,1,0)), 5);
-                player.getWorld().getHighestBlockAt(location.add(1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
-                player.getWorld().getHighestBlockAt(location.add(0,0,1)).getRelative(BlockFace.UP).setType(Material.FIRE);
-                player.getWorld().getHighestBlockAt(location.add(-1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
-                player.getWorld().getHighestBlockAt(location.add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
-                List<Entity> entities = player.getWorld().getNearbyEntities(location, 4,4,4).stream().toList();
+                player.getWorld().getHighestBlockAt(location.clone().add(0,1,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.clone().add(1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.clone().add(0,0,1)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.clone().add(-1,0,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                player.getWorld().getHighestBlockAt(location.clone().add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
+                List<Entity> entities = player.getWorld().getNearbyEntities(location, 3,4,3).stream().toList();
                 for(Entity ignited : entities){
-                    if(ignited instanceof Damageable){
+                    if(ignited instanceof Damageable && !(ignited instanceof Player)){
                         plugin.experienceListener.addExp(player, "magic", 1);
                         ((Damageable) ignited).damage(20.069, player);
                     }
@@ -706,7 +684,7 @@ public class MagicListener implements Listener {
                         sendNoLongerCooldownMessage(player, "Summon Lightning");
                         playerLightningCooldowns.remove(player.getUniqueId().toString());
                     }
-                }, 300);
+                }, 600);
             }
         }
     }
@@ -920,7 +898,7 @@ public class MagicListener implements Listener {
                     damned.remove();
                 for(Silverfish damned : damnedListSilverfish)
                     damned.remove();
-            }, 1200);
+            }, 800);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerVoicesCooldowns.contains(player.getUniqueId().toString())){
                     sendNoLongerCooldownMessage(player, "Voices of the Damned");

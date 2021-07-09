@@ -24,7 +24,6 @@ public class MobSpawnListener implements Listener {
     //Listen for mob spawns and set health, damage and other stats accordingly
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
-        event.getEntity().setMaximumNoDamageTicks(0);
         if(event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM){
             if(event.getEntityType().equals(EntityType.PHANTOM)){
                 event.setCancelled(true);

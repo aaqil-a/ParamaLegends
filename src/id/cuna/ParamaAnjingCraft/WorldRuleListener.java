@@ -10,7 +10,11 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class WorldRuleListener implements Listener {
 
@@ -38,6 +42,20 @@ public class WorldRuleListener implements Listener {
     @EventHandler
     public void netherPortal(PlayerPortalEvent event){
         event.setCancelled(true);
+    }
+
+    //Disable crafting with materials that have custom name
+    @EventHandler
+    public void onCraft(CraftItemEvent event){
+        Inventory inv = event.getInventory();
+        for(ItemStack item : inv.getStorageContents()){
+            if(item.hasItemMeta()){
+                ItemMeta meta = item.getItemMeta();
+                if(meta.hasLore() && meta.hasDisplayName()){
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 
 }

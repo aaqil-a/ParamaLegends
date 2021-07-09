@@ -553,13 +553,13 @@ public class SwordsmanListener implements Listener{
             if(subtractMana(player, 150)){
                 swordsAnimation(player);
 
-                List<Entity> entities = player.getNearbyEntities(2,3,2);
+                List<Entity> entities = player.getNearbyEntities(3.5,3,3.5);
                 BukkitTask onslaught = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     for(Entity hit : entities){
                         if(hit instanceof Damageable && !(hit instanceof ArmorStand)){
                             plugin.experienceListener.addExp(player, "swordsmanship", 1);
                             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, hit.getLocation().add(0, 1,0), 1, 0, 0, 0, 0);
-                            ((Damageable) hit).damage(4.072, player);
+                            ((Damageable) hit).damage(12.072, player);
                         }
                     }
                 }, 0, 3);
@@ -582,10 +582,10 @@ public class SwordsmanListener implements Listener{
             sendCooldownMessage(player, "Terrifying Cruelty");
         } else {
             if(subtractMana(player, 200)){
-                List<Entity> entities = player.getNearbyEntities(3,3,3);
+                List<Entity> entities = player.getNearbyEntities(3.5,3,3.5);
                 player.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, player.getLocation().add(0,1,0), 8, 0.5, 0.5, 0.5, 0);
                 for(Entity hit : entities){
-                    if(hit instanceof Damageable){
+                    if(hit instanceof Damageable && !(hit instanceof Player) && !(hit instanceof ArmorStand)){
                         BukkitTask hitEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                             hit.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, hit.getLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
                         }, 20, 20);

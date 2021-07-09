@@ -123,28 +123,15 @@ public class SeniorRangerListener implements Listener {
             case 8 -> 80;
             case 10 -> 10;
             case 12 -> 200;
-            case 14 -> 500;
+            case 14 -> 300;
+            case 16 -> 30;
+            case 20 -> 50;
+            case 22, 24 -> 400;
             default -> Integer.MAX_VALUE;
         };
 
-        // Check if player has empty tome
-        boolean hasBow = false;
-        ItemStack bow  = null;
-        int bowSlot = 0;
-        ItemStack[] playerInv = player.getInventory().getStorageContents();
-        for (ItemStack item : playerInv) {
-            if(item != null && !item.hasItemMeta()){
-                if(item.getType().equals(Material.BOW)){
-                    hasBow = true;
-                    bow = item;
-                    break;
-                }
-            }
-            bowSlot++;
-        }
-
         switch(event.getSlot()){
-            case 2,4,6,8,10,12-> {
+            case 2,4,6,8,10,12,14,16,20,22,24-> {
                 if (lectrum < price) {
                     player.closeInventory();
                     player.sendMessage(ChatColor.RED + "Not enough lectrum!");
@@ -161,22 +148,6 @@ public class SeniorRangerListener implements Listener {
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     newItem.setItemMeta(meta);
                     event.getWhoClicked().getInventory().addItem(newItem);
-                }
-            }
-            case 14 -> {
-                if (!hasBow) {
-                    player.closeInventory();
-                    player.sendMessage(ChatColor.RED + "A bow is required to remake!");
-                } else if (lectrum < price) {
-                    player.closeInventory();
-                    player.sendMessage(ChatColor.RED + "Not enough lectrum!");
-                } else {
-                    lectrum -= price;
-                    data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
-                    data.saveConfig();
-                    updateLectrum(event);
-                    enchantItem(event, event.getCurrentItem(), bow);
-                    player.getInventory().clear(bowSlot);
                 }
             }
         }
@@ -198,23 +169,9 @@ public class SeniorRangerListener implements Listener {
         lore.clear();
     }
 
-    //Give purchased item and erase price from lore
-    public void enchantItem(InventoryClickEvent event, ItemStack item, ItemStack sword){
-        ItemStack newItem = item.clone();
-        ItemMeta meta = newItem.getItemMeta();
-        List<String> lore = meta.getLore();
-        lore.remove(lore.size()-1);
-        meta.setLore(lore);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        ItemStack newSword = sword.clone();
-        newSword.setItemMeta(meta);
-        event.getWhoClicked().getInventory().addItem(newSword);
-    }
-
-
     //Create shop gui
     public void createGui(Player player){
-        gui = Bukkit.createInventory(null,18, "§aRanger Gear");
+        gui = Bukkit.createInventory(null,27, "§aRanger Gear");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -305,9 +262,9 @@ public class SeniorRangerListener implements Listener {
         gui.setItem(10, tippedArrowItem);
         lore.clear();
 
-        // Superconducted
-        item.setType(Material.STICK);
-        meta.setDisplayName(ChatColor.RESET + "§aRanger's Companion");
+        // Soulstring
+        item.setType(Material.TRIPWIRE_HOOK);
+        meta.setDisplayName(ChatColor.RESET + "§aSoulstring");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a bow companion that");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "periodically shoots very sharp");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "arrows at nearby enemies.");
@@ -320,22 +277,79 @@ public class SeniorRangerListener implements Listener {
         gui.setItem(12, item);
         lore.clear();
 
-        // Calamity
-        item.setType(Material.IRON_SWORD);
-        meta.setDisplayName(ChatColor.RESET + "§2Calamity");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summon a raging chaotic storm");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that strikes down enemies around");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you. Your hits are guaranteed");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "critical and incoming damage is");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reduced for its duration.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 15 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 500");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Required Level: 10");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "500 Lectrum");
+        // Retreat
+        tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aRetreat");
+        tippedArrowMeta.setColor(Color.WHITE);
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Shoots two arrows with the first");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "dealing less damage. After shooting,");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you fall back a short distance and");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your speed is temporarily increased.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 70");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
+        tippedArrowMeta.setLore(lore);
+        tippedArrowItem.setItemMeta(tippedArrowMeta);
+        gui.setItem(14, tippedArrowItem);
+        lore.clear();
+
+
+        // Huayra's Fury
+        item.setType(Material.SKELETON_SKULL);
+        meta.setDisplayName(ChatColor.RESET + "§aHuayra's Fury");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "You reawaken the wrath of Huayra,");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "sacrificing some of your life force");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "to shoot 20 consecutive arrows at");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "great speeds without consuming mana.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "You cannot move while firing.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1.5 minutes");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(14, item);
+        gui.setItem(16, item);
+        lore.clear();
+
+        // Blast
+        tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aBlast");
+        tippedArrowMeta.setColor(Color.RED);
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Imbue your arrow with gunpowder,");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making it explode on impact.");;
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 60");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 8");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "50 Lectrum");
+        tippedArrowMeta.setLore(lore);
+        tippedArrowItem.setItemMeta(tippedArrowMeta);
+        gui.setItem(20, tippedArrowItem);
+        lore.clear();
+
+        // Royal Artillery
+        item.setType(Material.NAUTILUS_SHELL);
+        meta.setDisplayName(ChatColor.RESET + "§aRoyal Artillery");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Calls in a continuous arrow");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "barrage on the targeted location.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 9");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(22, item);
+        lore.clear();
+
+
+        // Whistling Wind
+        item.setType(Material.SPECTRAL_ARROW);
+        meta.setDisplayName(ChatColor.RESET + "§aWhistling Wind");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "An arrow that directs itself towards");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "every enemy around its shooter and");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "returns after.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 10");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(24, item);
         lore.clear();
 
     }

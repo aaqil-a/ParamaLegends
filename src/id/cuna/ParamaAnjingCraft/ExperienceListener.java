@@ -9,6 +9,7 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -61,34 +62,27 @@ public class ExperienceListener implements Listener {
         }
     }
 
-    //Handle xp gained from killing mobs
-    @EventHandler
-    public void onDeath(EntityDeathEvent event){
-        if (event.getEntity().getKiller() != null) {
-            Player player = (Player) event.getEntity().getKiller();
-            String mob = "";
-            String skill = "";
-            String damageString = String.valueOf(event.getEntity().getLastDamage());
-            //Check if damage source is from magic
-            if(damageString.substring(damageString.indexOf(".")).length() >= 4){
-                String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
-                switch (key) {
-                    case ".069", ".068" -> skill = "magic";
-                    case ".034", ".033", ".035" -> skill = "reaper";
-                    case ".072", ".073", ".071" -> skill = "swordsmanship";
-                    case ".016", ".015", ".017" -> skill = "archery";
-                }
+    public void playerKill(Player player, LivingEntity entity, String skill){
+        String mob = "";
+        String damageString = String.valueOf(entity.getLastDamage());
+        //Check if damage source is from magic
+        if(damageString.substring(damageString.indexOf(".")).length() >= 4){
+            String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
+            switch (key) {
+                case ".069", ".068" -> skill = "magic";
+                case ".034", ".033", ".035" -> skill = "reaper";
+                case ".072", ".073", ".071" -> skill = "swordsmanship";
+                case ".016", ".015", ".017" -> skill = "archery";
             }
-            //Check if entity was exploded by magic
-            if(event.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
-                skill = "magic";
-            }
+        }
+        //Check if entity was exploded by magic
+        if(entity.getLastDamageCause() != null && entity.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
+            skill = "magic";
+        }
 
+        if(skill.equals("")){
             //Check if damage source is from archery or swordsmanship
             switch (player.getInventory().getItemInMainHand().getType()) {
-                case BOW -> {
-                    skill = "archery";
-                }
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     skill = "swordsmanship";
                 }
@@ -96,29 +90,38 @@ public class ExperienceListener implements Listener {
                     skill = "reaper";
                 }
             }
-            //Check mob killed
-            switch (event.getEntityType()) {
-                case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> {
-                    mob = "zombie";
-                }
-                case WITCH -> {
-                    mob = "witch";
-                }
-                case SKELETON, STRAY -> {
-                    mob = "skeleton";
-                }
-                case CREEPER -> {
-                    mob = "creeper";
-                }
-                case SPIDER, CAVE_SPIDER -> {
-                    mob = "spider";
-                }
+        }
+        //Check mob killed
+        switch (entity.getType()) {
+            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> {
+                mob = "zombie";
             }
-            //Grant exp and lectrum to player according to mob killed
-            if(!mob.equals("") && !skill.equals("")){
-                addExp(player, skill, data.getConfig().getInt("mobs."+mob+".exp"));
-                addLectrum(player, data.getConfig().getInt("mobs."+mob+".lectrum"));
+            case WITCH -> {
+                mob = "witch";
             }
+            case SKELETON, STRAY -> {
+                mob = "skeleton";
+            }
+            case CREEPER -> {
+                mob = "creeper";
+            }
+            case SPIDER, CAVE_SPIDER -> {
+                mob = "spider";
+            }
+        }
+        //Grant exp and lectrum to player according to mob killed
+        if(!mob.equals("") && !skill.equals("")){
+            addExp(player, skill, data.getConfig().getInt("mobs."+mob+".exp"));
+            addLectrum(player, data.getConfig().getInt("mobs."+mob+".lectrum"));
+        }
+    }
+
+    //Handle xp gained from killing mobs
+    @EventHandler(priority = EventPriority.LOW)
+    public void onDeath(EntityDeathEvent event){
+        if (event.getEntity().getKiller() != null) {
+           Player player = event.getEntity().getKiller();
+           playerKill(player, event.getEntity(), "");
         }
     }
 
@@ -142,6 +145,12 @@ public class ExperienceListener implements Listener {
             if (arrow.getShooter() instanceof Player) {
                 Player player = (Player) arrow.getShooter();
                 addExp(player, "archery", 2);
+                if(event.getEntity() instanceof LivingEntity){
+                    LivingEntity entity = (LivingEntity) event.getEntity();
+                    if(event.getFinalDamage() >= entity.getHealth()){
+                        playerKill(player, entity, "archery");
+                    }
+                 }
             }
         }
     }

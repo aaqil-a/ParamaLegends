@@ -301,7 +301,6 @@ public class BanishedMagusListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the damned. Creatures will appear");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "creatures that are in sight.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Duration: 30 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 400");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 9");
