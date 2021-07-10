@@ -990,7 +990,9 @@ public class ArcheryListener implements Listener{
                 armorStand.setInvisible(true);
                 armorStand.setInvulnerable(true);
         });
+        source.getWorld().playSound(source.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 1.2f);
         if(!last) targetWhistlingWind.put(player, entity);
+
         SpectralArrow newArrow = dummy.launchProjectile(SpectralArrow.class, direction);
         newArrow.setCustomName("whistlingwind");
         newArrow.setShooter(player);
@@ -999,8 +1001,7 @@ public class ArcheryListener implements Listener{
         newArrow.setSilent(true);
         newArrow.setVelocity(newArrow.getVelocity().multiply(2));
         dummy.remove();
-
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+        if(arrowLocation.distance(hitLocation) < 1.5){
             newArrow.remove();
             if(!last){
                 if(entitiesWhistlingWind.containsKey(player)){
@@ -1008,14 +1009,32 @@ public class ArcheryListener implements Listener{
                     if(target.equals(entity)){
                         if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
                         target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
-                        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
+                        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                             directArrowToEntity(target, player);
                         }, 10);
                     }
                 }
             }
-        }, 20);
+        }  else {
+            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                newArrow.remove();
+                if(!last){
+                    if(entitiesWhistlingWind.containsKey(player)){
+                        Entity target = targetWhistlingWind.get(player);
+                        if(target.equals(entity)){
+                            if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
+                            target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
+                            target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
+                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                directArrowToEntity(target, player);
+                            }, 10);
+                        }
+                    }
+                }
+            }, 20);
+
+        }
 
 
     }
@@ -1052,7 +1071,11 @@ public class ArcheryListener implements Listener{
                     newArrow.setSilent(true);
                     newArrow.setVelocity(newArrow.getVelocity().multiply(2));
                     dummy.remove();
-                    Bukkit.getScheduler().runTaskLater(plugin, newArrow::remove,20);
+                    if(arrowLocation.distance(hitLocation) < 4){
+                        newArrow.remove();
+                    } else {
+                        Bukkit.getScheduler().runTaskLater(plugin, newArrow::remove,20);
+                    }
                 },10);
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
                     entitiesWhistlingWind.remove(player);
@@ -1083,7 +1106,7 @@ public class ArcheryListener implements Listener{
 
                 arrow.remove();
                 List <Entity> entities = player.getNearbyEntities(10,10,10);
-                entities.removeIf(hit -> !(hit instanceof LivingEntity) || hit instanceof Player || hit instanceof ArmorStand);
+                entities.removeIf(hit -> !(hit instanceof LivingEntity) || hit instanceof Player || hit instanceof ArmorStand || hit instanceof Villager);
                 entitiesWhistlingWind.put(player, entities);
                 if(entities.size() == 0){
                     entitiesWhistlingWind.remove(player);

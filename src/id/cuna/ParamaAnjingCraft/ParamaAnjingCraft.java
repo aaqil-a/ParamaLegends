@@ -1,12 +1,15 @@
 package id.cuna.ParamaAnjingCraft;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.arch.Processor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParamaAnjingCraft extends JavaPlugin {
 
@@ -26,9 +29,10 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public SwordsmanListener swordsmanListener;
     public SeniorRangerListener seniorRangerListener;
     public ArcheryListener archeryListener;
-    public FeculentMinerListener feculentMinerListener;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
+    private boolean isNight = false;
+    private boolean playerOnline = false;
 
     @Override
     public void onEnable() {
@@ -48,7 +52,6 @@ public class ParamaAnjingCraft extends JavaPlugin {
         swordsmanListener = new SwordsmanListener(this);
         seniorRangerListener = new SeniorRangerListener(this);
         archeryListener = new ArcheryListener(this);
-        feculentMinerListener = new FeculentMinerListener(this);
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -66,7 +69,8 @@ public class ParamaAnjingCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(swordsmanListener, this);
         getServer().getPluginManager().registerEvents(seniorRangerListener, this);
         getServer().getPluginManager().registerEvents(archeryListener, this);
-        getServer().getPluginManager().registerEvents(feculentMinerListener, this);
+
+        startNightCheck();
 
     }
 
@@ -74,10 +78,31 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public void onDisable() {
     }
 
-    public void displayQuest(int quest){
-
+    public void startNightCheck(){
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Player player = null;
+            for(Player players: Bukkit.getOnlinePlayers()){
+                player = players;
+            }
+            if(player == null) {
+                playerOnline = false;
+            } else {
+                playerOnline = true;
+                if (player.getWorld().getTime() > 13500 && !isNight) {
+                    Bukkit.broadcastMessage("Raid begin!");
+                    startRaid(player);
+                    isNight = true;
+                }
+            }
+        }, 0, 100);
     }
 
+    public void startRaid(Player player){
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            Bukkit.broadcastMessage("Raid end!");
+            isNight = false;
+        }, 0, 10000);
+    }
 
     public void levelUpMagic(Player player){
         magicListener.levelUp(player);

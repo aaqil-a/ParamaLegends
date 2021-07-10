@@ -11,6 +11,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -26,11 +27,6 @@ public class WorldRuleListener implements Listener {
         data = plugin.getData();
     }
 
-//    //Disable enchanting
-//    @EventHandler
-//    public void enchantItem(EnchantItemEvent event){
-//        event.setCancelled(true);
-//    }
 
     //Disable breeding
     @EventHandler
@@ -57,5 +53,6 @@ public class WorldRuleListener implements Listener {
             }
         }
     }
+
 
 }

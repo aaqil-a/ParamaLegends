@@ -712,7 +712,7 @@ public class SwordsmanListener implements Listener{
                     List<Entity> entities = player.getNearbyEntities(10,10,10);
                     List<Entity> toDamage = new ArrayList<Entity>();
                     for(Entity hit : entities){
-                        if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof ArmorStand)) {
+                        if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof Villager) && !(hit instanceof ArmorStand)) {
                             toDamage.add(hit);
                         }
                     }

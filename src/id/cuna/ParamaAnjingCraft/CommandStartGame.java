@@ -7,43 +7,16 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.entity.*;
-import org.bukkit.entity.memory.MemoryKey;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.MerchantRecipe;
-import org.bukkit.loot.LootTable;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -181,6 +154,11 @@ public class CommandStartGame implements CommandExecutor {
         placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
 
         //Spawn NPCs at their respective location
+        spawnAllNPC(location);
+
+    }
+
+    public void spawnAllNPC(Location location){
         //Create Wise Peculier NPC
         spawnNPC(location.clone().add(2,0,2), Villager.Type.PLAINS, 0, null, "§6Wise Peculier");
         //Create Odd Reseller NPC
@@ -193,9 +171,6 @@ public class CommandStartGame implements CommandExecutor {
         spawnNPC(location.clone().add(1, 0, 5), Villager.Type.SNOW, 5, Villager.Profession.WEAPONSMITH, "§2Retired Weaponsmith");
         //Create archery NPC
         spawnNPC(location.clone().add(6, 0, 5), Villager.Type.PLAINS, 5, Villager.Profession.FLETCHER, "§aAdept Ranger");
-        //Create mining NPC
-        spawnNPC(location.clone().add(1, 0, 8), Villager.Type.TAIGA, 5, Villager.Profession.ARMORER, "§8Feculent Miner");
-
     }
 
     public void spawnNPC(Location location, Villager.Type type, int level, Villager.Profession profession, String name){
@@ -209,8 +184,8 @@ public class CommandStartGame implements CommandExecutor {
         v.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250, false, false ,false));
         v.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100, false, false ,false));
         v.setSilent(true);
-
-        mob.setCollidable(false);
+        v.getEntityId();
+        v.setCollidable(false);
         if(profession != null){
             v.setProfession(profession);
         }
