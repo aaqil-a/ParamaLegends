@@ -1,3 +1,9 @@
+world:
+  quest: 0
+  level: 1
+  maxdepth: 30
+  quests:
+    1:
 mobs:
   zombie:
     health: 50
@@ -38,7 +44,7 @@ levelupmessage:
     10: Your mastery of magic is now unparalleled.
   archery:
     2: The druids have given you their knowledge.
-    3: You woke up one day seeing a beautiful man.
+    3: Your bow begins to feel lighter.
     4: You gain a stronger affinity with the wind.
     5: The world might need a little toxicity.
     6: Your bow has become an extension of you.
@@ -46,6 +52,7 @@ levelupmessage:
     8: Your arrow wields the power of destruction.
     9: Your proficency gets the attention of other realms.
     10: You are now an uparalleled hunter of evil creatures.
+
 
 
 

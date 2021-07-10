@@ -19,6 +19,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
@@ -35,6 +38,7 @@ public class MagicListener implements Listener {
 
     private final ParamaAnjingCraft plugin;
     public DataManager data;
+    public int maxDepth;
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,1,2,3,3,4,5,6,7,8};
     private final List<EnderPearl> castedOrb = new ArrayList<EnderPearl>();
@@ -47,6 +51,7 @@ public class MagicListener implements Listener {
     private final List<String> playerDragonBreathCooldowns = new ArrayList<String>();
     private final List<String> playerVoicesCooldowns = new ArrayList<String>();
     private final List<String> playerNovaCooldowns = new ArrayList<String>();
+    private final List<Player> playerInsideDepths = new ArrayList<Player>();
     private final HashMap<EnderPearl, BukkitTask> orbFlashTasks = new HashMap<>();
     private final HashMap<Entity, BukkitTask> entityIgnitedTasks = new HashMap<>();
     private final HashMap<Entity, Integer> entityIgnitedDuration = new HashMap<>();
@@ -65,6 +70,7 @@ public class MagicListener implements Listener {
     public MagicListener(final ParamaAnjingCraft plugin){
         this.plugin = plugin;
         data = plugin.getData();
+        maxDepth = data.getConfig().getInt("world.maxdepth");
     }
 
     public boolean isSilenced(Player player){
@@ -180,8 +186,27 @@ public class MagicListener implements Listener {
                     player.getInventory().addItem(item);
                     player.sendMessage(ChatColor.GRAY + "The shield feels much to heavy to use on one hand.");
                 }
+                if(player.getLocation().getY() < maxDepth && !playerInsideDepths.contains(player)){
+                   playerTooDeep(player);
+                }
             }, 0, 20)
         );
+    }
+
+    public void playerTooDeep(Player player){
+        playerInsideDepths.add(player);
+        player.sendMessage(ChatColor.RED+"Turn back, the depths do not welcome you.");
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 20, false, false, false));
+        double startX = data.getConfig().getDouble("world.startX");
+        double startY = data.getConfig().getDouble("world.startY");
+        double startZ = data.getConfig().getDouble("world.startZ");
+        Location tpLocation = new Location(player.getWorld(), startX,startY,startZ);
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            if(player.getLocation().getY() < maxDepth){
+                player.teleport(tpLocation);
+            }
+            playerInsideDepths.remove(player);
+        }, 105);
     }
 
     //Cancel all exp gained

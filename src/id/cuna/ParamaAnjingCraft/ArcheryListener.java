@@ -288,13 +288,28 @@ public class ArcheryListener implements Listener{
                 arrow.remove();
                 if(entitiesWhistlingWind.containsKey(player)){
                     Entity target = targetWhistlingWind.get(player);
-                    if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
+                    if (target instanceof LivingEntity)((LivingEntity) target).damage(30.016, player);
                     target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
                     target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         directArrowToEntity(target, player);
                     }, 10);
                 }
+            } else if ("return".equals(arrow.getCustomName())) {
+                event.setCancelled(true);
+                Player player = (Player) arrow.getShooter();
+                if(event.getHitEntity()!=null){
+                    if (event.getHitEntity() instanceof LivingEntity){
+                        if(event.getHitEntity().equals(player)){
+                            arrow.remove();
+                        } else {
+                            ((LivingEntity) event.getHitEntity()).damage(30.016, player);
+                        }
+                    }
+
+                }
+                player.getWorld().spawnParticle(Particle.FLASH, player.getLocation(), 1, 0, 0, 0 ,0);
+
             }
         }
         if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
@@ -330,6 +345,15 @@ public class ArcheryListener implements Listener{
         } else {
             player.sendMessage(ChatColor.DARK_RED + "You are silenced!");
             return true;
+        }
+    }
+
+    public void givePlayerWhistlingWind(Player player, ItemStack item){
+        if(player.getEquipment().getItemInOffHand().equals(item)){
+            player.getEquipment().setItemInOffHand(item);
+
+        } else {
+            player.getInventory().setItem(player.getInventory().first(item), item);
         }
     }
 
@@ -376,30 +400,25 @@ public class ArcheryListener implements Listener{
                         }
                     }
                     case "§aWhistling Wind" -> {
+                        if(event.getProjectile() instanceof SpectralArrow){
+                            ((SpectralArrow) event.getProjectile()).setGlowingTicks(0);
+                        }
                         if(!isSilenced(player)){
                             if(checkLevel(player, 10)){
                                 if(entitiesWhistlingWind.containsKey(player)){
                                     ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                                     player.sendMessage(ChatColor.GRAY+"A whistling wind is already in use.");
-                                    ItemStack item = new ItemStack(Material.SPECTRAL_ARROW);
-                                    ItemMeta meta = item.getItemMeta();
-                                    List<String> lore = new ArrayList<>();
-                                    meta.setDisplayName(ChatColor.RESET + "§aWhistling Wind");
-                                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                    meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                                    lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "An arrow that directs itself towards");
-                                    lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "every enemy around its shooter and");
-                                    lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "returns after.");
-                                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
-                                    lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 10");
-                                    meta.setLore(lore);
-                                    item.setItemMeta(meta);
-                                    player.getInventory().addItem(item);
+                                    givePlayerWhistlingWind(player, event.getConsumable());
                                 } else {
-                                    castWhistlingWind(player, event.getProjectile(), false);
+                                    castWhistlingWind(player, event, false);
                                 }
+                            } else {
+                                ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                                givePlayerWhistlingWind(player, event.getConsumable());
                             }
+                        } else {
+                            ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                            givePlayerWhistlingWind(player, event.getConsumable());
                         }
                     }
                 }
@@ -818,7 +837,7 @@ public class ArcheryListener implements Listener{
                 player.getWorld().spawn(location.clone().add(0,1,0), Firework.class, firework -> {
                     FireworkMeta meta = firework.getFireworkMeta();
                     meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BURST)
-                            .flicker(false).trail(false).withColor(Color.YELLOW, Color.RED).build());
+                            .flicker(false).trail(false).withColor(Color.AQUA, Color.RED).build());
                     meta.setPower(0);
                     firework.setFireworkMeta(meta);
                     firework.setSilent(true);
@@ -952,9 +971,14 @@ public class ArcheryListener implements Listener{
         }
     }
 
-    public void shootToEntity(Entity entity, Entity source, Player player){
+    public void shootToEntity(Entity entity, Entity source, Player player, boolean last){
         Location hitLocation = entity.getLocation().add(0,-0.5,0);
-        Entity hit = targetWhistlingWind.get(player);
+        Entity hit;
+        if(!last){
+            hit = targetWhistlingWind.get(player);
+        } else {
+            hit = player;
+        }
         Location arrowLocation = hit.getLocation().add(0,-1,0);
         Vector direction = new Vector(hitLocation.getX()-arrowLocation.getX(), hitLocation.getY()-arrowLocation.getY(),
                 hitLocation.getZ()-arrowLocation.getZ());
@@ -966,7 +990,7 @@ public class ArcheryListener implements Listener{
                 armorStand.setInvisible(true);
                 armorStand.setInvulnerable(true);
         });
-        targetWhistlingWind.put(player, entity);
+        if(!last) targetWhistlingWind.put(player, entity);
         SpectralArrow newArrow = dummy.launchProjectile(SpectralArrow.class, direction);
         newArrow.setCustomName("whistlingwind");
         newArrow.setShooter(player);
@@ -978,18 +1002,21 @@ public class ArcheryListener implements Listener{
 
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
             newArrow.remove();
-            if(entitiesWhistlingWind.containsKey(player)){
-                Entity target = targetWhistlingWind.get(player);
-                if(target.equals(entity)){
-                    if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
-                    target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
-                    target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
-                    Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        directArrowToEntity(target, player);
-                    }, 10);
+            if(!last){
+                if(entitiesWhistlingWind.containsKey(player)){
+                    Entity target = targetWhistlingWind.get(player);
+                    if(target.equals(entity)){
+                        if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
+                        target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
+                        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
+                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                            directArrowToEntity(target, player);
+                        }, 10);
+                    }
                 }
             }
         }, 20);
+
 
     }
 
@@ -997,14 +1024,36 @@ public class ArcheryListener implements Listener{
         List<Entity> entities = entitiesWhistlingWind.get(player);
         if(entities != null){
             if(entities.size()==0){
-                entitiesWhistlingWind.remove(player);
                 return;
             }
             Entity hit = entities.get(0);
             entities.remove(hit);
-            shootToEntity(hit, entity, player);
-
+            shootToEntity(hit, entity, player, false);
             if(entities.size() == 0){
+                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                    //fire arrow back to player
+                    Location hitLocation = player.getLocation().add(0,-0.5,0);
+                    Location arrowLocation = hit.getLocation().add(0,-1,0);
+                    Vector direction = new Vector(hitLocation.getX()-arrowLocation.getX(), hitLocation.getY()-arrowLocation.getY(),
+                            hitLocation.getZ()-arrowLocation.getZ());
+                    arrowLocation.setDirection(direction.normalize());
+                    ArmorStand dummy = player.getWorld().spawn(arrowLocation, ArmorStand.class, armorStand -> {
+                        armorStand.setSilent(true);
+                        armorStand.setCollidable(false);
+                        armorStand.setGravity(false);
+                        armorStand.setInvisible(true);
+                        armorStand.setInvulnerable(true);
+                    });
+                    SpectralArrow newArrow = dummy.launchProjectile(SpectralArrow.class, direction);
+                    newArrow.setCustomName("return");
+                    newArrow.setShooter(player);
+                    newArrow.setGravity(false);
+                    newArrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                    newArrow.setSilent(true);
+                    newArrow.setVelocity(newArrow.getVelocity().multiply(2));
+                    dummy.remove();
+                    Bukkit.getScheduler().runTaskLater(plugin, newArrow::remove,20);
+                },10);
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
                     entitiesWhistlingWind.remove(player);
                 },8);
@@ -1014,13 +1063,13 @@ public class ArcheryListener implements Listener{
         }
     }
 
-    public void castWhistlingWind(Player player, Entity entity, boolean noMana){
+    public void castWhistlingWind(Player player, EntityShootBowEvent event, boolean noMana){
         int manaCost = 200;
         if(noMana){
             manaCost = 0;
         }
-        if(entity instanceof SpectralArrow){
-            SpectralArrow arrow = (SpectralArrow) entity;
+        if(event.getProjectile() instanceof SpectralArrow){
+            SpectralArrow arrow = (SpectralArrow) event.getProjectile();
             if(subtractMana(player, manaCost)){
                 arrow.setCustomName("whistlingwind");
                 arrow.setGravity(false);
@@ -1036,25 +1085,16 @@ public class ArcheryListener implements Listener{
                 List <Entity> entities = player.getNearbyEntities(10,10,10);
                 entities.removeIf(hit -> !(hit instanceof LivingEntity) || hit instanceof Player || hit instanceof ArmorStand);
                 entitiesWhistlingWind.put(player, entities);
+                if(entities.size() == 0){
+                    entitiesWhistlingWind.remove(player);
+                }
                 targetWhistlingWind.put(player, player);
                 directArrowToEntity(player, player);
+            } else {
+                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                givePlayerWhistlingWind(player, event.getConsumable());
             }
 
-//            ArmorStand dummy = player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
-//                armorStand.setCustomName(player.getName()+"'s Whistling Wind");
-//                armorStand.getEquipment().setItemInMainHand(new ItemStack(Material.SPECTRAL_ARROW));
-//                armorStand.setArms(true);
-//                armorStand.setRightArmPose(new EulerAngle(0.2, -1, -0.4));
-//                armorStand.setSilent(true);
-//                armorStand.setCollidable(false);
-//                armorStand.setGravity(false);
-//                armorStand.setInvisible(true);
-//                armorStand.setInvulnerable(true);
-//            });
-//            location.setYaw(location.getYaw()+12);
-//            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-//                dummy.teleport(location.add(0, -0.9, 0));
-//            }, 2);
         }
     }
 }

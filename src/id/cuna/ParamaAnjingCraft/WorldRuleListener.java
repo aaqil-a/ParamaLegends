@@ -26,11 +26,11 @@ public class WorldRuleListener implements Listener {
         data = plugin.getData();
     }
 
-    //Disable enchanting
-    @EventHandler
-    public void enchantItem(EnchantItemEvent event){
-        event.setCancelled(true);
-    }
+//    //Disable enchanting
+//    @EventHandler
+//    public void enchantItem(EnchantItemEvent event){
+//        event.setCancelled(true);
+//    }
 
     //Disable breeding
     @EventHandler

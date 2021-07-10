@@ -44,14 +44,19 @@ public class SeniorRangerListener implements Listener {
         player.getWorld().playSound(source.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1f, 0f);
         Arrow arrow1 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(3,0,3), EntityType.ARROW);
         arrow1.setVelocity(new Vector(-0.5, 0, -0.5));
+        arrow1.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         Arrow arrow2 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(0,4,0), EntityType.ARROW);
         arrow2.setVelocity(new Vector(0,-1,0));
+        arrow2.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         Arrow arrow3 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(-3,0,3), EntityType.ARROW);
         arrow3.setVelocity(new Vector(0.5,0,-0.5));
+        arrow3.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         Arrow arrow4 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(3,0,-3), EntityType.ARROW);
         arrow4.setVelocity(new Vector(-0.5,0,0.5));
+        arrow4.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         Arrow arrow5 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(-3,0,-3), EntityType.ARROW);
         arrow5.setVelocity(new Vector(0.5,0,0.5));
+        arrow5.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             arrow1.remove();
             arrow2.remove();

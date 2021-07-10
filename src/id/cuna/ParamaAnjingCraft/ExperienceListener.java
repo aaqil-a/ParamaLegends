@@ -28,6 +28,7 @@ public class ExperienceListener implements Listener {
     private final ParamaAnjingCraft plugin;
     public DataManager data;
     private final int[] xpNeeded = {0,460,740,960,1160,1200,1440,1500,1780,1860, Integer.MAX_VALUE};
+    private final int[] xpNeededMining = {0,100,600,1500,2800,4500,6600,9100,12000,20000, Integer.MAX_VALUE};
 
     public ExperienceListener(final ParamaAnjingCraft plugin){
         this.plugin = plugin;
@@ -172,14 +173,24 @@ public class ExperienceListener implements Listener {
             if(amount >= 10){
                 player.sendMessage(ChatColor.GRAY + "+"+amount +" "+skill.substring(0,1).toUpperCase() + skill.substring(1) +" EXP");
             }
-            if(currExp >= xpNeeded[currLevel]){
-                currExp -= xpNeeded[currLevel];
-                currLevel += 1;
-                levelUpMessage(player, skill, currLevel);
-                switch (skill) {
-                    case "magic" -> plugin.levelUpMagic(player);
-                    case "swordsmanship" -> plugin.levelUpSwordsmanship(player);
-                    case "archery" -> plugin.levelUpArchery(player);
+            // check level up for mining
+            if(skill.equals("mining")){
+                if(currExp >= xpNeededMining[currLevel]){
+                    currExp -= xpNeededMining[currLevel];
+                    currLevel += 1;
+                    levelUpMessage(player, skill, currLevel);
+                    //plugin.levelUpMining(player);
+                }
+            } else { // check level up for other skills
+                if(currExp >= xpNeeded[currLevel]){
+                    currExp -= xpNeeded[currLevel];
+                    currLevel += 1;
+                    levelUpMessage(player, skill, currLevel);
+                    switch (skill) {
+                        case "magic" -> plugin.levelUpMagic(player);
+                        case "swordsmanship" -> plugin.levelUpSwordsmanship(player);
+                        case "archery" -> plugin.levelUpArchery(player);
+                    }
                 }
             }
             data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill, currLevel);

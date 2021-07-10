@@ -26,6 +26,7 @@ public class ParamaAnjingCraft extends JavaPlugin {
     public SwordsmanListener swordsmanListener;
     public SeniorRangerListener seniorRangerListener;
     public ArcheryListener archeryListener;
+    public FeculentMinerListener feculentMinerListener;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
 
@@ -47,6 +48,7 @@ public class ParamaAnjingCraft extends JavaPlugin {
         swordsmanListener = new SwordsmanListener(this);
         seniorRangerListener = new SeniorRangerListener(this);
         archeryListener = new ArcheryListener(this);
+        feculentMinerListener = new FeculentMinerListener(this);
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -64,11 +66,18 @@ public class ParamaAnjingCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(swordsmanListener, this);
         getServer().getPluginManager().registerEvents(seniorRangerListener, this);
         getServer().getPluginManager().registerEvents(archeryListener, this);
+        getServer().getPluginManager().registerEvents(feculentMinerListener, this);
+
     }
 
     @Override
     public void onDisable() {
     }
+
+    public void displayQuest(int quest){
+
+    }
+
 
     public void levelUpMagic(Player player){
         magicListener.levelUp(player);

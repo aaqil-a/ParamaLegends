@@ -9,7 +9,7 @@ commands:
     usage: /yourmom <user>
   startgame:
     description: Start le epic game!.
-    usage: Command can only be issued by player.
+    usage: /startgame <areasize>
     permission: paramaanjingcraft.gameadmin
     permission-message: You are not a game admin!
 permissions:
