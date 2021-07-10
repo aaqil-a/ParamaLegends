@@ -339,13 +339,13 @@ public class SwordsmanListener implements Listener{
             equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
         });
 
-        Location swordLocation1 = player.getLocation().add(0.5,1,-0.8);
+        Location swordLocation1 = player.getLocation().add(0.5,-1,-0.8);
         swordLocation1.setDirection(new Vector(1, 0, 0));
-        Location swordLocation2 = player.getLocation().add(-0.5,1,0.8);
+        Location swordLocation2 = player.getLocation().add(-0.5,-1,0.8);
         swordLocation2.setDirection(new Vector(-1, 0, 0));
-        Location swordLocation3 = player.getLocation().add(-0.8,1,-0.5);
+        Location swordLocation3 = player.getLocation().add(-0.8,-1,-0.5);
         swordLocation3.setDirection(new Vector(0, 0, -1));
-        Location swordLocation4 = player.getLocation().add(0.8,1,0.5);
+        Location swordLocation4 = player.getLocation().add(0.8,-1,0.5);
         swordLocation4.setDirection(new Vector(0, 0, 1));
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
             sword1.teleport(swordLocation1);
@@ -354,10 +354,10 @@ public class SwordsmanListener implements Listener{
             sword4.teleport(swordLocation4);
         }, 1);
         BukkitTask swordAnimation = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            sword1.teleport(sword1.getLocation().add(0, -0.6, 0));
-            sword2.teleport(sword2.getLocation().add(0,-0.6,0));
-            sword3.teleport(sword3.getLocation().add(0,-0.6,0));
-            sword4.teleport(sword4.getLocation().add(0,-0.6,0));
+            sword1.teleport(sword1.getLocation().add(0, +0.6, 0));
+            sword2.teleport(sword2.getLocation().add(0,+0.6,0));
+            sword3.teleport(sword3.getLocation().add(0,+0.6,0));
+            sword4.teleport(sword4.getLocation().add(0,+0.6,0));
         }, 0, 1);
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
             swordAnimation.cancel();

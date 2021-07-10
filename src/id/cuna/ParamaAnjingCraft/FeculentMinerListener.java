@@ -163,6 +163,7 @@ public class FeculentMinerListener implements Listener {
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);
+
         lore.clear();
 
     }
