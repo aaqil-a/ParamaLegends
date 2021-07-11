@@ -211,11 +211,12 @@ public class ReaperListener implements Listener{
         if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity){
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
-            if (checkLevel(defender, 5)) {
+            if (checkLevel(defender, 4)) {
                 Random rand = new Random();
-                int tooSlowRandom = rand.nextInt(10);
-                if (tooSlowRandom == 1){
-                    castTooSlow(defender, attacker, event);
+                int bladeMailRandom = rand.nextInt(5);
+                if (bladeMailRandom == 1) {
+                    double damage = event.getDamage();
+                    castBladeMail(defender, attacker, damage);
                 }
             }
         }
@@ -224,17 +225,16 @@ public class ReaperListener implements Listener{
             LivingEntity attacker = (LivingEntity) event.getDamager();
             if (checkLevel(defender, 6)) {
                 Random rand = new Random();
-                int tooSlowRandom = rand.nextInt(10);
-                if (tooSlowRandom == 1){
+                int secondWindRandom = rand.nextInt(10);
+                if (secondWindRandom == 1){
                     castSecondWind(defender, attacker, event);
                 }
             }
-            if (checkLevel(defender, 4)) {
+            if (checkLevel(defender, 5)) {
                 Random rand = new Random();
-                int bladeMailRandom = rand.nextInt(5);
-                if (bladeMailRandom == 1) {
-                    double damage = event.getDamage();
-                    castBladeMail(defender, attacker, damage);
+                int tooSlowRandom = rand.nextInt(10);
+                if (tooSlowRandom == 1){
+                    castTooSlow(defender, attacker, event);
                 }
             }
         } else if (event.getDamager() instanceof Player){
