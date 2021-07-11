@@ -10,6 +10,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Snowable;
 import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -39,7 +40,10 @@ public class ReaperListener implements Listener{
     private final ParamaAnjingCraft plugin;
     public DataManager data;
     private final List<String> playerCoatedBladeCooldowns = new ArrayList<String>();
+    private final List<String> playerTooSlowCooldowns = new ArrayList<String>();
     private final List<String> playerBladeMailCooldowns = new ArrayList<String>();
+    private final List<String> playerSecondWindCooldowns = new ArrayList<String>();
+    private final List<String> playerBloodyFervourCooldowns = new ArrayList<String>();
     private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
     private final HashMap<Player, Integer> playerReaperLevel = new HashMap<Player, Integer>();
     private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
@@ -137,6 +141,54 @@ public class ReaperListener implements Listener{
         }
     }
 
+    public void castTooSlow (Player player, Entity entity, EntityDamageByEntityEvent event){
+        if(playerTooSlowCooldowns.contains(player.getUniqueId().toString())){
+            return;
+        } else if (subtractMana(player, 0)){
+            if (entity instanceof LivingEntity){
+                event.setDamage(0);
+                player.sendMessage("You dodged the attack, you receive 0 damage.");
+                playerTooSlowCooldowns.add(player.getUniqueId().toString());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerTooSlowCooldowns.contains(player.getUniqueId().toString())){
+                        playerTooSlowCooldowns.remove(player.getUniqueId().toString());
+                    }
+                }, 42);
+            }
+        }
+    }
+
+    public void castSecondWind (Player player, Entity entity, EntityDamageByEntityEvent event){
+        if (playerSecondWindCooldowns.contains(player.getUniqueId().toString())){
+            return;
+        } else if (subtractMana(player, 0)){
+            if (entity instanceof LivingEntity){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 62, 4));
+                player.sendMessage("Second Wind Active, you got speed potion");
+                playerSecondWindCooldowns.add(player.getUniqueId().toString());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerSecondWindCooldowns.contains(player.getUniqueId().toString())){
+                        playerSecondWindCooldowns.remove(player.getUniqueId().toString());
+                    }
+                }, 102);
+            }
+        }
+    }
+
+    public void castBloodyFervour (Player player, Entity entity, EntityDamageByEntityEvent event){
+        if (playerBloodyFervourCooldowns.contains(player.getUniqueId().toString())) {
+            return;
+        } else if (subtractMana(player, 0)){
+            double damage = event.getDamage();
+            double currHealth = player.getHealth();
+            double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue();
+            if (currHealth < maxHealth){
+                player.setHealth(currHealth + damage);
+                player.sendMessage("Bloody Fervour Active.");
+            }
+        }
+    }
+
     @EventHandler (priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
@@ -159,6 +211,31 @@ public class ReaperListener implements Listener{
         if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity){
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
+            if (checkLevel(defender, 5)) {
+                Random rand = new Random();
+                int tooSlowRandom = rand.nextInt(10);
+                if (tooSlowRandom == 1){
+                    castTooSlow(defender, attacker, event);
+                }
+            }
+        }
+        if (event.getEntity() instanceof Player) {
+            Player defender = (Player) event.getEntity();
+            LivingEntity attacker = (LivingEntity) event.getDamager();
+            if (checkLevel(defender, 7)) {
+                Random rand = new Random();
+                int bloodyFervourRandom = rand.nextInt(20);
+                if (bloodyFervourRandom == 1){
+                    castBloodyFervour(defender, attacker, event);
+                }
+            }
+            if (checkLevel(defender, 6)) {
+                Random rand = new Random();
+                int tooSlowRandom = rand.nextInt(10);
+                if (tooSlowRandom == 1){
+                    castSecondWind(defender, attacker, event);
+                }
+            }
             if (checkLevel(defender, 4)) {
                 Random rand = new Random();
                 int bladeMailRandom = rand.nextInt(5);
