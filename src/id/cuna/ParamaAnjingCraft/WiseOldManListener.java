@@ -103,19 +103,24 @@ public class WiseOldManListener implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         //Open destiny gui depending on item pressed
-        if (event.getSlot() == 0){
+        if (event.getSlot() == 1){
             createGui2(player, "swordsmanship");
             player.closeInventory();
             player.openInventory(gui2);
-        } else if (event.getSlot() == 4){
+        } else if (event.getSlot() == 5){
             createGui2(player, "magic");
             player.closeInventory();
             player.openInventory(gui2);
-        } else if (event.getSlot() == 2){
+        } else if (event.getSlot() == 3){
             createGui2(player, "archery");
             player.closeInventory();
             player.openInventory(gui2);
+        } else if (event.getSlot() == 7){
+            createGui2(player, "reaper");
+            player.closeInventory();
+            player.openInventory(gui2);
         }
+
     }
 
 
@@ -140,7 +145,7 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        gui.setItem(1, item);
         lore.clear();
 
         // Archery
@@ -153,7 +158,7 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(2, item);
+        gui.setItem(3, item);
         lore.clear();
 
         // Magic
@@ -166,23 +171,10 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(4, item);
+        gui.setItem(5, item);
         lore.clear();
 
-        // Mining
-        item.setType(Material.IRON_PICKAXE);
-        meta.setDisplayName(ChatColor.RESET + "Mining");
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".mining");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".miningexp");
-        lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
-        if(level < 10)
-            lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(6, item);
-        lore.clear();
-
-        // Farming
+        // Reaper
         item.setType(Material.IRON_HOE);
         meta.setDisplayName(ChatColor.RESET + "Reaper");
         level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
@@ -192,7 +184,7 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(8, item);
+        gui.setItem(7, item);
         lore.clear();
 
     }
