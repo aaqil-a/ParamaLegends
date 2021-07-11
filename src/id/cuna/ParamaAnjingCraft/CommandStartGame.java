@@ -15,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -34,33 +35,6 @@ public class CommandStartGame implements CommandExecutor {
     //Build starting area
     public void buildArea(Location location){
         Location placeLocation;
-
-        //Create barrier around player
-        placeLocation = location.clone();
-        placeLocation.add(1,0,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(-1,-1,1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(-1,-1,-1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(1,-1,-1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        location.clone().add(0,2,0).getBlock().setType(Material.BARRIER);
-
-        placeLocation = location.clone();
-        //Create task to remove barrier after scene ends
-        Location finalPlaceLocation = placeLocation;
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            finalPlaceLocation.clone().add(0,2,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(1,0,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(-1,-1,1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(-1,-1,-1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(1,-1,-1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-        }, sceneLength);
 
 
         //Fill blocks below ground layer
@@ -140,6 +114,37 @@ public class CommandStartGame implements CommandExecutor {
             }
         }
 
+
+        //Create barrier around player
+        placeLocation = location.clone();
+        placeLocation.add(1,0,0).getBlock().setType(Material.BARRIER);
+        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+        placeLocation.add(-1,-1,1).getBlock().setType(Material.BARRIER);
+        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+        placeLocation.add(-1,-1,-1).getBlock().setType(Material.BARRIER);
+        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+        placeLocation.add(1,-1,-1).getBlock().setType(Material.BARRIER);
+        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+        location.clone().add(0,2,0).getBlock().setType(Material.BARRIER);
+        location.clone().add(0,-1,0).getBlock().setType(Material.BEDROCK);
+
+        placeLocation = location.clone();
+        //Create task to remove barrier after scene ends
+        Location finalPlaceLocation = placeLocation;
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            finalPlaceLocation.clone().add(0,2,0).getBlock().setType(Material.AIR);
+            finalPlaceLocation.clone().add(0,-1,0).getBlock().setType(Material.GRASS_BLOCK);
+            finalPlaceLocation.add(1,0,0).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(-1,-1,1).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(-1,-1,-1).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(1,-1,-1).getBlock().setType(Material.AIR);
+            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+        }, sceneLength);
+
+
         //Build 'umbrella' for odd reseller
         placeLocation = location.clone().add(8,1,9);
         placeLocation.getBlock().setType(Material.SPRUCE_FENCE);
@@ -155,6 +160,20 @@ public class CommandStartGame implements CommandExecutor {
 
         //Spawn NPCs at their respective location
         spawnAllNPC(location);
+
+        //Spawn protective crystal
+        placeLocation = location.clone().add(-2,0,-2);
+        placeLocation.getWorld().spawn(placeLocation, ArmorStand.class, armorStand -> {
+            armorStand.setCustomName("§6Void Nullifier");
+            armorStand.setCustomNameVisible(true);
+            armorStand.setSilent(true);
+            armorStand.setGravity(false);
+            armorStand.setInvulnerable(true);
+            armorStand.setCollidable(false);
+            armorStand.setCanPickupItems(false);
+            armorStand.getEquipment().setHelmet(new ItemStack(Material.CRYING_OBSIDIAN));
+            armorStand.setInvisible(true);
+        });
 
     }
 
@@ -181,7 +200,6 @@ public class CommandStartGame implements CommandExecutor {
         v.setCustomNameVisible(true);
         v.setVillagerType(type);
         v.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100, false, false ,false));
-        v.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250, false, false ,false));
         v.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100, false, false ,false));
         v.setSilent(true);
         v.getEntityId();
@@ -200,7 +218,7 @@ public class CommandStartGame implements CommandExecutor {
         location.setYaw(-44);
         location.setPitch(2.8f);
         for(Player player : plugin.getServer().getOnlinePlayers()){
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 10, true, false, false)); //blindness effect
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 15, true, false, false)); //blindness effect
             player.setInvisible(true); // make players invisible
         }
     }
@@ -243,6 +261,9 @@ public class CommandStartGame implements CommandExecutor {
             data.getConfig().set("world.startY", locationY);
             data.getConfig().set("world.startZ", locationZ);
             data.getConfig().set("world.startSize", size);
+
+            data.getConfig().set("world.level", 1);
+
 
             // Change global zone flags
             if(regions.hasRegion("__global__")) {

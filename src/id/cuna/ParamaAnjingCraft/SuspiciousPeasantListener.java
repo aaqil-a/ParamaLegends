@@ -69,7 +69,7 @@ public class SuspiciousPeasantListener implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§4Suspicious Peasant")){
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Lu Goblok Ini peasant");
+                player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.ITALIC + "Lu Goblok Ini peasant");
                 createGui(player);
                 player.openInventory(gui);
             }

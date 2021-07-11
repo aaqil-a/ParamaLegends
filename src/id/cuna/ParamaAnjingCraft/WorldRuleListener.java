@@ -11,6 +11,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.Inventory;
@@ -53,6 +55,15 @@ public class WorldRuleListener implements Listener {
             }
         }
     }
+
+    //Disable interacting with armor stands with custom names
+    @EventHandler
+    public void onInteractArmorStand(PlayerArmorStandManipulateEvent event){
+        if(event.getRightClicked().getCustomName() != null){
+            event.setCancelled(true);
+        }
+    }
+
 
 
 }

@@ -93,7 +93,7 @@ public class SeniorRangerListener implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§aAdept Ranger")){
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Acquire a ranger's skills from far and wide.");
+                player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + "Acquire a ranger's skills from far and wide.");
                 createGui(player);
                 player.openInventory(gui);
             }

@@ -70,7 +70,7 @@ public class RetiredWeaponsmithListener implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§2Retired Weaponsmith")){
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "A weaponsmith's artistry is on offer.");
+                player.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + "A weaponsmith's artistry is on offer.");
                 createGui(player);
                 player.openInventory(gui);
             }

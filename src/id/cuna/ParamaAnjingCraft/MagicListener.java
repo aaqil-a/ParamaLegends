@@ -409,6 +409,7 @@ public class MagicListener implements Listener {
             dummy.setVisible(false);
             dummy.setGravity(false);
             dummy.setInvulnerable(true);
+            dummy.setCanPickupItems(false);
             playerBallCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
@@ -855,6 +856,7 @@ public class MagicListener implements Listener {
             dummy.setCustomName(ChatColor.DARK_PURPLE + player.getName() +"'s Portal");
             dummy.setCustomNameVisible(true);
             dummy.setGravity(false);
+            dummy.setCanPickupItems(false);
             dummy.setInvulnerable(true);
             playerVoicesCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {

@@ -304,6 +304,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setRotation(-90,0);
             armorStand.setArms(true);
             armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
@@ -314,6 +316,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(90,0);
             armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
@@ -324,6 +328,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(180,0);
             armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
@@ -334,6 +340,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(0,0);
             armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
@@ -481,6 +489,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(-90,0);
             armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
@@ -491,6 +501,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(90,0);
             armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
@@ -501,6 +513,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(180,0);
             armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
@@ -511,6 +525,8 @@ public class SwordsmanListener implements Listener{
             armorStand.setGravity(false);
             armorStand.setRotation(0,0);
             armorStand.setRightArmPose(new EulerAngle(-0.15,0,1.6));
+            armorStand.setCanPickupItems(false);
+            armorStand.setCustomName("animation");
 
             EntityEquipment equipment1 = armorStand.getEquipment();
             equipment1.setItemInMainHand(new ItemStack(Material.IRON_SWORD));

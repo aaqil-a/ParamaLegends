@@ -511,10 +511,13 @@ public class ArcheryListener implements Listener{
             armorStand.setArms(true);
             armorStand.setRightArmPose(new EulerAngle(-1.6, 0, -0.2));
             armorStand.setSilent(true);
+            armorStand.setCanPickupItems(false);
             armorStand.setCollidable(false);
             armorStand.setGravity(false);
             armorStand.setInvisible(true);
             armorStand.setInvulnerable(true);
+            armorStand.setCustomName("soulstring shooter");
+
         });
         ArmorStand dummyText = player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand-> {
             armorStand.setCustomName(ChatColor.GREEN + player.getName()+"'s Soulstring");
@@ -522,6 +525,7 @@ public class ArcheryListener implements Listener{
             armorStand.setVisible(false);
             armorStand.setCollidable(false);
             armorStand.setGravity(false);
+            armorStand.setCanPickupItems(false);
             armorStand.setInvulnerable(true);
         });
 
@@ -571,11 +575,12 @@ public class ArcheryListener implements Listener{
                 continue;
             newEntities.add(hit);
         }
-        int toHit = rand.nextInt(newEntities.size());
-        Entity entityToHit = newEntities.get(toHit);
-
-        if(entityToHit != null){
-            aimSoulstring(player, dummy, entityToHit);
+        if(newEntities.size() > 0){
+            int toHit = rand.nextInt(newEntities.size());
+            Entity entityToHit = newEntities.get(toHit);
+            if(entityToHit != null){
+                aimSoulstring(player, dummy, entityToHit);
+            }
         }
     }
 
@@ -989,6 +994,8 @@ public class ArcheryListener implements Listener{
                 armorStand.setGravity(false);
                 armorStand.setInvisible(true);
                 armorStand.setInvulnerable(true);
+                armorStand.setCanPickupItems(false);
+                armorStand.setCustomName("whistlingwindshooter");
         });
         source.getWorld().playSound(source.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 1.2f);
         if(!last) targetWhistlingWind.put(player, entity);
@@ -1062,6 +1069,8 @@ public class ArcheryListener implements Listener{
                         armorStand.setGravity(false);
                         armorStand.setInvisible(true);
                         armorStand.setInvulnerable(true);
+                        armorStand.setCanPickupItems(false);
+                        armorStand.setCustomName("whistlingwindshooter");
                     });
                     SpectralArrow newArrow = dummy.launchProjectile(SpectralArrow.class, direction);
                     newArrow.setCustomName("return");

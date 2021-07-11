@@ -69,7 +69,7 @@ public class BanishedMagusListener implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             if (event.getRightClicked().getName().equals("§5Banished Magus")){
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Even the wisdom of wise mages can be bartered for.");
+                player.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + "Even the wisdom of wise mages can be bartered for.");
                 createGui(player);
                 player.openInventory(gui);
             }
