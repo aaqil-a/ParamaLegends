@@ -1,19 +1,19 @@
-name: ParamaAnjingCraft
+name: ParamaLegends
 version: 1.0.0
 author: cuna
-main: id.cuna.ParamaAnjingCraft.ParamaAnjingCraft
+main: id.cuna.ParamaLegends.ParamaLegends
 api-version: 1.17
 commands:
   yourmom:
     description: Doing your mom, doing doing your mom.
     usage: /yourmom <user>
   startgame:
-    description: Start le epic game!.
+    description: Start the game.
     usage: /startgame <areasize>
-    permission: paramaanjingcraft.gameadmin
+    permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
 permissions:
-  paramaanjingcraft.gameadmin:
-    description: Allows you to start and modify the current ParamaAnjingCraft game.
+  paramalegends.gameadmin:
+    description: Allows you to start and modify the current Parama Legends game.
     default: op
 depend: [WorldGuard]
