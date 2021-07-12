@@ -1,52 +1,32 @@
 package id.cuna.ParamaAnjingCraft;
 
-import com.sk89q.worldedit.world.block.BlockType;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Snowable;
-import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
-import org.w3c.dom.Attr;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.jar.Attributes;
 
 public class ReaperListener implements Listener{
     private final ParamaAnjingCraft plugin;
     public DataManager data;
-    private final List<String> playerCoatedBladeCooldowns = new ArrayList<String>();
-    private final List<String> playerTooSlowCooldowns = new ArrayList<String>();
-    private final List<String> playerBladeMailCooldowns = new ArrayList<String>();
-    private final List<String> playerSecondWindCooldowns = new ArrayList<String>();
-    private final List<String> playerBloodyFervourCooldowns = new ArrayList<String>();
-    private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
-    private final HashMap<Player, Integer> playerReaperLevel = new HashMap<Player, Integer>();
-    private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
+    private final List<String> playerCoatedBladeCooldowns = new ArrayList<>();
+    private final List<String> playerTooSlowCooldowns = new ArrayList<>();
+    private final List<String> playerBladeMailCooldowns = new ArrayList<>();
+    private final List<String> playerSecondWindCooldowns = new ArrayList<>();
+    private final List<String> playerBloodyFervourCooldowns = new ArrayList<>();
+    private final List<String> playerGutPunchCooldowns = new ArrayList<>();
+    private final List<String> playerForbiddenSlashCooldowns = new ArrayList<>();
+    private final List<String> playerHiddenStrikeCooldowns = new ArrayList<>();
+    private final HashMap<Player, Integer> playerReaperLevel = new HashMap<>();
 
     public ReaperListener(ParamaAnjingCraft plugin) {
         this.plugin = plugin;
@@ -112,7 +92,7 @@ public class ReaperListener implements Listener{
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     poison.cancel();
                 }, 42);
-                attacker.sendMessage(ChatColor.GREEN + "BladeMail Active.");
+                attacker.sendMessage(ChatColor.GREEN + "Coated Blade Active.");
                 playerBladeMailCooldowns.add(attacker.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerBladeMailCooldowns.contains(attacker.getUniqueId().toString())){
@@ -164,7 +144,7 @@ public class ReaperListener implements Listener{
         } else if (subtractMana(player, 0)){
             if (entity instanceof LivingEntity){
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 62, 4));
-                player.sendMessage("Second Wind Active, you got speed potion");
+                player.sendMessage("Second Wind Active, you got speed buff");
                 playerSecondWindCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerSecondWindCooldowns.contains(player.getUniqueId().toString())){
@@ -189,19 +169,72 @@ public class ReaperListener implements Listener{
         }
     }
 
-    @EventHandler (priority = EventPriority.LOW)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(event.getDamager() instanceof Player) {
-            Player attacker = (Player) event.getDamager();
-            ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
-            Random rand = new Random();
-            int coatedRandom = rand.nextInt(5);
-            switch (item.getType()) {
-                case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
-                    if (coatedRandom == 1) {
-                        castCoatedBlade(attacker, event.getEntity());
-                    }
+    public void castGutPunch (Player player , Entity entity, EntityDamageByEntityEvent event) {
+        if (playerGutPunchCooldowns.contains(player.getUniqueId().toString())) {
+            event.setDamage(0);
+            player.sendMessage(ChatColor.RESET + "" +ChatColor.RED +"Gut Punch is in Cooldown !");
+            return;
+        }else if (subtractMana(player, 0)){
+            if(entity instanceof LivingEntity){
+                double currDamage = event.getDamage();
+                double entityHealth = ((LivingEntity) entity).getHealth();
+                double maxHealth = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                double percentHealth = (entityHealth / maxHealth);
+                double finalDamage = (currDamage + (currDamage * percentHealth)) + 0.34;
+                if (entity instanceof Player){
+                    ((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 62, 3));
+                    ((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 62, 3));
                 }
+                event.setDamage(finalDamage);
+                playerGutPunchCooldowns.add(player.getUniqueId().toString());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerGutPunchCooldowns.contains(player.getUniqueId().toString())){
+                        playerGutPunchCooldowns.remove(player.getUniqueId().toString());
+                        player.sendMessage(ChatColor.RESET + "" +ChatColor.GREEN +"Gut Punch is off Cooldown !");
+                    }
+                }, 182);
+            }
+        }
+    }
+
+    public void castForbiddenSlash (Player player, Entity entity, EntityDamageByEntityEvent event){
+        if (playerForbiddenSlashCooldowns.contains(player.getUniqueId().toString())) {
+            event.setDamage(0);
+            player.sendMessage(ChatColor.RESET + "" +ChatColor.RED +"Forbidden Slash is in Cooldown !");
+            return;
+        } else if(subtractMana(player, 0)) {
+            if(entity instanceof  LivingEntity){
+                double currDamage = event.getDamage();
+                double finalDamage = currDamage + currDamage + 0.34;
+                event.setDamage(finalDamage);
+            }
+            playerForbiddenSlashCooldowns.add(player.getUniqueId().toString());
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(playerForbiddenSlashCooldowns.contains(player.getUniqueId().toString())){
+                    playerForbiddenSlashCooldowns.remove(player.getUniqueId().toString());
+                    player.sendMessage(ChatColor.RESET + "" +ChatColor.GREEN +"Forbidden Slash is off Cooldown !");
+                }
+            }, 402);
+        }
+    }
+
+    public void castHiddenStrike (Player player, Entity entity, EntityDamageByEntityEvent event){
+        if (playerHiddenStrikeCooldowns.contains(player.getUniqueId().toString())) {
+            event.setDamage(0);
+            player.sendMessage(ChatColor.RESET + "" + ChatColor.RED + "Hidden Strike is in Cooldown !");
+            return;
+        } else if(subtractMana(player, 0)){
+            if(entity instanceof  LivingEntity){
+                double currDamage = event.getDamage();
+                double finalDamage = (currDamage + (currDamage * 0.5) + 0.34);
+                event.setDamage(finalDamage);
+                playerHiddenStrikeCooldowns.add(player.getUniqueId().toString());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if(playerHiddenStrikeCooldowns.contains(player.getUniqueId().toString())){
+                        playerHiddenStrikeCooldowns.remove(player.getUniqueId().toString());
+                        player.sendMessage(ChatColor.RESET + "" +ChatColor.GREEN +"Hidden Strike is off Cooldown !");
+                    }
+                }, 202);
             }
         }
     }
@@ -237,7 +270,8 @@ public class ReaperListener implements Listener{
                     castTooSlow(defender, attacker, event);
                 }
             }
-        } else if (event.getDamager() instanceof Player){
+        }
+        if (event.getDamager() instanceof Player){
             LivingEntity defender = (LivingEntity) event.getEntity();
             Player attacker = (Player) event.getDamager();
             if (checkLevel(attacker, 7)) {
@@ -270,6 +304,31 @@ public class ReaperListener implements Listener{
                 }
                 case NETHERITE_HOE -> {
                     event.setDamage(event.getDamage() + 7);
+                }
+            }
+            Random rand = new Random();
+            int coatedRandom = rand.nextInt(5);
+            switch (item.getType()) {
+                case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
+                    if (coatedRandom == 1) {
+                        castCoatedBlade(attacker, event.getEntity());
+                    }
+                    if (item.getItemMeta() != null){
+                        switch (item.getItemMeta().getDisplayName()){
+                            case "§4Gut Punch" :
+                                castGutPunch(attacker, event.getEntity(), event);
+                                break;
+                            case "§4Hidden Strike":
+                                castHiddenStrike(attacker, event.getEntity(),event);
+                                break;
+                            case "§4Blinding Sand":
+                                attacker.sendMessage("Bro ini skill susah / devnya males");
+                                break;
+                            case "§4Forbidden Slash":
+                                castForbiddenSlash(attacker, event.getEntity(), event);
+                                break;
+                        }
+                    }
                 }
             }
         }
