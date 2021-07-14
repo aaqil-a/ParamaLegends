@@ -25,13 +25,13 @@ public class SwordsmanListener extends ClassListener implements Listener{
     private final ParamaLegends plugin;
     public DataManager data;
 
-    private final ShieldsUp shieldsUp;
-    private final PhoenixDive phoenixDive;
-    private final Enrage enrage;
-    private final Onslaught onslaught;
-    private final TerrifyingCruelty terrifyingCruelty;
-    private final Calamity calamity;
-    private final Superconducted superconducted;
+    public final ShieldsUp shieldsUp;
+    public final PhoenixDive phoenixDive;
+    public final Enrage enrage;
+    public final Onslaught onslaught;
+    public final TerrifyingCruelty terrifyingCruelty;
+    public final Calamity calamity;
+    public final Superconducted superconducted;
 
     private final HashMap<Player, Integer> playerCrippleAttackCount = new HashMap<Player, Integer>();
 
@@ -53,6 +53,8 @@ public class SwordsmanListener extends ClassListener implements Listener{
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
+        int classLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
+        super.getPlayerLevel().put(player, classLevel);
         playerCrippleAttackCount.put(player, 0);
     }
 

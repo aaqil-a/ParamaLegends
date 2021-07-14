@@ -26,17 +26,17 @@ public class ArcheryListener extends ClassListener implements Listener{
     private final ParamaLegends plugin;
     public DataManager data;
 
-    private final HunterEye hunterEye;
-    private final ViperBite viperBite;
-    private final TotsukaCreation totsukaCreation;
-    private final WindBoost windBoost;
-    private final Neurotoxin neurotoxin;
-    private final Soulstring soulstring;
-    private final HuayraFury huayraFury;
-    private final Retreat retreat;
-    private final Blast blast;
-    private final RoyalArtillery royalArtillery;
-    private final WhistlingWind whistlingWind;
+    public final HunterEye hunterEye;
+    public final ViperBite viperBite;
+    public final TotsukaCreation totsukaCreation;
+    public final WindBoost windBoost;
+    public final Neurotoxin neurotoxin;
+    public final Soulstring soulstring;
+    public final HuayraFury huayraFury;
+    public final Retreat retreat;
+    public final Blast blast;
+    public final RoyalArtillery royalArtillery;
+    public final WhistlingWind whistlingWind;
 
     private final List<Entity> entitiesPoisoned = new ArrayList<>();
 
@@ -62,12 +62,11 @@ public class ArcheryListener extends ClassListener implements Listener{
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        //Apply speed passive after a short delay
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            if(super.getPlayerLevel().get(player) >= 4){
-                applySpeedPassive(player);
-            }
-        }, 20);
+        int classLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
+        super.getPlayerLevel().put(player, classLevel);
+        if(classLevel >= 4){
+            applySpeedPassive(player);
+        }
     }
 
     //Change player's level in playerArcheryLevle hashmap when leveling up

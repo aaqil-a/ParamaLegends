@@ -120,7 +120,7 @@ public class ExperienceListener implements Listener {
         String skill = switch(skillType){
             case ARCHERY -> "Archery";
             case MAGIC -> "Magic";
-            case SWORDSMAN -> "Sworsdmanship";
+            case SWORDSMAN -> "Swordsmanship";
             case REAPER -> "Reaper";
         };
         if(player != null){

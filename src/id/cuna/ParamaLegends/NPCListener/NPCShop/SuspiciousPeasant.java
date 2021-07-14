@@ -22,11 +22,11 @@ public class SuspiciousPeasant extends NPCShopListener {
     //Prices array
     public static HashMap<Integer, Integer> prices = new HashMap<Integer, Integer>(){{
         put(4,5);
-        put(8,10);
-        put(10,40);
-        put(12,300);
-        put(14,400);
-        put(16,600);
+        put(9,10);
+        put(11,40);
+        put(13,300);
+        put(15,400);
+        put(17,600);
     }};
 
     public SuspiciousPeasant(final ParamaLegends plugin){
@@ -83,7 +83,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             if(item != null){
                 if(item.getType().equals(Material.IRON_HOE) || item.getType().equals(Material.WOODEN_HOE) || item.getType().equals(Material.STONE_HOE)
                         || item.getType().equals(Material.DIAMOND_HOE) || item.getType().equals(Material.GOLDEN_HOE) || item.getType().equals(Material.NETHERITE_HOE)){
-                    if (item.hasItemMeta() && item.getItemMeta().getDisplayName().contains("Scythe")) continue;
+                    if (item.hasItemMeta() && (item.getItemMeta().getDisplayName().contains("Scythe") || item.getItemMeta().getDisplayName().contains("Memento Mori"))) continue;
                     return item;
                 }
             }
@@ -143,7 +143,7 @@ public class SuspiciousPeasant extends NPCShopListener {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,18, "§1Reaper's Deals!");
+        gui = Bukkit.createInventory(null,18, "§4Reaper's Deals");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -182,7 +182,7 @@ public class SuspiciousPeasant extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(8, item);
+        gui.setItem(9, item);
         lore.clear();
 
         // Blinding Sand
@@ -196,7 +196,7 @@ public class SuspiciousPeasant extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(10, item);
+        gui.setItem(11, item);
         lore.clear();
 
         // Gut Punch
@@ -206,27 +206,30 @@ public class SuspiciousPeasant extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent's current HP and");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflicts high discomfort on");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 8");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(12, item);
+        gui.setItem(13, item);
         lore.clear();
 
 
         // Forbidden Slash
         item.setType(Material.END_ROD);
         meta.setDisplayName(ChatColor.RESET + "§4Forbidden Slash");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Making a decisive slash at");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the enemy dealing damage and");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Ready your weapon, dealing a");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "decisive slash to the enemy and");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage on");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the next attack.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 9");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(14, item);
+        gui.setItem(15, item);
         lore.clear();
 
         // Memento Mori
@@ -235,11 +238,12 @@ public class SuspiciousPeasant extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike with the power of the");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "grim reaper, dealing immense");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage to a single target.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(16, item);
+        gui.setItem(17, item);
         lore.clear();
 
         return gui;

@@ -21,16 +21,16 @@ public class MagicListener extends ClassListener implements Listener {
     private final ParamaLegends plugin;
     public DataManager data;
 
-    private final FlingEarth flingEarth;
-    private final Ignite ignite;
-    private final Gust gust;
-    private final LifeDrain lifeDrain;
-    private final Blink blink;
-    private final SummonLightning summonLightning;
-    private final IllusoryOrb illusoryOrb;
-    private final DragonBreath dragonBreath;
-    private final VoicesOfTheDamned voicesOfTheDamned;
-    private final Nova nova;
+    public final FlingEarth flingEarth;
+    public final Ignite ignite;
+    public final Gust gust;
+    public final LifeDrain lifeDrain;
+    public final Blink blink;
+    public final SummonLightning summonLightning;
+    public final IllusoryOrb illusoryOrb;
+    public final DragonBreath dragonBreath;
+    public final VoicesOfTheDamned voicesOfTheDamned;
+    public final Nova nova;
 
     public MagicListener(final ParamaLegends plugin){
         super(plugin, ClassType.MAGIC);

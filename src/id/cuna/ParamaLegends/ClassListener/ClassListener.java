@@ -46,8 +46,13 @@ public class ClassListener implements Listener {
 
     // Determine if player magic level is high enough to cast a spell
     public boolean checkLevel(Player player, int level){
+        return checkLevel(player, level, false);
+    }
+
+    // Determine if player magic level is high enough to cast a spell
+    public boolean checkLevel(Player player, int level, boolean silent){
         if(playerClassLevel.get(player) < level){
-            player.sendMessage(ChatColor.GRAY + "You do not understand how to use this spell yet.");
+            if(!silent) player.sendMessage(ChatColor.GRAY + "You do not understand how to use this spell yet.");
             return false;
         } else {
             return true;
@@ -74,6 +79,8 @@ public class ClassListener implements Listener {
     }
     public void sendOutOfRangeMessage(Player player){
         player.sendMessage(ChatColor.GRAY + "Out of range to cast spell.");
+    }
+    public void playerJoin(){
     }
 
     public HashMap<Player, Integer> getPlayerLevel() {

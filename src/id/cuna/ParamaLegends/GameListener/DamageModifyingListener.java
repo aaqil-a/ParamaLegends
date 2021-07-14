@@ -108,11 +108,19 @@ public class DamageModifyingListener implements Listener {
                     }
                 }
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
-                    if(plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().contains(attacker)){
-                        damage *= 1.5;
-                        attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation(),8, 0.5, 0.5, 0.5, 0.2);
-                        plugin.reaperListener.coatedBlade.castCoatedBlade(attacker, event.getEntity());
-                        plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().remove(attacker);
+                    if(item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("Scythe")){
+                        if(plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().contains(attacker)){
+                            damage *= 1.5;
+                            attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0.2);
+                            plugin.reaperListener.coatedBlade.castCoatedBlade(attacker, event.getEntity());
+                            plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().remove(attacker);
+                        }
+                        if(plugin.reaperListener.forbiddenSlash.getPlayersForbiddenSlash().contains(attacker)){
+                            damage *= 2;
+                            attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),8, 0.5, 0.5, 0.5, 0.2);
+                            attacker.getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1.5f);
+                            plugin.reaperListener.forbiddenSlash.getPlayersForbiddenSlash().remove(attacker);
+                        }
                     }
                 }
             }

@@ -24,17 +24,13 @@ public class CoatedBlade {
         if (!playerCooldowns.contains(attacker.getUniqueId().toString())) {
             if (entity instanceof LivingEntity) {
                 BukkitTask poison = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    entity.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, ((LivingEntity) entity).getEyeLocation(),4, 0.5, 0.5, 0.5, 0);
+                    entity.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, entity.getLocation(),4, 0.5, 0.5, 0.5, 0);
                     ((LivingEntity) entity).damage(1.034, attacker);
                 }, 0, 20);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    poison.cancel();
-                }, 42);
+                Bukkit.getScheduler().runTaskLater(plugin, poison::cancel, 42);
                 playerCooldowns.add(attacker.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (playerCooldowns.contains(attacker.getUniqueId().toString())) {
-                        playerCooldowns.remove(attacker.getUniqueId().toString());
-                    }
+                    playerCooldowns.remove(attacker.getUniqueId().toString());
                 }, 80);
             }
         }

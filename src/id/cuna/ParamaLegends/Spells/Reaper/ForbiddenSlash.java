@@ -7,40 +7,39 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HiddenStrike implements Listener {
+public class ForbiddenSlash implements Listener {
 
     private final ParamaLegends plugin;
     private ReaperListener reaperListener;
 
     private final List<String> playerCooldowns = new ArrayList<>();
-    private final List<Player> playersHiddenStrike = new ArrayList<>();
+    private final List<Player> playersForbiddenSlash = new ArrayList<>();
 
-    public HiddenStrike(ParamaLegends plugin, ReaperListener reaperListener){
+    public ForbiddenSlash(ParamaLegends plugin, ReaperListener reaperListener){
         this.plugin = plugin;
         this.reaperListener = reaperListener;
     }
 
-    public void castHiddenStrike(Player player){
+    public void castForbiddenSlash(Player player){
         if (playerCooldowns.contains(player.getUniqueId().toString())) {
-            reaperListener.sendCooldownMessage(player, "Hidden Strike");
-        } else if(reaperListener.subtractMana(player, 20)){
-            playersHiddenStrike.add(player);
-            player.sendMessage(ChatColor.GREEN+"You conceal your scythe.");
+            reaperListener.sendCooldownMessage(player, "Forbidden Slash");
+        } else if(reaperListener.subtractMana(player, 200)){
+            playersForbiddenSlash.add(player);
+            player.sendMessage(ChatColor.GREEN+"You ready your scythe.");
             playerCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    reaperListener.sendNoLongerCooldownMessage(player, "Hidden Strike");
+                    reaperListener.sendNoLongerCooldownMessage(player, "Forbidden Slash");
                     playerCooldowns.remove(player.getUniqueId().toString());
                 }
-            }, 202);
+            }, 402);
         }
     }
 
-    public List<Player> getPlayersHiddenStrike(){
-        return playersHiddenStrike;
+    public List<Player> getPlayersForbiddenSlash(){
+        return playersForbiddenSlash;
     }
 }

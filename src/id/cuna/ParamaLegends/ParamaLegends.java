@@ -26,11 +26,12 @@ public class ParamaLegends extends JavaPlugin {
     public WorldRuleListener worldRuleListener;
     public ExperienceListener experienceListener;
     public CommandStartGame commandStartGame;
+    public RaidListener raidListener;
+    public DamageModifyingListener damageModifyingListener;
+
     public ReaperListener reaperListener;
     public SwordsmanListener swordsmanListener;
     public ArcheryListener archeryListener;
-    public RaidListener raidListener;
-    public DamageModifyingListener damageModifyingListener;
     public MagicListener magicListener;
 
     public NPCShopListener banishedMagus;
@@ -50,15 +51,12 @@ public class ParamaLegends extends JavaPlugin {
         destinyListener = new PlayerJoinListener(this);
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
-        magicListener = new MagicListener(this);
         commandStartGame = new CommandStartGame(this);
-        reaperListener = new ReaperListener(this);;
-        swordsmanListener = new SwordsmanListener(this);
-        archeryListener = new ArcheryListener(this);
         raidListener = new RaidListener(this);
         damageModifyingListener = new DamageModifyingListener(this);
 
-        intializeNPCShop();
+        initializeNPCShop();
+        initializeGameClass();
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -67,21 +65,18 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(destinyListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
         getServer().getPluginManager().registerEvents(experienceListener, this);
-        getServer().getPluginManager().registerEvents(magicListener, this);
-        getServer().getPluginManager().registerEvents(reaperListener, this);
-        getServer().getPluginManager().registerEvents(swordsmanListener, this);
-        getServer().getPluginManager().registerEvents(archeryListener, this);
         getServer().getPluginManager().registerEvents(raidListener, this);
         getServer().getPluginManager().registerEvents(damageModifyingListener, this);
 
-
         registerNPCShopListener();
+        registerGameClass();
+        registerSpells();
 
         startNightCheck();
 
     }
 
-    public void intializeNPCShop(){
+    public void initializeNPCShop(){
         banishedMagus = new BanishedMagus(this);
         oddReseller = new OddReseller(this);
         seniorRanger = new SeniorRanger(this);
@@ -95,6 +90,40 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(seniorRanger, this);
         getServer().getPluginManager().registerEvents(retiredWeaponsmith, this);
         getServer().getPluginManager().registerEvents(suspiciousPeasant, this);
+    }
+
+    public void initializeGameClass(){
+        magicListener = new MagicListener(this);
+        reaperListener = new ReaperListener(this);;
+        swordsmanListener = new SwordsmanListener(this);
+        archeryListener = new ArcheryListener(this);
+    }
+
+    public void registerGameClass(){
+        getServer().getPluginManager().registerEvents(magicListener, this);
+        getServer().getPluginManager().registerEvents(reaperListener, this);
+        getServer().getPluginManager().registerEvents(swordsmanListener, this);
+        getServer().getPluginManager().registerEvents(archeryListener, this);
+    }
+
+    public void registerSpells(){
+        getServer().getPluginManager().registerEvents(archeryListener.blast, this);
+        getServer().getPluginManager().registerEvents(archeryListener.hunterEye, this);
+        getServer().getPluginManager().registerEvents(archeryListener.neurotoxin, this);
+        getServer().getPluginManager().registerEvents(archeryListener.royalArtillery, this);
+        getServer().getPluginManager().registerEvents(archeryListener.totsukaCreation, this);
+        getServer().getPluginManager().registerEvents(archeryListener.viperBite, this);
+        getServer().getPluginManager().registerEvents(archeryListener.whistlingWind, this);
+
+        getServer().getPluginManager().registerEvents(magicListener.flingEarth, this);
+        getServer().getPluginManager().registerEvents(magicListener.illusoryOrb, this);
+        getServer().getPluginManager().registerEvents(magicListener.voicesOfTheDamned, this);
+
+        getServer().getPluginManager().registerEvents(reaperListener.blindingSand, this);
+
+        getServer().getPluginManager().registerEvents(swordsmanListener.shieldsUp, this);
+        getServer().getPluginManager().registerEvents(swordsmanListener.superconducted, this);
+        getServer().getPluginManager().registerEvents(swordsmanListener.terrifyingCruelty, this);
     }
 
     @Override
@@ -124,7 +153,6 @@ public class ParamaLegends extends JavaPlugin {
             isNight = false;
         }, 10000);
     }
-
 
     public boolean isSilenced(Player player){
         if(!playersSilenced.contains(player)) {
