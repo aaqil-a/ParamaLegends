@@ -101,13 +101,29 @@ public class MobSpawnListener implements Listener {
                         .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
                 z.setHealth(data.getConfig().getDouble("mobs.zombie.health"));
             }
+            case PHANTOM -> {
+                Phantom p = (Phantom) event.getEntity();
+                p.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health"));
+                p.setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
+                p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
+            }
             case WITCH -> {
                 Witch w = (Witch) event.getEntity();
                 w.getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(data.getConfig().getDouble("mobs.witch.health"));
                 w.setHealth(data.getConfig().getDouble("mobs.witch.health"));
             }
-            case VINDICATOR, EVOKER, PILLAGER, ENDERMAN -> {
+            case ENDERMAN -> {
+                Enderman e = (Enderman) event.getEntity();
+                e.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.health"));
+                e.setHealth(data.getConfig().getDouble("mobs.enderman.health"));
+                e.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.damage"));
+            }
+            case VINDICATOR, EVOKER, PILLAGER -> {
                 event.setCancelled(true);
             }
             default -> {

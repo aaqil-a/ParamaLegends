@@ -1,13 +1,12 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -42,7 +42,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
 
-        if (!data.getConfig().contains("players." + player.getUniqueId().toString() + ".joined")){
+        if (!data.getConfig().contains("players." + player.getUniqueId().toString())){
             data.getConfig().set("players." + player.getUniqueId().toString() + ".joined", 1);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", 50);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", 1);
@@ -60,10 +60,9 @@ public class PlayerJoinListener implements Listener {
 
         int magicLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
         int swordsLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
-        int miningLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".mining");
         int archeryLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
         int reaperLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
-        int manaLevel = (magicLevel+swordsLevel+miningLevel+archeryLevel+reaperLevel)/5;
+        int manaLevel = Math.max(Math.max(magicLevel,swordsLevel),Math.max(archeryLevel,reaperLevel));
         player.setExp(0);
         if(playerCurrentLevel.containsKey(player.getUniqueId().toString())){
             player.setLevel(playerCurrentLevel.get(player.getUniqueId().toString()));
@@ -88,26 +87,7 @@ public class PlayerJoinListener implements Listener {
                         player.getInventory().addItem(item);
                         player.sendMessage(ChatColor.GRAY + "The shield feels much to heavy to use on one hand.");
                     }
-                    if(player.getLocation().getY() < maxDepth && !playerInsideDepths.contains(player)){
-                        playerTooDeep(player);
-                    }
                 }, 0, 20)
         );
-    }
-
-    public void playerTooDeep(Player player){
-        playerInsideDepths.add(player);
-        player.sendMessage(ChatColor.RED+"Turn back, the depths do not welcome you.");
-        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 20, false, false, false));
-        double startX = data.getConfig().getDouble("world.startX");
-        double startY = data.getConfig().getDouble("world.startY");
-        double startZ = data.getConfig().getDouble("world.startZ");
-        Location tpLocation = new Location(player.getWorld(), startX,startY,startZ);
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            if(player.getLocation().getY() < maxDepth){
-                player.teleport(tpLocation);
-            }
-            playerInsideDepths.remove(player);
-        }, 105);
     }
 }

@@ -1,18 +1,13 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;

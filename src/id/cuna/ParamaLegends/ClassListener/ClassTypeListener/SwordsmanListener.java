@@ -1,4 +1,4 @@
-package id.cuna.ParamaLegends.ClassListener.ClassTypeListeners;
+package id.cuna.ParamaLegends.ClassListener.ClassTypeListener;
 
 import id.cuna.ParamaLegends.ClassListener.ClassListener;
 import id.cuna.ParamaLegends.ClassType;

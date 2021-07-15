@@ -1,16 +1,19 @@
 package id.cuna.ParamaLegends;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ArcheryListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.MagicListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ReaperListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.SwordsmanListener;
+import id.cuna.ParamaLegends.BossListener.AltarTypeListener.NatureAltarListener;
+import id.cuna.ParamaLegends.BossListener.AltarTypeListener.StartAltarListener;
+import id.cuna.ParamaLegends.BossListener.BossTypeListener.RaidListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.Command.CommandStartGame;
 import id.cuna.ParamaLegends.Command.CommandYourMom;
 import id.cuna.ParamaLegends.GameListener.*;
 import id.cuna.ParamaLegends.NPCListener.*;
 import id.cuna.ParamaLegends.NPCListener.NPCShop.*;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,6 +43,9 @@ public class ParamaLegends extends JavaPlugin {
     public NPCShopListener retiredWeaponsmith;
     public NPCShopListener suspiciousPeasant;
 
+    public StartAltarListener startAltarListener;
+    public NatureAltarListener natureAltarListener;
+
     public final List<Player> playersSilenced = new ArrayList<Player>();
     private boolean isNight = false;
 
@@ -57,6 +63,7 @@ public class ParamaLegends extends JavaPlugin {
 
         initializeNPCShop();
         initializeGameClass();
+        initializeAltars();
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -71,8 +78,7 @@ public class ParamaLegends extends JavaPlugin {
         registerNPCShopListener();
         registerGameClass();
         registerSpells();
-
-        startNightCheck();
+        registerAltars();
 
     }
 
@@ -126,32 +132,25 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(swordsmanListener.terrifyingCruelty, this);
     }
 
+    public void initializeAltars(){
+        natureAltarListener = new NatureAltarListener(this);
+        startAltarListener = new StartAltarListener(this);
+    }
+
+    public void registerAltars(){
+        getServer().getPluginManager().registerEvents(startAltarListener, this);
+        getServer().getPluginManager().registerEvents(natureAltarListener, this);
+    }
+
+
     @Override
     public void onDisable() {
     }
 
-    public void startNightCheck(){
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Player player = null;
-            for(Player players: Bukkit.getOnlinePlayers()){
-                player = players;
-            }
-            if(player != null) {
-                if (player.getWorld().getTime() > 13500 && !isNight) {
-                    Bukkit.broadcastMessage("Raid begin!");
-                    startRaid(player);
-                    isNight = true;
-                }
-            }
-        }, 0, 100);
-    }
-
-    public void startRaid(Player player){
-        this.raidListener.startRaid(player);
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            Bukkit.broadcastMessage("Raid end!");
-            isNight = false;
-        }, 10000);
+    public void spawnBossAltar(World world){
+        switch(data.getConfig().getInt("world.level")){
+            case 1 -> natureAltarListener.createAltarLocation(world);
+        }
     }
 
     public boolean isSilenced(Player player){

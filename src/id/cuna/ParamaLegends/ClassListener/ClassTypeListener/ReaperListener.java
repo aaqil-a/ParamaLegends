@@ -1,4 +1,4 @@
-package id.cuna.ParamaLegends.ClassListener.ClassTypeListeners;
+package id.cuna.ParamaLegends.ClassListener.ClassTypeListener;
 
 import id.cuna.ParamaLegends.ClassListener.ClassListener;
 import id.cuna.ParamaLegends.ClassType;
@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import javax.swing.*;
 import java.util.*;
 
 public class ReaperListener extends ClassListener implements Listener{

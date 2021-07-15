@@ -1,6 +1,6 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;
@@ -88,7 +88,9 @@ public class IllusoryOrb implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event){
         if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL)){
-            event.setCancelled(true);
+            for(EnderPearl pearl: castedOrb){
+                if(pearl.getShooter() != null && pearl.getShooter().equals(event.getPlayer())) event.setCancelled(true);
+            }
         }
     }
 

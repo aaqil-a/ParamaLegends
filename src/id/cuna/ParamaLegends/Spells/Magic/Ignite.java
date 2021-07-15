@@ -1,6 +1,6 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;

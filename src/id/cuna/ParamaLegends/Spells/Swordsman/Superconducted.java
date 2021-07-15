@@ -1,6 +1,6 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.SwordsmanListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;

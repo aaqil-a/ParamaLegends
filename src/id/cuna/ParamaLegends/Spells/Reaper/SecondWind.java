@@ -1,11 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -26,6 +25,7 @@ public class SecondWind {
         if (!playerCooldowns.contains(player.getUniqueId().toString())){
             if (entity instanceof LivingEntity){
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 62, 2));
+                player.sendMessage(ChatColor.GREEN+"You gain a second wind.");
                 playerCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerCooldowns.remove(player.getUniqueId().toString());

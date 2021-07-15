@@ -1,6 +1,6 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;

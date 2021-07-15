@@ -55,10 +55,11 @@ public class ExperienceListener implements Listener {
         //Check mob killed
         mob = switch (entity.getType()) {
             case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> "zombie";
-            case WITCH -> mob = "witch";
-            case SKELETON, STRAY -> mob = "skeleton";
-            case CREEPER -> mob = "creeper";
-            case SPIDER, CAVE_SPIDER -> mob = "spider";
+            case WITCH -> "witch";
+            case SKELETON, STRAY ->"skeleton";
+            case CREEPER -> "creeper";
+            case SPIDER, CAVE_SPIDER -> "spider";
+            case ENDERMAN -> "enderman";
             default -> "";
         };
         //Grant exp and lectrum to player according to mob killed
@@ -140,8 +141,8 @@ public class ExperienceListener implements Listener {
                     case ARCHERY -> plugin.levelUpArchery(player);
                 }
             }
-            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill, currLevel);
-            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill+"exp", currExp);
+            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase(), currLevel);
+            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase()+"exp", currExp);
             data.saveConfig();
         }
     }

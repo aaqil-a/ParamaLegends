@@ -1,6 +1,6 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListeners.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

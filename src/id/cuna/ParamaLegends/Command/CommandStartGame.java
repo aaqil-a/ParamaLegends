@@ -7,6 +7,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
@@ -166,19 +167,7 @@ public class CommandStartGame implements CommandExecutor {
         placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
         placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
 
-        //Spawn protective crystal
-        placeLocation = location.getWorld().getHighestBlockAt(location).getLocation().add(-2,0,-2);
-        placeLocation.getWorld().spawn(placeLocation, ArmorStand.class, armorStand -> {
-            armorStand.setCustomName("§6Void Nullifier");
-            armorStand.setCustomNameVisible(true);
-            armorStand.setSilent(true);
-            armorStand.setGravity(false);
-            armorStand.setInvulnerable(true);
-            armorStand.setCollidable(false);
-            armorStand.setCanPickupItems(false);
-            armorStand.getEquipment().setHelmet(new ItemStack(Material.CRYING_OBSIDIAN));
-            armorStand.setInvisible(true);
-        });
+
 
     }
 
@@ -254,6 +243,9 @@ public class CommandStartGame implements CommandExecutor {
             org.bukkit.World world = player.getWorld();
             Location location = player.getLocation();
 
+            //set world spawn point
+            world.setSpawnLocation(location);
+
             // Create safe zone region
             World worldGuard = BukkitAdapter.adapt(player.getWorld());
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -270,62 +262,37 @@ public class CommandStartGame implements CommandExecutor {
 
             data.getConfig().set("world.level", 1);
 
-
             // Change global zone flags
             if(regions.hasRegion("__global__")) {
                 ProtectedRegion global = regions.getRegion("__global__");
-                global.setFlag(Flags.PASSTHROUGH, StateFlag.State.DENY);
-                global.setFlag(Flags.PLACE_VEHICLE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.USE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.INTERACT, StateFlag.State.ALLOW);
-                global.setFlag(Flags.USE_ANVIL, StateFlag.State.ALLOW);
-                global.setFlag(Flags.DAMAGE_ANIMALS, StateFlag.State.ALLOW);
-                global.setFlag(Flags.CHEST_ACCESS, StateFlag.State.ALLOW);
-                global.setFlag(Flags.RIDE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.PVP, StateFlag.State.ALLOW);
-                global.setFlag(Flags.SLEEP, StateFlag.State.ALLOW);
-                global.setFlag(Flags.RESPAWN_ANCHORS, StateFlag.State.ALLOW);
-                global.setFlag(Flags.TNT, StateFlag.State.ALLOW);
-                global.setFlag(Flags.DESTROY_VEHICLE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.LIGHTER, StateFlag.State.ALLOW);
-                global.setFlag(Flags.TRAMPLE_BLOCKS, StateFlag.State.ALLOW);
-                global.setFlag(Flags.FROSTED_ICE_FORM, StateFlag.State.ALLOW);
-                global.setFlag(Flags.ITEM_FRAME_ROTATE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.FIREWORK_DAMAGE, StateFlag.State.ALLOW);
-                global.setFlag(Flags.DENY_MESSAGE, ChatColor.DARK_RED+"It is impossible to reshape the wilderness.");
-                global.setFlag(Flags.GREET_MESSAGE, ChatColor.RED + "The wilderness exudes a threatening aura...");
-
+                global.setFlag(Flags.HEALTH_REGEN, StateFlag.State.DENY);
+                global.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
             } else {
-                player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ passthrough deny'");
+                player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
                 return false;
             }
 
             //create safe zone
-            BlockVector3 min = BlockVector3.at(locationX-size, 30, locationZ-size);
+            BlockVector3 min = BlockVector3.at(locationX-size, 0, locationZ-size);
             BlockVector3 max = BlockVector3.at(locationX+size, 256, locationZ+size);
             ProtectedRegion region = new ProtectedCuboidRegion("safezone", min, max);
+            region.setPriority(1);
             region.setFlag(Flags.GREET_MESSAGE, ChatColor.GREEN + "You feel slightly more protected...");
-            region.setFlag(Flags.MOB_SPAWNING, StateFlag.State.ALLOW);
+            region.setFlag(Flags.FAREWELL_MESSAGE, ChatColor.RED + "The wilderness exudes a threatening aura...");
+            region.setFlag(Flags.HEALTH_REGEN, StateFlag.State.ALLOW);
             region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
             regions.addRegion(region);
-
-            //Create depths zone
-            min = BlockVector3.at(locationX-size, 0, locationZ-size);
-            max = BlockVector3.at(locationX+size, 29, locationZ+size);
-            ProtectedRegion depths = new ProtectedCuboidRegion("depths", min, max);
-            depths.setFlag(Flags.MOB_SPAWNING, StateFlag.State.ALLOW);
-            depths.setFlag(Flags.BLOCK_BREAK, StateFlag.State.DENY);
-            depths.setFlag(Flags.BLOCK_PLACE, StateFlag.State.ALLOW);
-            depths.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
-            depths.setFlag(Flags.DENY_MESSAGE, ChatColor.DARK_RED+"The earth at this depth is much too dense.");
-
-            regions.addRegion(depths);
 
             buildArea(location);
             teleportPlayers(location);
             playScene();
 
             data.saveConfig();
+
+            //spawn start altar
+            plugin.startAltarListener.spawnAltar(player.getWorld());
+            //spawn nature altar
+            plugin.spawnBossAltar(player.getWorld());
 
             return true;
         }

@@ -1,9 +1,6 @@
 world:
-  quest: 0
   level: 1
   maxdepth: 30
-  quests:
-    1:
 mobs:
   zombie:
     health: 50
@@ -30,6 +27,11 @@ mobs:
     health: 40
     lectrum: 4
     exp: 25
+  enderman:
+    damage: 15
+    health: 80
+    lectrum: 10
+    exp: 40
 players:
 levelupmessage:
   magic:
