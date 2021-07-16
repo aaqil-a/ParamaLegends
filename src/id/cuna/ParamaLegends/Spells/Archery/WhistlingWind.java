@@ -98,7 +98,7 @@ public class WhistlingWind implements Listener {
         newArrow.setGravity(false);
         newArrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         newArrow.setSilent(true);
-        newArrow.setVelocity(newArrow.getVelocity().multiply(2));
+        newArrow.setVelocity(newArrow.getVelocity().multiply(2.5));
         dummy.remove();
         if(arrowLocation.distance(hitLocation) < 1.5){
             newArrow.remove();
@@ -170,7 +170,7 @@ public class WhistlingWind implements Listener {
                     newArrow.setGravity(false);
                     newArrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                     newArrow.setSilent(true);
-                    newArrow.setVelocity(newArrow.getVelocity().multiply(2));
+                    newArrow.setVelocity(newArrow.getVelocity().multiply(2.5));
                     dummy.remove();
                     if(arrowLocation.distance(hitLocation) < 4){
                         newArrow.remove();

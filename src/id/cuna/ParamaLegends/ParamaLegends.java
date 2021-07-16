@@ -2,7 +2,8 @@ package id.cuna.ParamaLegends;
 
 import id.cuna.ParamaLegends.BossListener.AltarTypeListener.NatureAltarListener;
 import id.cuna.ParamaLegends.BossListener.AltarTypeListener.StartAltarListener;
-import id.cuna.ParamaLegends.BossListener.BossTypeListener.RaidListener;
+import id.cuna.ParamaLegends.BossListener.BossFightListener.RaidFightListener;
+import id.cuna.ParamaLegends.BossListener.BossSummonListener.RaidSummonListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
@@ -29,7 +30,6 @@ public class ParamaLegends extends JavaPlugin {
     public WorldRuleListener worldRuleListener;
     public ExperienceListener experienceListener;
     public CommandStartGame commandStartGame;
-    public RaidListener raidListener;
     public DamageModifyingListener damageModifyingListener;
 
     public ReaperListener reaperListener;
@@ -46,6 +46,10 @@ public class ParamaLegends extends JavaPlugin {
     public StartAltarListener startAltarListener;
     public NatureAltarListener natureAltarListener;
 
+    public RaidSummonListener raidSummonListener;
+
+    public RaidFightListener raidFightListener;
+
     public final List<Player> playersSilenced = new ArrayList<Player>();
     private boolean isNight = false;
 
@@ -58,12 +62,13 @@ public class ParamaLegends extends JavaPlugin {
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
         commandStartGame = new CommandStartGame(this);
-        raidListener = new RaidListener(this);
         damageModifyingListener = new DamageModifyingListener(this);
 
         initializeNPCShop();
         initializeGameClass();
         initializeAltars();
+        initializeSummons();
+        initializeBossFights();
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
@@ -72,14 +77,31 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(destinyListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
         getServer().getPluginManager().registerEvents(experienceListener, this);
-        getServer().getPluginManager().registerEvents(raidListener, this);
         getServer().getPluginManager().registerEvents(damageModifyingListener, this);
 
         registerNPCShopListener();
         registerGameClass();
         registerSpells();
         registerAltars();
+        registerSummons();
+        registerBossFights();
 
+    }
+
+    public void initializeSummons(){
+        raidSummonListener = new RaidSummonListener(this);
+    }
+
+    public void registerSummons(){
+        getServer().getPluginManager().registerEvents(raidSummonListener, this);
+    }
+
+    public void initializeBossFights(){
+        raidFightListener = new RaidFightListener(this);
+    }
+
+    public void registerBossFights(){
+        getServer().getPluginManager().registerEvents(raidFightListener, this);
     }
 
     public void initializeNPCShop(){

@@ -88,10 +88,6 @@ public class MobSpawnListener implements Listener {
                 c.getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(data.getConfig().getDouble("mobs.creeper.health"));
                 c.setHealth(data.getConfig().getDouble("mobs.creeper.health"));
-                c.setExplosionRadius(
-                        data.getConfig().getInt("mobs.creeper.explosionradius"));
-                c.setMaxFuseTicks(
-                        data.getConfig().getInt("mobs.creeper.maxfuseticks"));
             }
             case DROWNED -> {
                 Drowned z = (Drowned) event.getEntity();
@@ -132,6 +128,18 @@ public class MobSpawnListener implements Listener {
         }
         if(hostile){
             event.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.7);
+        }
+
+        //Modify boss mobs
+        if(event.getEntity().getCustomName() != null){
+            if(event.getEntity().getCustomName().equals("§5Void Nullifier")){
+                Zombie z = (Zombie) event.getEntity();
+                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health")*10);
+                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage")*2);
+                z.setHealth(data.getConfig().getDouble("mobs.zombie.health")*10);
+            }
         }
     }
 

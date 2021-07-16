@@ -19,8 +19,6 @@ mobs:
     exp: 20
   creeper:
     health: 40
-    explosionradius: 6
-    maxfuseticks: 10
     lectrum: 7
     exp: 30
   witch:

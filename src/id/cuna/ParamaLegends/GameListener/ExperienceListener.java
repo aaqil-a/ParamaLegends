@@ -58,7 +58,7 @@ public class ExperienceListener implements Listener {
             case WITCH -> "witch";
             case SKELETON, STRAY ->"skeleton";
             case CREEPER -> "creeper";
-            case SPIDER, CAVE_SPIDER -> "spider";
+            case SPIDER, CAVE_SPIDER, PHANTOM -> "spider";
             case ENDERMAN -> "enderman";
             default -> "";
         };

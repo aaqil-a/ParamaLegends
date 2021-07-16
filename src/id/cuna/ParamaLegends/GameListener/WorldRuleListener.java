@@ -37,12 +37,6 @@ public class WorldRuleListener implements Listener {
         maxDepth = data.getConfig().getInt("world.maxdepth");
     }
 
-    //Disable breeding
-    @EventHandler
-    public void breedAnimal(EntityBreedEvent event){
-        event.setCancelled(true);
-    }
-
     //Disable nether portal teleport
     @EventHandler
     public void netherPortal(PlayerPortalEvent event){

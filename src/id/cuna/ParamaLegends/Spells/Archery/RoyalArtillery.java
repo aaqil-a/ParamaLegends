@@ -45,7 +45,7 @@ public class RoyalArtillery implements Listener {
                 plugin.magicListener.sendOutOfRangeMessage(player);
                 return;
             }
-            if (archeryListener.subtractMana(player, 0)) {//150
+            if (archeryListener.subtractMana(player, 150)) {
                 player.getWorld().spawn(location.clone().add(0,1,0), Firework.class, firework -> {
                     FireworkMeta meta = firework.getFireworkMeta();
                     meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BURST)

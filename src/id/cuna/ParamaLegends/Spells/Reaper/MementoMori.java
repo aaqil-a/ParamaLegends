@@ -31,7 +31,8 @@ public class MementoMori {
                 playerCooldowns.add(player.getUniqueId().toString());
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    ((LivingEntity) entity).damage(100.034, player);
+                    ((LivingEntity) entity).damage(250.034, player);
+                    entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f, 1.3f);
                     entity.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, ((LivingEntity) entity).getEyeLocation(), 4, 0.5, 0.5, 0.5, 0);
                     entity.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, ((LivingEntity) entity).getEyeLocation(), 1, 0, 0, 0, 0);
                     entity.getWorld().spawnParticle(Particle.FLASH, ((LivingEntity) entity).getEyeLocation(), 1, 0, 0, 0, 0);
