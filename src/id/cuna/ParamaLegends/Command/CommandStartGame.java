@@ -7,20 +7,21 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.List;
 
 public class CommandStartGame implements CommandExecutor {
 
@@ -36,7 +37,6 @@ public class CommandStartGame implements CommandExecutor {
     //Build starting area
     public void buildArea(Location location){
         Location placeLocation;
-
 
         //Fill blocks below ground layer
         int layers = -1;
@@ -195,9 +195,8 @@ public class CommandStartGame implements CommandExecutor {
         v.setCustomNameVisible(true);
         v.setVillagerType(type);
         v.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100, false, false ,false));
-        v.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 100, false, false ,false));
         v.setSilent(true);
-        v.getEntityId();
+        v.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
         v.setCollidable(false);
         if(profession != null){
             v.setProfession(profession);
@@ -213,6 +212,7 @@ public class CommandStartGame implements CommandExecutor {
         location.setYaw(-44);
         location.setPitch(2.8f);
         for(Player player : plugin.getServer().getOnlinePlayers()){
+            player.teleport(location);
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 15, true, false, false)); //blindness effect
             player.setInvisible(true); // make players invisible
         }
@@ -233,15 +233,24 @@ public class CommandStartGame implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         int size;
         if (sender instanceof Player){
-
             if(args.length == 0){
                 size = 50;
             } else {
                 size = Integer.getInteger(args[0]);
             }
+            if(data.getConfig().getInt("world.level") == 0) {
+                sender.sendMessage(ChatColor.RED+"Game is not setup. Use /gamesetup to begin game setup.");
+                return true;
+            } else if(data.getConfig().getBoolean("world.started")) {
+                sender.sendMessage(ChatColor.RED+"Game has already started. Remove plugin config.yml file to restart game.");
+                return true;
+            }
+
             Player player = (Player) sender;
             org.bukkit.World world = player.getWorld();
-            Location location = player.getLocation();
+
+            List<Integer> startLocation = data.getConfig().getIntegerList("world.startlocation");
+            Location location = new Location(player.getWorld(), startLocation.get(0), startLocation.get(1)+1, startLocation.get(2));
 
             //set world spawn point
             world.setSpawnLocation(location);
@@ -261,6 +270,7 @@ public class CommandStartGame implements CommandExecutor {
             data.getConfig().set("world.startSize", size);
 
             data.getConfig().set("world.level", 1);
+            data.getConfig().set("world.started", true);
 
             // Change global zone flags
             if(regions.hasRegion("__global__")) {
@@ -269,7 +279,7 @@ public class CommandStartGame implements CommandExecutor {
                 global.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
             } else {
                 player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
-                return false;
+                return true;
             }
 
             //create safe zone
@@ -288,12 +298,6 @@ public class CommandStartGame implements CommandExecutor {
             playScene();
 
             data.saveConfig();
-
-            //spawn start altar
-            plugin.startAltarListener.spawnAltar(player.getWorld());
-            //spawn nature altar
-            plugin.spawnBossAltar(player.getWorld());
-
             return true;
         }
         return false;

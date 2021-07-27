@@ -42,7 +42,7 @@ public class ShieldsUp implements Listener {
                     player.sendMessage(ChatColor.GREEN+"Shields Up wore off.");
                     playersShielded.remove(player);
                     //shieldEffect.cancel();
-                }, 122);
+                }, 162);
                 playerCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerCooldowns.contains(player.getUniqueId().toString())){

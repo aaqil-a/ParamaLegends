@@ -30,31 +30,6 @@ public class NPCShopListener implements Listener {
         this.NPCName = NPCName;
     }
 
-    //Cancel damage of npc event
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event){
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals(NPCName))
-            event.setCancelled(true);
-    }
-
-    //Attack attacker
-    @EventHandler
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event){
-        Entity damager = event.getDamager();
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals(NPCName)) {
-            if(damager instanceof Player){
-                Player attacker = (Player) damager;
-                NPCAttack(attacker, event.getEntity());
-            } else if(damager instanceof Arrow){
-                Arrow arrow = (Arrow) damager;
-                if (arrow.getShooter() instanceof Player) {
-                    Player attacker = (Player) arrow.getShooter();
-                    NPCAttack(attacker, event.getEntity());
-                }
-            }
-        }
-    }
-
     //Open gui when right click npc
     @EventHandler
     public void onPlayerInteract(PlayerInteractEntityEvent event) {

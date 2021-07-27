@@ -60,7 +60,7 @@ public class DamageModifyingListener implements Listener {
             }
         }
         if(plugin.archeryListener.getEntitiesHunterEye().contains(event.getEntity())){
-            damage = plugin.increasedIncomingDamage(damage, 1.1);
+            damage = plugin.increasedIncomingDamage(damage, 1.3);
         }
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();

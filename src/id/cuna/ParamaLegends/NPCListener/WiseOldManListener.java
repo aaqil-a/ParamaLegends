@@ -26,42 +26,12 @@ public class WiseOldManListener implements Listener {
     public DataManager data;
     public Inventory gui;
     public Inventory gui2;
-    private int[] xpNeeded = {0,230,370,480,580,600,720,750,890,930, Integer.MAX_VALUE};
+    private final int[] xpNeeded = {0,460,740,960,1160,1200,1440,1500,1780,1860, Integer.MAX_VALUE};
 
 
     public WiseOldManListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
-    }
-
-    //cancel damage to npc
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event){
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§6Wise Peculier")){
-            event.setCancelled(true);
-        }
-    }
-
-    //Damage player when attacking npc
-    @EventHandler
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event){
-        Entity damager = event.getDamager();
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getName().equals("§6Wise Peculier")) {
-            if(damager instanceof Player){
-                damager.getWorld().strikeLightningEffect(damager.getLocation());
-                ((Player) damager).damage(10, event.getEntity());
-            } else if(damager instanceof Arrow){
-                Arrow arrow = (Arrow) damager;
-                if (arrow.getShooter() instanceof Player) {
-                    Player player = (Player) arrow.getShooter();
-                    player.getWorld().strikeLightningEffect(player.getLocation());
-                    player.damage(10, event.getEntity());
-                }
-            } else {
-                damager.getWorld().strikeLightningEffect(event.getEntity().getLocation());
-            }
-            event.setCancelled(true);
-        }
     }
 
     //open gui when right clicking npc

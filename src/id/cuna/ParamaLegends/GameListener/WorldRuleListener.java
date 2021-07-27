@@ -2,27 +2,15 @@ package id.cuna.ParamaLegends.GameListener;
 
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class WorldRuleListener implements Listener {
 
@@ -55,6 +43,13 @@ public class WorldRuleListener implements Listener {
                 }
             }
         }
+    }
+
+    //Disable sleeping
+    @EventHandler
+    public void onSleep(PlayerBedEnterEvent event){
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(ChatColor.GRAY+"The void haunts your dreams. It is impossible to sleep.");
     }
 
     //Disable interacting with armor stands with custom names

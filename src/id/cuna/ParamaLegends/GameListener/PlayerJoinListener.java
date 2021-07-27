@@ -24,17 +24,15 @@ public class PlayerJoinListener implements Listener {
     private final ParamaLegends plugin;
     public DataManager data;
 
-    private final int maxDepth;
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
-    private final int[] manaRegen = {0,1,1,2,3,3,4,5,6,7,8};
+    private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
     private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
+    private final HashMap<Player, Integer> playerManaLevel = new HashMap<Player, Integer>();
     private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
-    private final List<Player> playerInsideDepths = new ArrayList<Player>();
 
     public PlayerJoinListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
-        maxDepth = data.getConfig().getInt("world.maxdepth");
     }
 
     //Start mana regen tasks and set default data of exp
@@ -64,6 +62,7 @@ public class PlayerJoinListener implements Listener {
         int reaperLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
         int manaLevel = Math.max(Math.max(magicLevel,swordsLevel),Math.max(archeryLevel,reaperLevel));
         player.setExp(0);
+        playerManaLevel.put(player, manaLevel);
         if(playerCurrentLevel.containsKey(player.getUniqueId().toString())){
             player.setLevel(playerCurrentLevel.get(player.getUniqueId().toString()));
         } else {
@@ -73,10 +72,11 @@ public class PlayerJoinListener implements Listener {
         playerManaRegenTasks.put(player,
                 Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     int curMana = player.getLevel();
-                    if(curMana < maxMana[manaLevel]){
-                        curMana += manaRegen[manaLevel] ;
-                        if(curMana > maxMana[manaLevel])
-                            curMana = maxMana[manaLevel];
+                    int taskManaLevel = playerManaLevel.get(player);
+                    if(curMana < maxMana[taskManaLevel]){
+                        curMana += manaRegen[taskManaLevel] ;
+                        if(curMana > maxMana[taskManaLevel])
+                            curMana = maxMana[taskManaLevel];
                         player.setExp(0);
                         player.setLevel(curMana);
                         playerCurrentLevel.put(player.getUniqueId().toString(), curMana);
@@ -89,5 +89,11 @@ public class PlayerJoinListener implements Listener {
                     }
                 }, 0, 20)
         );
+    }
+
+    public void levelUp(Player player, int level){
+        if(playerManaLevel.get(player) < level){
+            playerManaLevel.put(player, level);
+        }
     }
 }

@@ -25,23 +25,21 @@ public class StartAltarListener extends AltarListener implements Listener {
     private final DataManager data;
 
     public StartAltarListener(ParamaLegends plugin){
-        super(plugin, null);
+        super(plugin, BossType.START);
         this.plugin = plugin;
         this.data = plugin.getData();
     }
 
-    @Override
-    public void spawnAltar(World world){
-        int altarX = (int) data.getConfig().getDouble("world.startX");
-        int altarZ = (int) data.getConfig().getDouble("world.startZ");
+    public void spawnAltar(World world, int altarX, int altarZ){
 
         Location location = new Location(world, altarX, world.getHighestBlockYAt(altarX, altarZ), altarZ);
         Location placeLocation;
         //Spawn altar interact
         placeLocation = location.clone().add(-2,0,-2);
         placeLocation = placeLocation.getWorld().getHighestBlockAt(placeLocation).getLocation();
+        placeLocation.add(0,1,0);
         placeLocation.getWorld().spawn(placeLocation, ArmorStand.class, armorStand -> {
-            armorStand.setCustomName("§6Occult Altar");
+            armorStand.setCustomName(super.getTypeName());
             armorStand.setCustomNameVisible(true);
             armorStand.setSilent(true);
             armorStand.setGravity(false);
@@ -58,7 +56,7 @@ public class StartAltarListener extends AltarListener implements Listener {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,9, "§6Occult Altar");
+        gui = Bukkit.createInventory(null,9, super.getTypeName());
 
         ItemStack item = new ItemStack(Material.ENDER_PEARL);
         ItemMeta meta = item.getItemMeta();
@@ -66,7 +64,7 @@ public class StartAltarListener extends AltarListener implements Listener {
         // Raid boss summoning item
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName("§6Esoteric Pearl");
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY+"A mysterious pearl with");
         lore.add(ChatColor.GRAY+"a threatening aura.");
         meta.setLore(lore);
@@ -74,7 +72,6 @@ public class StartAltarListener extends AltarListener implements Listener {
         gui.setItem(4, item);
         lore.clear();
 
-        // Raid boss summoning item
         item.setType(Material.PAPER);
         meta.setDisplayName("§7Evoking Components");
         lore.add(ChatColor.DARK_GRAY+"A pearl of end");

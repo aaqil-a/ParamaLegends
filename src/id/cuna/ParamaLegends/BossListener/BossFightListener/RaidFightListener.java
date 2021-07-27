@@ -14,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
@@ -106,7 +105,6 @@ public class RaidFightListener implements Listener {
                 Random rand = new Random();
                 //Spawn squadron
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                    Bukkit.broadcastMessage("spawning squadron at " + spawnLocation.toVector().toString());
 
                     //Determine whether to spawn destroyer or not
                     if((rand.nextInt(4) == 1) || (player.getLocation().getY() < world.getHighestBlockYAt(player.getLocation())))
@@ -231,15 +229,6 @@ public class RaidFightListener implements Listener {
                 voidEssence.setItemMeta(meta);
                 event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), voidEssence).setCustomName("Void Essence");
             }
-        }
-    }
-
-    //Disable sleeping during raids
-    @EventHandler
-    public void onSleep(PlayerBedEnterEvent event){
-        if(plugin.raidSummonListener.isRaidOccuring()){
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.GRAY+"You are unable to sleep during a "+ChatColor.DARK_PURPLE+"Void Raid.");
         }
     }
 }

@@ -30,10 +30,7 @@ public class NatureAltarListener extends AltarListener implements Listener {
         this.data = plugin.getData();
     }
 
-    @Override
-    public void spawnAltar(World world){
-        int altarX = (int) data.getConfig().getDouble("world.altarX");
-        int altarZ = (int) data.getConfig().getDouble("world.altarZ");
+    public void spawnAltar(World world, int altarX, int altarZ){
 
         Location location = new Location(world, altarX, world.getHighestBlockYAt(altarX, altarZ), altarZ);
         Location placeLocation;
@@ -97,7 +94,7 @@ public class NatureAltarListener extends AltarListener implements Listener {
         //Spawn altar interact
         placeLocation = location.clone().add(1.5,2,1.5);
         placeLocation.getWorld().spawn(placeLocation, ArmorStand.class, armorStand -> {
-            armorStand.setCustomName("§aMysterious Sludge");
+            armorStand.setCustomName(super.getTypeName());
             armorStand.setCustomNameVisible(true);
             armorStand.setSilent(true);
             armorStand.setGravity(false);
@@ -114,7 +111,7 @@ public class NatureAltarListener extends AltarListener implements Listener {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,27, "§aMysterious Sludge");
+        gui = Bukkit.createInventory(null,9, super.getTypeName());
 
         ItemStack item = new ItemStack(Material.SLIME_BLOCK);
         ItemMeta meta = item.getItemMeta();
@@ -126,7 +123,17 @@ public class NatureAltarListener extends AltarListener implements Listener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(13, item);
+        gui.setItem(4, item);
+        lore.clear();
+
+        item.setType(Material.PAPER);
+        meta.setDisplayName("§7Evoking Components");
+        lore.add(ChatColor.DARK_GRAY+"An eye of the void    ///");
+        lore.add(ChatColor.DARK_GRAY+"Four exploding powder");
+        lore.add(ChatColor.DARK_GRAY+"Four osseous matter");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(6, item);
         lore.clear();
 
         return gui;

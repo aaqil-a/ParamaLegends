@@ -111,7 +111,7 @@ public class WhistlingWind implements Listener {
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                             directArrowToEntity(target, player);
-                        }, 10);
+                        }, 5);
                     }
                 }
             }
@@ -127,7 +127,7 @@ public class WhistlingWind implements Listener {
                             target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                             Bukkit.getScheduler().runTaskLater(plugin, ()->{
                                 directArrowToEntity(target, player);
-                            }, 10);
+                            }, 5);
                         }
                     }
                 }
@@ -177,7 +177,7 @@ public class WhistlingWind implements Listener {
                     } else {
                         Bukkit.getScheduler().runTaskLater(plugin, newArrow::remove,20);
                     }
-                },10);
+                },5);
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
                     entitiesWhistlingWind.remove(player);
                 },8);
@@ -204,7 +204,7 @@ public class WhistlingWind implements Listener {
                     target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         directArrowToEntity(target, player);
-                    }, 10);
+                    }, 5);
                 }
             } else if ("return".equals(arrow.getCustomName())) {
                 event.setCancelled(true);

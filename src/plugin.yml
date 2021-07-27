@@ -8,8 +8,13 @@ commands:
     description: Doing your mom, doing doing your mom.
     usage: /yourmom <user>
   startgame:
-    description: Start the game.
+    description: Start Parama Legends. Make sure game is setup by using /setupgame
     usage: /startgame <areasize>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  setupgame:
+    description: Begin Parama Legends game setup.
+    usage: /setupgame
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
 permissions:

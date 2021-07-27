@@ -139,8 +139,11 @@ public class ExperienceListener implements Listener {
                     case MAGIC -> plugin.levelUpMagic(player);
                     case SWORDSMAN -> plugin.levelUpSwordsmanship(player);
                     case ARCHERY -> plugin.levelUpArchery(player);
+                    case REAPER -> plugin.levelUpReaper(player);
                 }
+                plugin.destinyListener.levelUp(player, currLevel);
             }
+
             data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase(), currLevel);
             data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase()+"exp", currExp);
             data.saveConfig();

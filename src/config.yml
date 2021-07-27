@@ -1,5 +1,9 @@
+# ParamaLegends game config
+# Please refrain from changing values manually,
+# as it may cause unwanted consequences!
 world:
-  level: 1
+  level: 0
+  started: false
   maxdepth: 30
 mobs:
   zombie:

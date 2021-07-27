@@ -42,10 +42,6 @@ public class Nova {
                 magicListener.sendOutOfRangeMessage(player);
                 return;
             }
-            if (locationExplosion.distance(player.getLocation()) < 10) {
-                player.sendMessage(ChatColor.GRAY + "Target too close to caster.");
-                return;
-            }
             if (magicListener.subtractMana(player, 600)) {
                 Location finalLocationExplosion = locationExplosion.clone().add(0, 1, 0);
                 Location startExplosionFlash = locationExplosion.clone().add(0, 40, 0);

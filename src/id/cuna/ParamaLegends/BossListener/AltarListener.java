@@ -30,48 +30,19 @@ public class AltarListener implements Listener {
     private final ParamaLegends plugin;
     private final DataManager data;
     private Inventory gui;
-    private final BossType type;
     private final String typeName;
 
     public AltarListener(ParamaLegends plugin, BossType type){
         this.plugin = plugin;
         this.data = plugin.getData();
-        this.type = type;
-        if(type == null){
-            this.typeName = "§6Occult Altar";
-        } else {
-            this.typeName = switch(type){
-                case NATURE -> "§aMysterious Sludge";
-                case EARTH -> null;
-                case WATER -> null;
-                case FIRE -> null;
-                case VOID -> null;
-            };
-        }
-    }
-
-    public void createAltarLocation(World world){
-        double startX = data.getConfig().getDouble("world.startX");
-        double startZ = data.getConfig().getDouble("world.startZ");
-
-        //Get random x offset and z offset for altar locationx.
-        Random rand = new Random();
-        int offsetX = 200 - rand.nextInt(400) ;
-        int offsetZ = 200 - rand.nextInt(400) ;
-        if(offsetX > 0) offsetX += 300;
-        else offsetX -= 300;
-        if(offsetZ > 0) offsetZ += 300;
-        else offsetZ -= 300;
-        double altarX = startX + offsetX;
-        double altarZ = startZ + offsetZ;
-        data.getConfig().set("world.altarX", altarX);
-        data.getConfig().set("world.altarZ", altarZ);
-        data.saveConfig();
-        spawnAltar(world);
-    }
-
-    public void spawnAltar(World world){
-
+        this.typeName = switch(type){
+            case START -> "§6Occult Altar";
+            case NATURE -> "§aMysterious Sludge";
+            case EARTH -> null;
+            case WATER -> null;
+            case FIRE -> null;
+            case VOID -> null;
+        };
     }
 
     //Cancel damage of altar event
@@ -135,6 +106,11 @@ public class AltarListener implements Listener {
     public Inventory createGui(Player player, DataManager data){
         player.sendMessage("This NPC has no gui!");
         return null;
+    }
+
+    //altar name getter
+    public String getTypeName(){
+        return typeName;
     }
 
 }

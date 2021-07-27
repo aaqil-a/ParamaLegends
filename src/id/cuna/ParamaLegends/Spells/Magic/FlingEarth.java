@@ -38,7 +38,7 @@ public class FlingEarth implements Listener {
     public void castFlingEarth(Player player){
         if(playerCooldowns.contains(player.getUniqueId().toString())){
             magicListener.sendCooldownMessage(player, "Fling Earth");
-        } else if (magicListener.subtractMana(player, 10)) {
+        } else if (magicListener.subtractMana(player, 3)) {
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
             location.add(offset);
@@ -70,13 +70,13 @@ public class FlingEarth implements Listener {
                 dummy.remove();
                 ball.setCustomName("iceball");
                 Vector velocity = ball.getVelocity();
-                velocity.multiply(0.5);
+                velocity.multiply(1);
                 ball.setItem(new ItemStack(Material.DIRT));
                 ballEffect.cancel();
                 ball.setGravity(true);
                 ball.setVelocity(velocity);
                 ballsThrown.put(player, ball);
-            }, 20);
+            }, 5);
             ballsThrownTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 if(ballsDirt.containsKey(player)){
                     ballsDirt.get(player).remove();
@@ -89,13 +89,10 @@ public class FlingEarth implements Listener {
                 } else {
                     cancelFlingEarthTasks(player);
                 }
-            }, 21, 1));
+            }, 6, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Fling Earth");
-                    playerCooldowns.remove(player.getUniqueId().toString());
-                }
-            }, 60);
+                playerCooldowns.remove(player.getUniqueId().toString());
+            }, 16);
         }
     }
     public void cancelFlingEarthTasks(Player player){

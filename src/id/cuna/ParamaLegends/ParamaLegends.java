@@ -8,6 +8,7 @@ import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
+import id.cuna.ParamaLegends.Command.CommandSetupGame;
 import id.cuna.ParamaLegends.Command.CommandStartGame;
 import id.cuna.ParamaLegends.Command.CommandYourMom;
 import id.cuna.ParamaLegends.GameListener.*;
@@ -29,8 +30,8 @@ public class ParamaLegends extends JavaPlugin {
     public PlayerJoinListener destinyListener;
     public WorldRuleListener worldRuleListener;
     public ExperienceListener experienceListener;
-    public CommandStartGame commandStartGame;
     public DamageModifyingListener damageModifyingListener;
+    public SetupListener setupListener;
 
     public ReaperListener reaperListener;
     public SwordsmanListener swordsmanListener;
@@ -50,8 +51,10 @@ public class ParamaLegends extends JavaPlugin {
 
     public RaidFightListener raidFightListener;
 
+    public CommandStartGame commandStartGame;
+    public CommandSetupGame commandSetupGame;
+
     public final List<Player> playersSilenced = new ArrayList<Player>();
-    private boolean isNight = false;
 
     @Override
     public void onEnable() {
@@ -62,7 +65,9 @@ public class ParamaLegends extends JavaPlugin {
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
         commandStartGame = new CommandStartGame(this);
+        commandSetupGame = new CommandSetupGame(this);
         damageModifyingListener = new DamageModifyingListener(this);
+        setupListener = new SetupListener(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -72,12 +77,14 @@ public class ParamaLegends extends JavaPlugin {
 
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
+        getCommand("setupgame").setExecutor(commandSetupGame);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(destinyListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
         getServer().getPluginManager().registerEvents(experienceListener, this);
         getServer().getPluginManager().registerEvents(damageModifyingListener, this);
+        getServer().getPluginManager().registerEvents(setupListener, this);
 
         registerNPCShopListener();
         registerGameClass();
@@ -169,12 +176,6 @@ public class ParamaLegends extends JavaPlugin {
     public void onDisable() {
     }
 
-    public void spawnBossAltar(World world){
-        switch(data.getConfig().getInt("world.level")){
-            case 1 -> natureAltarListener.createAltarLocation(world);
-        }
-    }
-
     public boolean isSilenced(Player player){
         if(!playersSilenced.contains(player)) {
             return false;
@@ -193,6 +194,10 @@ public class ParamaLegends extends JavaPlugin {
     public void levelUpArchery(Player player){
         archeryListener.levelUp(player);
     }
+    public void levelUpReaper(Player player){
+        reaperListener.levelUp(player);
+    }
+
 
     public double increasedIncomingDamage(double damage, double multiplier){
         String damageString = String.valueOf(damage);
