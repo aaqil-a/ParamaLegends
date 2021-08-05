@@ -18,10 +18,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Random;
 
 public class CommandStartGame implements CommandExecutor {
 
@@ -34,176 +36,149 @@ public class CommandStartGame implements CommandExecutor {
         data = plugin.getData();
     }
 
-    //Build starting area
-    public void buildArea(Location location){
-        Location placeLocation;
+    public Material randomTempleBlock(){
+        Random rand = new Random();
+        int x = rand.nextInt(5);
+        return switch(x){
+            case 2 -> Material.CRACKED_STONE_BRICKS;
+            case 3 -> Material.MOSSY_STONE_BRICKS;
+            case 4 -> Material.DEEPSLATE_BRICKS;
+            default -> Material.STONE_BRICKS;
+        };
+    }
 
-        //Fill blocks below ground layer
-        int layers = -1;
-        while(layers > -5){
-            for(int x = 0; x < 10; x++){
-                placeLocation = location.clone().add(x,layers,0);
-                for(int z = 0; z < 11; z++){
-                    if(placeLocation.getBlock().isPassable()){
-                        placeLocation.getBlock().setType(Material.DIRT);
+    public void buildPillar(Location location){
+        location.getBlock().setType(randomTempleBlock());
+        location.add(0,1,0).getBlock().setType(randomTempleBlock());
+        location.add(0,1,0).getBlock().setType(randomTempleBlock());
+        location.add(0,1,0).getBlock().setType(Material.TORCH);
+    }
+
+    //Build starting temple
+    public void buildTemple(Location location){
+        org.bukkit.World world = location.getWorld();
+        Location placeLocation;
+        Random rand = new Random();
+        //create ground level temple blocks
+        for(int x = 0; x < 15; x++){
+            placeLocation = location.clone().add(x,0,0);
+            for(int z = 0; z < 15; z++){
+                if((x < 3) || (z < 3) || (x > 11) || (z > 11)) {
+                    int temp = rand.nextInt(2);
+                    if (temp == 0){
+                        placeLocation.add(0,0,1);
+                        continue;
                     }
+                }
+                world.getHighestBlockAt(placeLocation).setType(randomTempleBlock());
+                placeLocation.add(0,0,1);
+            }
+        }
+
+        //create four pillars above ground
+        placeLocation = world.getHighestBlockAt(location.clone().add(4,0,4))
+                .getLocation().add(0,1,0);
+        buildPillar(placeLocation);
+        placeLocation = world.getHighestBlockAt(location.clone().add(10,0,4))
+                .getLocation().add(0,1,0);
+        buildPillar(placeLocation);
+        placeLocation = world.getHighestBlockAt(location.clone().add(4,0,10))
+                .getLocation().add(0,1,0);
+        buildPillar(placeLocation);
+        placeLocation = world.getHighestBlockAt(location.clone().add(10,0,10))
+                .getLocation().add(0,1,0);
+        buildPillar(placeLocation);
+
+        //create vertical tunnel
+        placeLocation = world.getHighestBlockAt(location.clone().add(7,0,7)).getLocation();
+        for(int y = 0; y > -10; y--){
+            placeLocation.clone().add(0,y,0).getBlock().setType(Material.AIR);
+            placeLocation.clone().add(1,y,0).getBlock().setType(randomTempleBlock());
+            placeLocation.clone().add(-1,y,0).getBlock().setType(randomTempleBlock());
+            placeLocation.clone().add(0,y,1).getBlock().setType(randomTempleBlock());
+            placeLocation.clone().add(0,y,-1).getBlock().setType(randomTempleBlock());
+        }
+        Location waterLocation = placeLocation.clone();
+        placeLocation.getBlock().setType(Material.WATER);
+
+        //Fill blocks of temple room
+        int layers = -7;
+        while(layers > -12){
+            for(int x = 0; x < 9; x++){
+                placeLocation = waterLocation.clone().add(x-4,layers,-4);
+                for(int z = 0; z < 9; z++){
+                    if((layers != -7) && (layers != -11) && (x != 0) && (x != 8) && (z != 0) && (z != 8))
+                        placeLocation.getBlock().setType(Material.AIR);
+                    else placeLocation.getBlock().setType(randomTempleBlock());
                     placeLocation.add(0,0,1);
                 }
             }
             layers--;
         }
+        waterLocation.clone().add(0,-7,0).getBlock().setType(Material.AIR);
+        waterLocation.clone().add(0,-11,0).getBlock().setType(Material.AIR);
 
-        //Build ground layer
-        String[] blockMap = {
-                "---C-------",
-                "---PCC-CP--",
-                "--CPPCCPCC-",
-                "---CPCCPP--",
-                "---CCCCPC--",
-                "--PPPCCPP--",
-                "-PCC-PCPP--",
-                "--PC---PCC-",
-                "--------PC-",
-                "-----------"};
-        for(int x = 0; x < blockMap.length; x++){
-            placeLocation = location.clone().add(x,-1,0);
-            for(int z = 0; z < blockMap[x].length(); z++) {
-                placeLocation = placeLocation.getWorld().getHighestBlockAt(placeLocation).getLocation();
-                switch(blockMap[x].charAt(z)){
-                    case '-' ->{
-                        placeLocation.getBlock().setType(Material.GRASS_BLOCK);
-                    }
-                    case 'C' -> {
-                        placeLocation.getBlock().setType(Material.COARSE_DIRT);
-                    }
-                    case 'P' -> {
-                        placeLocation.getBlock().setType(Material.PODZOL);
-                    }
-                }
-                placeLocation.add(0,0,1);
-            }
-        }
-        //Build first layer
-        blockMap = new String[]{
-                "-----W--W--",
-                "-----------",
-                "-----------",
-                "--W--------",
-                "-----C---W-",
-                "-----------",
-                "-----------",
-                "-W---W-----",
-                "---------F-",
-                "-----------"};
-        for(int x = 0; x < blockMap.length; x++){
-             placeLocation = location.clone().add(x,0,0);
-            for(int z = 0; z < blockMap[x].length(); z++) {
-                placeLocation = placeLocation.getWorld().getHighestBlockAt(placeLocation).getLocation().add(0,1,0);
-                switch(blockMap[x].charAt(z)){
-                    case '-' ->{
-                        placeLocation.getBlock().setType(Material.AIR);
-                    }
-                    case 'W' -> {
-                        placeLocation.getBlock().setType(Material.SPRUCE_LOG);
-                    }
-                    case 'C' -> {
-                        placeLocation.getBlock().setType(Material.CAMPFIRE);
-                    }
-                    case 'F' -> {
-                        placeLocation.getBlock().setType(Material.SPRUCE_FENCE);
-                    }
-                }
-                placeLocation.add(0,0,1);
-            }
-        }
+        //create armor stands
+        spawnAllArmorStand(waterLocation);
 
 
-        //Create barrier around player
-        placeLocation = location.clone();
-        placeLocation.add(1,0,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(-1,-1,1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(-1,-1,-1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        placeLocation.add(1,-1,-1).getBlock().setType(Material.BARRIER);
-        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-        location.clone().add(0,2,0).getBlock().setType(Material.BARRIER);
-        location.clone().add(0,-1,0).getBlock().setType(Material.BEDROCK);
-
-        placeLocation = location.clone();
-        //Create task to remove barrier after scene ends
-        Location finalPlaceLocation = placeLocation;
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            finalPlaceLocation.clone().add(0,2,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.clone().add(0,-1,0).getBlock().setType(Material.GRASS_BLOCK);
-            finalPlaceLocation.add(1,0,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(-1,-1,1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(-1,-1,-1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(1,-1,-1).getBlock().setType(Material.AIR);
-            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-        }, sceneLength);
-
-
-
-        //Spawn NPCs at their respective location
-        spawnAllNPC(location);
-
-
-        //Build 'umbrella' for odd reseller
-        placeLocation = location.clone().add(8,1,9);
-        placeLocation = placeLocation.getWorld().getHighestBlockAt(placeLocation).getLocation().add(0,1,0);
-        placeLocation.getBlock().setType(Material.SPRUCE_FENCE);
-        placeLocation.add(0,1,0).getBlock().setType(Material.SPRUCE_PLANKS);
-        placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(0,0,1).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(-1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(-1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(0,0,-1).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(0,0,-1).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
-        placeLocation.add(1,0,0).getBlock().setType(Material.SPRUCE_SLAB);
-
+//        //Create barrier around player
+//        placeLocation = location.clone();
+//        placeLocation.add(1,0,0).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(-1,-1,1).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(-1,-1,-1).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(1,-1,-1).getBlock().setType(Material.BARRIER);
+//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
+//        location.clone().add(0,2,0).getBlock().setType(Material.BARRIER);
+//        location.clone().add(0,-1,0).getBlock().setType(Material.BEDROCK);
+//
+//        placeLocation = location.clone();
+//        //Create task to remove barrier after scene ends
+//        Location finalPlaceLocation = placeLocation;
+//        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+//            finalPlaceLocation.clone().add(0,2,0).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.clone().add(0,-1,0).getBlock().setType(Material.GRASS_BLOCK);
+//            finalPlaceLocation.add(1,0,0).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(-1,-1,1).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(-1,-1,-1).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(1,-1,-1).getBlock().setType(Material.AIR);
+//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
+//        }, sceneLength);
 
 
     }
 
-    public void spawnAllNPC(Location location){
-        //Create Wise Peculier NPC
-        spawnNPC(location.clone().add(2,0,2), Villager.Type.PLAINS, 0, null, "§6Wise Peculier");
-        //Create Odd Reseller NPC
-        spawnNPC(location.clone().add(7, 0, 8), Villager.Type.TAIGA, 0, null, "§eOdd Reseller");
-        //Create Banished Magus NPC
-        spawnNPC(location.clone().add(4, 0, 8), Villager.Type.SWAMP, 0, null, "§5Banished Magus");
-        //Create Suspicious Peasant NPC
-        spawnNPC(location.clone().add(8, 0, 0), Villager.Type.SNOW, 0, null, "§4Suspicious Peasant");
-        //Create swordman NPC
-        spawnNPC(location.clone().add(1, 0, 5), Villager.Type.SNOW, 5, Villager.Profession.WEAPONSMITH, "§2Retired Weaponsmith");
-        //Create archery NPC
-        spawnNPC(location.clone().add(6, 0, 5), Villager.Type.PLAINS, 5, Villager.Profession.FLETCHER, "§aAdept Ranger");
+    public void spawnAllArmorStand(Location location){
+        //Create Destiny
+        spawnArmorStand(location.clone().add(3.5,2,0.5), Material.END_PORTAL_FRAME,"§6Your Destiny");
+        //Create magic
+        spawnArmorStand(location.clone().add(3.5, -11, 0.5), Material.ENCHANTING_TABLE,"§5Ancient Tomes");
+        //Create reaper
+        spawnArmorStand(location.clone().add(-2, -11, 0.5),Material.GRINDSTONE,"§4Reaper Grindstone");
+        //Create swordman
+        spawnArmorStand(location.clone().add(0.5, -11, 3.5), Material.ANVIL,"§2Dull Anvil");
+        //Create archery
+        spawnArmorStand(location.clone().add(0.5, -11, -2), Material.FLETCHING_TABLE,"§aFletcher's Table");
     }
 
-    public void spawnNPC(Location location, Villager.Type type, int level, Villager.Profession profession, String name){
-        location = location.getWorld().getHighestBlockAt(location).getLocation().add(0,1,0);
-        LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
-        Villager v = (Villager) mob;
+    public void spawnArmorStand(Location location, Material head, String name){
+        LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+        ArmorStand v = (ArmorStand) mob;
 
         v.setCustomName(name);
         v.setCustomNameVisible(true);
-        v.setVillagerType(type);
-        v.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100, false, false ,false));
         v.setSilent(true);
-        v.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
+        v.setGravity(false);
+        v.setInvisible(true);
+        v.setInvulnerable(true);
         v.setCollidable(false);
-        if(profession != null){
-            v.setProfession(profession);
-        }
-        if(level > 0){
-            v.setVillagerLevel(level);
-        }
+        v.getEquipment().setHelmet(new ItemStack(head));
     }
 
     //Teleport all players to location to begun scene
@@ -239,7 +214,7 @@ public class CommandStartGame implements CommandExecutor {
                 size = Integer.getInteger(args[0]);
             }
             if(data.getConfig().getInt("world.level") == 0) {
-                sender.sendMessage(ChatColor.RED+"Game is not setup. Use /gamesetup to begin game setup.");
+                sender.sendMessage(ChatColor.RED+"Game is not setup. Use /setupgame to begin game setup.");
                 return true;
             } else if(data.getConfig().getBoolean("world.started")) {
                 sender.sendMessage(ChatColor.RED+"Game has already started. Remove plugin config.yml file to restart game.");
@@ -293,7 +268,7 @@ public class CommandStartGame implements CommandExecutor {
             region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
             regions.addRegion(region);
 
-            buildArea(location);
+            buildTemple(location);
             teleportPlayers(location);
             playScene();
 

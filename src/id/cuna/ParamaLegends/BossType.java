@@ -8,7 +8,4 @@ public enum BossType {
     FIRE,
     VOID;
 
-    public BossType next(){
-        return values()[ordinal()+1];
-    }
 }

@@ -128,9 +128,9 @@ public class NatureAltarListener extends AltarListener implements Listener {
 
         item.setType(Material.PAPER);
         meta.setDisplayName("§7Evoking Components");
-        lore.add(ChatColor.DARK_GRAY+"An eye of the void    ///");
-        lore.add(ChatColor.DARK_GRAY+"Four exploding powder");
-        lore.add(ChatColor.DARK_GRAY+"Four osseous matter");
+        lore.add(ChatColor.DARK_GRAY+"A void essence");
+        lore.add(ChatColor.DARK_GRAY+"Four balls of slime");
+        lore.add(ChatColor.DARK_GRAY+"Four sugar cane?");
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(6, item);

@@ -57,10 +57,6 @@ public class RaidSummonListener implements Listener {
         return safeZoneBox.contains(player.getLocation().toVector());
     }
 
-    public boolean isRaidOccuring() {
-        return isRaidOccuring;
-    }
-
     public void setRaidOccuring(boolean isRaidOccuring){
         this.isRaidOccuring = isRaidOccuring;
     }

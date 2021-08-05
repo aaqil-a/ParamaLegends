@@ -1,0 +1,24 @@
+name: ParamaLegends
+version: 1.0.0
+author: cuna
+main: id.cuna.ParamaLegends.ParamaLegends
+api-version: 1.17
+commands:
+  yourmom:
+    description: Doing your mom, doing doing your mom.
+    usage: /yourmom <user>
+  startgame:
+    description: Start Parama Legends. Make sure game is setup by using /setupgame
+    usage: /startgame <areasize>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  setupgame:
+    description: Begin Parama Legends game setup.
+    usage: /setupgame
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+permissions:
+  paramalegends.gameadmin:
+    description: Allows you to start and modify the current Parama Legends game.
+    default: op
+depend: [WorldGuard]

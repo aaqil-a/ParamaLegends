@@ -114,7 +114,7 @@ public class SetupListener implements Listener {
                         player.sendMessage(ChatColor.GOLD+"Mark nature game area with wand.");
                         player.sendMessage(ChatColor.GOLD+"Valid Biomes: Plains, Savanna, Forest and Birch Forest.");
                     }, 20);
-                    markType = markType.next();
+                    markType = BossType.NATURE;
                 }
                 case NATURE -> {
                     Bukkit.getScheduler().runTaskLater(plugin, ()->
@@ -124,7 +124,7 @@ public class SetupListener implements Listener {
                         player.sendMessage(ChatColor.GOLD+"Mark earth game area with wand.");
                         player.sendMessage(ChatColor.GOLD+"Valid Biomes: Mountains and Gravelly Mountains.");
                     }, 20);
-                    markType = markType.next();
+                    markType = BossType.EARTH;
                 }
                 case EARTH -> {
 //                    Bukkit.getScheduler().runTaskLater(plugin, ()->
@@ -134,7 +134,7 @@ public class SetupListener implements Listener {
                         player.sendMessage(ChatColor.GOLD+"Mark water game area with wand.");
                         player.sendMessage(ChatColor.GOLD+"Valid Biomes: your mom.");
                     }, 20);
-                    markType = markType.next();
+                    markType = BossType.WATER;
                 }
                 case VOID -> finishSetup(player);
             }
