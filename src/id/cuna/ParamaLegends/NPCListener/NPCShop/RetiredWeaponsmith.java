@@ -3,9 +3,15 @@ package id.cuna.ParamaLegends.NPCListener.NPCShop;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.NPCListener.NPCShopListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -29,19 +35,13 @@ public class RetiredWeaponsmith extends NPCShopListener {
     }};
 
     public RetiredWeaponsmith(ParamaLegends plugin) {
-        super(plugin, "§2Retired Weaponsmith");
+        super(plugin, "§2Dull Anvil");
     }
 
     //Get prices
     @Override
     public HashMap<Integer, Integer> getPrices(){
         return prices;
-    }
-
-    //Send player message when opening gui
-    @Override
-    public String getNPCMessage(){
-        return ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + "A weaponsmith's artistry is on offer.";
     }
 
     //Attack player when npc attacked according to npc type
@@ -125,7 +125,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike enemies around you");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with a flurry of attacks");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "of astonishing speed.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 12 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 7");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "250 Lectrum");

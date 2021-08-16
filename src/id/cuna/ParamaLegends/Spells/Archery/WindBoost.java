@@ -34,7 +34,7 @@ public class WindBoost {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Wind Boost wore off.");
                 playersWindBoosted.remove(player.getUniqueId().toString());
-            }, 240);
+            }, 280);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerCooldowns.contains(player.getUniqueId().toString())){
                     archeryListener.sendNoLongerCooldownMessage(player, "Wind Boost");

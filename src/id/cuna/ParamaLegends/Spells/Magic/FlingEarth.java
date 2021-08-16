@@ -7,7 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -28,6 +34,7 @@ public class FlingEarth implements Listener {
     private final HashMap<Player, Vector> ballOffsetVectors = new HashMap<>();
     private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
     private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
+    private final HashMap<Player, BukkitTask> ballEffectTasks = new HashMap<>();
     private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
 
     public FlingEarth(ParamaLegends plugin, MagicListener magicListener){
@@ -53,7 +60,7 @@ public class FlingEarth implements Listener {
                 dummy.teleport(location);
                 dummy.getLocation().add(new Vector(0,1,0));
             }, 1);
-            BukkitTask ballEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            ballEffectTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 Location newLocation = player.getEyeLocation();
                 Vector newOffset = player.getEyeLocation().getDirection().multiply(2.5);
                 newLocation.add(newOffset);
@@ -63,7 +70,7 @@ public class FlingEarth implements Listener {
 
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.STONE.createBlockData());
                 dummy.getWorld().spawnParticle(Particle.BLOCK_CRACK, dummy.getLocation(), 1, 0.25, 0.25, 0.25, 0, Material.DIRT.createBlockData());
-            },2, 1);
+            },2, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(dummy.getLocation().add(new Vector(0,-2,0)));
                 Snowball ball = dummy.launchProjectile(Snowball.class, ballOffsetVectors.get(player));
@@ -72,7 +79,10 @@ public class FlingEarth implements Listener {
                 Vector velocity = ball.getVelocity();
                 velocity.multiply(1);
                 ball.setItem(new ItemStack(Material.DIRT));
-                ballEffect.cancel();
+                if(ballEffectTasks.containsKey(player)){
+                    ballEffectTasks.get(player).cancel();
+                    ballEffectTasks.remove(player);
+                }
                 ball.setGravity(true);
                 ball.setVelocity(velocity);
                 ballsThrown.put(player, ball);
@@ -125,6 +135,7 @@ public class FlingEarth implements Listener {
                         hit.damage(5.069, player);
                     }
                 }
+                projectile.remove();
             }
         }
     }

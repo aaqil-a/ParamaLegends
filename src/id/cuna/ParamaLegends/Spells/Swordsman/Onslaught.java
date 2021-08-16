@@ -1,17 +1,25 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
+import com.sk89q.worldedit.bukkit.fastutil.Hash;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.util.Vector;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Onslaught {
@@ -20,6 +28,7 @@ public class Onslaught {
     private final SwordsmanListener swordsmanListener;
 
     private final List<String> playerCooldowns = new ArrayList<>();
+    private final HashMap<Player, BukkitTask> playerOnslaughtTasks = new HashMap<>();
 
 
     public Onslaught(ParamaLegends plugin, SwordsmanListener swordsmanListener){
@@ -31,21 +40,24 @@ public class Onslaught {
         if(playerCooldowns.contains(player.getUniqueId().toString())){
             swordsmanListener.sendCooldownMessage(player, "Onslaught");
         } else {
-            if(swordsmanListener.subtractMana(player, 150)){
+            if(swordsmanListener.subtractMana(player, 100)){
                 swordsAnimation(player);
 
                 List<Entity> entities = player.getNearbyEntities(3.5,3,3.5);
-                BukkitTask onslaught = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                playerOnslaughtTasks.put(player,Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     for(Entity hit : entities){
-                        if(hit instanceof Damageable && !(hit instanceof ArmorStand)){
+                        if(hit instanceof Damageable && !(hit instanceof ArmorStand) && !(hit instanceof Player)){
                             plugin.experienceListener.addExp(player, ClassType.SWORDSMAN, 1);
                             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, hit.getLocation().add(0, 1,0), 1, 0, 0, 0, 0);
                             ((Damageable) hit).damage(12.072, player);
                         }
                     }
-                }, 0, 3);
+                }, 0, 6));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    onslaught.cancel();
+                    if(playerOnslaughtTasks.containsKey(player)){
+                        playerOnslaughtTasks.get(player).cancel();
+                        playerOnslaughtTasks.remove(player);
+                    }
                 }, 19);
                 playerCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {

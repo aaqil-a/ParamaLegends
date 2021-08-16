@@ -2,11 +2,14 @@ package id.cuna.ParamaLegends.Spells.Swordsman;
 
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Enrage {
@@ -16,6 +19,7 @@ public class Enrage {
 
     private final List<String> playerCooldowns = new ArrayList<>();
     private final List<Player> playersEnraging = new ArrayList<Player>();
+    private final HashMap<Player, BukkitTask> playersEnragingTasks = new HashMap<>();
 
 
     public Enrage(ParamaLegends plugin, SwordsmanListener swordsmanListener){
@@ -29,17 +33,18 @@ public class Enrage {
         } else {
             if(swordsmanListener.subtractMana(player, 150)){
                 player.sendMessage(ChatColor.GREEN+"Enrage activated.");
-                BukkitTask enrageEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                playersEnragingTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation(), 4, 1, 0.5, 1, 0);
-                }, 0, 20);
+                }, 0, 20));
                 playersEnraging.add(player);
                 plugin.getPlayersSilenced().add(player);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     player.sendMessage(ChatColor.GREEN+"Enrage wore off.");
                     playersEnraging.remove(player);
                     plugin.getPlayersSilenced().remove(player);
-                    enrageEffect.cancel();
-                }, 220);
+                    playersEnragingTasks.get(player).cancel();
+                    playersEnragingTasks.remove(player);
+                },  260);
                 playerCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerCooldowns.contains(player.getUniqueId().toString())){

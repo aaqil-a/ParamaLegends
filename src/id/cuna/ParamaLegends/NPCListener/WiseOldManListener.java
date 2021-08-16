@@ -5,28 +5,31 @@ import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WiseOldManListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
-    public Inventory gui;
-    public Inventory gui2;
-    private final int[] xpNeeded = {0,460,740,960,1160,1200,1440,1500,1780,1860, Integer.MAX_VALUE};
+    private final HashMap<Player, Inventory> gui = new HashMap<>();
+    private final HashMap<Player, Inventory> gui2 = new HashMap<>();
+
+    private final int[] xpNeeded = {0,920,1480,1920,2320,2400,2880,3000,3560,3720, Integer.MAX_VALUE};
+    private final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,3744,3900,4628,4836, Integer.MAX_VALUE};
+
 
 
     public WiseOldManListener(final ParamaLegends plugin){
@@ -36,13 +39,13 @@ public class WiseOldManListener implements Listener {
 
     //open gui when right clicking npc
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEntityEvent event) {
+    public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Villager) {
-            if (event.getRightClicked().getName().equals("§6Wise Peculier")){
+        if (event.getRightClicked() instanceof ArmorStand) {
+            if (event.getRightClicked().getName().equals("§6Your Destiny")){
                 event.setCancelled(true);
                 createGui(player);
-                player.openInventory(gui);
+                player.openInventory(gui.get(player));
                 player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Your destiny unravels before you.");
             }
         }
@@ -51,43 +54,44 @@ public class WiseOldManListener implements Listener {
     //Event called when item clicked in gui
     @EventHandler
     public void onClick(InventoryClickEvent event){
+        Player player = (Player) event.getWhoClicked();
+
         //Determine if item clicked is in gui
         if (event.getClickedInventory() == null)
             return;
-        if(event.getInventory().equals(gui) && !event.getClickedInventory().equals(gui)){
+        if(event.getInventory().equals(gui.get(player)) && !event.getClickedInventory().equals(gui.get(player))){
             event.setCancelled(true);
             return;
         }
-        if(event.getInventory().equals(gui2)){
+        if(event.getInventory().equals(gui2.get(player))){
             event.setCancelled(true);
             return;
         }
-        if (!event.getClickedInventory().equals(gui) && !event.getClickedInventory().equals(gui2))
+        if (!event.getClickedInventory().equals(gui.get(player)) && !event.getClickedInventory().equals(gui2.get(player)))
             return;
         if (event.getCurrentItem() == null)
             return;
         if (event.getCurrentItem().getItemMeta() == null)
             return;
         event.setCancelled(true);
-        Player player = (Player) event.getWhoClicked();
 
         //Open destiny gui depending on item pressed
         if (event.getSlot() == 1){
             createGui2(player, "swordsmanship");
             player.closeInventory();
-            player.openInventory(gui2);
+            player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 5){
             createGui2(player, "magic");
             player.closeInventory();
-            player.openInventory(gui2);
+            player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 3){
             createGui2(player, "archery");
             player.closeInventory();
-            player.openInventory(gui2);
+            player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 7){
             createGui2(player, "reaper");
             player.closeInventory();
-            player.openInventory(gui2);
+            player.openInventory(gui2.get(player));
         }
 
     }
@@ -95,7 +99,8 @@ public class WiseOldManListener implements Listener {
 
     //Create main gui
     public void createGui(Player player){
-        gui = Bukkit.createInventory(null,9, "§5Your Destiny");
+        Inventory openGui = Bukkit.createInventory(null,9, "§5Your Destiny");
+        gui.put(player, openGui);
 
         ItemStack item = new ItemStack(Material.IRON_SWORD);
         ItemMeta meta = item.getItemMeta();
@@ -111,10 +116,10 @@ public class WiseOldManListener implements Listener {
         exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanshipexp");
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
-            lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
+            lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeededSwordsman[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(1, item);
+        openGui.setItem(1, item);
         lore.clear();
 
         // Archery
@@ -127,7 +132,7 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(3, item);
+        openGui.setItem(3, item);
         lore.clear();
 
         // Magic
@@ -140,7 +145,7 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(5, item);
+        openGui.setItem(5, item);
         lore.clear();
 
         // Reaper
@@ -153,14 +158,15 @@ public class WiseOldManListener implements Listener {
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(7, item);
+        openGui.setItem(7, item);
         lore.clear();
 
     }
 
     //Create gui of destiny
     public void createGui2(Player player, String skill){
-        gui2 = Bukkit.createInventory(null,54, "§5Your "+skill.substring(0,1).toUpperCase() + skill.substring(1)+" Destiny");
+        Inventory openGui = Bukkit.createInventory(null,54, "§5Your "+skill.substring(0,1).toUpperCase() + skill.substring(1)+" Destiny");
+        gui2.put(player, openGui);
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill);
         int itemLocations[] = {0, 48, 50, 40, 30, 31, 32, 22, 12, 14, 4};
 
@@ -180,7 +186,7 @@ public class WiseOldManListener implements Listener {
             lore = getLores(skill, i);
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui2.setItem(itemLocations[i], item);
+            openGui.setItem(itemLocations[i], item);
             lore.clear();
         }
     }

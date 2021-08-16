@@ -7,10 +7,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 
 public class WorldRuleListener implements Listener {
 
@@ -25,16 +29,16 @@ public class WorldRuleListener implements Listener {
         maxDepth = data.getConfig().getInt("world.maxdepth");
     }
 
-    //Disable nether portal teleport
-    @EventHandler
-    public void netherPortal(PlayerPortalEvent event){
-        event.setCancelled(true);
+    public void setMaxDepth(int maxDepth){
+        this.maxDepth = maxDepth;
     }
 
     //Disable crafting with materials that have custom name
     @EventHandler
     public void onCraft(CraftItemEvent event){
         Inventory inv = event.getInventory();
+
+        //disable craftign wtih custom items
         for(ItemStack item : inv.getStorageContents()){
             if(item.hasItemMeta()){
                 ItemMeta meta = item.getItemMeta();
@@ -43,13 +47,19 @@ public class WorldRuleListener implements Listener {
                 }
             }
         }
-    }
 
-    //Disable sleeping
-    @EventHandler
-    public void onSleep(PlayerBedEnterEvent event){
-        event.setCancelled(true);
-        event.getPlayer().sendMessage(ChatColor.GRAY+"The void haunts your dreams. It is impossible to sleep.");
+        //enable crafting of custom items
+        if(inv.getStorageContents()[0].hasItemMeta()){
+            ItemMeta meta = inv.getStorageContents()[0].getItemMeta();
+            if(meta.getDisplayName().equals("§aEssence of Nature")){
+                ItemStack essence = inv.getStorageContents()[5];
+                if(essence.hasItemMeta()){
+                    ItemMeta essenceMeta = essence.getItemMeta();
+                    event.setCancelled(!essenceMeta.getDisplayName().equals("§5Void Essence"));
+                }
+            }
+            if(meta.getDisplayName().equals("§6Esoteric Pearl")) event.setCancelled(false);
+        }
     }
 
     //Disable interacting with armor stands with custom names
@@ -59,13 +69,6 @@ public class WorldRuleListener implements Listener {
             event.setCancelled(true);
         }
     }
-
-    //Cancel all exp gained
-    @EventHandler
-    public void onPlayerXpChange(PlayerExpChangeEvent event){
-        event.setAmount(0);
-    }
-
 
     //Disable usage of certain game items
     @EventHandler

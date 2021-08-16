@@ -4,7 +4,10 @@ import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;

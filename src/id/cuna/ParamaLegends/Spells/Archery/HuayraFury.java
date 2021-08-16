@@ -2,8 +2,12 @@ package id.cuna.ParamaLegends.Spells.Archery;
 
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Arrow;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

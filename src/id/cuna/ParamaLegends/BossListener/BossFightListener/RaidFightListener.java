@@ -1,19 +1,32 @@
 package id.cuna.ParamaLegends.BossListener.BossFightListener;
 
-import id.cuna.ParamaLegends.BossListener.BossSummonListener.RaidSummonListener;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.*;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.Wither;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Phantom;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
@@ -62,10 +75,6 @@ public class RaidFightListener implements Listener {
 
     //End raid if currently occuring
     public void endRaid(){
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            raidBossBar.removeAll();
-            raidBossBar.setVisible(false);
-        }, 40);
         Bukkit.broadcastMessage(ChatColor.DARK_PURPLE+"Cursed beings return to the void.");
         plugin.raidSummonListener.setRaidOccuring(false);
         spawnTask.cancel();
@@ -182,11 +191,16 @@ public class RaidFightListener implements Listener {
         entities.clear();
 
         //Spawn new entity
-        entities.add(world.spawn(spawnLocation, Zombie.class, zombie -> {
-            zombie.setCustomName("§5Void Nullifier");
-            zombie.setCustomNameVisible(true);
-            zombie.setGlowing(true);
+        entities.add(world.spawn(spawnLocation.add(0,1,0), Wither.class, wither -> {
+            wither.setCustomName("§5Void Nullifier");
+            wither.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                    .setBaseValue(750);
+            wither.setHealth(750);
+            wither.setCustomNameVisible(true);
+            wither.setGlowing(true);
         }));
+        raidBossBar.removeAll();
+        raidBossBar.setVisible(false);
     }
 
     //Only make void entities target players
@@ -222,6 +236,8 @@ public class RaidFightListener implements Listener {
                 ItemStack voidEssence = new ItemStack(Material.ENDER_EYE);
                 ItemMeta meta = voidEssence.getItemMeta();
                 meta.setDisplayName("§5Void Essence");
+                meta.addEnchant(Enchantment.DURABILITY, 10, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 List<String> lore = new ArrayList<>();
                 lore.add(ChatColor.GRAY+"A cryptic orb that emits");
                 lore.add(ChatColor.GRAY+"a sinister aura.");

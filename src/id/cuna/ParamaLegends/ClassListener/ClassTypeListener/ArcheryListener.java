@@ -5,15 +5,20 @@ import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.Spells.Archery.*;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.Location;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Player;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -74,7 +79,7 @@ public class ArcheryListener extends ClassListener implements Listener{
     public void levelUp(Player player){
         int curLevel = super.getPlayerLevel().get(player);
         super.getPlayerLevel().replace(player, curLevel+1);
-        if(curLevel >= 4){
+        if((curLevel+1) >= 4){
             applySpeedPassive(player);
         }
     }

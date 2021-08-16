@@ -3,15 +3,23 @@ package id.cuna.ParamaLegends.NPCListener.NPCShop;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.NPCListener.NPCShopListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Color;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.util.Vector;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +45,7 @@ public class SeniorRanger extends NPCShopListener {
     }};
 
     public SeniorRanger(ParamaLegends plugin) {
-        super(plugin, "§aAdept Ranger");
+        super(plugin, "§aFletcher's Table");
         this.plugin = plugin;
     }
 
@@ -45,12 +53,6 @@ public class SeniorRanger extends NPCShopListener {
     @Override
     public HashMap<Integer, Integer> getPrices(){
         return prices;
-    }
-
-    //Send player message when opening gui
-    @Override
-    public String getNPCMessage(){
-        return ChatColor.GREEN + "" + ChatColor.ITALIC + "Acquire a ranger's skills from far and wide.";
     }
 
     //Attack player when npc attacked according to npc type
@@ -115,6 +117,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 1");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "1 Lectrum");
         tippedArrowMeta.setLore(lore);
+        tippedArrowItem.setAmount(8);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
         gui.setItem(2, tippedArrowItem);
         lore.clear();
@@ -129,6 +132,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "3 Lectrum");
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
+        tippedArrowItem.setAmount(8);
         gui.setItem(4, tippedArrowItem);
         lore.clear();
 
@@ -140,7 +144,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location, rooting enemies caught");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "in its location.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 40");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 3");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
         meta.setLore(lore);
@@ -174,6 +178,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
+        tippedArrowItem.setAmount(8);
         gui.setItem(10, tippedArrowItem);
         lore.clear();
 
@@ -204,6 +209,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
+        tippedArrowItem.setAmount(8);
         gui.setItem(14, tippedArrowItem);
         lore.clear();
 
@@ -235,6 +241,7 @@ public class SeniorRanger extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "50 Lectrum");
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
+        tippedArrowItem.setAmount(8);
         gui.setItem(20, tippedArrowItem);
         lore.clear();
 

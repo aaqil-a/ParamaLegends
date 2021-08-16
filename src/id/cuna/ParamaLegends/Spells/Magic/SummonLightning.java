@@ -3,9 +3,16 @@ package id.cuna.ParamaLegends.Spells.Magic;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Particle;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -57,7 +64,7 @@ public class SummonLightning implements Listener {
                 player.getWorld().getHighestBlockAt(location.clone().add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
                 List<Entity> entities = player.getWorld().getNearbyEntities(location, 3,4,3).stream().toList();
                 for(Entity ignited : entities){
-                    if(ignited instanceof Damageable && !(ignited instanceof Player)){
+                    if(ignited instanceof Damageable && !(ignited instanceof Player) && !(ignited instanceof ArmorStand)){
                         plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
                         ((Damageable) ignited).damage(20.069, player);
                     }

@@ -2,18 +2,26 @@ package id.cuna.ParamaLegends.Spells.Archery;
 
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TotsukaCreation implements Listener {
@@ -23,6 +31,8 @@ public class TotsukaCreation implements Listener {
 
     private final List<String> playerCooldowns = new ArrayList<>();
     private final List<String> playerTotsuka = new ArrayList<>();
+    private final HashMap<Player, BukkitTask> playerTotsukaTasks = new HashMap<>();
+
 
     public TotsukaCreation(ParamaLegends plugin, ArcheryListener archeryListener){
         this.plugin = plugin;
@@ -46,19 +56,19 @@ public class TotsukaCreation implements Listener {
                     archeryListener.sendNoLongerCooldownMessage(player, "Totsuka's Creation");
                     playerCooldowns.remove(player.getUniqueId().toString());
                 }
-            }, 600);
+            }, 300);
         }
     }
 
     public void spawnWebs(Location location, Player player){
-        BukkitTask slow = Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
+        playerTotsukaTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
             List<Entity> entities = location.getWorld().getNearbyEntities(location, 2, 2, 2).stream().toList();
             for(Entity rooted : entities){
                 if(rooted instanceof LivingEntity && !(rooted instanceof Player)){
                     ((LivingEntity) rooted).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false ,false));
                 }
             }
-        }, 0, 5);
+        }, 0, 5));
         location.add(0,0.5,0);
         FallingBlock web1 = location.getWorld().spawnFallingBlock(location, Material.COBWEB.createBlockData());
         web1.setGravity(false);
@@ -79,7 +89,10 @@ public class TotsukaCreation implements Listener {
         FallingBlock web9 = location.getWorld().spawnFallingBlock(location.clone().add(0,0,1), Material.COBWEB.createBlockData());
         web9.setGravity(false);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            slow.cancel();
+            if(playerTotsukaTasks.containsKey(player)) {
+                playerTotsukaTasks.get(player).cancel();
+                playerTotsukaTasks.remove(player);
+            }
             web1.remove();
             web2.remove();
             web3.remove();
@@ -90,7 +103,7 @@ public class TotsukaCreation implements Listener {
             web8.remove();
             web9.remove();
             playerTotsuka.remove(player.getUniqueId().toString());
-        }, 60);
+        }, 140);
     }
 
     //Deal when projectile hits block

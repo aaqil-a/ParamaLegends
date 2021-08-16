@@ -1,5 +1,6 @@
 package id.cuna.ParamaLegends;
 
+import id.cuna.ParamaLegends.BossListener.AltarTypeListener.EarthAltarListener;
 import id.cuna.ParamaLegends.BossListener.AltarTypeListener.NatureAltarListener;
 import id.cuna.ParamaLegends.BossListener.AltarTypeListener.StartAltarListener;
 import id.cuna.ParamaLegends.BossListener.BossFightListener.RaidFightListener;
@@ -8,14 +9,14 @@ import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
-import id.cuna.ParamaLegends.Command.CommandSetupGame;
-import id.cuna.ParamaLegends.Command.CommandStartGame;
-import id.cuna.ParamaLegends.Command.CommandYourMom;
+import id.cuna.ParamaLegends.Command.*;
 import id.cuna.ParamaLegends.GameListener.*;
 import id.cuna.ParamaLegends.NPCListener.*;
 import id.cuna.ParamaLegends.NPCListener.NPCShop.*;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,13 +40,14 @@ public class ParamaLegends extends JavaPlugin {
     public MagicListener magicListener;
 
     public NPCShopListener banishedMagus;
-    public NPCShopListener oddReseller;
     public NPCShopListener seniorRanger;
     public NPCShopListener retiredWeaponsmith;
+    public NPCShopListener oddWares;
     public NPCShopListener suspiciousPeasant;
 
     public StartAltarListener startAltarListener;
     public NatureAltarListener natureAltarListener;
+    public EarthAltarListener earthAltarListener;
 
     public RaidSummonListener raidSummonListener;
 
@@ -53,6 +55,9 @@ public class ParamaLegends extends JavaPlugin {
 
     public CommandStartGame commandStartGame;
     public CommandSetupGame commandSetupGame;
+    public CommandLectrum commandLectrum;
+    public CommandDestiny commandDestiny;
+    public Recipes recipes;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
 
@@ -66,8 +71,11 @@ public class ParamaLegends extends JavaPlugin {
         experienceListener = new ExperienceListener(this);
         commandStartGame = new CommandStartGame(this);
         commandSetupGame = new CommandSetupGame(this);
+        commandLectrum = new CommandLectrum(this);
+        commandDestiny = new CommandDestiny(this);
         damageModifyingListener = new DamageModifyingListener(this);
         setupListener = new SetupListener(this);
+        recipes = new Recipes(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -78,6 +86,8 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("yourmom").setExecutor(new CommandYourMom());
         getCommand("startgame").setExecutor(commandStartGame);
         getCommand("setupgame").setExecutor(commandSetupGame);
+        getCommand("lectrum").setExecutor(commandLectrum);
+        getCommand("destiny").setExecutor(commandDestiny);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(destinyListener, this);
@@ -113,18 +123,18 @@ public class ParamaLegends extends JavaPlugin {
 
     public void initializeNPCShop(){
         banishedMagus = new BanishedMagus(this);
-        oddReseller = new OddReseller(this);
         seniorRanger = new SeniorRanger(this);
         retiredWeaponsmith = new RetiredWeaponsmith(this);
         suspiciousPeasant = new SuspiciousPeasant(this);
+        oddWares = new OddWares(this);
     }
 
     public void registerNPCShopListener(){
         getServer().getPluginManager().registerEvents(banishedMagus, this);
-        getServer().getPluginManager().registerEvents(oddReseller, this);
         getServer().getPluginManager().registerEvents(seniorRanger, this);
         getServer().getPluginManager().registerEvents(retiredWeaponsmith, this);
         getServer().getPluginManager().registerEvents(suspiciousPeasant, this);
+        getServer().getPluginManager().registerEvents(oddWares, this);
     }
 
     public void initializeGameClass(){
@@ -164,11 +174,13 @@ public class ParamaLegends extends JavaPlugin {
     public void initializeAltars(){
         natureAltarListener = new NatureAltarListener(this);
         startAltarListener = new StartAltarListener(this);
+        earthAltarListener = new EarthAltarListener(this);
     }
 
     public void registerAltars(){
         getServer().getPluginManager().registerEvents(startAltarListener, this);
         getServer().getPluginManager().registerEvents(natureAltarListener, this);
+        getServer().getPluginManager().registerEvents(earthAltarListener, this);
     }
 
 
@@ -180,7 +192,7 @@ public class ParamaLegends extends JavaPlugin {
         if(!playersSilenced.contains(player)) {
             return false;
         } else {
-            player.sendMessage(ChatColor.DARK_RED + "You are silenced!");
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_RED + "You are silenced!"));
             return true;
         }
     }

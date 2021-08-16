@@ -10,8 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.*;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public class SetupListener implements Listener {
     private BossType markType;
     private boolean verify;
     private final List<Biome> validNatureBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
-    private final List<Biome> validEarthBiomes = new ArrayList<>(Arrays.asList(Biome.MOUNTAINS, Biome.GRAVELLY_MOUNTAINS));
     private final List<Biome> validWaterBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
     private final List<Biome> validFireBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
 
@@ -78,14 +76,15 @@ public class SetupListener implements Listener {
                     }
                 }
                 case EARTH->{
-                    if(!validEarthBiomes.contains(clicked.getBiome())){
-                        player.sendMessage(ChatColor.RED+"Invalid biome for earth area.");
+                    if(clicked.getLocation().getY() > 40){
+                        player.sendMessage(ChatColor.RED+"Altar must be located at Y=40 or below.");
                         return;
                     }
                 }
             }
 
             List<Integer> position = new ArrayList<>(Arrays.asList(clicked.getX(), clicked.getY(), clicked.getZ()));
+
             //save location to game config
             data.getConfig().set(path, position);
             data.saveConfig();
@@ -108,8 +107,10 @@ public class SetupListener implements Listener {
         } else {
             switch(markType){
                 case START -> {
-                    plugin.startAltarListener.spawnAltar(player.getWorld(), altarX, altarZ);
                     player.sendMessage(ChatColor.GREEN+"Starting area marked.");
+
+                    plugin.startAltarListener.spawnAltar(player.getWorld(), altarX, altarZ);
+
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark nature game area with wand.");
                         player.sendMessage(ChatColor.GOLD+"Valid Biomes: Plains, Savanna, Forest and Birch Forest.");
@@ -118,7 +119,7 @@ public class SetupListener implements Listener {
                 }
                 case NATURE -> {
                     Bukkit.getScheduler().runTaskLater(plugin, ()->
-                            plugin.natureAltarListener.spawnAltar(player.getWorld(), altarX, altarZ), 20);
+                            plugin.natureAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
                     player.sendMessage(ChatColor.GREEN+"Nature area marked.");
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark earth game area with wand.");
@@ -127,14 +128,15 @@ public class SetupListener implements Listener {
                     markType = BossType.EARTH;
                 }
                 case EARTH -> {
-//                    Bukkit.getScheduler().runTaskLater(plugin, ()->
-//                            plugin.earthAltarListener.spawnAltar(player.getWorld(), altarX, altarZ), 20);
+                    Bukkit.getScheduler().runTaskLater(plugin, ()->
+                            plugin.earthAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
                     player.sendMessage(ChatColor.GREEN+"Earth area marked.");
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark water game area with wand.");
                         player.sendMessage(ChatColor.GOLD+"Valid Biomes: your mom.");
                     }, 20);
                     markType = BossType.WATER;
+                    finishSetup(player);
                 }
                 case VOID -> finishSetup(player);
             }

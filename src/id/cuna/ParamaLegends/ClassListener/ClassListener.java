@@ -3,6 +3,9 @@ package id.cuna.ParamaLegends.ClassListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,18 +64,20 @@ public class ClassListener implements Listener {
 
     // Determine if player has enough mana to cast a spell and subtract mana if possible
     public boolean subtractMana(Player player, int manaCost){
-        int currMana = player.getLevel();
+        int currMana = plugin.destinyListener.playerCurrentMana.get(player);
         if(manaCost <= currMana){
-            player.setLevel(currMana - manaCost);
+            plugin.destinyListener.playerCurrentMana.put(player, currMana-manaCost);
+            plugin.destinyListener.playerManaRegenTasks.get(player).cancel();
+            plugin.destinyListener.addPlayerManaRegenTasks(player);
             return true;
         } else {
-            player.sendMessage(ChatColor.DARK_RED + "Not enough mana.");
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "Not enough mana."));
             return false;
         }
     }
 
     public void sendCooldownMessage(Player player, String spell){
-        player.sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown.");
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown."));
     }
     public void sendNoLongerCooldownMessage(Player player, String spell){
         player.sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.DARK_GREEN + " is no longer on cooldown.");

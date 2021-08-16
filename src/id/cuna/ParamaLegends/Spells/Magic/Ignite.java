@@ -3,11 +3,17 @@ package id.cuna.ParamaLegends.Spells.Magic;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Particle;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +55,7 @@ public class Ignite implements Listener {
             player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location.add(0,1,0), 5,0.5,0.5,0.5,0);
             List<Entity> entities = player.getWorld().getNearbyEntities(location, 2,2,2).stream().toList();
             for(Entity ignited : entities){
-                if(ignited instanceof Player){
+                if(ignited instanceof Player || ignited instanceof ArmorStand){
                     continue;
                 }
                 if(ignited instanceof Damageable){
@@ -57,16 +63,18 @@ public class Ignite implements Listener {
                     entityIgnitedDuration.put(ignited, 5);
                     entityIgnitedTasks.put(ignited,
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                int duration = entityIgnitedDuration.get(ignited);
-                                duration--;
-                                if (duration >= 0){
-                                    ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                    entityIgnitedDuration.replace(ignited, duration);
-                                    ((Damageable) ignited).damage(3.069, player);
-                                } else {
-                                    entityIgnitedTasks.get(ignited).cancel();
-                                    entityIgnitedTasks.remove(ignited);
-                                    entityIgnitedDuration.remove(ignited);
+                                if(entityIgnitedDuration.containsKey(ignited)){
+                                    int duration = entityIgnitedDuration.get(ignited);
+                                    duration--;
+                                    if (duration >= 0){
+                                        ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
+                                        entityIgnitedDuration.replace(ignited, duration);
+                                        ((Damageable) ignited).damage(3.069, player);
+                                    } else {
+                                        entityIgnitedTasks.get(ignited).cancel();
+                                        entityIgnitedTasks.remove(ignited);
+                                        entityIgnitedDuration.remove(ignited);
+                                    }
                                 }
                             }, 0, 20));
                 }

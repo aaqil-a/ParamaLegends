@@ -3,7 +3,8 @@ package id.cuna.ParamaLegends.Spells.Magic;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -26,7 +27,7 @@ public class Blink {
     public void castBlink(Player player){
         if(playerCooldowns.contains(player.getUniqueId().toString())){
             magicListener.sendCooldownMessage(player, "Blink");
-        } else if (magicListener.subtractMana(player, 10)) {
+        } else if (magicListener.subtractMana(player, 50)) {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -43,6 +44,11 @@ public class Blink {
             playerCooldowns.add(player.getUniqueId().toString());
             location.setDirection(player.getLocation().getDirection());
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation(), 10, 0.5, 0.5, 0.5);
+            Location finalLocation = location;
+            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+                player.getWorld().playSound(finalLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
+            }, 5);
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, location.add(new Vector(0,2,0)), 10, 0.5, 0.5, 0.5);
             magicListener.teleportToAir(player, location);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {

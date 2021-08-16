@@ -3,8 +3,14 @@ package id.cuna.ParamaLegends.NPCListener.NPCShop;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.NPCListener.NPCShopListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -31,19 +37,13 @@ public class BanishedMagus extends NPCShopListener {
     }};
 
     public BanishedMagus(ParamaLegends plugin) {
-        super(plugin, "§5Banished Magus");
+        super(plugin, "§5Ancient Tomes");
     }
 
     //Get prices
     @Override
     public HashMap<Integer, Integer> getPrices(){
         return prices;
-    }
-
-    //Send player message when opening gui
-    @Override
-    public String getNPCMessage(){
-        return ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + "Even the wisdom of wise mages can be bartered for.";
     }
 
     //Attack player when npc attacked according to npc type
@@ -82,8 +82,8 @@ public class BanishedMagus extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "a dense cube, then flinging");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "it towards whatever may be");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "in its path.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 3 seconds");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 3");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 second");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 1");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
@@ -126,7 +126,7 @@ public class BanishedMagus extends NPCShopListener {
         meta.setDisplayName(ChatColor.RESET + "§5Life Drain");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Periodically drains the life of");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20 per second");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10 per second");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 4");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
@@ -140,7 +140,7 @@ public class BanishedMagus extends NPCShopListener {
         meta.setDisplayName(ChatColor.RESET + "§5Blink");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Instantaneously teleport to");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the targeted location.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 50");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 5");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");

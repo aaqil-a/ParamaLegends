@@ -3,7 +3,17 @@ package id.cuna.ParamaLegends.GameListener;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Stray;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Enderman;
+
+
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -31,79 +41,30 @@ public class MobSpawnListener implements Listener {
         }
         boolean hostile = true;
         switch (event.getEntityType()) {
-            case ZOMBIE -> {
-                Zombie z = (Zombie) event.getEntity();
-                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN, ZOGLIN -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(data.getConfig().getDouble("mobs.zombie.health"));
-                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
                         .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
-                z.setHealth(data.getConfig().getDouble("mobs.zombie.health"));
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.zombie.health"));
             }
-            case ZOMBIE_VILLAGER -> {
-                ZombieVillager z = (ZombieVillager) event.getEntity();
-                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health"));
-                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
-                z.setHealth(data.getConfig().getDouble("mobs.zombie.health"));
-            }
-            case HUSK -> {
-                Husk z = (Husk) event.getEntity();
-                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health"));
-                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
-                z.setHealth(data.getConfig().getDouble("mobs.zombie.health"));
-            }
-            case SKELETON -> {
-                Skeleton s = (Skeleton) event.getEntity();
-                s.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+            case SKELETON, STRAY, PHANTOM, BLAZE, GHAST -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health"));
-                s.setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
             }
-            case STRAY -> {
-                Stray s = (Stray) event.getEntity();
-                s.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health"));
-                s.setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
-            }
-            case SPIDER -> {
-                Spider s = (Spider) event.getEntity();
-                s.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.spider.health"));
-                s.setHealth(data.getConfig().getDouble("mobs.spider.health"));
-                s.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
-            }
-            case CAVE_SPIDER -> {
-                CaveSpider s = (CaveSpider) event.getEntity();
-                s.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.spider.health"));
-                s.setHealth(data.getConfig().getDouble("mobs.spider.health"));
-                s.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
+            case SPIDER, CAVE_SPIDER, MAGMA_CUBE -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                    .setBaseValue(data.getConfig().getDouble("mobs.spider.health"));
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.spider.health"));
+                event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                    .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
             }
             case CREEPER -> {
                 Creeper c = (Creeper) event.getEntity();
                 c.getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(data.getConfig().getDouble("mobs.creeper.health"));
                 c.setHealth(data.getConfig().getDouble("mobs.creeper.health"));
-            }
-            case DROWNED -> {
-                Drowned z = (Drowned) event.getEntity();
-                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health"));
-                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
-                z.setHealth(data.getConfig().getDouble("mobs.zombie.health"));
-            }
-            case PHANTOM -> {
-                Phantom p = (Phantom) event.getEntity();
-                p.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health"));
-                p.setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
-                p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
             }
             case WITCH -> {
                 Witch w = (Witch) event.getEntity();
@@ -119,27 +80,12 @@ public class MobSpawnListener implements Listener {
                 e.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
                         .setBaseValue(data.getConfig().getDouble("mobs.enderman.damage"));
             }
-            case VINDICATOR, EVOKER, PILLAGER -> {
-                event.setCancelled(true);
-            }
             default -> {
                 hostile = false;
             }
         }
         if(hostile){
             event.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.7);
-        }
-
-        //Modify boss mobs
-        if(event.getEntity().getCustomName() != null){
-            if(event.getEntity().getCustomName().equals("§5Void Nullifier")){
-                Zombie z = (Zombie) event.getEntity();
-                z.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health")*10);
-                z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage")*2);
-                z.setHealth(data.getConfig().getDouble("mobs.zombie.health")*10);
-            }
         }
     }
 

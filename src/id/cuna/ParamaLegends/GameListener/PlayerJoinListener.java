@@ -2,6 +2,8 @@ package id.cuna.ParamaLegends.GameListener;
 
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,9 +28,9 @@ public class PlayerJoinListener implements Listener {
 
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
-    private final HashMap<String, Integer> playerCurrentLevel = new HashMap<String, Integer>();
     private final HashMap<Player, Integer> playerManaLevel = new HashMap<Player, Integer>();
-    private final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
+    public final HashMap<Player, Integer> playerCurrentMana = new HashMap<Player, Integer>();
+    public final HashMap<Player, BukkitTask> playerManaRegenTasks = new HashMap<>();
 
     public PlayerJoinListener(final ParamaLegends plugin){
         this.plugin = plugin;
@@ -61,31 +63,25 @@ public class PlayerJoinListener implements Listener {
         int archeryLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
         int reaperLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
         int manaLevel = Math.max(Math.max(magicLevel,swordsLevel),Math.max(archeryLevel,reaperLevel));
-        player.setExp(0);
+        playerCurrentMana.put(player, 0);
+        addPlayerManaRegenTasks(player);
         playerManaLevel.put(player, manaLevel);
-        if(playerCurrentLevel.containsKey(player.getUniqueId().toString())){
-            player.setLevel(playerCurrentLevel.get(player.getUniqueId().toString()));
-        } else {
-            player.setLevel(maxMana[manaLevel]);
-        }
+    }
+
+    public void addPlayerManaRegenTasks(Player player){
         //Create task to regenerate mana over time
         playerManaRegenTasks.put(player,
                 Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    int curMana = player.getLevel();
+                    int curMana = playerCurrentMana.get(player);
                     int taskManaLevel = playerManaLevel.get(player);
                     if(curMana < maxMana[taskManaLevel]){
-                        curMana += manaRegen[taskManaLevel] ;
+                        curMana += manaRegen[taskManaLevel];
                         if(curMana > maxMana[taskManaLevel])
                             curMana = maxMana[taskManaLevel];
-                        player.setExp(0);
-                        player.setLevel(curMana);
-                        playerCurrentLevel.put(player.getUniqueId().toString(), curMana);
-                    }
-                    if(player.getInventory().getItemInOffHand().getType().equals(Material.SHIELD)){
-                        ItemStack item = player.getInventory().getItemInOffHand();
-                        player.getInventory().setItemInOffHand(null);
-                        player.getInventory().addItem(item);
-                        player.sendMessage(ChatColor.GRAY + "The shield feels much to heavy to use on one hand.");
+                        playerCurrentMana.put(player, curMana);
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + curMana + "/" + maxMana[taskManaLevel]));
+                    } else {
+                        playerManaRegenTasks.get(player).cancel();
                     }
                 }, 0, 20)
         );

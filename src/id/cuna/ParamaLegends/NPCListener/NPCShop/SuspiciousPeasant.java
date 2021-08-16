@@ -3,11 +3,17 @@ package id.cuna.ParamaLegends.NPCListener.NPCShop;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.NPCListener.NPCShopListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.EntityType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +36,7 @@ public class SuspiciousPeasant extends NPCShopListener {
     }};
 
     public SuspiciousPeasant(final ParamaLegends plugin){
-        super(plugin, "§4Suspicious Peasant");
+        super(plugin, "§4Reaper Grindstone");
     }
 
     //Attack player when npc attacked according to npc type
@@ -41,12 +47,6 @@ public class SuspiciousPeasant extends NPCShopListener {
         cloud.setParticle(Particle.CRIT);
         cloud.setDuration(1);
         player.damage(10, npc);
-    }
-
-    //Send player message when opening gui
-    @Override
-    public String getNPCMessage(){
-        return ChatColor.DARK_RED + "" + ChatColor.ITALIC + "Although mistrustful, reapers still occasionally do business.";
     }
 
     //Get prices
@@ -143,7 +143,7 @@ public class SuspiciousPeasant extends NPCShopListener {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,18, "§4Reaper's Deals");
+        gui = Bukkit.createInventory(null,18, "§4Reaper's Weaponry");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();

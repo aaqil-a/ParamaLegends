@@ -3,10 +3,15 @@ package id.cuna.ParamaLegends.Spells.Swordsman;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +40,13 @@ public class PhoenixDive {
                 player.setVelocity(dive);
                 player.getWorld().spawnParticle(Particle.LAVA, player.getEyeLocation(), 16, 1, 0.5, 1, 0);
                 player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation(), 16, 1, 0.5, 1, 0);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, 2, false, false, false));
                 playerCheckVelocityTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    if(player.getVelocity().getX() == 0d && player.getVelocity().getZ() == 0d){
+                    if(player.getVelocity().getX() == 0d && player.getVelocity().getZ() == 0d || player.isOnGround()){
                         player.getWorld().spawnParticle(Particle.LAVA, player.getLocation(), 16, 1, 0.5, 1, 0);
                         player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation(), 16, 1, 0.5, 1, 0);
-                        List<Entity> entities = player.getNearbyEntities(2.5,2.5,2.5);
+                        player.removePotionEffect(PotionEffectType.JUMP);
+                        List<Entity> entities = player.getNearbyEntities(3,2.5,3);
                         for(Entity burned : entities){
                             if(burned instanceof Player){
                                 continue;

@@ -3,33 +3,25 @@ package id.cuna.ParamaLegends.BossListener;
 import id.cuna.ParamaLegends.BossType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.HashMap;
 
 public class AltarListener implements Listener {
 
     private final ParamaLegends plugin;
     private final DataManager data;
-    private Inventory gui;
+    private final HashMap<Player, Inventory> gui = new HashMap<>();
     private final String typeName;
 
     public AltarListener(ParamaLegends plugin, BossType type){
@@ -38,7 +30,7 @@ public class AltarListener implements Listener {
         this.typeName = switch(type){
             case START -> "§6Occult Altar";
             case NATURE -> "§aMysterious Sludge";
-            case EARTH -> null;
+            case EARTH -> "§0Indestructible Stone";
             case WATER -> null;
             case FIRE -> null;
             case VOID -> null;
@@ -59,8 +51,8 @@ public class AltarListener implements Listener {
         if (event.getRightClicked() instanceof ArmorStand) {
             if (event.getRightClicked().getName().equals(typeName)){
                 event.setCancelled(true);
-                gui = createGui(player, data);
-                player.openInventory(gui);
+                gui.put(player, createGui(player, data));
+                player.openInventory(gui.get(player));
             }
         }
     }
@@ -68,38 +60,21 @@ public class AltarListener implements Listener {
     //Handle events when item clicked in gui
     @EventHandler
     public void onClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
         //Check if item clicked is in gui
         if (event.getClickedInventory() == null)
             return;
-        if (event.getInventory().equals(gui) && !event.getClickedInventory().equals(gui)) {
+        if (event.getInventory().equals(gui.get(player)) && !event.getClickedInventory().equals(gui.get(player))) {
             event.setCancelled(true);
             return;
         }
-        if (!event.getClickedInventory().equals(gui))
+        if (!event.getClickedInventory().equals(gui.get(player)))
             return;
         if (event.getCurrentItem() == null)
             return;
         if (event.getCurrentItem().getItemMeta() == null)
             return;
         event.setCancelled(true);
-
-        //purchase summoning item
-        if (event.getSlot() == 4){
-            if(takeIngredient(event.getWhoClicked().getInventory())) giveItem(event.getWhoClicked().getInventory(), event.getCurrentItem());
-            else event.getWhoClicked().sendMessage(ChatColor.RED+"You do not have the exact required components.");
-        }
-
-    }
-
-    //Give summoning item
-    public void giveItem(Inventory inventory, ItemStack item){
-        ItemStack newItem = item.clone();
-        inventory.addItem(newItem);
-    }
-
-    //Take summoning ingredients
-    public boolean takeIngredient(Inventory inventory){
-        return false;
     }
 
     //Create gui

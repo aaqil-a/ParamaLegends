@@ -12,12 +12,17 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -54,11 +59,26 @@ public class CommandStartGame implements CommandExecutor {
         location.add(0,1,0).getBlock().setType(Material.TORCH);
     }
 
+    public Location getHighestNonTreeLocation(Location location){
+        switch(location.getBlock().getType()){
+            case ACACIA_LEAVES, AZALEA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES,
+                    FLOWERING_AZALEA_LEAVES, JUNGLE_LEAVES, OAK_LEAVES, SPRUCE_LEAVES, MUSHROOM_STEM,
+                    BROWN_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK, ACACIA_LOG, BIRCH_LOG, OAK_LOG, DARK_OAK_LOG,
+                    JUNGLE_LOG, SPRUCE_LOG -> {
+                return getHighestNonTreeLocation(location.add(0,-1,0));
+            }
+        }
+        if(location.getBlock().isPassable() && !location.getBlock().isLiquid()) return getHighestNonTreeLocation(location.add(0,-1,0));
+        return location;
+    }
+
     //Build starting temple
     public void buildTemple(Location location){
         org.bukkit.World world = location.getWorld();
-        Location placeLocation;
         Random rand = new Random();
+
+        location.add(10,0,10);
+        Location placeLocation;
         //create ground level temple blocks
         for(int x = 0; x < 15; x++){
             placeLocation = location.clone().add(x,0,0);
@@ -70,27 +90,23 @@ public class CommandStartGame implements CommandExecutor {
                         continue;
                     }
                 }
-                world.getHighestBlockAt(placeLocation).setType(randomTempleBlock());
+                getHighestNonTreeLocation(world.getHighestBlockAt(placeLocation).getLocation()).getBlock().setType(randomTempleBlock());
                 placeLocation.add(0,0,1);
             }
         }
 
         //create four pillars above ground
-        placeLocation = world.getHighestBlockAt(location.clone().add(4,0,4))
-                .getLocation().add(0,1,0);
+        placeLocation = getHighestNonTreeLocation(location.clone().add(4,0,4)).add(0,1,0);
         buildPillar(placeLocation);
-        placeLocation = world.getHighestBlockAt(location.clone().add(10,0,4))
-                .getLocation().add(0,1,0);
+        placeLocation = getHighestNonTreeLocation(location.clone().add(10,0,4)).add(0,1,0);
         buildPillar(placeLocation);
-        placeLocation = world.getHighestBlockAt(location.clone().add(4,0,10))
-                .getLocation().add(0,1,0);
+        placeLocation = getHighestNonTreeLocation(location.clone().add(4,0,10)).add(0,1,0);
         buildPillar(placeLocation);
-        placeLocation = world.getHighestBlockAt(location.clone().add(10,0,10))
-                .getLocation().add(0,1,0);
+        placeLocation = getHighestNonTreeLocation(location.clone().add(10,0,10)).add(0,1,0);
         buildPillar(placeLocation);
 
         //create vertical tunnel
-        placeLocation = world.getHighestBlockAt(location.clone().add(7,0,7)).getLocation();
+        placeLocation = getHighestNonTreeLocation(world.getHighestBlockAt(location.clone().add(7,0,7)).getLocation());
         for(int y = 0; y > -10; y--){
             placeLocation.clone().add(0,y,0).getBlock().setType(Material.AIR);
             placeLocation.clone().add(1,y,0).getBlock().setType(randomTempleBlock());
@@ -122,63 +138,38 @@ public class CommandStartGame implements CommandExecutor {
         spawnAllArmorStand(waterLocation);
 
 
-//        //Create barrier around player
-//        placeLocation = location.clone();
-//        placeLocation.add(1,0,0).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(-1,-1,1).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(-1,-1,-1).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(1,-1,-1).getBlock().setType(Material.BARRIER);
-//        placeLocation.add(0,1,0).getBlock().setType(Material.BARRIER);
-//        location.clone().add(0,2,0).getBlock().setType(Material.BARRIER);
-//        location.clone().add(0,-1,0).getBlock().setType(Material.BEDROCK);
-//
-//        placeLocation = location.clone();
-//        //Create task to remove barrier after scene ends
-//        Location finalPlaceLocation = placeLocation;
-//        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-//            finalPlaceLocation.clone().add(0,2,0).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.clone().add(0,-1,0).getBlock().setType(Material.GRASS_BLOCK);
-//            finalPlaceLocation.add(1,0,0).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(-1,-1,1).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(-1,-1,-1).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(1,-1,-1).getBlock().setType(Material.AIR);
-//            finalPlaceLocation.add(0,1,0).getBlock().setType(Material.AIR);
-//        }, sceneLength);
-
-
     }
 
     public void spawnAllArmorStand(Location location){
         //Create Destiny
-        spawnArmorStand(location.clone().add(3.5,2,0.5), Material.END_PORTAL_FRAME,"§6Your Destiny");
+        Location destinyLocation = getHighestNonTreeLocation(location.getWorld().getHighestBlockAt(location.clone().add(3.5,0,0.5)).getLocation());
+        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.END_PORTAL_FRAME,"§6Your Destiny").setCustomNameVisible(true);
+        //Create shop
+        destinyLocation = getHighestNonTreeLocation(location.getWorld().getHighestBlockAt(location.clone().add(-2.5,0,0.5)).getLocation());
+        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.CHEST,"§6Odd Wares").setCustomNameVisible(true);
         //Create magic
-        spawnArmorStand(location.clone().add(3.5, -11, 0.5), Material.ENCHANTING_TABLE,"§5Ancient Tomes");
+        spawnArmorStand(location.clone().add(3.5, -11.3, 0.5), Material.ENCHANTING_TABLE,"§5Ancient Tomes");
         //Create reaper
-        spawnArmorStand(location.clone().add(-2, -11, 0.5),Material.GRINDSTONE,"§4Reaper Grindstone");
+        spawnArmorStand(location.clone().add(-2.5, -11.3, 0.5),Material.GRINDSTONE,"§4Reaper Grindstone");
         //Create swordman
-        spawnArmorStand(location.clone().add(0.5, -11, 3.5), Material.ANVIL,"§2Dull Anvil");
+        spawnArmorStand(location.clone().add(0.5, -11.3, 3.5), Material.ANVIL,"§2Dull Anvil");
         //Create archery
-        spawnArmorStand(location.clone().add(0.5, -11, -2), Material.FLETCHING_TABLE,"§aFletcher's Table");
+        spawnArmorStand(location.clone().add(0.5, -11.3, -2.5), Material.FLETCHING_TABLE,"§aFletcher's Table");
     }
 
-    public void spawnArmorStand(Location location, Material head, String name){
+    public ArmorStand spawnArmorStand(Location location, Material head, String name){
         LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         ArmorStand v = (ArmorStand) mob;
 
         v.setCustomName(name);
-        v.setCustomNameVisible(true);
         v.setSilent(true);
         v.setGravity(false);
         v.setInvisible(true);
         v.setInvulnerable(true);
+        v.setCanPickupItems(false);
         v.setCollidable(false);
         v.getEquipment().setHelmet(new ItemStack(head));
+        return v;
     }
 
     //Teleport all players to location to begun scene
@@ -188,18 +179,7 @@ public class CommandStartGame implements CommandExecutor {
         location.setPitch(2.8f);
         for(Player player : plugin.getServer().getOnlinePlayers()){
             player.teleport(location);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 15, true, false, false)); //blindness effect
-            player.setInvisible(true); // make players invisible
-        }
-    }
-
-    //Play starting scene
-    public void playScene() {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            player.sendMessage(ChatColor.GOLD+"Wise Peculier: "+ChatColor.WHITE+"wake up "+player.getName()+" idk insert dialogue here i guess");
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                player.setInvisible(false);
-            }, sceneLength); //scene finished, remove effects
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 15, true, false, false)); //blindness effect
         }
     }
 
@@ -220,8 +200,18 @@ public class CommandStartGame implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED+"Game has already started. Remove plugin config.yml file to restart game.");
                 return true;
             }
-
             Player player = (Player) sender;
+
+            // Get worldguard regions
+            World worldGuard = BukkitAdapter.adapt(player.getWorld());
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionManager regions = container.get(worldGuard);
+
+            if(!regions.hasRegion("__global__")){
+                player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
+                return true;
+            }
+
             org.bukkit.World world = player.getWorld();
 
             List<Integer> startLocation = data.getConfig().getIntegerList("world.startlocation");
@@ -230,10 +220,6 @@ public class CommandStartGame implements CommandExecutor {
             //set world spawn point
             world.setSpawnLocation(location);
 
-            // Create safe zone region
-            World worldGuard = BukkitAdapter.adapt(player.getWorld());
-            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            RegionManager regions = container.get(worldGuard);
 
             double locationX = location.getX();
             double locationY = location.getY();
@@ -243,19 +229,17 @@ public class CommandStartGame implements CommandExecutor {
             data.getConfig().set("world.startY", locationY);
             data.getConfig().set("world.startZ", locationZ);
             data.getConfig().set("world.startSize", size);
+            data.getConfig().set("world.expanseFund", 400);
+            data.getConfig().set("world.expanseLevel", 0);
 
             data.getConfig().set("world.level", 1);
             data.getConfig().set("world.started", true);
 
             // Change global zone flags
-            if(regions.hasRegion("__global__")) {
-                ProtectedRegion global = regions.getRegion("__global__");
-                global.setFlag(Flags.HEALTH_REGEN, StateFlag.State.DENY);
-                global.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
-            } else {
-                player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
-                return true;
-            }
+            ProtectedRegion global = regions.getRegion("__global__");
+            global.setFlag(Flags.HEALTH_REGEN, StateFlag.State.DENY);
+            global.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
+
 
             //create safe zone
             BlockVector3 min = BlockVector3.at(locationX-size, 0, locationZ-size);
@@ -268,9 +252,9 @@ public class CommandStartGame implements CommandExecutor {
             region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
             regions.addRegion(region);
 
+
+            teleportPlayers(world.getHighestBlockAt(location).getLocation().add(0,1,0));
             buildTemple(location);
-            teleportPlayers(location);
-            playScene();
 
             data.saveConfig();
             return true;

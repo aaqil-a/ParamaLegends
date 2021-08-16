@@ -3,16 +3,21 @@ package id.cuna.ParamaLegends.Spells.Swordsman;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +47,7 @@ public class ShieldsUp implements Listener {
                     player.sendMessage(ChatColor.GREEN+"Shields Up wore off.");
                     playersShielded.remove(player);
                     //shieldEffect.cancel();
-                }, 162);
+                }, 202);
                 playerCooldowns.add(player.getUniqueId().toString());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerCooldowns.contains(player.getUniqueId().toString())){
