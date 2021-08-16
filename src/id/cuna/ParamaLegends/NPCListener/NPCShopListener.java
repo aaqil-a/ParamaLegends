@@ -118,6 +118,7 @@ public class NPCShopListener implements Listener {
                     data.getConfig().set("world.expanseFund", expanseFund);
                     data.saveConfig();
                     updateExpanseFund(event);
+                    updateLectrum(event);
                 } else if(giveItem(event.getWhoClicked().getInventory(), event.getCurrentItem())) updateLectrum(event);
             }
         }
