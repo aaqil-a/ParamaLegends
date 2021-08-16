@@ -182,6 +182,7 @@ public class ExperienceListener implements Listener {
 
     //send message action bar
     public void sendActionBarMessage(Player player, int lectrum, int exp){
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp +" EXP"));
     }
 
 
