@@ -66,6 +66,10 @@ public class PlayerJoinListener implements Listener {
         playerCurrentMana.put(player, 0);
         addPlayerManaRegenTasks(player);
         playerManaLevel.put(player, manaLevel);
+
+        //welcome message
+        player.sendMessage(ChatColor.GOLD+"This server is running a very early version of Parama Legends");
+        player.sendMessage(ChatColor.GOLD+"Please report any bugs you may find or give feedback thanks");
     }
 
     public void addPlayerManaRegenTasks(Player player){

@@ -86,7 +86,7 @@ public class ArcheryListener extends ClassListener implements Listener{
 
     public void applySpeedPassive(Player player){
         double movementSpeed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(movementSpeed*1.2);
+        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(movementSpeed*1.1);
     }
 
     public void shootArrow(Player player, EntityShootBowEvent event, String name, boolean noMana){
