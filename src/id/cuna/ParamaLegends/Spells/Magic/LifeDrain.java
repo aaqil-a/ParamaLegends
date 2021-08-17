@@ -36,9 +36,9 @@ public class LifeDrain implements Listener {
             playerLifeDrainTasks.get(player).cancel();
             playerLifeDrainTasks.remove(player);
         } else {
-            Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0,
-                    notPlayer);
+            Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER,
+                    true, 1.5, notPlayer);
             if(rayTrace != null) {
                 if (rayTrace.getHitEntity() != null) {
                     Entity drained = rayTrace.getHitEntity();

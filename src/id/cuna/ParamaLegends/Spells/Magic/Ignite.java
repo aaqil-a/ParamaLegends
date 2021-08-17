@@ -39,7 +39,7 @@ public class Ignite implements Listener {
             magicListener.sendCooldownMessage(player, "Ignite");
         } else if (magicListener.subtractMana(player, 20)) {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0,
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 1.5,
                     notPlayer);
             Location location = new Location(player.getWorld(),0,0,0);
             if(rayTrace != null) {

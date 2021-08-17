@@ -3,13 +3,13 @@ package id.cuna.ParamaLegends.GameListener;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -88,6 +88,17 @@ public class WorldRuleListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.DARK_RED+"The earth at this depth is much too dense.");
             event.setCancelled(true);
         }
+    }
+
+    //Take player lectrum on death
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        Player player = event.getEntity();
+        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+        int lost = lectrum/10;
+        if(lectrum >= 10) lectrum -= lost;
+        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+        player.sendMessage(ChatColor.RED+"You lost " + lost + " upon dying.");
     }
 
 }

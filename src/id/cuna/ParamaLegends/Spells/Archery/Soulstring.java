@@ -23,6 +23,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +34,11 @@ public class Soulstring {
 
     private final List<String> playerCooldowns = new ArrayList<>();
     private final List<ArmorStand> soulstringAiming = new ArrayList<>();
+    private final HashMap<Player, ArmorStand> playersSoulstring = new HashMap<>();
+    private final HashMap<Player, ArmorStand> playersSoulstringText = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playersEffect = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playersShoot = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playersFollow = new HashMap<>();
 
     public Soulstring(ParamaLegends plugin, ArcheryListener archeryListener){
         this.plugin = plugin;
@@ -66,7 +72,7 @@ public class Soulstring {
         LeatherArmorMeta shirtMeta = (LeatherArmorMeta) shirt.getItemMeta();
         shirtMeta.setColor(Color.WHITE);
         shirt.setItemMeta(shirtMeta);
-        ArmorStand dummy = player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
+        playersSoulstring.put(player, player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
             armorStand.setCustomName(player.getName()+"'s Soulstring");
             armorStand.getEquipment().setItemInMainHand(new ItemStack(Material.BOW));
             armorStand.getEquipment().setChestplate(shirt);
@@ -79,9 +85,8 @@ public class Soulstring {
             armorStand.setInvisible(true);
             armorStand.setInvulnerable(true);
             armorStand.setCustomName("soulstring shooter");
-
-        });
-        ArmorStand dummyText = player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand-> {
+        }));
+        playersSoulstringText.put(player, player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand-> {
             armorStand.setCustomName(ChatColor.GREEN + player.getName()+"'s Soulstring");
             armorStand.setCustomNameVisible(true);
             armorStand.setVisible(false);
@@ -89,26 +94,25 @@ public class Soulstring {
             armorStand.setGravity(false);
             armorStand.setCanPickupItems(false);
             armorStand.setInvulnerable(true);
-        });
-
-        BukkitTask soulStringEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        }));
+        playersEffect.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             player.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, location.clone().add(0, 1, 0), 8, 0.5, 0.5, 0.5, 0);
-        }, 0, 100);
+        }, 0, 100));
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            dummy.teleport(location.clone().add(0, -0.1, 0));
-            dummyText.teleport(location);
+            playersSoulstring.get(player).teleport(location.clone().add(0, -0.1, 0));
+            playersSoulstringText.get(player).teleport(location);
         }, 2);
         BukkitTask shoot = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if(!soulstringAiming.contains(dummy)){
-                shootSoulstring(player, dummy);
+            if(!soulstringAiming.contains(playersSoulstring.get(player))){
+                shootSoulstring(player, playersSoulstring.get(player));
             }
         }, 40, 20);
         Bukkit.getScheduler().runTaskLater(plugin, shoot::cancel, 385);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            dummy.remove();
-            dummyText.remove();
-            soulStringEffect.cancel();
-            soulstringAiming.remove(dummy);
+            playersSoulstring.get(player).remove();
+            playersSoulstringText.get(player).remove();
+            playersEffect.get(player).cancel();
+            soulstringAiming.remove(playersSoulstring.get(player));
         }, 405);
     }
 
@@ -136,25 +140,21 @@ public class Soulstring {
         double dummyY = dummy.getLocation().getY();
         double dummyZ = dummy.getLocation().getZ();
         soulstringAiming.add(dummy);
-        BukkitTask followEntity = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        playersFollow.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             double entityX = entity.getLocation().getX();
             double entityY = entity.getLocation().getY();
             double entityZ = entity.getLocation().getZ();
             Vector direction = new Vector(entityX-dummyX, entityY-dummyY-0.5, entityZ-dummyZ);
             dummy.teleport(dummy.getLocation().setDirection(direction.normalize()));
-        }, 0, 2);
+        }, 0, 2));
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            followEntity.cancel();
+            playersFollow.get(player).cancel();
             Arrow arrow = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
             arrow.setShooter(player);
             arrow.setGravity(false);
             arrow.setVelocity(arrow.getVelocity().multiply(1.5));
-            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                arrow.remove();
-            }, 20);
+            Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 20);
             soulstringAiming.remove(dummy);
         }, 30);
-
     }
-
 }
