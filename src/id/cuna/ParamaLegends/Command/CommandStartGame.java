@@ -204,11 +204,19 @@ public class CommandStartGame implements CommandExecutor {
 
             // Get worldguard regions
             World worldGuard = BukkitAdapter.adapt(player.getWorld());
+            World nether = BukkitAdapter.adapt(Bukkit.getServer().getWorld("world_nether"));
+
+
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionManager regions = container.get(worldGuard);
+            RegionManager netherRegions = container.get(nether);
 
             if(!regions.hasRegion("__global__")){
                 player.sendMessage(ChatColor.RED+"Setup failed. Ensure global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
+                return true;
+            }
+            if(!netherRegions.hasRegion("__global__")){
+                player.sendMessage(ChatColor.RED+"Setup failed. Ensure nether global region exists by typing command '/rg flag __global__ natural-health-regen deny'");
                 return true;
             }
 

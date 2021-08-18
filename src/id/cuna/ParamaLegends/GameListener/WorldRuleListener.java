@@ -98,7 +98,7 @@ public class WorldRuleListener implements Listener {
         int lost = lectrum/10;
         if(lectrum >= 10) lectrum -= lost;
         data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
-        player.sendMessage(ChatColor.RED+"You lost " + lost + " upon dying.");
+        player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");
     }
 
 }
