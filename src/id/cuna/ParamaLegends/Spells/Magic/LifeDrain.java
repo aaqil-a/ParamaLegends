@@ -50,11 +50,21 @@ public class LifeDrain implements Listener {
                                 playerLifeDrainTasks.get(player).cancel();
                                 playerLifeDrainTasks.remove(player);
                             } else if(magicListener.subtractMana(player, 10)){
-                                player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
-                                plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
-                                ((Damageable) drained).damage(3.069, player);
-                                if(player.getHealth() <= 19){
-                                    player.setHealth(player.getHealth()+1);
+                                if(drained instanceof Player){
+                                    drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
+                                    plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
+                                    Player healed = (Player) drained;
+                                    if(healed.getHealth() <= 19){
+                                        healed.setHealth(healed.getHealth()+1);
+                                    }
+                                    player.damage(1.069, player);
+                                } else {
+                                    player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
+                                    plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
+                                    ((Damageable) drained).damage(3.069, player);
+                                    if(player.getHealth() <= 19){
+                                        player.setHealth(player.getHealth()+1);
+                                    }
                                 }
                             } else {
                                 player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
