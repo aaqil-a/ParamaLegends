@@ -7,10 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 import org.bukkit.util.BoundingBox;
 
@@ -43,16 +40,17 @@ public class Gust {
             Vector direction = player.getLocation().getDirection();
             direction.setY(0);
             direction.normalize();
-            BlockFace facing = player.getFacing();
             if(direction.getX() < Math.sin(Math.PI/8) && direction.getX() > -1*Math.sin(Math.PI/8)){
                 if(direction.getZ() >= 0){
                     boxX1 += 2.5;
                     boxX2 -= 2.5;
+                    boxZ1 -= 1;
                     boxZ2 += 4.5;
                     knockback.setZ(4);
                 } else {
                     boxX1 -= 2.5;
                     boxX2 += 2.5;
+                    boxZ1 += 1;
                     boxZ2 -= 4.5;
                     knockback.setZ(-4);
                 }
@@ -60,32 +58,42 @@ public class Gust {
                 if(direction.getX() >= 0){
                     boxZ1 += 2.5;
                     boxZ2 -= 2.5;
+                    boxX1 -= 1;
                     boxX2 += 4.5;
                     knockback.setX(4);
                 } else {
                     boxZ1 -= 2.5;
                     boxZ2 += 2.5;
+                    boxX1 += 1;
                     boxX2 -= 4.5;
                     knockback.setX(-4);
                 }
             } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)){
                 boxX2 += 3.5;
                 boxZ2 += 3.5;
+                boxX1 -= 1;
+                boxZ1 -= 1;
                 knockback.setX(2);
                 knockback.setZ(2);
             } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
                 boxX2 -= 3.5;
                 boxZ2 += 3.5;
+                boxX1 += 1;
+                boxZ1 -= 1;
                 knockback.setX(-2);
                 knockback.setZ(2);
             } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
                 boxX2 -= 3.5;
                 boxZ2 -= 3.5;
+                boxX1 += 1;
+                boxZ1 += 1;
                 knockback.setX(-2);
                 knockback.setZ(-2);
             } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)) {
                 boxX2 += 3.5;
                 boxZ2 -= 3.5;
+                boxX1 -= 1;
+                boxZ1 += 1;
                 knockback.setX(2);
                 knockback.setZ(-2);
             }
@@ -93,7 +101,7 @@ public class Gust {
             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getLocation().getDirection().multiply(2)).add(new Vector(0,0.5,0)), 8, 1, 0.5, 1, 0);
             List<Entity> entities = player.getWorld().getNearbyEntities(gustBox).stream().toList();
             for(Entity knocked : entities){
-                if(knocked.equals(player) || knocked instanceof Villager){
+                if(knocked.equals(player) || knocked instanceof Villager || knocked instanceof ArmorStand){
                     continue;
                 }
                 if(knocked instanceof Damageable){

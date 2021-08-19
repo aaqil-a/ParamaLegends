@@ -56,6 +56,7 @@ public class ParamaLegends extends JavaPlugin {
     public CommandStartGame commandStartGame;
     public CommandSetupGame commandSetupGame;
     public CommandLectrum commandLectrum;
+    public CommandSpawnAltar commandSpawnAltar;
     public CommandDestiny commandDestiny;
     public Recipes recipes;
 
@@ -73,6 +74,7 @@ public class ParamaLegends extends JavaPlugin {
         commandSetupGame = new CommandSetupGame(this);
         commandLectrum = new CommandLectrum(this);
         commandDestiny = new CommandDestiny(this);
+        commandSpawnAltar = new CommandSpawnAltar(this);
         damageModifyingListener = new DamageModifyingListener(this);
         setupListener = new SetupListener(this);
         recipes = new Recipes(this);
@@ -88,6 +90,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("setupgame").setExecutor(commandSetupGame);
         getCommand("lectrum").setExecutor(commandLectrum);
         getCommand("destiny").setExecutor(commandDestiny);
+        getCommand("spawnaltar").setExecutor(commandSpawnAltar);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(destinyListener, this);
@@ -225,6 +228,23 @@ public class ParamaLegends extends JavaPlugin {
         }
         return damage*multiplier+toAdd;
     }
+
+    public ClassType checkCustomDamageSource(double damage){
+        String damageString = String.valueOf(damage);
+        if(damageString.substring(damageString.indexOf(".")).length() >= 4){
+            String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
+            return switch (key) {
+                case ".069", ".068" -> ClassType.MAGIC;
+                case ".034", ".033", ".035" -> ClassType.REAPER;
+                case ".072", ".073", ".071" -> ClassType.SWORDSMAN;
+                case ".016", ".015", ".017" -> ClassType.ARCHERY;
+                default -> null;
+            };
+
+        }
+        return null;
+    }
+
     public DataManager getData(){
         return data;
     }

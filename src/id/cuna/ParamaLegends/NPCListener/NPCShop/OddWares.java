@@ -1,5 +1,15 @@
 package id.cuna.ParamaLegends.NPCListener.NPCShop;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.NPCListener.NPCShopListener;
 import id.cuna.ParamaLegends.ParamaLegends;
@@ -8,12 +18,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,12 +33,15 @@ import java.util.List;
 
 public class OddWares extends NPCShopListener {
 
+    private final int[] expansePrice = {400, 750, 1500, 2500, 4000, 8000, 10000};
+
     //Prices array
     public static HashMap<Integer, Integer> prices = new HashMap<>(){{
         put(2,1);
         put(4,3);
         put(6,4);
         put(8,5);
+        put(10,50);
     }};
 
     public OddWares(ParamaLegends plugin) {
@@ -45,7 +58,7 @@ public class OddWares extends NPCShopListener {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,9, "§6Odd Wares");
+        gui = Bukkit.createInventory(null,18, "§6Odd Wares");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -107,16 +120,49 @@ public class OddWares extends NPCShopListener {
         gui.setItem(8, item);
         lore.clear();
 
+        // Alcohol License
+        item.setType(Material.PAPER);
+        item.setAmount(1);
+        meta.setDisplayName(ChatColor.GOLD + "Alcohol License");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Only those who possess this");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "license can produce alcoholic");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "beverages.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Expires one week after purchase.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "50 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        gui.setItem(10, item);
+        lore.clear();
+
         return gui;
     }
 
 
     //Purchase item from gui
     @Override
-    public boolean giveItem(Inventory inventory, ItemStack item){
+    public boolean giveItem(InventoryClickEvent event){
+        ItemStack item = event.getCurrentItem();
+        Inventory inventory = event.getWhoClicked().getInventory();
         if(item.getType().equals(Material.ARROW)){
             ItemStack arrow = new ItemStack(Material.ARROW, 8);
             inventory.addItem(arrow);
+        } else if(item.getType().equals(Material.DIAMOND)) {
+            //expanse fund
+            int expanseFund = data.getConfig().getInt("world.expanseFund");
+            int expanseLevel = data.getConfig().getInt("world.expanseLevel");
+            expanseFund -= 5;
+            if(expanseFund <= 0){
+                //expand land
+                expandLand((Player) event.getWhoClicked());
+                expanseFund = expansePrice[expanseLevel+1];
+                data.getConfig().set("world.expanseLevel", expanseLevel+1);
+            }
+            data.getConfig().set("world.expanseFund", expanseFund);
+            data.saveConfig();
+            updateExpanseFund(event);
+            updateLectrum(event);
+        } else if(item.getType().equals(Material.PAPER)) {
+
         } else {
             ItemStack newItem = item.clone();
             ItemMeta meta = newItem.getItemMeta();
@@ -128,5 +174,52 @@ public class OddWares extends NPCShopListener {
             inventory.addItem(newItem);
         }
         return true;
+    }
+
+    //update expanse fund
+    public void updateExpanseFund(InventoryClickEvent event){
+        Inventory inv = event.getInventory();
+        ItemStack item = new ItemStack(Material.DIAMOND, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Expanse Fund");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Expand safe zone region.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Every player can contribute");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "to the fund.");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Remaining lectrum required: " + data.getConfig().getInt("world.expanseFund"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "5 Lectrum");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        inv.setItem(8, item);
+        lore.clear();
+    }
+
+    public void expandLand(Player player){
+        Bukkit.broadcastMessage(ChatColor.GREEN+"The world around you feels safer.");
+        int maxDepth = data.getConfig().getInt("world.maxdepth");
+        if(maxDepth >= 10){
+            maxDepth -= 10;
+            data.getConfig().set("world.maxdepth", maxDepth);
+            plugin.worldRuleListener.setMaxDepth(maxDepth);
+        }
+
+        //expand worldguard region
+        // Get worldguard regions
+        World worldGuard = BukkitAdapter.adapt(player.getWorld());
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(worldGuard);
+        ProtectedRegion safezone = regions.getRegion("safezone");
+        //        regions.removeRegion("safezone");
+        //create safe zone
+        BlockVector3 min = safezone.getMinimumPoint();
+        BlockVector3 max = safezone.getMaximumPoint();
+        ProtectedRegion region = new ProtectedCuboidRegion("safezone", min.add(-16, 0, -16), max.add(16,0,16));
+        region.setPriority(1);
+        region.setFlag(Flags.GREET_MESSAGE, ChatColor.GREEN + "You feel slightly more protected...");
+        region.setFlag(Flags.FAREWELL_MESSAGE, ChatColor.RED + "The wilderness exudes a threatening aura...");
+        region.setFlag(Flags.HEALTH_REGEN, StateFlag.State.ALLOW);
+        region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
+
+        regions.addRegion(region);
     }
 }

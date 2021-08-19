@@ -52,8 +52,7 @@ public class SummonLightning implements Listener {
                 magicListener.sendOutOfRangeMessage(player);
                 return;
             }
-            if ( magicListener.subtractMana(player, 150)) {
-
+            if (magicListener.subtractMana(player, 100)) {
                 playerCooldowns.add(player.getUniqueId().toString());
                 player.getWorld().strikeLightningEffect(location);
                 player.getWorld().spawnParticle(Particle.FLASH, location.add(new Vector(0,1,0)), 5);
@@ -66,7 +65,7 @@ public class SummonLightning implements Listener {
                 for(Entity ignited : entities){
                     if(ignited instanceof Damageable && !(ignited instanceof Player) && !(ignited instanceof ArmorStand)){
                         plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
-                        ((Damageable) ignited).damage(20.069, player);
+                        ((Damageable) ignited).damage(45.069, player);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {

@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +58,9 @@ public class SuspiciousPeasant extends NPCShopListener {
 
     @Override
     //Purchase item from gui
-    public boolean giveItem(Inventory inventory, ItemStack item){
+    public boolean giveItem(InventoryClickEvent event){
+        ItemStack item = event.getCurrentItem();
+        Inventory inventory = event.getWhoClicked().getInventory();
         ItemStack newItem;
         if(item.getType().equals(Material.ANVIL)){
             ItemStack hoe = checkHoe(inventory);
@@ -142,6 +145,7 @@ public class SuspiciousPeasant extends NPCShopListener {
     //Create shop gui
     @Override
     public Inventory createGui(Player player, DataManager data){
+        int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".reaper");
         Inventory gui;
         gui = Bukkit.createInventory(null,18, "§4Reaper's Weaponry");
 
@@ -168,84 +172,89 @@ public class SuspiciousPeasant extends NPCShopListener {
         gui.setItem(4, item);
         lore.clear();
 
-        // Hidden Strike
-        item.setType(Material.LEATHER);
-        meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-        meta.setDisplayName(ChatColor.RESET + "§4Hidden Strike");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Conceal your weapon, stabbing the");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy at a critical location while");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 2");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(9, item);
-        lore.clear();
-
-        // Blinding Sand
-        item.setType(Material.SAND);
-        meta.setDisplayName(ChatColor.RESET + "§4Blinding Sand");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 16 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 3");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(11, item);
-        lore.clear();
-
-        // Gut Punch
-        item.setType(Material.LIGHTNING_ROD);
-        meta.setDisplayName(ChatColor.RESET + "§4Gut Punch");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deals damage based on the");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent's current HP and");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflicts high discomfort on");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 8");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(13, item);
-        lore.clear();
-
-
-        // Forbidden Slash
-        item.setType(Material.END_ROD);
-        meta.setDisplayName(ChatColor.RESET + "§4Forbidden Slash");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Ready your weapon, dealing a");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "decisive slash to the enemy and");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage on");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the next attack.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 9");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(15, item);
-        lore.clear();
-
-        // Memento Mori
-        item.setType(Material.NETHERITE_HOE);
-        meta.setDisplayName(ChatColor.RESET + "§4Memento Mori");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike with the power of the");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "grim reaper, dealing immense");
-        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage to a single target.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        gui.setItem(17, item);
-        lore.clear();
-
+        if(playerLevel >= 2){
+            // Hidden Strike
+            item.setType(Material.LEATHER);
+            meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+            meta.setDisplayName(ChatColor.RESET + "§4Hidden Strike");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Conceal your weapon, stabbing the");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy at a critical location while");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 2");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(9, item);
+            lore.clear();
+        }
+        if(playerLevel >= 3){
+            // Blinding Sand
+            item.setType(Material.SAND);
+            meta.setDisplayName(ChatColor.RESET + "§4Blinding Sand");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 3");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(11, item);
+            lore.clear();
+        }
+        if(playerLevel >= 8){
+            // Gut Punch
+            item.setType(Material.LIGHTNING_ROD);
+            meta.setDisplayName(ChatColor.RESET + "§4Gut Punch");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Deals damage based on the");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent's current HP and");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflicts high discomfort on");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 8");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(13, item);
+            lore.clear();
+        }
+        if(playerLevel >= 9){
+            // Forbidden Slash
+            item.setType(Material.END_ROD);
+            meta.setDisplayName(ChatColor.RESET + "§4Forbidden Slash");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Ready your weapon, dealing a");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "decisive slash to the enemy and");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage on");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the next attack.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 9");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(15, item);
+            lore.clear();
+        }
+        if(playerLevel >= 10){
+            // Memento Mori
+            item.setType(Material.NETHERITE_HOE);
+            meta.setDisplayName(ChatColor.RESET + "§4Memento Mori");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike with the power of the");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "grim reaper, dealing immense");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage to a single target.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 10");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(17, item);
+            lore.clear();
+        }
         return gui;
     }
 }

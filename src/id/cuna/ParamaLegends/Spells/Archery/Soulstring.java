@@ -102,12 +102,12 @@ public class Soulstring {
             playersSoulstring.get(player).teleport(location.clone().add(0, -0.1, 0));
             playersSoulstringText.get(player).teleport(location);
         }, 2);
-        BukkitTask shoot = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        playersShoot.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if(!soulstringAiming.contains(playersSoulstring.get(player))){
                 shootSoulstring(player, playersSoulstring.get(player));
             }
-        }, 40, 20);
-        Bukkit.getScheduler().runTaskLater(plugin, shoot::cancel, 385);
+        }, 40, 20));
+        Bukkit.getScheduler().runTaskLater(plugin, playersShoot.get(player)::cancel, 385);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             playersSoulstring.get(player).remove();
             playersSoulstringText.get(player).remove();

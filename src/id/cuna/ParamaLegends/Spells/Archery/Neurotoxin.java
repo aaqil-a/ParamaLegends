@@ -39,7 +39,6 @@ public class Neurotoxin implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        double damage = event.getDamage();
         if(event.getDamager() instanceof Arrow){
             Arrow arrow = (Arrow) event.getDamager();
             if(arrow.getCustomName() != null && arrow.getCustomName().equals("neurotoxin")){
@@ -47,7 +46,7 @@ public class Neurotoxin implements Listener {
                     archeryListener.getEntitiesPoisoned().add(event.getEntity());
                     BukkitTask neurotoxin = Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                         if(event.getEntity() instanceof LivingEntity && arrow.getShooter() instanceof Player){
-                            ((LivingEntity) event.getEntity()).damage(3.016);
+                            ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
                             ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
                         }
                     }, 20, 20);

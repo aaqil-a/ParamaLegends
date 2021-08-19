@@ -19,9 +19,14 @@ commands:
     permission-message: You are not a game admin!
   lectrum:
     description: Check or pay lectrum.
-    usage: /lectrum [balance/pay]
+    usage: /lectrum [balance|pay]
   destiny:
     description: Check your destiny.
+  spawnaltar:
+    description: Spawn a custom ParamaLegends altar or NPC.
+    usage: /spawnaltar <altarname>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

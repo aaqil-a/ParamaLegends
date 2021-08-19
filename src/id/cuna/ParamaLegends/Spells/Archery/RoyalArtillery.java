@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -31,6 +32,11 @@ public class RoyalArtillery implements Listener {
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
     private final List<String> playerCooldowns = new ArrayList<>();
+    private final HashMap<Player, BukkitTask> playerArrowTask = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playerArrowTask2 = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playerArrowTask3 = new HashMap<>();
+    private final HashMap<Player, BukkitTask> playerDamageTask = new HashMap<>();
+
 
     public RoyalArtillery(ParamaLegends plugin, ArcheryListener archeryListener){
         this.plugin = plugin;
@@ -91,7 +97,7 @@ public class RoyalArtillery implements Listener {
         double[] arrowMapX3 = {0,-1,2,-2,2};
         double[] arrowMapZ3 = {0,-2,-2,2,2};
 
-        BukkitTask arrowTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        playerArrowTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);
                 location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
@@ -99,8 +105,8 @@ public class RoyalArtillery implements Listener {
                     arrow.setVelocity(new Vector(0, -0.7, 0));
                 });
             }
-        }, 0, 30);
-        BukkitTask arrowTask2 = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        }, 0, 30));
+        playerArrowTask2.put(player,  Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX2[i], 6, arrowMapZ2[i]);
                 location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
@@ -109,8 +115,8 @@ public class RoyalArtillery implements Listener {
                     arrow.setSilent(true);
                 });
             }
-        }, 10, 30);
-        BukkitTask arrowTask3 = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        }, 10, 30));
+        playerArrowTask3.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX3[i], 6, arrowMapZ3[i]);
                 location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
@@ -119,9 +125,8 @@ public class RoyalArtillery implements Listener {
                     arrow.setSilent(true);
                 });
             }
-        }, 20, 30);
-
-        BukkitTask damageTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        }, 20, 30));
+        playerDamageTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             location.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, location, 4, 0,0,0,0);
             List<Entity> entities = location.getWorld().getNearbyEntities(location, 2.5, 5, 2.5).stream().toList();
             for(Entity hit : entities){
@@ -129,12 +134,24 @@ public class RoyalArtillery implements Listener {
                     ((LivingEntity) hit).damage(6.016, player);
                 }
             }
-        }, 5, 10);
+        }, 5, 10));
         Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-            arrowTask.cancel();
-            arrowTask2.cancel();
-            arrowTask3.cancel();
-            damageTask.cancel();
+            if(playerArrowTask.containsKey(player)){
+                playerArrowTask.get(player).cancel();
+                playerArrowTask.remove(player);
+            }
+            if(playerArrowTask2.containsKey(player)){
+                playerArrowTask2.get(player).cancel();
+                playerArrowTask2.remove(player);
+            }
+            if(playerArrowTask3.containsKey(player)){
+                playerArrowTask3.get(player).cancel();
+                playerArrowTask3.remove(player);
+            }
+            if(playerDamageTask.containsKey(player)){
+                playerDamageTask.get(player).cancel();
+                playerDamageTask.remove(player);
+            }
         }, 160);
     }
 
@@ -142,7 +159,6 @@ public class RoyalArtillery implements Listener {
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event){
         Projectile projectile = event.getEntity();
-
         if (projectile instanceof Arrow && (projectile.getCustomName() != null)){
             Arrow arrow = (Arrow) projectile;
             if(arrow.getCustomName().equals("barrage")){

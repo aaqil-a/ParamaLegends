@@ -3,17 +3,9 @@ package id.cuna.ParamaLegends.Spells.Reaper;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 import org.bukkit.event.EventHandler;
@@ -32,7 +24,6 @@ public class BlindingSand implements Listener {
     private final ReaperListener reaperListener;
 
     private final List<String> playerCooldowns = new ArrayList<>();
-    private final HashMap<Player, Vector> ballOffsetVectors = new HashMap<>();
     private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
     private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
     private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
@@ -47,26 +38,11 @@ public class BlindingSand implements Listener {
         if (playerCooldowns.contains(player.getUniqueId().toString())) {
             reaperListener.sendCooldownMessage(player, "Blinding Sand");
         } else {
-            Location location = player.getEyeLocation();
-            Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
-            location.add(offset);
-            ArmorStand dummy = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
-            dummy.setCustomName(player.getName());
-            dummy.setVisible(false);
-            dummy.setGravity(false);
-            dummy.setInvulnerable(true);
-            dummy.setCanPickupItems(false);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                dummy.teleport(location);
-                dummy.getLocation().add(new Vector(0,1,0));
-            }, 1);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                dummy.teleport(dummy.getLocation().add(new Vector(0,-2,0)));
-                Snowball ball = dummy.launchProjectile(Snowball.class, ballOffsetVectors.get(player));
-                dummy.remove();
+                Snowball ball = player.launchProjectile(Snowball.class);
                 ball.setCustomName("blindsand");
                 Vector velocity = ball.getVelocity();
-                velocity.multiply(0.5);
+                velocity.multiply(0.7);
                 ball.setItem(new ItemStack(Material.SAND));
                 ball.setGravity(true);
                 ball.setVelocity(velocity);
@@ -91,7 +67,7 @@ public class BlindingSand implements Listener {
                     reaperListener.sendNoLongerCooldownMessage(player, "Blinding Sand");
                     playerCooldowns.remove(player.getUniqueId().toString());
                 }
-            }, 320);
+            }, 205);
         }
     }
 
@@ -108,14 +84,12 @@ public class BlindingSand implements Listener {
         if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
             if(projectile.getCustomName().equals("blindsand")){
                 event.setCancelled(true);
-                ArmorStand source = (ArmorStand) projectile.getShooter();
-                Player player = plugin.getServer().getPlayer(source.getName());
+                Player player = (Player) projectile.getShooter();
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(ballsDirt.get(player) != null)
                         ballsDirt.get(player).remove();
                     ballsDirt.remove(player);
                 }, 2);
-                ballOffsetVectors.remove(player);
                 ballsThrown.remove(player);
                 cancelFlingEarthTasks(player);
                 if(event.getHitEntity() != null){
@@ -137,6 +111,14 @@ public class BlindingSand implements Listener {
         if(entitiesBlinded.contains(event.getDamager())){
             event.setCancelled(true);
         }
+        if(event.getDamager() instanceof Arrow){
+            Projectile arrow = (Projectile) event.getDamager();
+            if(arrow.getShooter() instanceof Entity){
+                Entity shooter = (Entity) arrow.getShooter();
+                if(entitiesBlinded.contains(shooter)){
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
-
 }
