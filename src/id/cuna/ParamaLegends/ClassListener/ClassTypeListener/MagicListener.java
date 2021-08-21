@@ -17,10 +17,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.util.Vector;
 
 public class MagicListener extends ClassListener implements Listener {
 
@@ -61,6 +63,9 @@ public class MagicListener extends ClassListener implements Listener {
     public void onCastSpell(PlayerInteractEvent event){
         Player player = event.getPlayer();
         if(event.getHand() == EquipmentSlot.OFF_HAND){
+            return;
+        }
+        if(event.getAction() == Action.PHYSICAL){
             return;
         }
         //Check if held item is book
@@ -133,6 +138,10 @@ public class MagicListener extends ClassListener implements Listener {
         firework.setFireworkMeta(meta);
         firework.setSilent(true);
         Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 1);
+    }
+
+    public void teleportToAir(Player player, Location location, Vector direction){
+        teleportToAir(player, location.setDirection(direction));
     }
 
     //Teleports player to a safe area near a location if exists

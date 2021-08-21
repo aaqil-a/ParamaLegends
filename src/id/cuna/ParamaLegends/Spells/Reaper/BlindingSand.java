@@ -1,6 +1,7 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
+import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -94,11 +95,20 @@ public class BlindingSand implements Listener {
                 cancelFlingEarthTasks(player);
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
-                        entitiesBlinded.add(event.getHitEntity());
-                        player.getWorld().spawnParticle(Particle.BLOCK_CRACK, event.getHitEntity().getLocation(), 3, 0.25, 0.25, 0.25, 0, Material.SAND.createBlockData());
-                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                            entitiesBlinded.remove(event.getHitEntity());
-                        }, 100);
+                        List<Entity> blinded = player.getWorld().getNearbyEntities(event.getHitEntity().getLocation(), 1.5,1.5,1.5).stream().toList();
+                        for(Entity blind : blinded) {
+                            if (blind instanceof Player || blind instanceof ArmorStand) {
+                                continue;
+                            }
+                            if (blind instanceof Damageable) {
+                                entitiesBlinded.add(blind);
+                                ((Damageable) blind).damage(1.034, player);
+                                player.getWorld().spawnParticle(Particle.BLOCK_CRACK, blind.getLocation(), 3, 0.25, 0.25, 0.25, 0, Material.SAND.createBlockData());
+                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                    entitiesBlinded.remove(blind);
+                                }, 100);
+                            }
+                        }
                     }
                 }
             }

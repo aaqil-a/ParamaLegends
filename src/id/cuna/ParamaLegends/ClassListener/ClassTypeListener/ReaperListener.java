@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -132,6 +133,9 @@ public class ReaperListener extends ClassListener implements Listener{
     public void onCastSpell(PlayerInteractEvent event){
         Player player = event.getPlayer();
         if(event.getHand() == EquipmentSlot.OFF_HAND){
+            return;
+        }
+        if(event.getAction() == Action.PHYSICAL){
             return;
         }
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();

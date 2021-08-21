@@ -109,7 +109,7 @@ public class SetupListener implements Listener {
                 case START -> {
                     player.sendMessage(ChatColor.GREEN+"Starting area marked.");
 
-                    plugin.startAltarListener.spawnAltar(player.getWorld(), altarX, altarZ);
+                    plugin.startAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ);
 
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark nature game area with wand.");

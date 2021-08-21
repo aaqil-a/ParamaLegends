@@ -15,6 +15,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -156,6 +157,9 @@ public class ArcheryListener extends ClassListener implements Listener{
         if(event.getHand() == EquipmentSlot.OFF_HAND){
             return;
         }
+        if(event.getAction() == Action.PHYSICAL){
+            return;
+        }
         //Check if held item is book
 
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
@@ -206,7 +210,7 @@ public class ArcheryListener extends ClassListener implements Listener{
                 if(windBoost.getPlayersWindBoosted().contains(player.getUniqueId().toString())){
                     double damage = ((AbstractArrow) event.getProjectile()).getDamage();
                     ((AbstractArrow) event.getProjectile()).setDamage(damage*1.15);
-                    ((AbstractArrow) event.getProjectile()).setKnockbackStrength(1);
+                    ((AbstractArrow) event.getProjectile()).setKnockbackStrength(2);
                 }
             }
         }

@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 public class Neurotoxin implements Listener {
 
@@ -48,6 +49,7 @@ public class Neurotoxin implements Listener {
                         if(event.getEntity() instanceof LivingEntity && arrow.getShooter() instanceof Player){
                             ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
                             ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
+                            event.getEntity().setVelocity(new Vector(0,0,0));
                         }
                     }, 20, 20);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{

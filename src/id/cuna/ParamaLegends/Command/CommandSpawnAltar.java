@@ -39,7 +39,7 @@ public class CommandSpawnAltar implements CommandExecutor {
             } else {
                 switch (args[0].toLowerCase()) {
                     case "occultaltar" ->
-                        plugin.startAltarListener.spawnAltar(player.getWorld(), (int) player.getLocation().getX(), (int) player.getLocation().getZ());
+                        plugin.startAltarListener.spawnAltar(player.getWorld(), (int) player.getLocation().getX(), (int) player.getLocation().getY(), (int) player.getLocation().getZ());
                     case "naturealtar" ->
                         plugin.natureAltarListener.spawnAltar(player.getWorld(), (int) player.getLocation().getX(),(int) player.getLocation().getY(), (int) player.getLocation().getZ());
                     case "oddwares" ->

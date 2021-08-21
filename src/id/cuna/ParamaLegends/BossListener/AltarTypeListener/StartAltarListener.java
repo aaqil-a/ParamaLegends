@@ -25,13 +25,12 @@ public class StartAltarListener extends AltarListener implements Listener {
         this.data = plugin.getData();
     }
 
-    public void spawnAltar(World world, int altarX, int altarZ){
+    public void spawnAltar(World world, int altarX, int altarY, int altarZ){
 
-        Location location = new Location(world, altarX, world.getHighestBlockYAt(altarX, altarZ), altarZ);
+        Location location = new Location(world, altarX, altarY, altarZ);
         Location placeLocation;
         //Spawn altar interact
         placeLocation = location.clone().add(-2,0,-2);
-        placeLocation = placeLocation.getWorld().getHighestBlockAt(placeLocation).getLocation();
         placeLocation.add(0,1,0);
         placeLocation.getWorld().spawn(placeLocation, ArmorStand.class, armorStand -> {
             armorStand.setCustomName(super.getTypeName());

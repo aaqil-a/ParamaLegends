@@ -138,6 +138,15 @@ public class DamageModifyingListener implements Listener {
                 damage = plugin.increasedIncomingDamage(damage, 1.5);
             }
         }
+        if(event.getEntity() instanceof Player){
+            Player player = (Player) event.getEntity();
+            //Reduce damage if shields up
+            if(plugin.swordsmanListener.getPlayersShielded().contains(player)){
+                player.getWorld().spawnParticle(Particle.BLOCK_CRACK, player.getLocation().add(0,1,0), 8, 0.25, 0.25, 0.25, 0, Material.IRON_BLOCK.createBlockData());
+                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.4f, 0f);
+                damage *= 0.3;
+            }
+        }
         event.setDamage(damage);
     }
 
@@ -148,12 +157,7 @@ public class DamageModifyingListener implements Listener {
         double damage = event.getDamage();
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
-            //Reduce damage if shields up
-            if(plugin.swordsmanListener.getPlayersShielded().contains(player)){
-                player.getWorld().spawnParticle(Particle.BLOCK_CRACK, player.getLocation().add(0,1,0), 8, 0.25, 0.25, 0.25, 0, Material.IRON_BLOCK.createBlockData());
-                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.4f, 0f);
-                damage *= 0.2;
-            }
+
         }
         event.setDamage(damage);
     }

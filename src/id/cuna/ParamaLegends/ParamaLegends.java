@@ -57,7 +57,11 @@ public class ParamaLegends extends JavaPlugin {
     public CommandSetupGame commandSetupGame;
     public CommandLectrum commandLectrum;
     public CommandSpawnAltar commandSpawnAltar;
+    public CommandRemoveAltar commandRemoveAltar;
     public CommandDestiny commandDestiny;
+    public CommandDestinySet commandDestinySet;
+    public CommandLectrumSet commandLectrumSet;
+
     public Recipes recipes;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
@@ -74,7 +78,10 @@ public class ParamaLegends extends JavaPlugin {
         commandSetupGame = new CommandSetupGame(this);
         commandLectrum = new CommandLectrum(this);
         commandDestiny = new CommandDestiny(this);
+        commandDestinySet = new CommandDestinySet(this);
+        commandLectrumSet = new CommandLectrumSet(this);
         commandSpawnAltar = new CommandSpawnAltar(this);
+        commandRemoveAltar = new CommandRemoveAltar(this);
         damageModifyingListener = new DamageModifyingListener(this);
         setupListener = new SetupListener(this);
         recipes = new Recipes(this);
@@ -91,6 +98,9 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("lectrum").setExecutor(commandLectrum);
         getCommand("destiny").setExecutor(commandDestiny);
         getCommand("spawnaltar").setExecutor(commandSpawnAltar);
+        getCommand("removealtar").setExecutor(commandRemoveAltar);
+        getCommand("destinyset").setExecutor(commandDestinySet);
+        getCommand("lectrumset").setExecutor(commandLectrumSet);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(destinyListener, this);

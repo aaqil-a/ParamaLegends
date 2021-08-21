@@ -65,7 +65,7 @@ public class SuspiciousPeasant extends NPCShopListener {
         if(item.getType().equals(Material.ANVIL)){
             ItemStack hoe = checkHoe(inventory);
             if(hoe == null) return false;
-            inventory.remove(hoe);
+            inventory.removeItem(hoe);
             newItem = hoeToScythe(hoe);
         } else {
             newItem = item.clone();

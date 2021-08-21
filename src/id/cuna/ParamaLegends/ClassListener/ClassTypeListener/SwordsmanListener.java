@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -100,6 +101,9 @@ public class SwordsmanListener extends ClassListener implements Listener{
     public void onCastSpell(PlayerInteractEvent event){
         Player player = event.getPlayer();
         if(event.getHand() == EquipmentSlot.OFF_HAND){
+            return;
+        }
+        if(event.getAction() == Action.PHYSICAL){
             return;
         }
         //Check if held item is book

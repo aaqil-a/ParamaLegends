@@ -54,10 +54,10 @@ public class LifeDrain implements Listener {
                                     drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                     plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
                                     Player healed = (Player) drained;
-                                    if(healed.getHealth() <= 19){
+                                    if(healed.getHealth() <= 19 && player.getHealth() > 1){
                                         healed.setHealth(healed.getHealth()+1);
+                                        player.setHealth(player.getHealth()-1);
                                     }
-                                    player.damage(1.069, player);
                                 } else {
                                     player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                     plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);

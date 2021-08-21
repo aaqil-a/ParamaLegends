@@ -43,7 +43,7 @@ public class IllusoryOrb implements Listener {
                 if (shooter.equals(player)){
                     orb = orbCheck;
                     orb.getWorld().spawnParticle(Particle.FLASH, orb.getLocation(), 1);
-                    magicListener.teleportToAir(player, orb.getLocation());
+                    magicListener.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
                     castNewOrb = false;
                 }
             }

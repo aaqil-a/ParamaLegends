@@ -25,11 +25,13 @@ public class ExperienceListener implements Listener {
     public DataManager data;
     private final int[] xpNeeded = {0,920,1480,1920,2320,2400,2880,3000,3560,3720, Integer.MAX_VALUE};
     private final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,3744,3900,4628,4836, Integer.MAX_VALUE};
-
+    private final int[] maxLevel = {0, 6, 10};
+    private int worldLevel;
 
     public ExperienceListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
+        this.worldLevel = data.getConfig().getInt("world.level");
     }
 
     public void playerKill(Player player, LivingEntity entity, @Nullable ClassType skill){
@@ -144,23 +146,31 @@ public class ExperienceListener implements Listener {
             }
             if(skillType.equals(ClassType.SWORDSMAN)){
                 if(currExp >= xpNeededSwordsman[currLevel]){
-                    currExp -= xpNeededSwordsman[currLevel];
-                    currLevel += 1;
-                    levelUpMessage(player, skill, currLevel);
-                    plugin.levelUpSwordsmanship(player);
-                    plugin.destinyListener.levelUp(player, currLevel);
+                    if(currLevel < maxLevel[worldLevel]){
+                        currExp -= xpNeededSwordsman[currLevel];
+                        currLevel += 1;
+                        levelUpMessage(player, skill, currLevel);
+                        plugin.levelUpSwordsmanship(player);
+                        plugin.destinyListener.levelUp(player, currLevel);
+                    } else {
+                        currExp = xpNeededSwordsman[currLevel];
+                    }
                 }
             } else {
                 if(currExp >= xpNeeded[currLevel]){
-                    currExp -= xpNeeded[currLevel];
-                    currLevel += 1;
-                    levelUpMessage(player, skill, currLevel);
-                    switch (skillType) {
-                        case MAGIC -> plugin.levelUpMagic(player);
-                        case ARCHERY -> plugin.levelUpArchery(player);
-                        case REAPER -> plugin.levelUpReaper(player);
+                    if(currLevel < maxLevel[worldLevel]){
+                        currExp -= xpNeeded[currLevel];
+                        currLevel += 1;
+                        levelUpMessage(player, skill, currLevel);
+                        switch (skillType) {
+                            case MAGIC -> plugin.levelUpMagic(player);
+                            case ARCHERY -> plugin.levelUpArchery(player);
+                            case REAPER -> plugin.levelUpReaper(player);
+                        }
+                        plugin.destinyListener.levelUp(player, currLevel);
+                    } else {
+                        currExp = xpNeeded[currLevel];
                     }
-                    plugin.destinyListener.levelUp(player, currLevel);
                 }
             }
 
@@ -185,5 +195,8 @@ public class ExperienceListener implements Listener {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp +" EXP"));
     }
 
+    public void setWorldLevel(int worldLevel){
+        this.worldLevel = worldLevel;
+    }
 
 }

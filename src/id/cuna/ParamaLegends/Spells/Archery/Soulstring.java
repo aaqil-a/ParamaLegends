@@ -8,14 +8,7 @@ import org.bukkit.Particle;
 import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitTask;
@@ -121,10 +114,11 @@ public class Soulstring {
         Random rand = new Random();
         List<Entity> newEntities = new ArrayList<>();
         for(Entity hit: entities){
-            if(!(hit instanceof LivingEntity) || hit instanceof Villager || hit instanceof Player || hit instanceof Silverfish
-                    || hit instanceof ArmorStand || hit instanceof Phantom)
+            if(hit instanceof Silverfish || hit instanceof Phantom)
                 continue;
-            newEntities.add(hit);
+            if(hit instanceof Monster){
+                newEntities.add(hit);
+            }
         }
         if(newEntities.size() > 0){
             int toHit = rand.nextInt(newEntities.size());
@@ -149,16 +143,14 @@ public class Soulstring {
         }, 0, 2));
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
             playersFollow.get(player).cancel();
-            Arrow arrow = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
-            arrow.setShooter(player);
-            arrow.setGravity(false);
-            arrow.setVelocity(arrow.getVelocity().multiply(1.5));
-            Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 20);
-            Arrow arrow2 = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
-            arrow2.setShooter(player);
-            arrow2.setGravity(false);
-            arrow2.setVelocity(arrow2.getVelocity().multiply(1.5));
-            Bukkit.getScheduler().runTaskLater(plugin, arrow2::remove, 20);
+            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                Arrow arrow = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
+                arrow.setShooter(player);
+                arrow.setGravity(false);
+                arrow.setVelocity(arrow.getVelocity().multiply(1.5));
+                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 20);
+            }, 3);
             soulstringAiming.remove(dummy);
         }, 30);
     }

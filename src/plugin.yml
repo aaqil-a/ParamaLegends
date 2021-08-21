@@ -27,6 +27,21 @@ commands:
     usage: /spawnaltar <altarname>
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
+  removealtar:
+    description: Remove a nearby ParamaLegends altar or NPC.
+    usage: /removealtar
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  destinyset:
+    description: Set the destiny of a player.
+    usage: /destinyset <player> <destiny> <level>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  lectrumset:
+    description: Set the lectrum of a player.
+    usage: /lectrumset <player> <lectrum>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

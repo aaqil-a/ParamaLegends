@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 public class ViperBite implements Listener {
 
@@ -45,6 +46,7 @@ public class ViperBite implements Listener {
                     BukkitTask poison = Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                         if(event.getEntity() instanceof Damageable && arrow.getShooter() instanceof Player){
                             ((Damageable) event.getEntity()).damage(1.016, (Player) arrow.getShooter());
+                            event.getEntity().setVelocity(new Vector(0,0,0));
                         }
                     }, 20, 20);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{

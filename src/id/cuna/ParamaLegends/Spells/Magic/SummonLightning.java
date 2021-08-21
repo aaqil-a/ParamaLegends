@@ -39,7 +39,7 @@ public class SummonLightning implements Listener {
             magicListener.sendCooldownMessage(player, "Summon Lightning");
         } else {
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 50, FluidCollisionMode.NEVER, true, 0,
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 100, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
             Location location = new Location(player.getWorld(),0,0,0);
             if(rayTrace != null) {
