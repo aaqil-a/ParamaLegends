@@ -116,7 +116,7 @@ public class Soulstring {
         for(Entity hit: entities){
             if(hit instanceof Silverfish || hit instanceof Phantom)
                 continue;
-            if(hit instanceof Monster){
+            if(hit instanceof Monster && dummy.hasLineOfSight(hit)){
                 newEntities.add(hit);
             }
         }
