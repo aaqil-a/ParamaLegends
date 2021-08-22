@@ -59,6 +59,7 @@ public class WorldRuleListener implements Listener {
                 }
             }
             if(meta.getDisplayName().equals("§6Esoteric Pearl")) event.setCancelled(false);
+            if(meta.getDisplayName().equals("§6Winery Barrel")) event.setCancelled(false);
         }
     }
 

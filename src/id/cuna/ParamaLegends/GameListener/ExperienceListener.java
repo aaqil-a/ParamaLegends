@@ -23,8 +23,8 @@ public class ExperienceListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
-    private final int[] xpNeeded = {0,920,1480,1920,2320,2400,2880,3000,3560,3720, Integer.MAX_VALUE};
-    private final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,3744,3900,4628,4836, Integer.MAX_VALUE};
+    public final int[] xpNeeded = {0,920,1480,1920,2320,2400,4320,4500,5340,5580, Integer.MAX_VALUE};
+    public final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,5616,5850,6942,7254, Integer.MAX_VALUE};
     private final int[] maxLevel = {0, 6, 10};
     private int worldLevel;
 

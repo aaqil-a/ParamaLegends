@@ -179,7 +179,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             meta.setDisplayName(ChatColor.RESET + "§4Hidden Strike");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Conceal your weapon, stabbing the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy at a critical location while");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting 'Coated Blade'");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting Coated Blade");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");

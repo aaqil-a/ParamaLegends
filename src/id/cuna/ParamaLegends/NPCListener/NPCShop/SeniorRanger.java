@@ -194,8 +194,8 @@ public class SeniorRanger extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a bow companion that");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "periodically shoots very sharp");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "arrows at nearby enemies.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 6");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);

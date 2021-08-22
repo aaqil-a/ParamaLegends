@@ -48,7 +48,7 @@ public class CommandSpawnAltar implements CommandExecutor {
                         plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.END_PORTAL_FRAME,"§6Your Destiny").setCustomNameVisible(true);
                     case "archeryshop" ->
                         plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.FLETCHING_TABLE,"§aFletcher's Table");
-                    case "sworsdmanshop" ->
+                    case "swordsmanshop" ->
                         plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ANVIL,"§2Dull Anvil");
                     case "reapershop" ->
                         plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.GRINDSTONE,"§4Reaper Grindstone");

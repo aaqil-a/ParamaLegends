@@ -10,6 +10,9 @@ import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.Command.*;
+import id.cuna.ParamaLegends.FunListener.AlcoholListener;
+import id.cuna.ParamaLegends.FunListener.AlcoholRecipes;
+import id.cuna.ParamaLegends.FunListener.WineryListener;
 import id.cuna.ParamaLegends.GameListener.*;
 import id.cuna.ParamaLegends.NPCListener.*;
 import id.cuna.ParamaLegends.NPCListener.NPCShop.*;
@@ -53,6 +56,9 @@ public class ParamaLegends extends JavaPlugin {
 
     public RaidFightListener raidFightListener;
 
+    public WineryListener wineryListener;
+    public AlcoholListener alcoholListener;
+
     public CommandStartGame commandStartGame;
     public CommandSetupGame commandSetupGame;
     public CommandLectrum commandLectrum;
@@ -63,6 +69,7 @@ public class ParamaLegends extends JavaPlugin {
     public CommandLectrumSet commandLectrumSet;
 
     public Recipes recipes;
+    public AlcoholRecipes alcoholRecipes;
 
     public final List<Player> playersSilenced = new ArrayList<Player>();
 
@@ -70,10 +77,10 @@ public class ParamaLegends extends JavaPlugin {
     public void onEnable() {
         data = new DataManager(this);
         mobSpawnListener = new MobSpawnListener(this);
-        wiseOldManListener = new WiseOldManListener(this);
         destinyListener = new PlayerJoinListener(this);
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
+        wiseOldManListener = new WiseOldManListener(this);
         commandStartGame = new CommandStartGame(this);
         commandSetupGame = new CommandSetupGame(this);
         commandLectrum = new CommandLectrum(this);
@@ -83,8 +90,11 @@ public class ParamaLegends extends JavaPlugin {
         commandSpawnAltar = new CommandSpawnAltar(this);
         commandRemoveAltar = new CommandRemoveAltar(this);
         damageModifyingListener = new DamageModifyingListener(this);
+        wineryListener = new WineryListener(this);
         setupListener = new SetupListener(this);
         recipes = new Recipes(this);
+        alcoholRecipes = new AlcoholRecipes(this);
+        alcoholListener = new AlcoholListener(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -108,6 +118,8 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(experienceListener, this);
         getServer().getPluginManager().registerEvents(damageModifyingListener, this);
         getServer().getPluginManager().registerEvents(setupListener, this);
+        getServer().getPluginManager().registerEvents(wineryListener, this);
+        getServer().getPluginManager().registerEvents(alcoholListener, this);
 
         registerNPCShopListener();
         registerGameClass();

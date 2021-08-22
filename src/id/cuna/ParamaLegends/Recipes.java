@@ -22,11 +22,8 @@ public class Recipes {
     public Recipes(ParamaLegends plugin){
         this.plugin = plugin;
         this.data = plugin.getData();
-        addEsotericPearl();
-        addEssenceOfNature();
-    }
 
-    public void addEsotericPearl(){
+        //add esoteric pearl
         ItemStack item = new ItemStack(Material.ENDER_PEARL);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§6Esoteric Pearl");
@@ -47,13 +44,12 @@ public class Recipes {
         recipe.setIngredient('E', Material.ENDER_PEARL);
 
         Bukkit.addRecipe(recipe);
-    }
+        lore.clear();
 
-    public void addEssenceOfNature(){
-        ItemStack item = new ItemStack(Material.SLIME_BALL);
-        ItemMeta meta = item.getItemMeta();
+        //essence of nature
+        item = new ItemStack(Material.SLIME_BALL);
+        meta = item.getItemMeta();
         meta.setDisplayName("§aEssence of Nature");
-        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY+"A sticky substance that");
         lore.add(ChatColor.GRAY+"radiates life essence.");
         meta.setLore(lore);
@@ -61,15 +57,35 @@ public class Recipes {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
 
-        NamespacedKey key = new NamespacedKey(plugin, "essence_of_nature");
+        key = new NamespacedKey(plugin, "essence_of_nature");
 
-        ShapedRecipe recipe = new ShapedRecipe(key, item);
+        recipe = new ShapedRecipe(key, item);
         recipe.shape("BGB", "GEG", "BGB");
         recipe.setIngredient('B', Material.SLIME_BALL);
         recipe.setIngredient('G', Material.SUGAR);
         recipe.setIngredient('E', Material.ENDER_EYE);
 
         Bukkit.addRecipe(recipe);
+        lore.clear();
+
+        //winery
+        item = new ItemStack(Material.BARREL);
+        meta = item.getItemMeta();
+        meta.setDisplayName("§6Winery Barrel");
+        lore.add(ChatColor.GRAY+"Used to refine beverages that");
+        lore.add(ChatColor.GRAY+"impair the mind.");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        key = new NamespacedKey(plugin, "winery_barrel");
+
+        recipe = new ShapedRecipe(key, item);
+        recipe.shape(" B ","SSS");
+        recipe.setIngredient('B', Material.BARREL);
+        recipe.setIngredient('S', Material.STICK);
+
+        Bukkit.addRecipe(recipe);
+        lore.clear();
     }
 
 

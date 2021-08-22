@@ -24,17 +24,19 @@ public class WiseOldManListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
-    private final HashMap<Player, Inventory> gui = new HashMap<>();
-    private final HashMap<Player, Inventory> gui2 = new HashMap<>();
+    public final HashMap<Player, Inventory> gui = new HashMap<>();
+    public final HashMap<Player, Inventory> gui2 = new HashMap<>();
 
-    private final int[] xpNeeded = {0,920,1480,1920,2320,2400,2880,3000,3560,3720, Integer.MAX_VALUE};
-    private final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,3744,3900,4628,4836, Integer.MAX_VALUE};
+    private final int[] xpNeeded;
+    private final int[] xpNeededSwordsman;
 
 
 
     public WiseOldManListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
+        xpNeeded = plugin.experienceListener.xpNeeded;
+        xpNeededSwordsman = plugin.experienceListener.xpNeededSwordsman;
     }
 
     //open gui when right clicking npc
@@ -432,6 +434,77 @@ public class WiseOldManListener implements Listener {
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "An arrow that directs itself towards");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "every enemy around its shooter and");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "returns after.");
+                    }
+                }
+            }
+            case "reaper" -> {
+                switch(level) {
+                    case 1 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Coated Blade");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Causes attacks to occasionally inflict");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "poison on the enemy.");
+                    }
+                    case 2 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Hidden Strike");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Conceal your weapon, stabbing the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "enemy at a critical location while");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "also inflicting Coated Blade on");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "the next attack.");
+                    }
+                    case 3 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Blinding Sand");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Throw sand into the enemy");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "making them temporarily confused.");
+                    }
+                    case 4 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Why Are You Hitting Yourself?");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Occasionally reflect damage back");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "to an attacker.");
+                    }
+                    case 5 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Too Slow!");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Occasionally dodge an enemy's attack,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "making it deal no damage.");
+                    }
+                    case 6 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Second Wind");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "When taking damage, have a chance");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "to gain a second wind.");
+                    }
+                    case 7 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Bloody Fervour");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "When dealing damage, have a slight");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "chance to heal yourself.");
+                    }
+                    case 8 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Gut Punch");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Deals damage based on the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "opponent's current HP and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "inflicts high discomfort on");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "opponent.");
+                    }
+                    case 9->{
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Forbidden Slash");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Ready your weapon, dealing a");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "decisive slash to the enemy and");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "making them do less damage on");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "the next attack.");
+                    }
+                    case 10->{
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Memento Mori");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Strike with the power of the");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "grim reaper, dealing immense");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "damage to a single target.");
                     }
                 }
             }

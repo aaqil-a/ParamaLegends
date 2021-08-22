@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -130,6 +131,8 @@ public class OddWares extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Expires one week after purchase.");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "50 Lectrum");
         meta.setLore(lore);
+        meta.addEnchant(Enchantment.DURABILITY, 10, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
         gui.setItem(10, item);
         lore.clear();
@@ -162,7 +165,16 @@ public class OddWares extends NPCShopListener {
             updateExpanseFund(event);
             updateLectrum(event);
         } else if(item.getType().equals(Material.PAPER)) {
-
+            Player player = (Player) event.getWhoClicked();
+            long oldLicense = data.getConfig().getLong("players."+player.getUniqueId().toString()+".alcoholLicenseExpiration");
+            if(oldLicense > player.getWorld().getGameTime()){
+                player.sendMessage(ChatColor.RED+"You already have a valid license.");
+            } else {
+                player.sendMessage(ChatColor.GOLD+"You now possess a valid alcohol license.");
+                player.sendMessage(ChatColor.GOLD+"Will expire in seven (minecraft) days.");
+                data.getConfig().set("players."+player.getUniqueId().toString()+".alcoholLicenseExpiration", player.getWorld().getGameTime()+168000);
+                data.saveConfig();
+            }
         } else {
             ItemStack newItem = item.clone();
             ItemMeta meta = newItem.getItemMeta();

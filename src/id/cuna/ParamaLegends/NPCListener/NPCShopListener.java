@@ -79,11 +79,11 @@ public class NPCShopListener implements Listener {
 
         // Get lectrum of player
         int lectrum = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum");
-        // Gets price of clicked item
-        int price = getPrices().get(event.getSlot());
 
         //Purchase specified item
         if (event.getSlot() != 0){
+            // Gets price of clicked item
+            int price = getPrices().get(event.getSlot());
             if (lectrum < price) {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");

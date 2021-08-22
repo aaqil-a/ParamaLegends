@@ -41,7 +41,7 @@ public class Soulstring {
     public void castSoulstring(Player player){
         if(playerCooldowns.contains(player.getUniqueId().toString())){
             archeryListener.sendCooldownMessage(player, "Soulstring");
-        } else if (archeryListener.subtractMana(player, 150)) {
+        } else if (archeryListener.subtractMana(player, 100)) {
             summonSoulstring(player);
             playerCooldowns.add(player.getUniqueId().toString());
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -49,7 +49,7 @@ public class Soulstring {
                     archeryListener.sendNoLongerCooldownMessage(player, "Soulstring");
                     playerCooldowns.remove(player.getUniqueId().toString());
                 }
-            }, 1200);
+            }, 600);
         }
     }
 

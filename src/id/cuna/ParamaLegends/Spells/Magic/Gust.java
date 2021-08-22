@@ -45,13 +45,13 @@ public class Gust {
                     boxX1 += 2.5;
                     boxX2 -= 2.5;
                     boxZ1 -= 1;
-                    boxZ2 += 4.5;
+                    boxZ2 += 6;
                     knockback.setZ(4);
                 } else {
                     boxX1 -= 2.5;
                     boxX2 += 2.5;
                     boxZ1 += 1;
-                    boxZ2 -= 4.5;
+                    boxZ2 -= 6;
                     knockback.setZ(-4);
                 }
             } else if(direction.getZ() < Math.sin(Math.PI/8) && direction.getZ() > -1*Math.sin(Math.PI/8)) {
@@ -59,39 +59,39 @@ public class Gust {
                     boxZ1 += 2.5;
                     boxZ2 -= 2.5;
                     boxX1 -= 1;
-                    boxX2 += 4.5;
+                    boxX2 += 6;
                     knockback.setX(4);
                 } else {
                     boxZ1 -= 2.5;
                     boxZ2 += 2.5;
                     boxX1 += 1;
-                    boxX2 -= 4.5;
+                    boxX2 -= 6;
                     knockback.setX(-4);
                 }
             } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)){
-                boxX2 += 3.5;
-                boxZ2 += 3.5;
+                boxX2 += 5;
+                boxZ2 += 5;
                 boxX1 -= 1;
                 boxZ1 -= 1;
                 knockback.setX(2);
                 knockback.setZ(2);
             } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
-                boxX2 -= 3.5;
-                boxZ2 += 3.5;
+                boxX2 -= 5;
+                boxZ2 += 5;
                 boxX1 += 1;
                 boxZ1 -= 1;
                 knockback.setX(-2);
                 knockback.setZ(2);
             } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
-                boxX2 -= 3.5;
-                boxZ2 -= 3.5;
+                boxX2 -= 5;
+                boxZ2 -= 5;
                 boxX1 += 1;
                 boxZ1 += 1;
                 knockback.setX(-2);
                 knockback.setZ(-2);
             } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)) {
-                boxX2 += 3.5;
-                boxZ2 -= 3.5;
+                boxX2 += 5;
+                boxZ2 -= 5;
                 boxX1 -= 1;
                 boxZ1 += 1;
                 knockback.setX(2);

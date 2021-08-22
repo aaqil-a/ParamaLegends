@@ -4,13 +4,16 @@ import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.BoundingBox;
+
+import java.util.List;
 
 public class RaidSummonListener implements Listener {
 
@@ -37,8 +40,8 @@ public class RaidSummonListener implements Listener {
                     if(event.getPlayer().getWorld().getTime() < 13000 || event.getPlayer().getWorld().getTime() > 23000){
                         event.getPlayer().sendMessage("§6Esoteric Pearl"+ChatColor.GRAY+" can only be used at night.");
                     } else {
-                        //Check if player inside safe zone
-                        if(safeZoneCheck(event.getPlayer())) {
+                        //Check if player is nearby the occult altar
+                        if(occultAltarCheck(event.getPlayer())) {
                             Bukkit.broadcastMessage(ChatColor.DARK_PURPLE+"Shrieks and cries can be heard in the distance.");
                             isRaidOccuring = true;
                             event.getPlayer().getWorld().setTime(14000);
@@ -51,11 +54,16 @@ public class RaidSummonListener implements Listener {
         }
     }
 
-    public boolean safeZoneCheck(Player player){
-        double startX = data.getConfig().getDouble("world.startX");
-        double startZ = data.getConfig().getDouble("world.startZ");
-        BoundingBox safeZoneBox = new BoundingBox(startX+10, 0, startZ+10, startX-10, 256, startZ-10);
-        return safeZoneBox.contains(player.getLocation().toVector());
+    public boolean occultAltarCheck(Player player){
+        List<Entity> entities = player.getNearbyEntities(3,3,3);
+        for(Entity e : entities){
+            if(e instanceof ArmorStand){
+                if(e.getCustomName() != null && e.getCustomName().equals("§6Occult Altar")){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void setRaidOccuring(boolean isRaidOccuring){
