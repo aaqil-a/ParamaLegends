@@ -97,7 +97,7 @@ public class BlindingSand implements Listener {
                     if(event.getHitEntity() instanceof Damageable){
                         List<Entity> blinded = player.getWorld().getNearbyEntities(event.getHitEntity().getLocation(), 1.5,1.5,1.5).stream().toList();
                         for(Entity blind : blinded) {
-                            if (blind instanceof Player || blind instanceof ArmorStand) {
+                            if (blind.equals(player)|| blind instanceof ArmorStand) {
                                 continue;
                             }
                             if (blind instanceof Damageable) {
