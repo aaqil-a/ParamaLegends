@@ -63,7 +63,7 @@ public class SummonLightning implements Listener {
                 player.getWorld().getHighestBlockAt(location.clone().add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
                 List<Entity> entities = player.getWorld().getNearbyEntities(location, 3,4,3).stream().toList();
                 for(Entity ignited : entities){
-                    if(ignited instanceof Damageable && !(ignited instanceof Player) && !(ignited instanceof ArmorStand)){
+                    if(ignited instanceof Damageable && !(ignited instanceof ArmorStand)){
                         plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
                         ((Damageable) ignited).damage(45.069, player);
                     }
