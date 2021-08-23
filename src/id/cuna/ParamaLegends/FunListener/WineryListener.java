@@ -120,22 +120,22 @@ public class WineryListener implements Listener {
         switch(drink.getItemMeta().getDisplayName().substring(8)){
             case "Apple Wine" -> {
                 meta.removeCustomEffect(PotionEffectType.POISON);
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 0), true);
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 0), true);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.SATURATION, 160, 0), true);
                 lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
                 meta.setLore(lore);
             }
             case "Pale Ale" -> {
                 meta.removeCustomEffect(PotionEffectType.POISON);
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 500, 0), true);
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 0), true);
                 lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
                 meta.setLore(lore);
             }
             case "Vodka" -> {
                 meta.removeCustomEffect(PotionEffectType.POISON);
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 600, 0), true);
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 600, 0), true);
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 600, 0), true);
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1800, 0), true);
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 1800, 0), true);
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1800, 0), true);
                 lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
                 meta.setLore(lore);
             }
