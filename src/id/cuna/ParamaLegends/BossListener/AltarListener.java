@@ -3,7 +3,6 @@ package id.cuna.ParamaLegends.BossListener;
 import id.cuna.ParamaLegends.BossType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,7 +12,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
