@@ -23,9 +23,9 @@ public class ExperienceListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
-    public final int[] xpNeeded = {0,920,1480,1920,2320,2400,4320,4500,5340,5580, Integer.MAX_VALUE};
-    public final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,5616,5850,6942,7254, Integer.MAX_VALUE};
-    private final int[] maxLevel = {0, 6, 10};
+    public final int[] xpNeeded = {0,920,1480,1920,2320,2400,4320,6750,8010,8370, Integer.MAX_VALUE};
+    public final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,5616,8775,10413,10881, Integer.MAX_VALUE};
+    private final int[] maxLevel = {0, 6, 7, 8, 9, 10};
     private int worldLevel;
 
     public ExperienceListener(final ParamaLegends plugin){
@@ -196,7 +196,12 @@ public class ExperienceListener implements Listener {
     }
 
     public void setWorldLevel(int worldLevel){
+        data.getConfig().set("world.level", worldLevel);
+        data.saveConfig();
         this.worldLevel = worldLevel;
+    }
+    public int getWorldLevel(){
+        return worldLevel;
     }
 
 }

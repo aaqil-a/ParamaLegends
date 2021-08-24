@@ -92,7 +92,7 @@ public class VoicesOfTheDamned implements Listener {
                 Entity closestEntity = null;
                 for(Entity entity : entities){
                     if(entity instanceof Villager || entity instanceof Player || entity instanceof Silverfish
-                            || entity instanceof ArmorStand || entity instanceof Phantom)
+                            || entity instanceof ArmorStand || entity instanceof Phantom )
                         continue;
                     if(entity instanceof LivingEntity){
                         double distance = entity.getLocation().distance(player.getLocation());

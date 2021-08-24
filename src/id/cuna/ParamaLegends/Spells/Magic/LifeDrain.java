@@ -23,6 +23,7 @@ public class LifeDrain implements Listener {
     private final ParamaLegends plugin;
     private final MagicListener magicListener;
 
+    private final List<String> playerCooldowns = new ArrayList<>();
     private final HashMap<Player, BukkitTask> playerLifeDrainTasks = new HashMap<>();
 
     public LifeDrain(ParamaLegends plugin, MagicListener magicListener){
@@ -35,6 +36,15 @@ public class LifeDrain implements Listener {
             player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
             playerLifeDrainTasks.get(player).cancel();
             playerLifeDrainTasks.remove(player);
+            playerCooldowns.add(player.getUniqueId().toString());
+            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                if(playerCooldowns.contains(player.getUniqueId().toString())){
+                    magicListener.sendNoLongerCooldownMessage(player, "Life Drain");
+                    playerCooldowns.remove(player.getUniqueId().toString());
+                }
+            }, 120);
+        } else if(playerCooldowns.contains(player.getUniqueId().toString())) {
+            magicListener.sendCooldownMessage(player, "Life Drain");
         } else {
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER,
@@ -45,10 +55,17 @@ public class LifeDrain implements Listener {
                     if(drained instanceof Damageable && !(drained instanceof ArmorStand)){
                         player.sendMessage(ChatColor.GREEN + "Life Drain activated.");
                         playerLifeDrainTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                            if(drained.isDead() || player.isDead()){
+                            if(drained.isDead() || player.isDead() || player.getLocation().distance(drained.getLocation())>8){
                                 player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                 playerLifeDrainTasks.get(player).cancel();
                                 playerLifeDrainTasks.remove(player);
+                                playerCooldowns.add(player.getUniqueId().toString());
+                                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                    if(playerCooldowns.contains(player.getUniqueId().toString())){
+                                        magicListener.sendNoLongerCooldownMessage(player, "Life Drain");
+                                        playerCooldowns.remove(player.getUniqueId().toString());
+                                    }
+                                }, 120);
                             } else if(magicListener.subtractMana(player, 10)){
                                 if(drained instanceof Player){
                                     drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);

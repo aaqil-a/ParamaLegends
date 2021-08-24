@@ -66,6 +66,7 @@ public class ParamaLegends extends JavaPlugin {
     public CommandDestiny commandDestiny;
     public CommandDestinySet commandDestinySet;
     public CommandLectrumSet commandLectrumSet;
+    public CommandWorldLevelSet commandWorldLevelSet;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -88,6 +89,7 @@ public class ParamaLegends extends JavaPlugin {
         commandLectrumSet = new CommandLectrumSet(this);
         commandSpawnAltar = new CommandSpawnAltar(this);
         commandRemoveAltar = new CommandRemoveAltar(this);
+        commandWorldLevelSet = new CommandWorldLevelSet(this);
         damageModifyingListener = new DamageModifyingListener(this);
         wineryListener = new WineryListener(this);
         setupListener = new SetupListener(this);
@@ -110,6 +112,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("removealtar").setExecutor(commandRemoveAltar);
         getCommand("destinyset").setExecutor(commandDestinySet);
         getCommand("lectrumset").setExecutor(commandLectrumSet);
+        getCommand("worldlevelset").setExecutor(commandWorldLevelSet);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(destinyListener, this);

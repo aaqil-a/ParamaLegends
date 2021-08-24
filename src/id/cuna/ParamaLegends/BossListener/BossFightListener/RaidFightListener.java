@@ -79,10 +79,14 @@ public class RaidFightListener implements Listener {
         plugin.raidSummonListener.setRaidOccuring(false);
         spawnTask.cancel();
         endRaidTask.cancel();
+        raidBossBar.removeAll();
         entitiesSlain = 0;
         for(LivingEntity entity : entities){
             entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getEyeLocation(), 8, 0.5, 0.5, 0.5, 0);
             entity.remove();
+        }
+        if(plugin.experienceListener.getWorldLevel() < 2){
+            plugin.experienceListener.setWorldLevel(2);
         }
         entities.clear();
 

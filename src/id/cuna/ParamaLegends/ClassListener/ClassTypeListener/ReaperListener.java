@@ -119,6 +119,7 @@ public class ReaperListener extends ClassListener implements Listener{
                                 gutPunch.castGutPunch(attacker, event.getEntity());
                     }
                     case "§4Memento Mori" -> {
+                        event.setCancelled(true);
                         if (!plugin.isSilenced(attacker))
                             if(checkLevel(attacker, 10))
                                 mementoMori.castMementoMori(attacker, event.getEntity());
@@ -132,13 +133,14 @@ public class ReaperListener extends ClassListener implements Listener{
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        if(event.getHand() == EquipmentSlot.OFF_HAND){
+        if(event.getItem() == null){
             return;
         }
         if(event.getAction() == Action.PHYSICAL){
             return;
         }
-        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        //Check if held item is book
+        ItemStack item = event.getItem();
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){
                 case "§4Hidden Strike" -> {

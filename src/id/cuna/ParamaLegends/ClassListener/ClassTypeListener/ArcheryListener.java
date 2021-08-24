@@ -154,7 +154,7 @@ public class ArcheryListener extends ClassListener implements Listener{
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        if(event.getHand() == EquipmentSlot.OFF_HAND){
+        if(event.getItem() == null){
             return;
         }
         if(event.getAction() == Action.PHYSICAL){
@@ -162,7 +162,7 @@ public class ArcheryListener extends ClassListener implements Listener{
         }
         //Check if held item is book
 
-        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        ItemStack item = event.getItem();
 
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){

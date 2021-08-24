@@ -42,6 +42,11 @@ commands:
     usage: /lectrumset <player> <lectrum>
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
+  worldlevelset:
+    description: Set the world level.
+    usage: /worldlevelset <level>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.
