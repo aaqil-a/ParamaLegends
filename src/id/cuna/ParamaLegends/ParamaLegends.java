@@ -182,6 +182,7 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(archeryListener.blast, this);
         getServer().getPluginManager().registerEvents(archeryListener.hunterEye, this);
         getServer().getPluginManager().registerEvents(archeryListener.neurotoxin, this);
+        getServer().getPluginManager().registerEvents(archeryListener.retreat, this);
         getServer().getPluginManager().registerEvents(archeryListener.royalArtillery, this);
         getServer().getPluginManager().registerEvents(archeryListener.totsukaCreation, this);
         getServer().getPluginManager().registerEvents(archeryListener.viperBite, this);

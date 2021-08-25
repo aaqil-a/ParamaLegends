@@ -4,16 +4,19 @@ import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Retreat {
+public class Retreat implements Listener {
 
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
@@ -45,14 +48,33 @@ public class Retreat {
                         playersRetreatBoosted.remove(player.getUniqueId().toString());
                     }, 65);
                 }
-
+                entity.setCustomName("retreat");
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                    Vector arrowVelocity = player.getLocation().getDirection();
-                    Arrow arrow2 = player.launchProjectile(Arrow.class, arrowVelocity);
+                    Arrow arrow2 = player.launchProjectile(Arrow.class, entity.getVelocity());
                     arrow2.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                    arrow2.setDamage(((Arrow) entity).getDamage()*0.6);
+                    arrow2.setBounce(false);
                 }, 5);
                 Vector velocity = player.getLocation().getDirection().setY(0).normalize();
-                player.setVelocity(velocity.multiply(-0.8).setY(0.3));
+                player.setVelocity(velocity.multiply(-1).setY(0.3));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+        if(event.getDamager() instanceof Arrow){
+            Arrow arrow = (Arrow) event.getDamager();
+            if(arrow.getCustomName() != null && arrow.getCustomName().equals("retreat")){
+                Entity entity = event.getEntity();
+                if(entity instanceof LivingEntity){
+                    LivingEntity hit = (LivingEntity) entity;
+                    int oldTicks = hit.getMaximumNoDamageTicks();
+                    hit.setMaximumNoDamageTicks(0);
+                    Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                        hit.setMaximumNoDamageTicks(oldTicks);
+                    }, 10);
+                }
             }
         }
     }

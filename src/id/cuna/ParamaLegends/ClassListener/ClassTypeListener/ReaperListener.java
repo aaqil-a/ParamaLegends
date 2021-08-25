@@ -5,6 +5,7 @@ import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.Spells.Reaper.*;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -119,7 +120,7 @@ public class ReaperListener extends ClassListener implements Listener{
                                 gutPunch.castGutPunch(attacker, event.getEntity());
                     }
                     case "§4Memento Mori" -> {
-                        event.setCancelled(true);
+                        if(!mementoMori.getPlayerCooldowns().contains(attacker.getUniqueId().toString())) event.setCancelled(true);
                         if (!plugin.isSilenced(attacker))
                             if(checkLevel(attacker, 10))
                                 mementoMori.castMementoMori(attacker, event.getEntity());
