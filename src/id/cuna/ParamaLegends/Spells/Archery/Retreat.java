@@ -1,51 +1,45 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.ArrowParama;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-public class Retreat implements Listener {
+public class Retreat implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
+    private final int manaCost = 70;
 
-    private final List<String> playersRetreatBoosted = new ArrayList<>();
+    private final List<Player> playersRetreatBoosted = new ArrayList<>();
 
-    public Retreat(ParamaLegends plugin, ArcheryListener archeryListener){
+
+    public Retreat(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
     }
 
-    public void castRetreat(Player player, Entity entity, boolean noMana){
-        int manaCost = 70;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void shootArrow(PlayerParama playerParama, Entity entity){
         if(entity instanceof Arrow){
-            if(archeryListener.subtractMana(player, manaCost)){
-                if(!playersRetreatBoosted.contains(player.getUniqueId().toString())) {
-                    double oldSpeed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();;
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
+                if(!playersRetreatBoosted.contains(player)) {
+                    double oldSpeed = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).getBaseValue();
+                    Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed*1.1);
+                    playersRetreatBoosted.add(player);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        if(!playersRetreatBoosted.contains(player.getUniqueId().toString())){
-                            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(oldSpeed*1.1);
-                            playersRetreatBoosted.add(player.getUniqueId().toString());
-                        }
-                    }, 5);
-                    Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(oldSpeed);
-                        playersRetreatBoosted.remove(player.getUniqueId().toString());
+                        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed);
+                        playersRetreatBoosted.remove(player);
                     }, 65);
                 }
                 entity.setCustomName("retreat");
@@ -54,9 +48,9 @@ public class Retreat implements Listener {
                     arrow2.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                     arrow2.setDamage(((Arrow) entity).getDamage()*0.6);
                     arrow2.setBounce(false);
+                    Vector velocity = player.getLocation().getDirection().setY(0).normalize();
+                    player.setVelocity(velocity.multiply(-1).setY(0.3));
                 }, 5);
-                Vector velocity = player.getLocation().getDirection().setY(0).normalize();
-                player.setVelocity(velocity.multiply(-1).setY(0.3));
             }
         }
     }
@@ -77,6 +71,9 @@ public class Retreat implements Listener {
                 }
             }
         }
+    }
+    public int getManaCost(){
+        return manaCost;
     }
 
 }

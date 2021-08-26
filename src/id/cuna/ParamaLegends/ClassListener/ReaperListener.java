@@ -1,9 +1,9 @@
-package id.cuna.ParamaLegends.ClassListener.ClassTypeListener;
+package id.cuna.ParamaLegends.ClassListener;
 
-import id.cuna.ParamaLegends.ClassListener.ClassListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import id.cuna.ParamaLegends.Spells.Reaper.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class ReaperListener extends ClassListener implements Listener{
+public class ReaperListener implements Listener{
 
     private final ParamaLegends plugin;
     public DataManager data;
@@ -35,19 +35,18 @@ public class ReaperListener extends ClassListener implements Listener{
     public final MementoMori mementoMori;
 
     public ReaperListener(ParamaLegends plugin) {
-        super(plugin, ClassType.REAPER);
         this.plugin = plugin;
         data = plugin.getData();
 
-        coatedBlade = new CoatedBlade(plugin, this);
-        hiddenStrike = new HiddenStrike(plugin, this);
-        bladeMail = new BladeMail(plugin, this);
-        secondWind = new SecondWind(plugin, this);
-        blindingSand = new BlindingSand(plugin, this);
-        bloodyFervour = new BloodyFervour(plugin, this);
-        gutPunch = new GutPunch(plugin, this);
-        forbiddenSlash = new ForbiddenSlash(plugin, this);
-        mementoMori = new MementoMori(plugin, this);
+        coatedBlade = new CoatedBlade(plugin);
+        hiddenStrike = new HiddenStrike(plugin);
+        bladeMail = new BladeMail(plugin);
+        secondWind = new SecondWind(plugin);
+        blindingSand = new BlindingSand(plugin);
+        bloodyFervour = new BloodyFervour(plugin);
+        gutPunch = new GutPunch(plugin);
+        forbiddenSlash = new ForbiddenSlash(plugin);
+        mementoMori = new MementoMori(plugin);
     }
 
     //Passive listeners
@@ -57,23 +56,24 @@ public class ReaperListener extends ClassListener implements Listener{
         if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity){
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
+            PlayerParama player = plugin.getPlayerParama(defender);
             //blade mail
-            if (checkLevel(defender, 4, true)) {
+            if (player.checkLevel(4, ClassType.REAPER, true)) {
                 Random rand = new Random();
                 int bladeMailRandom = rand.nextInt(5);
                 if (bladeMailRandom == 1) {
-                    bladeMail.castBladeMail(defender, attacker, damage);
+                    bladeMail.attackEntity(player, attacker, damage);
                 }
             }
-            if (checkLevel(defender, 6, true)) {
+            if (player.checkLevel(6, ClassType.REAPER, true)) {
                 Random rand = new Random();
                 int secondWindRandom = rand.nextInt(10);
                 if (secondWindRandom == 1){
-                    secondWind.castSecondWind(defender, attacker);
+                    secondWind.attackEntity(player, attacker, damage);
                 }
             }
             //too slow
-            if (checkLevel(defender, 5, true)) {
+            if (player.checkLevel(5, ClassType.REAPER, true)) {
                 Random rand = new Random();
                 int tooSlowRandom = rand.nextInt(10);
                 if (tooSlowRandom == 1){
@@ -84,12 +84,13 @@ public class ReaperListener extends ClassListener implements Listener{
         if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity){
             LivingEntity defender = (LivingEntity) event.getEntity();
             Player attacker = (Player) event.getDamager();
+            PlayerParama player = plugin.getPlayerParama(attacker);
             //bloody fervour
-            if (checkLevel(attacker, 7, true)) {
+            if (player.checkLevel(7, ClassType.REAPER, true)) {
                 Random rand = new Random();
                 int bloodyFervourRandom = rand.nextInt(20);
                 if (bloodyFervourRandom == 1){
-                    bloodyFervour.castBloodyFervour(attacker, defender, damage);
+                    bloodyFervour.attackEntity(player, defender, damage);
                 }
             }
         }
@@ -99,7 +100,8 @@ public class ReaperListener extends ClassListener implements Listener{
     public void onEntityDamageByEntityWeapon(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
+            PlayerParama player = plugin.getPlayerParama(attacker);
+            ItemStack item = Objects.requireNonNull(attacker.getPlayer()).getInventory().getItemInMainHand();
             switch (item.getType()) {
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
                     if(item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("Scythe")){
@@ -107,23 +109,25 @@ public class ReaperListener extends ClassListener implements Listener{
                         Random rand = new Random();
                         int coatedRandom = rand.nextInt(5);
                         if (coatedRandom == 1) {
-                            coatedBlade.castCoatedBlade(attacker, event.getEntity());
+                            coatedBlade.attackEntity(player, event.getEntity(), 1);
                         }
                     }
                 }
             }
-            if(item.hasItemMeta() && item.getItemMeta().hasDisplayName()){
+            if(item.hasItemMeta() && Objects.requireNonNull(item.getItemMeta()).hasDisplayName()){
                 switch(item.getItemMeta().getDisplayName()){
                     case "§4Gut Punch" -> {
-                        if (!plugin.isSilenced(attacker))
-                            if(checkLevel(attacker, 8))
-                                gutPunch.castGutPunch(attacker, event.getEntity());
+                        if (player.isNotSilenced())
+                            if(player.checkLevel( 8, ClassType.REAPER))
+                                gutPunch.attackEntity(player, event.getEntity(), event.getDamage());
                     }
                     case "§4Memento Mori" -> {
-                        if(!mementoMori.getPlayerCooldowns().contains(attacker.getUniqueId().toString())) event.setCancelled(true);
-                        if (!plugin.isSilenced(attacker))
-                            if(checkLevel(attacker, 10))
-                                mementoMori.castMementoMori(attacker, event.getEntity());
+                        if(!player.checkCooldown(mementoMori)) {
+                            event.setCancelled(true);
+                        }
+                        if (player.isNotSilenced())
+                            if(player.checkLevel(10, ClassType.REAPER))
+                                mementoMori.attackEntity(player, event.getEntity(), event.getDamage());
                     }
                 }
             }
@@ -133,7 +137,6 @@ public class ReaperListener extends ClassListener implements Listener{
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        Player player = event.getPlayer();
         if(event.getItem() == null){
             return;
         }
@@ -142,22 +145,23 @@ public class ReaperListener extends ClassListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getItem();
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){
                 case "§4Hidden Strike" -> {
-                    if (!plugin.isSilenced(player))
-                        if(checkLevel(player, 2))
-                            hiddenStrike.castHiddenStrike(player);
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(2, ClassType.REAPER))
+                            hiddenStrike.castSpell(player);
                 }
                 case "§4Blinding Sand" -> {
-                    if (!plugin.isSilenced(player))
-                        if(checkLevel(player, 3))
-                            blindingSand.castBlindingSand(player);
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(3, ClassType.REAPER))
+                            blindingSand.castSpell(player);
                 }
                 case "§4Forbidden Slash" -> {
-                    if (!plugin.isSilenced(player))
-                        if(checkLevel(player, 9))
-                            forbiddenSlash.castForbiddenSlash(player);
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(9, ClassType.REAPER))
+                            forbiddenSlash.castSpell(player);
                 }
             }
         }
@@ -168,7 +172,7 @@ public class ReaperListener extends ClassListener implements Listener{
     public void onPlace(BlockPlaceEvent event){
         if(event.getItemInHand().hasItemMeta()){
             ItemStack placed = event.getItemInHand();
-            switch(placed.getItemMeta().getDisplayName()){
+            switch(Objects.requireNonNull(placed.getItemMeta()).getDisplayName()){
                 case "§4Blinding Sand", "§4Gut Punch", "§4Forbidden Slash" -> event.setCancelled(true);
             }
         }

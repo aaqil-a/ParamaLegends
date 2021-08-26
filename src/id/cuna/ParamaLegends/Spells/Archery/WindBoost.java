@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
@@ -10,35 +11,40 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindBoost {
+public class WindBoost implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
+    private final int manaCost = 60;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
     private final List<String> playersWindBoosted = new ArrayList<>();
 
-    public WindBoost(ParamaLegends plugin, ArcheryListener archeryListener){
+    public WindBoost(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
     }
 
-    public void castWindBoost(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            archeryListener.sendCooldownMessage(player, "Wind Boost");
-        } else if (archeryListener.subtractMana(player, 60)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Wind Boost");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             player.sendMessage(ChatColor.GREEN+"Wind Boost activated.");
-            playersWindBoosted.add(player.getUniqueId().toString());
-            playerCooldowns.add(player.getUniqueId().toString());
             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0,1,0),8, 0.5, 0.5, 0.5, 0);
+            playersWindBoosted.add(player.getUniqueId().toString());
+
+            //add player to cooldown
+            playerParama.addToCooldown(this);
+
+            //wind boost expire
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Wind Boost wore off.");
                 playersWindBoosted.remove(player.getUniqueId().toString());
             }, 280);
+
+            //remove fro mcooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    archeryListener.sendNoLongerCooldownMessage(player, "Wind Boost");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Wind Boost");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 600);
         }
@@ -46,6 +52,10 @@ public class WindBoost {
 
     public List<String> getPlayersWindBoosted(){
         return playersWindBoosted;
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
 }

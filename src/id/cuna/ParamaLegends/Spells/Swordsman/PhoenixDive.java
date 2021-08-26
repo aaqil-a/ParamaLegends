@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
+import id.cuna.ParamaLegends.ClassListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -17,24 +19,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PhoenixDive {
+public class PhoenixDive implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 100;
     private final HashMap<Player, BukkitTask> playerCheckVelocityTasks = new HashMap<Player, BukkitTask>();
 
-    public PhoenixDive(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public PhoenixDive(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-    public void castPhoenixDive(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Phoenix Dive");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Phoenix Dive");
         } else {
-            if(swordsmanListener.subtractMana(player, 100)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 Vector dive = player.getLocation().getDirection().setY(0).normalize();
                 dive.setY(1);
                 player.setVelocity(dive);
@@ -66,15 +66,19 @@ public class PhoenixDive {
                         playerCheckVelocityTasks.remove(player);
                     }
                 }, 3, 1));
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Phoenix Dive");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Phoenix Dive");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 300);
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
 }

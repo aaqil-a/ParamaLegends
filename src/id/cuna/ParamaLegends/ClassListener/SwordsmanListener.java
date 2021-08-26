@@ -1,9 +1,9 @@
-package id.cuna.ParamaLegends.ClassListener.ClassTypeListener;
+package id.cuna.ParamaLegends.ClassListener;
 
-import id.cuna.ParamaLegends.ClassListener.ClassListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import id.cuna.ParamaLegends.Spells.Swordsman.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -16,7 +16,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,7 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.List;
 
-public class SwordsmanListener extends ClassListener implements Listener{
+public class SwordsmanListener implements Listener{
 
     private final ParamaLegends plugin;
     public DataManager data;
@@ -41,37 +40,34 @@ public class SwordsmanListener extends ClassListener implements Listener{
     private final HashMap<Player, Integer> playerCrippleAttackCount = new HashMap<Player, Integer>();
 
     public SwordsmanListener(ParamaLegends plugin) {
-        super(plugin, ClassType.SWORDSMAN);
         this.plugin = plugin;
         data = plugin.getData();
 
-        shieldsUp = new ShieldsUp(plugin, this);
-        phoenixDive = new PhoenixDive(plugin, this);
-        enrage = new Enrage(plugin, this);
-        onslaught = new Onslaught(plugin, this);
-        terrifyingCruelty = new TerrifyingCruelty(plugin, this);
-        calamity = new Calamity(plugin, this);
-        superconducted = new Superconducted(plugin, this);
+        shieldsUp = new ShieldsUp(plugin);
+        phoenixDive = new PhoenixDive(plugin);
+        enrage = new Enrage(plugin);
+        onslaught = new Onslaught(plugin);
+        terrifyingCruelty = new TerrifyingCruelty(plugin);
+        calamity = new Calamity(plugin);
+        superconducted = new Superconducted(plugin);
     }
 
     //Set cripple attack count to 0
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        int classLevel =data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
-        super.getPlayerLevel().put(player, classLevel);
-        playerCrippleAttackCount.put(player, 0);
+        playerCrippleAttackCount.put(event.getPlayer(), 0);
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
+            PlayerParama playerParama = plugin.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     //Check if attack cripples and add to counter
-                    if(getPlayerLevel().get(attacker) >= 2){
+                    if(playerParama.getLevelFromClassType(ClassType.SWORDSMAN) >= 2){
                         int crippleCount = playerCrippleAttackCount.get(attacker);
                         crippleCount++;
                         if(crippleCount >= 5){
@@ -108,42 +104,43 @@ public class SwordsmanListener extends ClassListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getItem();
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         if (item.getItemMeta() != null)
             switch (item.getItemMeta().getDisplayName()) {
                 case "§2Shields Up" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 3) && !plugin.isSilenced(player))
-                        shieldsUp.castShieldsUp(player);
+                    if (playerParama.checkLevel(3, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        shieldsUp.castSpell(playerParama);
                 }
                 case "§2Phoenix Dive" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 5) && !plugin.isSilenced(player))
-                        phoenixDive.castPhoenixDive(player);
+                    if (playerParama.checkLevel(5, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        phoenixDive.castSpell(playerParama);
                 }
                 case "§2Enrage" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 6) && !plugin.isSilenced(player))
-                        enrage.castEnrage(player);
+                    if (playerParama.checkLevel(6, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        enrage.castSpell(playerParama);
                 }
                 case "§2Onslaught" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 7) && !plugin.isSilenced(player))
-                        onslaught.castOnslaught(player);
+                    if (playerParama.checkLevel(7, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        onslaught.castSpell(playerParama);
                 }
                 case "§2Terrifying Cruelty" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 8) && !plugin.isSilenced(player))
-                        terrifyingCruelty.castTerrifyingCruelty(player);
+                    if (playerParama.checkLevel(8, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        terrifyingCruelty.castSpell(playerParama);
                 }
                 case "§2Superconducted" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 9) && !plugin.isSilenced(player))
-                        superconducted.castSuperconducted(player);
+                    if (playerParama.checkLevel(9, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        superconducted.castSpell(playerParama);
                 }
                 case "§2Calamity" -> {
                     event.setCancelled(true);
-                    if (checkLevel(player, 10) && !plugin.isSilenced(player))
-                        calamity.castCalamity(player);
+                    if (playerParama.checkLevel(10, ClassType.SWORDSMAN) && playerParama.isNotSilenced())
+                        calamity.castSpell(playerParama);
                 }
             }
     }

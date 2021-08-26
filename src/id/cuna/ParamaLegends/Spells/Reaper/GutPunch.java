@@ -1,56 +1,49 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.AttackParama;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class GutPunch {
+public class GutPunch implements AttackParama {
 
     private final ParamaLegends plugin;
-    private final ReaperListener reaperListener;
+    private final int manaCost = 150;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public GutPunch(ParamaLegends plugin, ReaperListener reaperListener){
+    public GutPunch(ParamaLegends plugin){
         this.plugin = plugin;
-        this.reaperListener = reaperListener;
     }
 
-    public void castGutPunch (Player player , Entity entity) {
-        if (!playerCooldowns.contains(player.getUniqueId().toString()) && reaperListener.subtractMana(player, 150)) {
+    public void attackEntity(PlayerParama playerParama, Entity entity, double damage) {
+        if (!playerParama.checkCooldown(this) && playerParama.subtractMana(manaCost)) {
             if(entity instanceof LivingEntity){
                 double entityHealth = ((LivingEntity) entity).getHealth();
                 double maxHealth = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
                 double percentHealth = (entityHealth / maxHealth);
-                double finalDamage = (30 * percentHealth) + 0.34;
-                playerCooldowns.add(player.getUniqueId().toString());
+                double finalDamage = damage + (30 * percentHealth) + 0.34;
+                playerParama.addToCooldown(this);
 
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 62, 3));
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 62, 3));
-
-                ((LivingEntity) entity).damage(finalDamage, player);
-
+                ((LivingEntity) entity).damage(finalDamage, playerParama.getPlayer());
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        playerCooldowns.remove(player.getUniqueId().toString());
-                        reaperListener.sendNoLongerCooldownMessage(player, "Gut Punch");
+                    if(playerParama.checkCooldown(this)){
+                        playerParama.removeFromCooldown(this);
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Gut Punch");
                     }
                 }, 182);
             }
         }
     }
 
-    public List<String> getPlayerCooldowns() {
-        return playerCooldowns;
+    public int getManaCost(){
+        return manaCost;
     }
 }

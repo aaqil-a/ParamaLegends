@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.AttackParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -10,30 +11,30 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class SecondWind {
+public class SecondWind implements AttackParama {
 
     private final ParamaLegends plugin;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
 
-    public SecondWind(ParamaLegends plugin, ReaperListener reaperListener){
+    public SecondWind(ParamaLegends plugin){
         this.plugin = plugin;
     }
 
-    public void castSecondWind (Player player, Entity entity){
-        if (!playerCooldowns.contains(player.getUniqueId().toString())){
+    public void attackEntity(PlayerParama playerParama, Entity entity, double damage){
+        if (!playerParama.checkCooldown(this)){
             if (entity instanceof LivingEntity){
+                Player player = playerParama.getPlayer();
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 62, 2));
                 player.sendMessage(ChatColor.GREEN+"You gain a second wind.");
-                playerCooldowns.add(player.getUniqueId().toString());
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    playerCooldowns.remove(player.getUniqueId().toString());
-                }, 162);
+                playerParama.addToCooldown(this);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> playerParama.removeFromCooldown(this), 162);
             }
         }
+    }
+
+    public int getManaCost(){
+        return 0;
     }
 
 }

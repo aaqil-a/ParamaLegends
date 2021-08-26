@@ -3,6 +3,7 @@ package id.cuna.ParamaLegends.GameListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -138,6 +139,7 @@ public class ExperienceListener implements Listener {
             case REAPER -> "Reaper";
         };
         if(player != null){
+            PlayerParama playerParama = plugin.getPlayerParama(player);
             int currLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill.toLowerCase());
             int currExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill.toLowerCase()+"exp");
             currExp += amount;
@@ -150,8 +152,8 @@ public class ExperienceListener implements Listener {
                         currExp -= xpNeededSwordsman[currLevel];
                         currLevel += 1;
                         levelUpMessage(player, skill, currLevel);
-                        plugin.levelUpSwordsmanship(player);
-                        plugin.destinyListener.levelUp(player, currLevel);
+                        playerParama.levelUp(ClassType.SWORDSMAN);
+                        playerParama.levelUpMana(currLevel);
                     } else {
                         currExp = xpNeededSwordsman[currLevel];
                     }
@@ -162,12 +164,8 @@ public class ExperienceListener implements Listener {
                         currExp -= xpNeeded[currLevel];
                         currLevel += 1;
                         levelUpMessage(player, skill, currLevel);
-                        switch (skillType) {
-                            case MAGIC -> plugin.levelUpMagic(player);
-                            case ARCHERY -> plugin.levelUpArchery(player);
-                            case REAPER -> plugin.levelUpReaper(player);
-                        }
-                        plugin.destinyListener.levelUp(player, currLevel);
+                        playerParama.levelUp(skillType);
+                        playerParama.levelUpMana(currLevel);
                     } else {
                         currExp = xpNeeded[currLevel];
                     }

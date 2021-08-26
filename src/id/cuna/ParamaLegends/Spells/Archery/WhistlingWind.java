@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -23,30 +24,26 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class WhistlingWind implements Listener {
 
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
-
-
+    private final int manaCost = 200;
     private final HashMap<Player, List<Entity>> entitiesWhistlingWind = new HashMap<>();
     private final HashMap<Player, Entity> targetWhistlingWind = new HashMap<>();
 
-    public WhistlingWind(ParamaLegends plugin, ArcheryListener archeryListener){
+    public WhistlingWind(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
+        this.archeryListener = plugin.archeryListener;
     }
 
-
-    public void castWhistlingWind(Player player, EntityShootBowEvent event, boolean noMana){
-        int manaCost = 200;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void castWhistlingWind(PlayerParama playerParama, EntityShootBowEvent event){
         if(event.getProjectile() instanceof SpectralArrow){
+            Player player = playerParama.getPlayer();
             SpectralArrow arrow = (SpectralArrow) event.getProjectile();
-            if(archeryListener.subtractMana(player, manaCost)){
+            if(playerParama.subtractMana(manaCost)){
                 arrow.setCustomName("whistlingwind");
                 arrow.setGravity(false);
 
@@ -118,7 +115,7 @@ public class WhistlingWind implements Listener {
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                             directArrowToEntity(target, player);
-                        }, 5);
+                        }, 10);
                     }
                 }
             }
@@ -134,7 +131,7 @@ public class WhistlingWind implements Listener {
                             target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                             Bukkit.getScheduler().runTaskLater(plugin, ()->{
                                 directArrowToEntity(target, player);
-                            }, 5);
+                            }, 10);
                         }
                     }
                 }
@@ -158,7 +155,7 @@ public class WhistlingWind implements Listener {
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
                     //fire arrow back to player
                     Location hitLocation = player.getLocation().add(0,-0.5,0);
-                    Location arrowLocation = hit.getLocation().add(0,-1,0);
+                    Location arrowLocation = hit.getLocation();
                     Vector direction = new Vector(hitLocation.getX()-arrowLocation.getX(), hitLocation.getY()-arrowLocation.getY(),
                             hitLocation.getZ()-arrowLocation.getZ());
                     arrowLocation.setDirection(direction.normalize());
@@ -184,7 +181,7 @@ public class WhistlingWind implements Listener {
                     } else {
                         Bukkit.getScheduler().runTaskLater(plugin, newArrow::remove,20);
                     }
-                },5);
+                },10);
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
                     entitiesWhistlingWind.remove(player);
                 },8);
@@ -211,7 +208,7 @@ public class WhistlingWind implements Listener {
                     target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         directArrowToEntity(target, player);
-                    }, 5);
+                    }, 10);
                 }
             } else if ("return".equals(arrow.getCustomName())) {
                 event.setCancelled(true);
@@ -226,17 +223,22 @@ public class WhistlingWind implements Listener {
                     }
 
                 }
+                assert player != null;
                 player.getWorld().spawnParticle(Particle.FLASH, player.getLocation(), 1, 0, 0, 0 ,0);
             }
         }
     }
 
     public void givePlayerWhistlingWind(Player player, ItemStack item){
-        if(player.getEquipment().getItemInOffHand().equals(item)){
+        if(Objects.requireNonNull(player.getEquipment()).getItemInOffHand().equals(item)){
             player.getEquipment().setItemInOffHand(item);
         } else {
             player.getInventory().setItem(player.getInventory().first(item), item);
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
     public HashMap<Player, List<Entity>> getEntitiesWhistlingWind(){

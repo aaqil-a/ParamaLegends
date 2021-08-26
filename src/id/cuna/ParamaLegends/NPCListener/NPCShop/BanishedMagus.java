@@ -83,7 +83,7 @@ public class BanishedMagus extends NPCShopListener {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "a dense cube, then flinging");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "it towards whatever may be");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "in its path.");
-        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 3");
+        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.flingEarth.getManaCost());
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 second");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 1");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
@@ -99,7 +99,7 @@ public class BanishedMagus extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Sets targets ablaze within a");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "small area, dealing damage");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "over time.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.ignite.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 7 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 2");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
@@ -115,7 +115,7 @@ public class BanishedMagus extends NPCShopListener {
             meta.setDisplayName(ChatColor.RESET + "§5Gust");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Pushes away targets within an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area of where you are facing.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.gust.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
@@ -130,7 +130,7 @@ public class BanishedMagus extends NPCShopListener {
             meta.setDisplayName(ChatColor.RESET + "§5Life Drain");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Periodically drains the life of");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 10 per second");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.lifeDrain.getManaCost()+" per second");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 4");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
@@ -145,7 +145,7 @@ public class BanishedMagus extends NPCShopListener {
             meta.setDisplayName(ChatColor.RESET + "§5Blink");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Instantaneously teleport to");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the targeted location.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 50");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.blink.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 5");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
@@ -162,7 +162,7 @@ public class BanishedMagus extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "thundergod to summon lightning");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "and smite all enemies in an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.summonLightning.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 6");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
@@ -180,7 +180,7 @@ public class BanishedMagus extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with. Casting the spell while an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "orb is travelling teleports the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "caster to its location.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.illusoryOrb.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 7");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
@@ -198,7 +198,7 @@ public class BanishedMagus extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "breath attack in front of you");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that harms all beings it comes");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "into contact with.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.dragonBreath.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 8");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
@@ -215,7 +215,7 @@ public class BanishedMagus extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the damned. Creatures will appear");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "creatures that are in sight.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 400");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.voicesOfTheDamned.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
@@ -229,7 +229,7 @@ public class BanishedMagus extends NPCShopListener {
             item.setType(Material.ENCHANTED_BOOK);
             meta.setDisplayName(ChatColor.RESET + "§5Nova");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "爆裂, 爆裂, la la la");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 600");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.nova.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 10");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");

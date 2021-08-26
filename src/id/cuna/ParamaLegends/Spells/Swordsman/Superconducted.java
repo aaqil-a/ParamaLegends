@@ -1,8 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
@@ -24,24 +25,22 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Superconducted implements Listener {
+public class Superconducted implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 300;
     private final List<Entity> entitiesBlinded = new ArrayList<Entity>();
 
-    public Superconducted(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public Superconducted(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-    public void castSuperconducted(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Superconducted");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Superconducted");
         } else {
-            if(swordsmanListener.subtractMana(player, 300)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 List<Entity> entities = player.getNearbyEntities(5,4,5);
                 createFireworkEffect(player.getLocation(), player);
                 List<Entity> toDamage = new ArrayList<Entity>();
@@ -70,11 +69,11 @@ public class Superconducted implements Listener {
                         }
                     }
                 }, 160);
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Superconducted");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Superconducted");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 1200);
             }
@@ -101,7 +100,7 @@ public class Superconducted implements Listener {
         }
     }
 
-    public List<Entity> getEntitiesBlinded() {
-        return entitiesBlinded;
+    public int getManaCost(){
+        return manaCost;
     }
 }

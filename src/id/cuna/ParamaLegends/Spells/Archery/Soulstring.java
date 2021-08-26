@@ -1,7 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -15,17 +17,14 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Soulstring {
+public class Soulstring implements SpellParama {
 
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
+    private final int manaCost = 100;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
     private final List<ArmorStand> soulstringAiming = new ArrayList<>();
     private final HashMap<Player, ArmorStand> playersSoulstring = new HashMap<>();
     private final HashMap<Player, ArmorStand> playersSoulstringText = new HashMap<>();
@@ -33,21 +32,21 @@ public class Soulstring {
     private final HashMap<Player, BukkitTask> playersShoot = new HashMap<>();
     private final HashMap<Player, BukkitTask> playersFollow = new HashMap<>();
 
-    public Soulstring(ParamaLegends plugin, ArcheryListener archeryListener){
+    public Soulstring(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
+        this.archeryListener = plugin.archeryListener;
     }
 
-    public void castSoulstring(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            archeryListener.sendCooldownMessage(player, "Soulstring");
-        } else if (archeryListener.subtractMana(player, 100)) {
-            summonSoulstring(player);
-            playerCooldowns.add(player.getUniqueId().toString());
+    public void castSpell(PlayerParama player){
+        if(player.checkCooldown(this)){
+            plugin.sendCooldownMessage(player, "Soulstring");
+        } else if (player.subtractMana(manaCost)) {
+            summonSoulstring(player.getPlayer());
+            player.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    archeryListener.sendNoLongerCooldownMessage(player, "Soulstring");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(player.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(player, "Soulstring");
+                    player.removeFromCooldown(this);
                 }
             }, 600);
         }
@@ -63,11 +62,12 @@ public class Soulstring {
 
         ItemStack shirt = new ItemStack(Material.LEATHER_CHESTPLATE);
         LeatherArmorMeta shirtMeta = (LeatherArmorMeta) shirt.getItemMeta();
+        assert shirtMeta != null;
         shirtMeta.setColor(Color.WHITE);
         shirt.setItemMeta(shirtMeta);
         playersSoulstring.put(player, player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
             armorStand.setCustomName(player.getName()+"'s Soulstring");
-            armorStand.getEquipment().setItemInMainHand(new ItemStack(Material.BOW));
+            Objects.requireNonNull(armorStand.getEquipment()).setItemInMainHand(new ItemStack(Material.BOW));
             armorStand.getEquipment().setChestplate(shirt);
             armorStand.setArms(true);
             armorStand.setRightArmPose(new EulerAngle(-1.6, 0, -0.2));
@@ -153,5 +153,9 @@ public class Soulstring {
             }, 3);
             soulstringAiming.remove(dummy);
         }, 30);
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -14,25 +16,25 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class DragonBreath {
+public class DragonBreath implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
+    private final int manaCost = 200;
+    private final HashMap<Player, BukkitTask> dragonBreath = new HashMap<>();
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public DragonBreath(ParamaLegends plugin, MagicListener magicListener){
+    public DragonBreath(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castDragonBreath(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Dragon's Breath");
-        } else if (magicListener.subtractMana(player, 200)) {
-            playerCooldowns.add(player.getUniqueId().toString());
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Dragon's Breath");
+        } else if (playerParama.subtractMana(manaCost)) {
+            playerParama.addToCooldown(this);
+            Player player = playerParama.getPlayer();
             Location location = player.getLocation();
             double playerX = location.getX();
             double playerY = location.getY();
@@ -80,7 +82,7 @@ public class DragonBreath {
             breathLocation.add(0,0.5,0);
 
             //test
-            BukkitTask dragonBreath = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            dragonBreath.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 player.getWorld().spawnParticle(Particle.DRAGON_BREATH, breathLocation, 64, 1, 0, 1, 0);
                 List<Entity> entities = player.getWorld().getNearbyEntities(gustBox).stream().toList();
                 for(Entity knocked : entities){
@@ -92,14 +94,18 @@ public class DragonBreath {
                         ((Damageable) knocked).damage(10.069, player);
                     }
                 }
-            }, 3, 20);
-            Bukkit.getScheduler().runTaskLater(plugin, dragonBreath::cancel, 125);
+            }, 3, 20));
+            Bukkit.getScheduler().runTaskLater(plugin, dragonBreath.get(player)::cancel, 125);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Dragon's Breath");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 400);
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

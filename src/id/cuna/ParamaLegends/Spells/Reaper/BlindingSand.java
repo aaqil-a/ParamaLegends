@@ -1,7 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,26 +20,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BlindingSand implements Listener {
+public class BlindingSand implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final ReaperListener reaperListener;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 30;
     private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
     private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
     private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
     private final List<Entity> entitiesBlinded = new ArrayList<>();
 
-    public BlindingSand(ParamaLegends plugin, ReaperListener reaperListener){
+    public BlindingSand(ParamaLegends plugin){
         this.plugin = plugin;
-        this.reaperListener = reaperListener;
     }
 
-    public void castBlindingSand(Player player){
-        if (playerCooldowns.contains(player.getUniqueId().toString())) {
-            reaperListener.sendCooldownMessage(player, "Blinding Sand");
-        } else {
+    public void castSpell(PlayerParama playerParama){
+        if (playerParama.checkCooldown(this)) {
+            plugin.sendCooldownMessage(playerParama, "Blinding Sand");
+        } else if(playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 Snowball ball = player.launchProjectile(Snowball.class);
                 ball.setCustomName("blindsand");
@@ -61,11 +62,11 @@ public class BlindingSand implements Listener {
                     cancelFlingEarthTasks(player);
                 }
             }, 2, 1));
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    reaperListener.sendNoLongerCooldownMessage(player, "Blinding Sand");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Blinding Sand");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 205);
         }
@@ -129,5 +130,9 @@ public class BlindingSand implements Listener {
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

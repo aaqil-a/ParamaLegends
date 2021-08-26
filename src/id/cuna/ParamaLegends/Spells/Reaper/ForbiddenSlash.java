@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,35 +11,36 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForbiddenSlash implements Listener {
+public class ForbiddenSlash implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private ReaperListener reaperListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 200;
     private final List<Player> playersForbiddenSlash = new ArrayList<>();
 
-    public ForbiddenSlash(ParamaLegends plugin, ReaperListener reaperListener){
+    public ForbiddenSlash(ParamaLegends plugin){
         this.plugin = plugin;
-        this.reaperListener = reaperListener;
     }
 
-    public void castForbiddenSlash(Player player){
-        if (playerCooldowns.contains(player.getUniqueId().toString())) {
-            reaperListener.sendCooldownMessage(player, "Forbidden Slash");
-        } else if(reaperListener.subtractMana(player, 200)){
+    public void castSpell(PlayerParama playerParama){
+        if (playerParama.checkCooldown(this)) {
+            plugin.sendCooldownMessage(playerParama, "Forbidden Slash");
+        } else if(playerParama.subtractMana(manaCost)){
+            Player player = playerParama.getPlayer();
             playersForbiddenSlash.add(player);
             player.sendMessage(ChatColor.GREEN+"You ready your scythe.");
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    reaperListener.sendNoLongerCooldownMessage(player, "Forbidden Slash");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Forbidden Slash");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 402);
         }
     }
 
+    public int getManaCost(){
+        return manaCost;
+    }
     public List<Player> getPlayersForbiddenSlash(){
         return playersForbiddenSlash;
     }

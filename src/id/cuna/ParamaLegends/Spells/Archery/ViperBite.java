@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.ArrowParama;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Damageable;
@@ -13,48 +14,51 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-public class ViperBite implements Listener {
+import java.util.HashMap;
+
+public class ViperBite implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
+    private final int manaCost = 15;
+    private final HashMap<Entity, BukkitTask> poisonTasks = new HashMap<>();
 
-    public ViperBite(ParamaLegends plugin, ArcheryListener archeryListener){
+    public ViperBite(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void castViperBite(Player player, Entity entity, boolean noMana){
-        int manaCost = 15;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void shootArrow(PlayerParama player, Entity entity){
         if(entity instanceof Arrow){
             Arrow arrow = (Arrow) entity;
-            if(archeryListener.subtractMana(player, 15)){
+            if(player.subtractMana(manaCost)){
                 arrow.setCustomName("viperbite");
             }
         }
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(event.getDamager() instanceof Arrow){
+    public void hitArrow(EntityDamageByEntityEvent event){
+        if(event.getDamager() instanceof Arrow && event.getEntity() instanceof Damageable){
             Arrow arrow = (Arrow) event.getDamager();
             if(arrow.getCustomName() != null && arrow.getCustomName().equals("viperbite")){
-                if(!archeryListener.getEntitiesPoisoned().contains(event.getEntity())){
-                    archeryListener.getEntitiesPoisoned().add(event.getEntity());
-                    BukkitTask poison = Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
+                if(!plugin.archeryListener.getEntitiesPoisoned().contains(event.getEntity())){
+                    plugin.archeryListener.getEntitiesPoisoned().add(event.getEntity());
+                    poisonTasks.put(event.getEntity(), Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                         if(event.getEntity() instanceof Damageable && arrow.getShooter() instanceof Player){
                             ((Damageable) event.getEntity()).damage(1.016, (Player) arrow.getShooter());
                             event.getEntity().setVelocity(new Vector(0,0,0));
                         }
-                    }, 20, 20);
+                    }, 20, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        poison.cancel();
-                        archeryListener.getEntitiesPoisoned().remove(event.getEntity());
+                        poisonTasks.get(event.getEntity()).cancel();
+                        plugin.archeryListener.getEntitiesPoisoned().remove(event.getEntity());
                     }, 162);
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

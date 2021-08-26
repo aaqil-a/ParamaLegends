@@ -1,38 +1,42 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.AttackParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class CoatedBlade {
+
+public class CoatedBlade implements AttackParama {
 
     private final ParamaLegends plugin;
+    private final HashMap<Player, BukkitTask> poisonTasks = new HashMap<>();
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public CoatedBlade(ParamaLegends plugin, ReaperListener reaperListener){
+    public CoatedBlade(ParamaLegends plugin){
         this.plugin = plugin;
     }
 
-    public void castCoatedBlade(Player attacker, Entity entity) {
-        if (!playerCooldowns.contains(attacker.getUniqueId().toString())) {
+    public void attackEntity(PlayerParama attacker, Entity entity, double damage) {
+        if (!attacker.checkCooldown(this)) {
             if (entity instanceof LivingEntity) {
-                BukkitTask poison = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                Player player = attacker.getPlayer();
+                poisonTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     entity.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, entity.getLocation(),4, 0.5, 0.5, 0.5, 0);
-                    ((LivingEntity) entity).damage(1.034, attacker);
-                }, 0, 20);
-                Bukkit.getScheduler().runTaskLater(plugin, poison::cancel, 42);
-                playerCooldowns.add(attacker.getUniqueId().toString());
+                    ((LivingEntity) entity).damage(1.034, player);
+                }, 0, 20));
+                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                    poisonTasks.get(player).cancel();
+                    poisonTasks.remove(player);
+                }, 42);
+                attacker.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    playerCooldowns.remove(attacker.getUniqueId().toString());
+                    attacker.removeFromCooldown(this);
                 }, 80);
             }
         }

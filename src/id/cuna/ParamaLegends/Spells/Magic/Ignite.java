@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
@@ -20,24 +22,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Ignite implements Listener {
+public class Ignite implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 20;
 
     private final HashMap<Entity, Integer> entityIgnitedDuration = new HashMap<>();
     private final HashMap<Entity, BukkitTask> entityIgnitedTasks = new HashMap<>();
 
-    public Ignite(ParamaLegends plugin, MagicListener magicListener){
+    public Ignite(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castIgnite(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Ignite");
-        } else if (magicListener.subtractMana(player, 20)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Ignite");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 1.5,
                     notPlayer);
@@ -79,14 +80,17 @@ public class Ignite implements Listener {
                             }, 0, 20));
                 }
             }
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Ignite");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Ignite");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 140);
         }
     }
 
+    public int getManaCost(){
+        return manaCost;
+    }
 }

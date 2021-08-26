@@ -1,33 +1,33 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.*;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
+import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
-public class Blink {
+public class Blink implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
+    private final int manaCost = 50;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public Blink(ParamaLegends plugin, MagicListener magicListener){
+    public Blink(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castBlink(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Blink");
-        } else if (magicListener.subtractMana(player, 50)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Blink");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -41,7 +41,7 @@ public class Blink {
             } else{
                 location = player.getEyeLocation().add(player.getLocation().getDirection().multiply(20));
             }
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             location.setDirection(player.getLocation().getDirection());
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation(), 10, 0.5, 0.5, 0.5);
             Location finalLocation = location;
@@ -50,14 +50,17 @@ public class Blink {
                 player.getWorld().playSound(finalLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
             }, 5);
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, location.add(new Vector(0,2,0)), 10, 0.5, 0.5, 0.5);
-            magicListener.teleportToAir(player, location);
+            plugin.magicListener.teleportToAir(player, location);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Blink");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Blink");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 300);
         }
     }
 
+    public int getManaCost(){
+        return manaCost;
+    }
 }

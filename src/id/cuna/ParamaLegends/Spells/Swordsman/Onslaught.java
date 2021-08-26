@@ -1,9 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import com.sk89q.worldedit.bukkit.fastutil.Hash;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,31 +18,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Onslaught {
+public class Onslaught implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 100;
     private final HashMap<Player, BukkitTask> playerOnslaughtTasks = new HashMap<>();
 
-
-    public Onslaught(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public Onslaught(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-    public void castOnslaught(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Onslaught");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Onslaught");
         } else {
-            if(swordsmanListener.subtractMana(player, 100)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 swordsAnimation(player);
-
                 List<Entity> entities = player.getNearbyEntities(3.5,3,3.5);
                 playerOnslaughtTasks.put(player,Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     for(Entity hit : entities){
@@ -59,11 +54,11 @@ public class Onslaught {
                         playerOnslaughtTasks.remove(player);
                     }
                 }, 19);
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Onslaught");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Onslaught");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 480);
             }
@@ -149,6 +144,7 @@ public class Onslaught {
         }, 10);
 
     }
-
-
+    public int getManaCost(){
+        return manaCost;
+    }
 }

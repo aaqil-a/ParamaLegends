@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
@@ -22,31 +23,30 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public class RoyalArtillery implements Listener {
+public class RoyalArtillery implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 150;
     private final HashMap<Player, BukkitTask> playerArrowTask = new HashMap<>();
     private final HashMap<Player, BukkitTask> playerArrowTask2 = new HashMap<>();
     private final HashMap<Player, BukkitTask> playerArrowTask3 = new HashMap<>();
     private final HashMap<Player, BukkitTask> playerDamageTask = new HashMap<>();
 
 
-    public RoyalArtillery(ParamaLegends plugin, ArcheryListener archeryListener){
+    public RoyalArtillery(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
     }
 
-    public void castRoyalArtillery(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            archeryListener.sendCooldownMessage(player, "Royal Artillery");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Royal Artillery");
         } else {
+            Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 30, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -58,10 +58,10 @@ public class RoyalArtillery implements Listener {
                     location = rayTrace.getHitBlock().getLocation();
                 }
             } else{
-                plugin.magicListener.sendOutOfRangeMessage(player);
+                plugin.sendOutOfRangeMessage(playerParama);
                 return;
             }
-            if (archeryListener.subtractMana(player, 150)) {
+            if (playerParama.subtractMana(manaCost)) {
                 player.getWorld().spawn(location.clone().add(0,1,0), Firework.class, firework -> {
                     FireworkMeta meta = firework.getFireworkMeta();
                     meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BURST)
@@ -77,11 +77,11 @@ public class RoyalArtillery implements Listener {
                     barrageArrows(finalLocation, player);
                 }, 40);
 
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        archeryListener.sendNoLongerCooldownMessage(player, "Royal Artillery");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Royal Artillery");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 1200);
             }
@@ -100,7 +100,7 @@ public class RoyalArtillery implements Listener {
         playerArrowTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);
-                location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
+                Objects.requireNonNull(location.getWorld()).spawn(arrowLocation, Arrow.class, arrow -> {
                     arrow.setCustomName("barrage");
                     arrow.setVelocity(new Vector(0, -0.7, 0));
                 });
@@ -119,7 +119,7 @@ public class RoyalArtillery implements Listener {
         playerArrowTask3.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX3[i], 6, arrowMapZ3[i]);
-                location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
+                Objects.requireNonNull(location.getWorld()).spawn(arrowLocation, Arrow.class, arrow -> {
                     arrow.setCustomName("barrage");
                     arrow.setVelocity(new Vector(0, -0.7, 0));
                     arrow.setSilent(true);
@@ -127,7 +127,7 @@ public class RoyalArtillery implements Listener {
             }
         }, 20, 30));
         playerDamageTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            location.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, location, 4, 0,0,0,0);
+            Objects.requireNonNull(location.getWorld()).spawnParticle(Particle.EXPLOSION_NORMAL, location, 4, 0,0,0,0);
             List<Entity> entities = location.getWorld().getNearbyEntities(location, 2.5, 5, 2.5).stream().toList();
             for(Entity hit : entities){
                 if(hit instanceof LivingEntity && !(hit instanceof Player)){
@@ -165,5 +165,9 @@ public class RoyalArtillery implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

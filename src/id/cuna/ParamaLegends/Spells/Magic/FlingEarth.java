@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,11 +27,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FlingEarth implements Listener {
+public class FlingEarth implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 3;
 
     private final HashMap<Player, Vector> ballOffsetVectors = new HashMap<>();
     private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
@@ -37,15 +38,15 @@ public class FlingEarth implements Listener {
     private final HashMap<Player, BukkitTask> ballEffectTasks = new HashMap<>();
     private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
 
-    public FlingEarth(ParamaLegends plugin, MagicListener magicListener){
+    public FlingEarth(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castFlingEarth(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Fling Earth");
-        } else if (magicListener.subtractMana(player, 3)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Fling Earth");
+        } else if (playerParama.subtractMana(3)) {
+            Player player = playerParama.getPlayer();
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
             location.add(offset);
@@ -55,7 +56,7 @@ public class FlingEarth implements Listener {
             dummy.setGravity(false);
             dummy.setInvulnerable(true);
             dummy.setCanPickupItems(false);
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
                 dummy.getLocation().add(new Vector(0,1,0));
@@ -101,7 +102,7 @@ public class FlingEarth implements Listener {
                 }
             }, 6, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                playerCooldowns.remove(player.getUniqueId().toString());
+                playerParama.removeFromCooldown(this);
             }, 16);
         }
     }
@@ -119,6 +120,7 @@ public class FlingEarth implements Listener {
             if(projectile.getCustomName().equals("iceball")){
                 event.setCancelled(true);
                 ArmorStand source = (ArmorStand) projectile.getShooter();
+                assert source != null;
                 Player player = plugin.getServer().getPlayer(source.getName());
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(ballsDirt.get(player) != null)
@@ -138,5 +140,9 @@ public class FlingEarth implements Listener {
                 projectile.remove();
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

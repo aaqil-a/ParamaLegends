@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,26 +24,25 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-public class TotsukaCreation implements Listener {
+public class TotsukaCreation implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 40;
     private final List<String> playerTotsuka = new ArrayList<>();
     private final HashMap<Player, BukkitTask> playerTotsukaTasks = new HashMap<>();
 
-
-    public TotsukaCreation(ParamaLegends plugin, ArcheryListener archeryListener){
+    public TotsukaCreation(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
     }
 
-    public void castTotsuka(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            archeryListener.sendCooldownMessage(player, "Totsuka's Creation");
-        } else if (archeryListener.subtractMana(player, 40)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Totsuka's Creation");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             Snowball ball = player.launchProjectile(Snowball.class);
             ball.setCustomName("totsuka");
             Vector velocity = ball.getVelocity();
@@ -50,11 +50,15 @@ public class TotsukaCreation implements Listener {
             ball.setItem(new ItemStack(Material.COBWEB));
             ball.setGravity(true);
             ball.setVelocity(velocity);
-            playerCooldowns.add(player.getUniqueId().toString());
+
+            //add spell to cooldown
+            playerParama.addToCooldown(this);
+
+            //remove from cooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    archeryListener.sendNoLongerCooldownMessage(player, "Totsuka's Creation");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Totsuka's Creation");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 300);
         }
@@ -62,7 +66,7 @@ public class TotsukaCreation implements Listener {
 
     public void spawnWebs(Location location, Player player){
         playerTotsukaTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
-            List<Entity> entities = location.getWorld().getNearbyEntities(location, 2, 2, 2).stream().toList();
+            List<Entity> entities = Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 2, 2, 2).stream().toList();
             for(Entity rooted : entities){
                 if(rooted instanceof LivingEntity && !(rooted instanceof Player)){
                     ((LivingEntity) rooted).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false ,false));
@@ -70,7 +74,7 @@ public class TotsukaCreation implements Listener {
             }
         }, 0, 5));
         location.add(0,0.5,0);
-        FallingBlock web1 = location.getWorld().spawnFallingBlock(location, Material.COBWEB.createBlockData());
+        FallingBlock web1 = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(location, Material.COBWEB.createBlockData());
         web1.setGravity(false);
         FallingBlock web2 = location.getWorld().spawnFallingBlock(location.clone().add(-1,0,-1), Material.COBWEB.createBlockData());
         web2.setGravity(false);
@@ -106,27 +110,43 @@ public class TotsukaCreation implements Listener {
         }, 140);
     }
 
-    //Deal when projectile hits block
     @EventHandler
-    public void onProjectileHit(ProjectileHitEvent event){
+    public void effectSpell(ProjectileHitEvent event){
+
+        //Deal when totsuka projectile hits block or entity
         Projectile projectile = event.getEntity();
         if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
             if(projectile.getCustomName().equals("totsuka")){
                 event.setCancelled(true);
-                Player player = (Player) projectile.getShooter();
-                if(!playerTotsuka.contains(player.getUniqueId().toString())){
-                    playerTotsuka.add(player.getUniqueId().toString());
-                    Location location = new Location(player.getWorld(), 0,256,0);
-                    if(event.getHitBlock() != null) {
-                        location = event.getHitBlock().getLocation().add(0,1,0);
-                    } else if(event.getHitEntity() != null){
-                        location = event.getHitEntity().getLocation();
+                if(projectile.getShooter() != null && projectile.getShooter() instanceof Player){
+                    Player player = (Player) projectile.getShooter();
+                    if(!playerTotsuka.contains(player.getUniqueId().toString())){
+                        playerTotsuka.add(player.getUniqueId().toString());
+                        Location location = new Location(player.getWorld(), 0,256,0);
+                        if(event.getHitBlock() != null) {
+                            location = event.getHitBlock().getLocation().add(0,1,0);
+                        } else if(event.getHitEntity() != null){
+                            location = event.getHitEntity().getLocation();
+                        }
+                        spawnWebs(location, player);
                     }
-                    spawnWebs(location, player);
                 }
+            }
+        }
+
+        //Cancel event when other projectile hits web entities
+        Entity entity = event.getHitEntity();
+        if(entity instanceof FallingBlock){
+            FallingBlock block = (FallingBlock) entity;
+            if(block.getBlockData().getMaterial().equals(Material.COBWEB)){
+                event.setCancelled(true);
             }
         }
     }
 
+
+    public int getManaCost(){
+        return manaCost;
+    }
 
 }

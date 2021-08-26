@@ -1,9 +1,11 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,24 +30,22 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoicesOfTheDamned implements Listener {
+public class VoicesOfTheDamned implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
     private final DataManager data;
+    private final int manaCost = 400;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public VoicesOfTheDamned(ParamaLegends plugin, MagicListener magicListener){
+    public VoicesOfTheDamned(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
         this.data = plugin.getData();
     }
 
-    public void castVoicesOfTheDamned(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Voices of the Damned");
-        } else if (magicListener.subtractMana(player, 400)) {
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Voices of the Damned");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(5);
             location.add(offset);
@@ -56,7 +56,7 @@ public class VoicesOfTheDamned implements Listener {
             dummy.setGravity(false);
             dummy.setCanPickupItems(false);
             dummy.setInvulnerable(true);
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
                 dummy.getLocation().add(new Vector(0,1,0));
@@ -125,9 +125,9 @@ public class VoicesOfTheDamned implements Listener {
                     damned.remove();
             }, 800);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Voices of the Damned");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Voices of the Damned");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 1200);
         }
@@ -183,6 +183,7 @@ public class VoicesOfTheDamned implements Listener {
         }
     }
 
-
-
+    public int getManaCost(){
+        return manaCost;
+    }
 }

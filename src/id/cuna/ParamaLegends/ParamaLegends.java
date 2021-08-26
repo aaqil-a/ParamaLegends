@@ -5,10 +5,10 @@ import id.cuna.ParamaLegends.BossListener.AltarTypeListener.NatureAltarListener;
 import id.cuna.ParamaLegends.BossListener.AltarTypeListener.StartAltarListener;
 import id.cuna.ParamaLegends.BossListener.BossFightListener.RaidFightListener;
 import id.cuna.ParamaLegends.BossListener.BossSummonListener.RaidSummonListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
+import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.ReaperListener;
+import id.cuna.ParamaLegends.ClassListener.SwordsmanListener;
 import id.cuna.ParamaLegends.Command.*;
 import id.cuna.ParamaLegends.FunListener.AlcoholListener;
 import id.cuna.ParamaLegends.FunListener.AlcoholRecipes;
@@ -22,15 +22,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ParamaLegends extends JavaPlugin {
 
     public DataManager data;
     public MobSpawnListener mobSpawnListener;
     public WiseOldManListener wiseOldManListener;
-    public PlayerJoinListener destinyListener;
+    public PlayerManagerListener playerManagerListener;
     public WorldRuleListener worldRuleListener;
     public ExperienceListener experienceListener;
     public DamageModifyingListener damageModifyingListener;
@@ -71,13 +68,14 @@ public class ParamaLegends extends JavaPlugin {
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
 
-    public final List<Player> playersSilenced = new ArrayList<Player>();
+    private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
+    private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
 
     @Override
     public void onEnable() {
         data = new DataManager(this);
         mobSpawnListener = new MobSpawnListener(this);
-        destinyListener = new PlayerJoinListener(this);
+        playerManagerListener = new PlayerManagerListener(this);
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
         wiseOldManListener = new WiseOldManListener(this);
@@ -115,7 +113,6 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("worldlevelset").setExecutor(commandWorldLevelSet);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
-        getServer().getPluginManager().registerEvents(destinyListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
         getServer().getPluginManager().registerEvents(experienceListener, this);
         getServer().getPluginManager().registerEvents(damageModifyingListener, this);
@@ -180,12 +177,10 @@ public class ParamaLegends extends JavaPlugin {
 
     public void registerSpells(){
         getServer().getPluginManager().registerEvents(archeryListener.blast, this);
-        getServer().getPluginManager().registerEvents(archeryListener.hunterEye, this);
         getServer().getPluginManager().registerEvents(archeryListener.neurotoxin, this);
         getServer().getPluginManager().registerEvents(archeryListener.retreat, this);
         getServer().getPluginManager().registerEvents(archeryListener.royalArtillery, this);
         getServer().getPluginManager().registerEvents(archeryListener.totsukaCreation, this);
-        getServer().getPluginManager().registerEvents(archeryListener.viperBite, this);
         getServer().getPluginManager().registerEvents(archeryListener.whistlingWind, this);
 
         getServer().getPluginManager().registerEvents(magicListener.flingEarth, this);
@@ -209,33 +204,6 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(startAltarListener, this);
         getServer().getPluginManager().registerEvents(natureAltarListener, this);
         getServer().getPluginManager().registerEvents(earthAltarListener, this);
-    }
-
-
-    @Override
-    public void onDisable() {
-    }
-
-    public boolean isSilenced(Player player){
-        if(!playersSilenced.contains(player)) {
-            return false;
-        } else {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_RED + "You are silenced!"));
-            return true;
-        }
-    }
-
-    public void levelUpMagic(Player player){
-        magicListener.levelUp(player);
-    }
-    public void levelUpSwordsmanship(Player player){
-        swordsmanListener.levelUp(player);
-    }
-    public void levelUpArchery(Player player){
-        archeryListener.levelUp(player);
-    }
-    public void levelUpReaper(Player player){
-        reaperListener.levelUp(player);
     }
 
 
@@ -270,12 +238,27 @@ public class ParamaLegends extends JavaPlugin {
         return null;
     }
 
+    public PlayerParama getPlayerParama(Player player){
+        return playerManagerListener.getPlayerParama(player);
+    }
+
+    public void sendCooldownMessage(PlayerParama player, String spell){
+        player.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown."));
+    }
+    public void sendNoLongerCooldownMessage(PlayerParama player, String spell){
+        player.getPlayer().sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.DARK_GREEN + " is no longer on cooldown.");
+    }
+    public void sendOutOfRangeMessage(PlayerParama player){
+        player.getPlayer().sendMessage(ChatColor.GRAY + "Out of range to cast spell.");
+    }
+
+    public int[] getMaxMana(){
+        return maxMana;
+    }
+    public int[] getManaRegen(){
+        return manaRegen;
+    }
     public DataManager getData(){
         return data;
     }
-
-    public List<Player> getPlayersSilenced(){
-        return playersSilenced;
-    }
-
 }

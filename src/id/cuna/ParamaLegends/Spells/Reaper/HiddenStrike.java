@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,35 +11,37 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HiddenStrike implements Listener {
+public class HiddenStrike implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private ReaperListener reaperListener;
+    private final int manaCost = 20;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
     private final List<Player> playersHiddenStrike = new ArrayList<>();
 
-    public HiddenStrike(ParamaLegends plugin, ReaperListener reaperListener){
+    public HiddenStrike(ParamaLegends plugin){
         this.plugin = plugin;
-        this.reaperListener = reaperListener;
     }
 
-    public void castHiddenStrike(Player player){
-        if (playerCooldowns.contains(player.getUniqueId().toString())) {
-            reaperListener.sendCooldownMessage(player, "Hidden Strike");
-        } else if(reaperListener.subtractMana(player, 20)){
+    public void castSpell(PlayerParama playerParama){
+        if (playerParama.checkCooldown(this)) {
+            plugin.sendCooldownMessage(playerParama, "Hidden Strike");
+        } else if(playerParama.subtractMana(manaCost)){
+            Player player = playerParama.getPlayer();
             playersHiddenStrike.add(player);
             player.sendMessage(ChatColor.GREEN+"You conceal your scythe.");
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    reaperListener.sendNoLongerCooldownMessage(player, "Hidden Strike");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Hidden Strike");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 202);
         }
     }
 
+    public int getManaCost(){
+        return manaCost;
+    }
     public List<Player> getPlayersHiddenStrike(){
         return playersHiddenStrike;
     }

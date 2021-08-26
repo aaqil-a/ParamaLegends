@@ -1,8 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
@@ -18,25 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Calamity {
+public class Calamity implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 500;
     private final List<Player> playersCalamity = new ArrayList<Player>();
 
-    public Calamity(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public Calamity(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-
-    public void castCalamity(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Calamity");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Calamity");
         } else {
-            if(swordsmanListener.subtractMana(player, 500)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 playersCalamity.add(player);
                 BukkitTask calamity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     List<Entity> entities = player.getNearbyEntities(10,10,10);
@@ -69,15 +67,19 @@ public class Calamity {
                     playersCalamity.remove(player);
                     calamityEffect.cancel();
                 }, 302);
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Calamity");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Calamity");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 2400);
             }
         }
+    }
+
+    public int getManaCost() {
+        return manaCost;
     }
 
     public List<Player> getPlayersCalamity(){

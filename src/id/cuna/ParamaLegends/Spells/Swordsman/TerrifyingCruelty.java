@@ -1,8 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -18,24 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TerrifyingCruelty implements Listener {
+public class TerrifyingCruelty implements Listener, SpellParama {
 
-    private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final ParamaLegends plugin;;
+    private final int manaCost = 200;
     private final List<Entity> entitiesTerrified = new ArrayList<Entity>();
 
-    public TerrifyingCruelty(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public TerrifyingCruelty(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-    public void castTerrifyingCruelty(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Terrifying Cruelty");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Terrifying Cruelty");
         } else {
-            if(swordsmanListener.subtractMana(player, 200)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 List<Entity> entities = player.getNearbyEntities(3.5,3,3.5);
                 player.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, player.getLocation().add(0,1,0), 8, 0.5, 0.5, 0.5, 0);
                 for(Entity hit : entities){
@@ -51,11 +50,11 @@ public class TerrifyingCruelty implements Listener {
                         }, 120);
                     }
                 }
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Terrifying Cruelty");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Terrifying Cruelty");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 600);
             }
@@ -72,6 +71,10 @@ public class TerrifyingCruelty implements Listener {
                 }
             }
         }
+    }
+
+    public int getManaCost() {
+        return manaCost;
     }
 
     public List<Entity> getEntitiesTerrified(){

@@ -1,8 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Swordsman;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.SwordsmanListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,24 +23,22 @@ import org.bukkit.util.EulerAngle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShieldsUp implements Listener {
+public class ShieldsUp implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final SwordsmanListener swordsmanListener;
-
+    private final int manaCost = 50;
     private final List<Player> playersShielded = new ArrayList<Player>();
-    private final List<String> playerCooldowns = new ArrayList<>();
 
-    public ShieldsUp(ParamaLegends plugin, SwordsmanListener swordsmanListener){
+    public ShieldsUp(ParamaLegends plugin){
         this.plugin = plugin;
-        this.swordsmanListener = swordsmanListener;
     }
 
-    public void castShieldsUp(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            swordsmanListener.sendCooldownMessage(player, "Shields Up");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Shields Up");
         } else {
-            if(swordsmanListener.subtractMana(player, 50)){
+            if(playerParama.subtractMana(manaCost)){
+                Player player = playerParama.getPlayer();
                 player.sendMessage(ChatColor.GREEN+"Shields Up activated.");
                 shieldAnimation(player);
                 playersShielded.add(player);
@@ -48,11 +47,11 @@ public class ShieldsUp implements Listener {
                     playersShielded.remove(player);
                     //shieldEffect.cancel();
                 }, 202);
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        swordsmanListener.sendNoLongerCooldownMessage(player, "Shields Up");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Shields Up");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 400);
             }
@@ -153,6 +152,10 @@ public class ShieldsUp implements Listener {
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
     public List<Player> getPlayersShielded(){

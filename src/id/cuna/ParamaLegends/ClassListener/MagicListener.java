@@ -1,9 +1,9 @@
-package id.cuna.ParamaLegends.ClassListener.ClassTypeListener;
+package id.cuna.ParamaLegends.ClassListener;
 
-import id.cuna.ParamaLegends.ClassListener.ClassListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import id.cuna.ParamaLegends.Spells.Magic.*;
 
 import org.bukkit.block.BlockFace;
@@ -19,12 +19,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
-public class MagicListener extends ClassListener implements Listener {
+public class MagicListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
@@ -41,27 +40,26 @@ public class MagicListener extends ClassListener implements Listener {
     public final Nova nova;
 
     public MagicListener(final ParamaLegends plugin){
-        super(plugin, ClassType.MAGIC);
         this.plugin = plugin;
         data = plugin.getData();
 
         //Initialize all spell instances
-        flingEarth = new FlingEarth(plugin, this);
-        ignite = new Ignite(plugin, this);
-        gust = new Gust(plugin, this);
-        lifeDrain = new LifeDrain(plugin, this);
-        blink = new Blink(plugin, this);
-        summonLightning = new SummonLightning(plugin, this);
-        illusoryOrb = new IllusoryOrb(plugin, this);
-        dragonBreath = new DragonBreath(plugin, this);
-        voicesOfTheDamned = new VoicesOfTheDamned(plugin, this);
-        nova = new Nova(plugin, this);
+        flingEarth = new FlingEarth(plugin);
+        ignite = new Ignite(plugin);
+        gust = new Gust(plugin);
+        lifeDrain = new LifeDrain(plugin);
+        blink = new Blink(plugin);
+        summonLightning = new SummonLightning(plugin);
+        illusoryOrb = new IllusoryOrb(plugin);
+        dragonBreath = new DragonBreath(plugin);
+        voicesOfTheDamned = new VoicesOfTheDamned(plugin);
+        nova = new Nova(plugin);
     }
 
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        Player player = event.getPlayer();
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(event.getItem() == null){
             return;
         }
@@ -75,52 +73,52 @@ public class MagicListener extends ClassListener implements Listener {
                 //Call cast spell function according to book name
                 switch(item.getItemMeta().getDisplayName()){
                     case "§5Fling Earth":
-                        if(!plugin.isSilenced(player))
-                            flingEarth.castFlingEarth(player);
+                        if(player.isNotSilenced())
+                            flingEarth.castSpell(player);
                         break;
                     case "§5Ignite":
-                        if(checkLevel(player, 2) && !plugin.isSilenced(player)){
-                            ignite.castIgnite(player);
+                        if(player.checkLevel(2, ClassType.MAGIC) && player.isNotSilenced()){
+                            ignite.castSpell(player);
                         }
                         break;
                     case "§5Gust":
-                        if(checkLevel(player, 3) && !plugin.isSilenced(player)){
-                            gust.castGust(player);
+                        if(player.checkLevel(3, ClassType.MAGIC) && player.isNotSilenced()){
+                            gust.castSpell(player);
                         }
                         break;
                     case "§5Life Drain":
-                        if(checkLevel(player, 4) && !plugin.isSilenced(player)){
-                            lifeDrain.castLifeDrain(player);
+                        if(player.checkLevel(4, ClassType.MAGIC) && player.isNotSilenced()){
+                            lifeDrain.castSpell(player);
                         }
                         break;
                     case "§5Blink":
-                        if(checkLevel(player, 5) && !plugin.isSilenced(player)){
-                            blink.castBlink(player);
+                        if(player.checkLevel(5, ClassType.MAGIC) && player.isNotSilenced()){
+                            blink.castSpell(player);
                         }
                         break;
                     case "§5Summon Lightning":
-                        if(checkLevel(player, 6) && !plugin.isSilenced(player)){
-                            summonLightning.castSummonLightning(player);
+                        if(player.checkLevel(6, ClassType.MAGIC) && player.isNotSilenced()){
+                            summonLightning.castSpell(player);
                         }
                         break;
                     case "§5Illusory Orb":
-                        if(checkLevel(player, 7) && !plugin.isSilenced(player)){
-                            illusoryOrb.castIllusoryOrb(player);
+                        if(player.checkLevel(7, ClassType.MAGIC) && player.isNotSilenced()){
+                            illusoryOrb.castSpell(player);
                         }
                         break;
                     case "§5Dragon's Breath":
-                        if(checkLevel(player, 8) && !plugin.isSilenced(player)){
-                            dragonBreath.castDragonBreath(player);
+                        if(player.checkLevel(8, ClassType.MAGIC) && player.isNotSilenced()){
+                            dragonBreath.castSpell(player);
                         }
                         break;
                     case "§5Voices of the Damned":
-                        if(checkLevel(player, 9) && !plugin.isSilenced(player)){
-                            voicesOfTheDamned.castVoicesOfTheDamned(player);
+                        if(player.checkLevel(9, ClassType.MAGIC) && player.isNotSilenced()){
+                            voicesOfTheDamned.castSpell(player);
                         }
                         break;
                     case "§5Nova":
-                        if(checkLevel(player, 10) && !plugin.isSilenced(player)){
-                            nova.castNova(player);
+                        if(player.checkLevel(10, ClassType.MAGIC) && player.isNotSilenced()){
+                            nova.castSpell(player);
                         }
                         break;
                 }

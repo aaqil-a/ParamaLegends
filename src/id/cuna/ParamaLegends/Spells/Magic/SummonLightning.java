@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,27 +19,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SummonLightning implements Listener {
+public class SummonLightning implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 100;
 
-
-    public SummonLightning(ParamaLegends plugin, MagicListener magicListener){
+    public SummonLightning(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castSummonLightning(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Summon Lightning");
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Summon Lightning");
         } else {
+            Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 100, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -49,11 +48,11 @@ public class SummonLightning implements Listener {
                     location = rayTrace.getHitBlock().getLocation();
                 }
             } else{
-                magicListener.sendOutOfRangeMessage(player);
+                plugin.sendOutOfRangeMessage(playerParama);
                 return;
             }
-            if (magicListener.subtractMana(player, 100)) {
-                playerCooldowns.add(player.getUniqueId().toString());
+            if (playerParama.subtractMana( manaCost)) {
+                playerParama.addToCooldown(this);
                 player.getWorld().strikeLightningEffect(location);
                 player.getWorld().spawnParticle(Particle.FLASH, location.add(new Vector(0,1,0)), 5);
                 player.getWorld().getHighestBlockAt(location.clone().add(0,1,0)).getRelative(BlockFace.UP).setType(Material.FIRE);
@@ -63,18 +62,22 @@ public class SummonLightning implements Listener {
                 player.getWorld().getHighestBlockAt(location.clone().add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
                 List<Entity> entities = player.getWorld().getNearbyEntities(location, 3,4,3).stream().toList();
                 for(Entity ignited : entities){
-                    if(ignited instanceof Damageable && !(ignited instanceof ArmorStand)){
+                    if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
                         plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
                         ((Damageable) ignited).damage(45.069, player);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        magicListener.sendNoLongerCooldownMessage(player, "Summon Lightning");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Summon Lightning");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 600);
             }
         }
+    }
+    @Override
+    public int getManaCost() {
+        return manaCost;
     }
 }

@@ -181,7 +181,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy at a critical location while");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting Coated Blade");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 20");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.hiddenStrike.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 2");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
@@ -196,7 +196,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             meta.setDisplayName(ChatColor.RESET + "§4Blinding Sand");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 30");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.blindingSand.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
@@ -213,7 +213,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent's current HP and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflicts high discomfort on");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.gutPunch.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 8");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
@@ -230,7 +230,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "decisive slash to the enemy and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage on");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the next attack.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.forbiddenSlash.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
@@ -246,7 +246,7 @@ public class SuspiciousPeasant extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike with the power of the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "grim reaper, dealing immense");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage to a single target.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.mementoMori.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 10");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");

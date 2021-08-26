@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -18,33 +20,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class LifeDrain implements Listener {
+public class LifeDrain implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
+    private final int manaCost = 10;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
     private final HashMap<Player, BukkitTask> playerLifeDrainTasks = new HashMap<>();
 
-    public LifeDrain(ParamaLegends plugin, MagicListener magicListener){
+    public LifeDrain(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castLifeDrain(Player player){
+    public void castSpell(PlayerParama playerParama){
+        Player player = playerParama.getPlayer();
         if(playerLifeDrainTasks.containsKey(player)){
             player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
             playerLifeDrainTasks.get(player).cancel();
             playerLifeDrainTasks.remove(player);
-            playerCooldowns.add(player.getUniqueId().toString());
+            playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Life Drain");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 120);
-        } else if(playerCooldowns.contains(player.getUniqueId().toString())) {
-            magicListener.sendCooldownMessage(player, "Life Drain");
+        } else if(playerParama.checkCooldown(this)) {
+            plugin.sendCooldownMessage(playerParama, "Life Drain");
         } else {
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER,
@@ -59,14 +60,14 @@ public class LifeDrain implements Listener {
                                 player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                 playerLifeDrainTasks.get(player).cancel();
                                 playerLifeDrainTasks.remove(player);
-                                playerCooldowns.add(player.getUniqueId().toString());
+                                playerParama.addToCooldown(this);
                                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                                        magicListener.sendNoLongerCooldownMessage(player, "Life Drain");
-                                        playerCooldowns.remove(player.getUniqueId().toString());
+                                    if(playerParama.checkCooldown(this)){
+                                        plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                                        playerParama.removeFromCooldown(this);
                                     }
                                 }, 120);
-                            } else if(magicListener.subtractMana(player, 10)){
+                            } else if(playerParama.subtractMana( manaCost)){
                                 if(drained instanceof Player){
                                     drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                     plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
@@ -93,6 +94,10 @@ public class LifeDrain implements Listener {
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
 }

@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
@@ -13,26 +15,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Nova {
+public class Nova implements SpellParama {
 
     private final ParamaLegends plugin;
     private final MagicListener magicListener;
+    private final int manaCost = 600;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
-
-    public Nova(ParamaLegends plugin, MagicListener magicListener){
+    public Nova(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
+        this.magicListener = plugin.magicListener;
     }
 
-    public void castNova(Player player) {
-        if (playerCooldowns.contains(player.getUniqueId().toString())) {
-            magicListener.sendCooldownMessage(player, "Nova");
+    public void castSpell(PlayerParama playerParama) {
+        if (playerParama.checkCooldown(this)) {
+            plugin.sendCooldownMessage(playerParama, "Nova");
         } else {
+            Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 50, FluidCollisionMode.NEVER, true, 0,
                     notPlayer);
@@ -44,10 +45,10 @@ public class Nova {
                     locationExplosion = rayTrace.getHitBlock().getLocation();
                 }
             } else {
-                magicListener.sendOutOfRangeMessage(player);
+                plugin.sendOutOfRangeMessage(playerParama);
                 return;
             }
-            if (magicListener.subtractMana(player, 600)) {
+            if (playerParama.subtractMana(manaCost)) {
                 Location finalLocationExplosion = locationExplosion.clone().add(0, 1, 0);
                 Location startExplosionFlash = locationExplosion.clone().add(0, 40, 0);
                 player.getWorld().strikeLightningEffect(finalLocationExplosion);
@@ -83,12 +84,15 @@ public class Nova {
                     }
                 }, 125);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (playerCooldowns.contains(player.getUniqueId().toString())) {
-                        magicListener.sendNoLongerCooldownMessage(player, "Nova");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if (playerParama.checkCooldown(this)) {
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Nova");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 2400);
             }
         }
+    }
+    public int getManaCost(){
+        return manaCost;
     }
 }

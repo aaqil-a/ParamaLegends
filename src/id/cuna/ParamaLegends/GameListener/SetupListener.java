@@ -24,9 +24,6 @@ public class SetupListener implements Listener {
     private BossType markType;
     private boolean verify;
     private final List<Biome> validNatureBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
-    private final List<Biome> validWaterBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
-    private final List<Biome> validFireBiomes = new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.SAVANNA, Biome.FOREST, Biome.BIRCH_FOREST));
-
 
     public SetupListener(final ParamaLegends plugin){
         this.plugin = plugin;

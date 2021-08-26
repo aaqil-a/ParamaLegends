@@ -1,9 +1,9 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
-import org.bukkit.block.BlockFace;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -14,22 +14,22 @@ import org.bukkit.util.BoundingBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gust {
+public class Gust implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
+    private final int manaCost = 30;
     private final List<String> playerCooldowns = new ArrayList<>();
 
-    public Gust(ParamaLegends plugin, MagicListener magicListener){
+    public Gust(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castGust(Player player){
-        if(playerCooldowns.contains(player.getUniqueId().toString())){
-            magicListener.sendCooldownMessage(player, "Gust");
-        } else if (magicListener.subtractMana(player, 30)) {
-            playerCooldowns.add(player.getUniqueId().toString());
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Gust");
+        } else if (playerParama.subtractMana(manaCost)) {
+            playerParama.addToCooldown(this);
+            Player player = playerParama.getPlayer();
             Location location = player.getLocation();
             double playerX = location.getX();
             double playerY = location.getY();
@@ -112,12 +112,15 @@ public class Gust {
                 }
             }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if(playerCooldowns.contains(player.getUniqueId().toString())){
-                    magicListener.sendNoLongerCooldownMessage(player, "Gust");
-                    playerCooldowns.remove(player.getUniqueId().toString());
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Gust");
+                    playerParama.removeFromCooldown(this);
                 }
             }, 200);
         }
     }
 
+    public int getManaCost(){
+        return manaCost;
+    }
 }

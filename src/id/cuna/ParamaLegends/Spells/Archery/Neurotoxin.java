@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.ArrowParama;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,50 +16,52 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-public class Neurotoxin implements Listener {
+import java.util.HashMap;
+
+public class Neurotoxin implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
+    private final int manaCost = 50;
+    private final HashMap<Entity, BukkitTask> poisonTasks = new HashMap<>();
 
-    public Neurotoxin(ParamaLegends plugin, ArcheryListener archeryListener){
+    public Neurotoxin(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
     }
 
-    public void castNeurotoxin(Player player, Entity entity, boolean noMana){
-        int manaCost = 50;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void shootArrow(PlayerParama player, Entity entity){
         if(entity instanceof Arrow){
             Arrow arrow = (Arrow) entity;
-            if(archeryListener.subtractMana(player, manaCost)){
+            if(player.subtractMana(manaCost)){
                 arrow.setCustomName("neurotoxin");
             }
         }
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+    public void hitArrow(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Arrow){
             Arrow arrow = (Arrow) event.getDamager();
             if(arrow.getCustomName() != null && arrow.getCustomName().equals("neurotoxin")){
-                if(!archeryListener.getEntitiesPoisoned().contains(event.getEntity())){
-                    archeryListener.getEntitiesPoisoned().add(event.getEntity());
-                    BukkitTask neurotoxin = Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
+                if(!plugin.archeryListener.getEntitiesPoisoned().contains(event.getEntity())){
+                    plugin.archeryListener.getEntitiesPoisoned().add(event.getEntity());
+                    poisonTasks.put(event.getEntity(), Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                         if(event.getEntity() instanceof LivingEntity && arrow.getShooter() instanceof Player){
                             ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
                             ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
                             event.getEntity().setVelocity(new Vector(0,0,0));
                         }
-                    }, 20, 20);
+                    }, 20, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        neurotoxin.cancel();
-                        archeryListener.getEntitiesPoisoned().remove(event.getEntity());
+                        poisonTasks.get(event.getEntity()).cancel();
+                        plugin.archeryListener.getEntitiesPoisoned().remove(event.getEntity());
                     }, 162);
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 
 }

@@ -1,7 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
+import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.ArrowParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -15,32 +18,26 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 import java.util.List;
 
-public class Blast implements Listener {
+public class Blast implements ArrowParama, Listener {
 
-    private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
+    private final int manaCost = 60;
 
-    public Blast(ParamaLegends plugin, ArcheryListener archeryListener){
-        this.plugin = plugin;
-        this.archeryListener = archeryListener;
+    public Blast(ParamaLegends plugin){
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void castBlast(Player player, Entity entity, boolean noMana){
-        int manaCost = 60;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void shootArrow(PlayerParama player, Entity entity){
         if(entity instanceof Arrow){
             Arrow arrow = (Arrow) entity;
-            if(archeryListener.subtractMana(player, manaCost)){
+            if(player.subtractMana(manaCost)){
                 arrow.setCustomName("blast");
             }
         }
     }
 
-    //Deal when projectile hits block
+    //Deal when projectile hits block or entity
     @EventHandler
-    public void onProjectileHit(ProjectileHitEvent event){
+    public void effectSpell(ProjectileHitEvent event){
         Projectile projectile = event.getEntity();
         if (projectile instanceof Arrow && (projectile.getCustomName() != null)){
             Arrow arrow = (Arrow) projectile;
@@ -63,5 +60,9 @@ public class Blast implements Listener {
             arrow.getWorld().playSound(arrow.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.5f);
             arrow.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, arrow.getLocation(), 8, 0.5, 0.5, 0.5, 0);
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }

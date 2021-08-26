@@ -3,6 +3,7 @@ package id.cuna.ParamaLegends.GameListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,20 +16,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 import java.util.Random;
 
 public class DamageModifyingListener implements Listener {
 
     private final ParamaLegends plugin;
-    private DataManager data;
 
     public DamageModifyingListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
     }
 
     public void spawnCritParticles(Location location){
-        location.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, location.add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
+        Objects.requireNonNull(location.getWorld()).spawnParticle(Particle.EXPLOSION_LARGE, location.add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
         location.getWorld().playSound(location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 1f, 1f);
     }
 
@@ -41,12 +42,12 @@ public class DamageModifyingListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         double damage = event.getDamage();
-
         //Check damage modifiers from archery
         if(event.getDamager() instanceof AbstractArrow) {
             Projectile projectile = (Projectile) event.getDamager();
             if(projectile.getShooter() instanceof Player){
                 Player player = (Player) projectile.getShooter();
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 if(event.getEntity().getLocation().distance(player.getLocation()) > 10){
                     damage *= 1.2;
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1f);
@@ -54,7 +55,7 @@ public class DamageModifyingListener implements Listener {
                 if(plugin.archeryListener.getPlayersWindBoosted().contains(player.getUniqueId().toString())){
                     projectile.getWorld().spawnParticle(Particle.SWEEP_ATTACK, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0);
                 }
-                if(plugin.archeryListener.getPlayerLevel().get(player) >= 7){
+                if(playerParama.getLevelFromClassType(ClassType.ARCHERY) >= 7){
                     Random rand = new Random();
                     if(rand.nextInt(99) < 10){
                         damage*=1.2;
@@ -68,6 +69,7 @@ public class DamageModifyingListener implements Listener {
         }
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
+            PlayerParama playerParama = plugin.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             Random rand = new Random();
             switch (item.getType()){
@@ -75,7 +77,7 @@ public class DamageModifyingListener implements Listener {
                     if(plugin.checkCustomDamageSource(damage) == null ||
                             plugin.checkCustomDamageSource(damage).equals(ClassType.SWORDSMAN)) {
                         //Deal crit damage according to player level
-                        int playerLevel = plugin.swordsmanListener.getPlayerLevel().get(attacker);
+                        int playerLevel = playerParama.getLevelFromClassType(ClassType.SWORDSMAN);
                         int critRoll = rand.nextInt(100);
                         if(plugin.swordsmanListener.getPlayersEnraging().contains(attacker)){
                             if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){
@@ -121,7 +123,7 @@ public class DamageModifyingListener implements Listener {
                             if(plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().contains(attacker)){
                                 damage *= 1.5;
                                 attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0.2);
-                                plugin.reaperListener.coatedBlade.castCoatedBlade(attacker, event.getEntity());
+                                plugin.reaperListener.coatedBlade.attackEntity(playerParama, event.getEntity(), event.getDamage());
                                 plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().remove(attacker);
                             }
                             if(plugin.reaperListener.forbiddenSlash.getPlayersForbiddenSlash().contains(attacker)){

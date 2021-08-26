@@ -81,7 +81,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Reduces incoming damage and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reflects some back at the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 50");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.shieldsUp.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
@@ -97,7 +97,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Leaps through the air and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "deals burn damage over time");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "upon landing.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.phoenixDive.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 5");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "100 Lectrum");
@@ -114,7 +114,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and critical chance but");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "be unable to cast abilities");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "during the duration.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 150");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.enrage.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 45 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 6");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
@@ -130,7 +130,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike enemies around you");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with a flurry of attacks");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "of astonishing speed.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 100");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.onslaught.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 12 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 7");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "250 Lectrum");
@@ -147,7 +147,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "causing enemies to be afraid,");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "taking more damage and missing");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "their attacks.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 200");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.terrifyingCruelty.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 8");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
@@ -165,7 +165,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Shocks all enemies around");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you with chaotic discharges that");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "temporarily blinds them.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 300");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.superconducted.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
@@ -183,7 +183,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you. Your hits are guaranteed");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "critical and incoming damage is");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reduced for its duration.");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: 500");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.swordsmanListener.calamity.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Swordsmanship 10");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "500 Lectrum");

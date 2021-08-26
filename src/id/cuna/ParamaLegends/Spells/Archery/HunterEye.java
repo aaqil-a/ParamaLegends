@@ -1,7 +1,8 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.ArrowParama;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -16,34 +17,28 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HunterEye implements Listener {
+public class HunterEye implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
-
+    private final int manaCost = 20;
     private final List<Entity> entitiesHunterEye = new ArrayList<>();
 
-
-    public HunterEye(ParamaLegends plugin, ArcheryListener archeryListener){
+    public HunterEye(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = archeryListener;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void castHuntersEye(Player player, Entity entity, boolean noMana){
-        int manaCost = 20;
-        if(noMana){
-            manaCost = 0;
-        }
+    public void shootArrow(PlayerParama player, Entity entity){
         if(entity instanceof Arrow){
             Arrow arrow = (Arrow) entity;
-            if(archeryListener.subtractMana(player, manaCost)){
+            if(player.subtractMana(manaCost)){
                 arrow.setCustomName("huntereye");
             }
         }
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+    public void hitArrow(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Arrow){
             Arrow arrow = (Arrow) event.getDamager();
             if(arrow.getCustomName() != null && arrow.getCustomName().equals("huntereye")){
@@ -58,6 +53,11 @@ public class HunterEye implements Listener {
                 }
             }
         }
+    }
+
+
+    public int getManaCost(){
+        return manaCost;
     }
 
     public List<Entity> getEntitiesHunterEye() {

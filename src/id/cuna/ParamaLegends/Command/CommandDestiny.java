@@ -28,20 +28,6 @@ public class CommandDestiny implements CommandExecutor {
             plugin.wiseOldManListener.createGui(player);
             player.openInventory(plugin.wiseOldManListener.gui.get(player));
             player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Your destiny unravels before you.");
-//            Player player = (Player) sender;
-//            player.sendMessage(ChatColor.GOLD +"Your Destiny");
-//            int level = data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".swordsmanship");
-//            player.sendMessage(ChatColor.GRAY +"Swordsmanship: " + level);
-//            if(level<10) player.sendMessage(ChatColor.DARK_GRAY +"EXP to level up: " + (xpNeededSwordsman[level]-data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".swordsmanshipexp")));
-//            level = data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".archery");
-//            player.sendMessage(ChatColor.GRAY +"Archery: " + level);
-//            if(level<10) player.sendMessage(ChatColor.DARK_GRAY +"EXP to level up: " + (xpNeeded[level]-data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".archeryexp")));
-//            level = data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".magic");
-//            player.sendMessage(ChatColor.GRAY +"Magic: " + level);
-//            if(level<10) player.sendMessage(ChatColor.DARK_GRAY +"EXP to level up: " + (xpNeeded[level]-data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".magicexp")));
-//            level = data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".reaper");
-//            player.sendMessage(ChatColor.GRAY +"Reaper: " + level);
-//            if(level<10) player.sendMessage(ChatColor.DARK_GRAY +"EXP to level up: " + (xpNeeded[level]-data.getConfig().getInt("players."+ player.getUniqueId().toString() + ".reaperexp")));
         }
         return false;
     }

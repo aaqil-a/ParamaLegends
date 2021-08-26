@@ -1,8 +1,10 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.ClassTypeListener.MagicListener;
+import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
+import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Damageable;
@@ -20,21 +22,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class IllusoryOrb implements Listener {
+public class IllusoryOrb implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
 
-    private final List<String> playerCooldowns = new ArrayList<>();
+    private final int manaCost = 100;
     private final List<EnderPearl> castedOrb = new ArrayList<EnderPearl>();
     private final HashMap<EnderPearl, BukkitTask> orbFlashTasks = new HashMap<>();
 
-    public IllusoryOrb(ParamaLegends plugin, MagicListener magicListener){
+    public IllusoryOrb(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = magicListener;
     }
 
-    public void castIllusoryOrb(Player player){
+    public void castSpell(PlayerParama playerParama){
+        Player player = playerParama.getPlayer();
         EnderPearl orb = null;
         boolean castNewOrb = true;
         for(EnderPearl orbCheck : castedOrb){
@@ -43,7 +44,7 @@ public class IllusoryOrb implements Listener {
                 if (shooter.equals(player)){
                     orb = orbCheck;
                     orb.getWorld().spawnParticle(Particle.FLASH, orb.getLocation(), 1);
-                    magicListener.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
+                    plugin.magicListener.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
                     castNewOrb = false;
                 }
             }
@@ -55,11 +56,11 @@ public class IllusoryOrb implements Listener {
                 orbFlashTasks.get(orb).cancel();
             }
         } else {
-            if(playerCooldowns.contains(player.getUniqueId().toString())){
-                magicListener.sendCooldownMessage(player, "Illusory Orb");
-            } else if (magicListener.subtractMana(player, 100)) {
+            if(playerParama.checkCooldown(this)){
+                plugin.sendCooldownMessage(playerParama, "Illusory Orb");
+            } else if (playerParama.subtractMana(manaCost)) {
                 EnderPearl newOrb = player.launchProjectile(EnderPearl.class);
-                playerCooldowns.add(player.getUniqueId().toString());
+                playerParama.addToCooldown(this);
                 Vector velocity = newOrb.getVelocity();
                 velocity.multiply(0.5);
                 newOrb.setCustomName("illusoryorb");
@@ -79,9 +80,9 @@ public class IllusoryOrb implements Listener {
                     }
                 }, 40);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(playerCooldowns.contains(player.getUniqueId().toString())){
-                        magicListener.sendNoLongerCooldownMessage(player, "Illusory Orb");
-                        playerCooldowns.remove(player.getUniqueId().toString());
+                    if(playerParama.checkCooldown(this)){
+                        plugin.sendNoLongerCooldownMessage(playerParama, "Illusory Orb");
+                        playerParama.removeFromCooldown(this);
                     }
                 }, 200);
             }
@@ -116,5 +117,9 @@ public class IllusoryOrb implements Listener {
                 }
             }
         }
+    }
+
+    public int getManaCost(){
+        return manaCost;
     }
 }
