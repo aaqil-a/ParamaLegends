@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -17,9 +18,6 @@ public class Enrage implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
-    private final List<Player> playersEnraging = new ArrayList<Player>();
-    private final HashMap<Player, BukkitTask> playersEnragingTasks = new HashMap<>();
-
 
     public Enrage(ParamaLegends plugin){
         this.plugin = plugin;
@@ -32,17 +30,17 @@ public class Enrage implements SpellParama {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
                 player.sendMessage(ChatColor.GREEN+"Enrage activated.");
-                playersEnragingTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation(), 4, 1, 0.5, 1, 0);
-                }, 0, 20));
-                playersEnraging.add(player);
+                playerParama.addTask("ENRAGE",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation(), 4, 1, 0.5, 1, 0);
+                        }, 0, 20));
+                player.setMetadata("ENRAGING", new FixedMetadataValue(plugin, "ENRAGING"));
                 playerParama.setSilenced(true);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     player.sendMessage(ChatColor.GREEN+"Enrage wore off.");
-                    playersEnraging.remove(player);
+                    player.removeMetadata("ENRAGING", plugin);
                     playerParama.setSilenced(false);
-                    playersEnragingTasks.get(player).cancel();
-                    playersEnragingTasks.remove(player);
+                    playerParama.cancelTask("ENRAGE");
                 },  260);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -57,10 +55,6 @@ public class Enrage implements SpellParama {
 
     public int getManaCost(){
         return manaCost;
-    }
-
-    public List<Player> getPlayersEnraging(){
-        return playersEnraging;
     }
 
 }

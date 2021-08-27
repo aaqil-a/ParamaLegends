@@ -6,6 +6,7 @@ import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class ExperienceListener implements Listener {
     public DataManager data;
     public final int[] xpNeeded = {0,920,1480,1920,2320,2400,4320,6750,8010,8370, Integer.MAX_VALUE};
     public final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,5616,8775,10413,10881, Integer.MAX_VALUE};
-    private final int[] maxLevel = {0, 6, 7, 8, 9, 10};
+    private final int[] maxLevel = {0, 6, 8, 9, 10, 10};
     private int worldLevel;
 
     public ExperienceListener(final ParamaLegends plugin){
@@ -36,7 +37,6 @@ public class ExperienceListener implements Listener {
     }
 
     public void playerKill(Player player, LivingEntity entity, @Nullable ClassType skill){
-        String mob = "";
         String damageString = String.valueOf(entity.getLastDamage());
 
         //Check class type from damage key
@@ -55,15 +55,22 @@ public class ExperienceListener implements Listener {
         }
         //Check if damage source is from magic
         if(skill == null){
-            //Check if damage source is from archery or swordsmanship
+            //Check if damage source is from swordsmanship or reaper
             skill = switch (player.getInventory().getItemInMainHand().getType()) {
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> ClassType.SWORDSMAN;
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> ClassType.REAPER;
                 default -> null;
             };
+            if(skill == null){
+                skill = switch (player.getInventory().getItemInOffHand().getType()) {
+                    case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> ClassType.SWORDSMAN;
+                    case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> ClassType.REAPER;
+                    default -> null;
+                };
+            }
         }
         //Check mob killed
-        mob = switch (entity.getType()) {
+        String mob = switch (entity.getType()) {
             case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> "zombie";
             case WITCH -> "witch";
             case SKELETON, STRAY ->"skeleton";

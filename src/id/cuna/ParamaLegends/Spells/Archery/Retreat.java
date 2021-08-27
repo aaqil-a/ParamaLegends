@@ -1,6 +1,5 @@
 package id.cuna.ParamaLegends.Spells.Archery;
 
-import id.cuna.ParamaLegends.ClassListener.ArcheryListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
 import id.cuna.ParamaLegends.Spells.ArrowParama;
@@ -10,20 +9,15 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class Retreat implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 70;
-
-    private final List<Player> playersRetreatBoosted = new ArrayList<>();
-
 
     public Retreat(ParamaLegends plugin){
         this.plugin = plugin;
@@ -33,13 +27,14 @@ public class Retreat implements Listener, ArrowParama {
         if(entity instanceof Arrow){
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
-                if(!playersRetreatBoosted.contains(player)) {
+                if(!player.hasMetadata("RETREATPARAMA")) {
                     double oldSpeed = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).getBaseValue();
                     Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed*1.1);
-                    playersRetreatBoosted.add(player);
+                    player.setMetadata("RETREATPARAMA", new FixedMetadataValue( plugin, oldSpeed));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                        Bukkit.broadcastMessage(player.getMetadata("RETREATPARAMA").toString());
                         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed);
-                        playersRetreatBoosted.remove(player);
+                        player.removeMetadata("RETREATPARAMA", plugin);
                     }, 65);
                 }
                 entity.setCustomName("retreat");

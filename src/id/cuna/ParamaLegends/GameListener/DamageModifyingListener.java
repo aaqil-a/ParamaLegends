@@ -4,10 +4,7 @@ import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.entity.AbstractArrow;
@@ -52,7 +49,7 @@ public class DamageModifyingListener implements Listener {
                     damage *= 1.2;
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1f);
                 }
-                if(plugin.archeryListener.getPlayersWindBoosted().contains(player.getUniqueId().toString())){
+                if(player.hasMetadata("WINDBOOSTPARAMA")){
                     projectile.getWorld().spawnParticle(Particle.SWEEP_ATTACK, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0);
                 }
                 if(playerParama.getLevelFromClassType(ClassType.ARCHERY) >= 7){
@@ -64,7 +61,7 @@ public class DamageModifyingListener implements Listener {
                 }
             }
         }
-        if(plugin.archeryListener.getEntitiesHunterEye().contains(event.getEntity())){
+        if(event.getEntity().hasMetadata("HUNTEREYE")){
             damage = plugin.increasedIncomingDamage(damage, 1.3);
         }
         if(event.getDamager() instanceof Player) {
@@ -79,7 +76,7 @@ public class DamageModifyingListener implements Listener {
                         //Deal crit damage according to player level
                         int playerLevel = playerParama.getLevelFromClassType(ClassType.SWORDSMAN);
                         int critRoll = rand.nextInt(100);
-                        if(plugin.swordsmanListener.getPlayersEnraging().contains(attacker)){
+                        if(attacker.hasMetadata("ENRAGING")){
                             if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){
                                 damage *= 1.4;
                             }
@@ -88,7 +85,7 @@ public class DamageModifyingListener implements Listener {
                                 spawnCritParticles(event.getEntity().getLocation());
                                 playCritSound(attacker);
                             }
-                        } else if(plugin.swordsmanListener.getPlayersCalamity().contains(attacker)){
+                        } else if(attacker.hasMetadata("CALAMITY")){
                             if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){
                                 damage *= 1.4;
                             } else {
@@ -120,30 +117,30 @@ public class DamageModifyingListener implements Listener {
                     if(item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("Scythe")){
                         if(plugin.checkCustomDamageSource(damage) == null
                             || plugin.checkCustomDamageSource(damage).equals(ClassType.REAPER)) {
-                            if(plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().contains(attacker)){
+                            if(attacker.hasMetadata("HIDDENSTRIKE")){
                                 damage *= 1.5;
                                 attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0.2);
                                 plugin.reaperListener.coatedBlade.attackEntity(playerParama, event.getEntity(), event.getDamage());
-                                plugin.reaperListener.hiddenStrike.getPlayersHiddenStrike().remove(attacker);
+                                attacker.removeMetadata("HIDDENSTRIKE", plugin);
                             }
-                            if(plugin.reaperListener.forbiddenSlash.getPlayersForbiddenSlash().contains(attacker)){
+                            if(attacker.hasMetadata("FORBIDDENSLASH")){
                                 damage *= 2;
                                 attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),8, 0.5, 0.5, 0.5, 0.2);
                                 attacker.getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1.5f);
-                                plugin.reaperListener.forbiddenSlash.getPlayersForbiddenSlash().remove(attacker);
+                                attacker.removeMetadata("FORBIDDENSLASH", plugin);
                             }
                         }
                     }
                 }
             }
-            if(plugin.swordsmanListener.getEntitiesTerrified().contains(event.getEntity())){
+            if(event.getEntity().hasMetadata("TERRIFIED")){
                 damage = plugin.increasedIncomingDamage(damage, 1.5);
             }
         }
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
             //Reduce damage if shields up
-            if(plugin.swordsmanListener.getPlayersShielded().contains(player)){
+            if(player.hasMetadata("SHIELDSUP")){
                 player.getWorld().spawnParticle(Particle.BLOCK_CRACK, player.getLocation().add(0,1,0), 8, 0.25, 0.25, 0.25, 0, Material.IRON_BLOCK.createBlockData());
                 player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.4f, 0f);
                 damage *= 0.3;

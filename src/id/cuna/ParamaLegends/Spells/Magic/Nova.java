@@ -21,12 +21,10 @@ import java.util.function.Predicate;
 public class Nova implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final MagicListener magicListener;
     private final int manaCost = 600;
 
     public Nova(ParamaLegends plugin){
         this.plugin = plugin;
-        this.magicListener = plugin.magicListener;
     }
 
     public void castSpell(PlayerParama playerParama) {
@@ -52,28 +50,31 @@ public class Nova implements SpellParama {
                 Location finalLocationExplosion = locationExplosion.clone().add(0, 1, 0);
                 Location startExplosionFlash = locationExplosion.clone().add(0, 40, 0);
                 player.getWorld().strikeLightningEffect(finalLocationExplosion);
-                BukkitTask preExplosionEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                playerParama.addTask("PREEXPLOSIONEFFECT", Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, finalLocationExplosion, 16, 0.5, 0.5, 0.5, 0);
                     player.getWorld().spawnParticle(Particle.SMOKE_LARGE, finalLocationExplosion, 16, 0.5, 2, 0.5, 0);
-                }, 2, 10);
-                BukkitTask fireworkEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    magicListener.createFireworkEffect(finalLocationExplosion, player);
-                }, 0, 20);
+                }, 2, 10));
+                playerParama.addTask("FIREWORKEFFECT",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            plugin.magicListener.createFireworkEffect(finalLocationExplosion, player);
+                        }, 0, 20) );
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    fireworkEffect.cancel();
+                    playerParama.cancelTask("FIREWORKEFFECT");
                 }, 62);
-                BukkitTask fireworkEffect3 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    magicListener.createFireworkEffect(finalLocationExplosion, player);
-                }, 70, 10);
-                BukkitTask flashEffect2 = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0, -2, 0), 16, 0, 0, 0, 0);
-                }, 102, 1);
+                playerParama.addTask("FIREWORKEFFECT2",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            plugin.magicListener.createFireworkEffect(finalLocationExplosion, player);
+                        }, 70, 10));
+                playerParama.addTask("FIREWORKEFFECT3",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0, -2, 0), 16, 0, 0, 0, 0);
+                        }, 102, 1));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    fireworkEffect3.cancel();
+                    playerParama.cancelTask("FIREWORKEFFECT2");
                 }, 102);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    preExplosionEffect.cancel();
-                    flashEffect2.cancel();
+                    playerParama.cancelTask("PREEXPLOSIONEFFECT");
+                    playerParama.cancelTask("FIREWORKEFFECT3");
                     player.getWorld().createExplosion(finalLocationExplosion, 8F, true, true, player);
                     List<Entity> entities = player.getWorld().getNearbyEntities(finalLocationExplosion, 8, 10, 8).stream().toList();
                     for (Entity exploded : entities) {

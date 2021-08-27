@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -31,8 +32,6 @@ public class TotsukaCreation implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 40;
-    private final List<String> playerTotsuka = new ArrayList<>();
-    private final HashMap<Player, BukkitTask> playerTotsukaTasks = new HashMap<>();
 
     public TotsukaCreation(ParamaLegends plugin){
         this.plugin = plugin;
@@ -65,14 +64,16 @@ public class TotsukaCreation implements Listener, SpellParama {
     }
 
     public void spawnWebs(Location location, Player player){
-        playerTotsukaTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
-            List<Entity> entities = Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 2, 2, 2).stream().toList();
-            for(Entity rooted : entities){
-                if(rooted instanceof LivingEntity && !(rooted instanceof Player)){
-                    ((LivingEntity) rooted).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false ,false));
-                }
-            }
-        }, 0, 5));
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        playerParama.addTask("TOTSUKA",
+                Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
+                    List<Entity> entities = Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 2, 2, 2).stream().toList();
+                    for(Entity rooted : entities){
+                        if(rooted instanceof LivingEntity && !(rooted instanceof Player)){
+                            ((LivingEntity) rooted).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false ,false));
+                        }
+                    }
+                }, 0, 5));
         location.add(0,0.5,0);
         FallingBlock web1 = Objects.requireNonNull(location.getWorld()).spawnFallingBlock(location, Material.COBWEB.createBlockData());
         web1.setGravity(false);
@@ -93,10 +94,7 @@ public class TotsukaCreation implements Listener, SpellParama {
         FallingBlock web9 = location.getWorld().spawnFallingBlock(location.clone().add(0,0,1), Material.COBWEB.createBlockData());
         web9.setGravity(false);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if(playerTotsukaTasks.containsKey(player)) {
-                playerTotsukaTasks.get(player).cancel();
-                playerTotsukaTasks.remove(player);
-            }
+            playerParama.cancelTask("TOTSUKA");
             web1.remove();
             web2.remove();
             web3.remove();
@@ -106,7 +104,7 @@ public class TotsukaCreation implements Listener, SpellParama {
             web7.remove();
             web8.remove();
             web9.remove();
-            playerTotsuka.remove(player.getUniqueId().toString());
+            player.removeMetadata("TOTSUKA", plugin);
         }, 140);
     }
 
@@ -120,8 +118,8 @@ public class TotsukaCreation implements Listener, SpellParama {
                 event.setCancelled(true);
                 if(projectile.getShooter() != null && projectile.getShooter() instanceof Player){
                     Player player = (Player) projectile.getShooter();
-                    if(!playerTotsuka.contains(player.getUniqueId().toString())){
-                        playerTotsuka.add(player.getUniqueId().toString());
+                    if(!player.hasMetadata("TOTSUKA")){
+                        player.setMetadata("TOTSUKA", new FixedMetadataValue(plugin, "TOTSUKA"));
                         Location location = new Location(player.getWorld(), 0,256,0);
                         if(event.getHitBlock() != null) {
                             location = event.getHitBlock().getLocation().add(0,1,0);

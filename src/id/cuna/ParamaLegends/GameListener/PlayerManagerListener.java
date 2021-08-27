@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 
@@ -25,6 +26,15 @@ public class PlayerManagerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         players.put(event.getPlayer(), new PlayerParama(plugin, event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event){
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
+        if(player != null){
+            player.cancelAllTasks();
+            player.removeAllEntities();
+        }
     }
 
     public PlayerParama getPlayerParama(Player player){

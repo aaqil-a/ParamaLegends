@@ -42,8 +42,6 @@ public class ArcheryListener implements Listener{
     public final RoyalArtillery royalArtillery;
     public final WhistlingWind whistlingWind;
 
-    private final List<Entity> entitiesPoisoned = new ArrayList<>();
-
     public ArcheryListener(ParamaLegends plugin) {
         this.plugin = plugin;
         data = plugin.getData();
@@ -116,7 +114,7 @@ public class ArcheryListener implements Listener{
                 shootArrow(plugin.getPlayerParama(player), event, arrowMeta.getDisplayName());
             }
             if(event.getProjectile() instanceof AbstractArrow){
-                if(windBoost.getPlayersWindBoosted().contains(player.getUniqueId().toString())){
+                if(player.hasMetadata("WINDBOOSTPARAMA")){
                     double damage = ((AbstractArrow) event.getProjectile()).getDamage();
                     ((AbstractArrow) event.getProjectile()).setDamage(damage*1.15);
                     ((AbstractArrow) event.getProjectile()).setKnockbackStrength(2);
@@ -213,16 +211,6 @@ public class ArcheryListener implements Listener{
         } else if(location.getBlock().getRelative(BlockFace.EAST).getType().isAir()){
            location.add(1,0,0);
         }
-    }
-
-    public List<Entity> getEntitiesPoisoned(){
-        return entitiesPoisoned;
-    }
-    public List<String> getPlayersWindBoosted(){
-        return windBoost.getPlayersWindBoosted();
-    }
-    public List<Entity> getEntitiesHunterEye(){
-        return hunterEye.getEntitiesHunterEye();
     }
 
     public HunterEye getHunterEye(){

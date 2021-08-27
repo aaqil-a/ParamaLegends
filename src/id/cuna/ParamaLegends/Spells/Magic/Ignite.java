@@ -1,6 +1,5 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
@@ -15,10 +14,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,9 +22,6 @@ public class Ignite implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
-
-    private final HashMap<Entity, Integer> entityIgnitedDuration = new HashMap<>();
-    private final HashMap<Entity, BukkitTask> entityIgnitedTasks = new HashMap<>();
 
     public Ignite(ParamaLegends plugin){
         this.plugin = plugin;
@@ -61,23 +54,12 @@ public class Ignite implements Listener, SpellParama {
                 }
                 if(ignited instanceof Damageable){
                     plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
-                    entityIgnitedDuration.put(ignited, 5);
-                    entityIgnitedTasks.put(ignited,
+                    playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                if(entityIgnitedDuration.containsKey(ignited)){
-                                    int duration = entityIgnitedDuration.get(ignited);
-                                    duration--;
-                                    if (duration >= 0){
-                                        ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                        entityIgnitedDuration.replace(ignited, duration);
-                                        ((Damageable) ignited).damage(3.069, player);
-                                    } else {
-                                        entityIgnitedTasks.get(ignited).cancel();
-                                        entityIgnitedTasks.remove(ignited);
-                                        entityIgnitedDuration.remove(ignited);
-                                    }
-                                }
+                                ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
+                                ((Damageable) ignited).damage(3.069, player);
                             }, 0, 20));
+                    Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("IGNITED"+ignited.getUniqueId().toString()), 105);
                 }
             }
             playerParama.addToCooldown(this);

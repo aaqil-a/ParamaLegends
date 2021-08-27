@@ -18,7 +18,6 @@ public class Gust implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 30;
-    private final List<String> playerCooldowns = new ArrayList<>();
 
     public Gust(ParamaLegends plugin){
         this.plugin = plugin;

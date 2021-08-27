@@ -1,7 +1,9 @@
 package id.cuna.ParamaLegends.Command;
 
+import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
+import id.cuna.ParamaLegends.PlayerParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -42,13 +44,20 @@ public class CommandDestinySet implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED+"Invalid level");
                     return true;
                 }
-                switch(args[1].toLowerCase()){
-                    case "swordsmanship", "archery", "magic", "reaper" -> {
-                        data.getConfig().set("players."+player.getUniqueId().toString()+"."+args[1].toLowerCase(), level);
-                        data.getConfig().set("players."+player.getUniqueId().toString()+"."+args[1].toLowerCase()+"exp", 0);
-                        data.saveConfig();
-                    }
-                    default -> sendDestinyNames(sender);
+                ClassType type = switch(args[1].toLowerCase()){
+                    case "swordsmanship" -> ClassType.SWORDSMAN;
+                    case "archery" -> ClassType.ARCHERY;
+                    case "magic" -> ClassType.MAGIC;
+                    case "reaper" -> ClassType.REAPER;
+                    default -> null;
+                };
+                if(type != null){
+                    data.getConfig().set("players."+player.getUniqueId().toString()+"."+args[1].toLowerCase(), level);
+                    data.getConfig().set("players."+player.getUniqueId().toString()+"."+args[1].toLowerCase()+"exp", 0);
+                    data.saveConfig();
+                    plugin.getPlayerParama(player).setLevel(type, level);
+                } else {
+                    sendDestinyNames(sender);
                 }
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");

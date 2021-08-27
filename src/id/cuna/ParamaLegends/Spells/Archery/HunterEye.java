@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -21,7 +22,6 @@ public class HunterEye implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
-    private final List<Entity> entitiesHunterEye = new ArrayList<>();
 
     public HunterEye(ParamaLegends plugin){
         this.plugin = plugin;
@@ -42,12 +42,12 @@ public class HunterEye implements Listener, ArrowParama {
         if(event.getDamager() instanceof Arrow){
             Arrow arrow = (Arrow) event.getDamager();
             if(arrow.getCustomName() != null && arrow.getCustomName().equals("huntereye")){
-                if(!entitiesHunterEye.contains(event.getEntity())){
+                if(!event.getEntity().hasMetadata("HUNTEREYE")){
                     if(event.getEntity() instanceof LivingEntity && arrow.getShooter() instanceof Player){
-                        entitiesHunterEye.add(event.getEntity());
+                        event.getEntity().setMetadata("HUNTEREYE", new FixedMetadataValue(plugin, "HUNTEREYE"));
                         ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 0));
                         Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                            entitiesHunterEye.remove(event.getEntity());
+                            event.getEntity().removeMetadata("HUNTEREYE",plugin);
                         }, 200);
                     }
                 }
@@ -58,9 +58,5 @@ public class HunterEye implements Listener, ArrowParama {
 
     public int getManaCost(){
         return manaCost;
-    }
-
-    public List<Entity> getEntitiesHunterEye() {
-        return entitiesHunterEye;
     }
 }

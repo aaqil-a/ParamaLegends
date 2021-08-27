@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ public class ForbiddenSlash implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 200;
-    private final List<Player> playersForbiddenSlash = new ArrayList<>();
 
     public ForbiddenSlash(ParamaLegends plugin){
         this.plugin = plugin;
@@ -26,7 +26,7 @@ public class ForbiddenSlash implements Listener, SpellParama {
             plugin.sendCooldownMessage(playerParama, "Forbidden Slash");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
-            playersForbiddenSlash.add(player);
+            player.setMetadata("FORBIDDENSLASH", new FixedMetadataValue(plugin, "FORBIDDENSLASH"));
             player.sendMessage(ChatColor.GREEN+"You ready your scythe.");
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -40,8 +40,5 @@ public class ForbiddenSlash implements Listener, SpellParama {
 
     public int getManaCost(){
         return manaCost;
-    }
-    public List<Player> getPlayersForbiddenSlash(){
-        return playersForbiddenSlash;
     }
 }

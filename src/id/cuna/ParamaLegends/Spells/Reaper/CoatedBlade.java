@@ -16,7 +16,6 @@ import java.util.HashMap;
 public class CoatedBlade implements AttackParama {
 
     private final ParamaLegends plugin;
-    private final HashMap<Player, BukkitTask> poisonTasks = new HashMap<>();
 
     public CoatedBlade(ParamaLegends plugin){
         this.plugin = plugin;
@@ -26,13 +25,13 @@ public class CoatedBlade implements AttackParama {
         if (!attacker.checkCooldown(this)) {
             if (entity instanceof LivingEntity) {
                 Player player = attacker.getPlayer();
-                poisonTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    entity.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, entity.getLocation(),4, 0.5, 0.5, 0.5, 0);
-                    ((LivingEntity) entity).damage(1.034, player);
-                }, 0, 20));
+                attacker.addTask("COATEDBLADE",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            entity.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, entity.getLocation(),4, 0.5, 0.5, 0.5, 0);
+                            ((LivingEntity) entity).damage(1.034, player);
+                        }, 0, 20) );
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                    poisonTasks.get(player).cancel();
-                    poisonTasks.remove(player);
+                    attacker.cancelTask("COATEDBLADE");
                 }, 42);
                 attacker.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {

@@ -145,18 +145,5 @@ public class SwordsmanListener implements Listener{
             }
     }
 
-    public List<Player> getPlayersShielded(){
-        return shieldsUp.getPlayersShielded();
-    }
-    public List<Player> getPlayersEnraging(){
-        return enrage.getPlayersEnraging();
-    }
-    public List<Entity> getEntitiesTerrified(){
-        return terrifyingCruelty.getEntitiesTerrified();
-    }
-    public List<Player> getPlayersCalamity(){
-        return calamity.getPlayersCalamity();
-    }
-
 }
 

@@ -32,10 +32,6 @@ public class RoyalArtillery implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
-    private final HashMap<Player, BukkitTask> playerArrowTask = new HashMap<>();
-    private final HashMap<Player, BukkitTask> playerArrowTask2 = new HashMap<>();
-    private final HashMap<Player, BukkitTask> playerArrowTask3 = new HashMap<>();
-    private final HashMap<Player, BukkitTask> playerDamageTask = new HashMap<>();
 
 
     public RoyalArtillery(ParamaLegends plugin){
@@ -97,26 +93,27 @@ public class RoyalArtillery implements Listener, SpellParama {
         double[] arrowMapX3 = {0,-1,2,-2,2};
         double[] arrowMapZ3 = {0,-2,-2,2,2};
 
-        playerArrowTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            for(int i = 0; i < 5; i++){
-                Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);
-                Objects.requireNonNull(location.getWorld()).spawn(arrowLocation, Arrow.class, arrow -> {
-                    arrow.setCustomName("barrage");
-                    arrow.setVelocity(new Vector(0, -0.7, 0));
-                });
-            }
-        }, 0, 30));
-        playerArrowTask2.put(player,  Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            for(int i = 0; i < 5; i++){
-                Location arrowLocation = location.clone().add(arrowMapX2[i], 6, arrowMapZ2[i]);
-                location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
-                    arrow.setCustomName("barrage");
-                    arrow.setVelocity(new Vector(0, -0.7, 0));
-                    arrow.setSilent(true);
-                });
-            }
-        }, 10, 30));
-        playerArrowTask3.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        playerParama.addTask("ROYALARTILLERY1",Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                    for(int i = 0; i < 5; i++){
+                        Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);
+                        Objects.requireNonNull(location.getWorld()).spawn(arrowLocation, Arrow.class, arrow -> {
+                            arrow.setCustomName("barrage");
+                            arrow.setVelocity(new Vector(0, -0.7, 0));
+                        });
+                    }
+                }, 0, 30));
+        playerParama.addTask("ROYALARTILLERY2", Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                    for(int i = 0; i < 5; i++){
+                        Location arrowLocation = location.clone().add(arrowMapX2[i], 6, arrowMapZ2[i]);
+                        location.getWorld().spawn(arrowLocation, Arrow.class, arrow -> {
+                            arrow.setCustomName("barrage");
+                            arrow.setVelocity(new Vector(0, -0.7, 0));
+                            arrow.setSilent(true);
+                        });
+                    }
+                }, 10, 30));
+        playerParama.addTask("ROYALARTILLERY3", Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             for(int i = 0; i < 5; i++){
                 Location arrowLocation = location.clone().add(arrowMapX3[i], 6, arrowMapZ3[i]);
                 Objects.requireNonNull(location.getWorld()).spawn(arrowLocation, Arrow.class, arrow -> {
@@ -125,8 +122,8 @@ public class RoyalArtillery implements Listener, SpellParama {
                     arrow.setSilent(true);
                 });
             }
-        }, 20, 30));
-        playerDamageTask.put(player, Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+        }, 10, 30));
+        playerParama.addTask("ROYALARTILLERY4", Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             Objects.requireNonNull(location.getWorld()).spawnParticle(Particle.EXPLOSION_NORMAL, location, 4, 0,0,0,0);
             List<Entity> entities = location.getWorld().getNearbyEntities(location, 2.5, 5, 2.5).stream().toList();
             for(Entity hit : entities){
@@ -136,22 +133,10 @@ public class RoyalArtillery implements Listener, SpellParama {
             }
         }, 5, 10));
         Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-            if(playerArrowTask.containsKey(player)){
-                playerArrowTask.get(player).cancel();
-                playerArrowTask.remove(player);
-            }
-            if(playerArrowTask2.containsKey(player)){
-                playerArrowTask2.get(player).cancel();
-                playerArrowTask2.remove(player);
-            }
-            if(playerArrowTask3.containsKey(player)){
-                playerArrowTask3.get(player).cancel();
-                playerArrowTask3.remove(player);
-            }
-            if(playerDamageTask.containsKey(player)){
-                playerDamageTask.get(player).cancel();
-                playerDamageTask.remove(player);
-            }
+            playerParama.cancelTask("ROYALARTILLERY1");
+            playerParama.cancelTask("ROYALARTILLERY2");
+            playerParama.cancelTask("ROYALARTILLERY3");
+            playerParama.cancelTask("ROYALARTILLERY4");
         }, 160);
     }
 
@@ -162,6 +147,7 @@ public class RoyalArtillery implements Listener, SpellParama {
         if (projectile instanceof Arrow && (projectile.getCustomName() != null)){
             Arrow arrow = (Arrow) projectile;
             if(arrow.getCustomName().equals("barrage")){
+                arrow.remove();
                 event.setCancelled(true);
             }
         }

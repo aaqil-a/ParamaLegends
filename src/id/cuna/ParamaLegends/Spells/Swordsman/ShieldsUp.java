@@ -12,6 +12,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,7 +28,6 @@ public class ShieldsUp implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 50;
-    private final List<Player> playersShielded = new ArrayList<Player>();
 
     public ShieldsUp(ParamaLegends plugin){
         this.plugin = plugin;
@@ -41,11 +41,10 @@ public class ShieldsUp implements Listener, SpellParama {
                 Player player = playerParama.getPlayer();
                 player.sendMessage(ChatColor.GREEN+"Shields Up activated.");
                 shieldAnimation(player);
-                playersShielded.add(player);
+                player.setMetadata("SHIELDSUP", new FixedMetadataValue(plugin, "SHIELDSUP"));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     player.sendMessage(ChatColor.GREEN+"Shields Up wore off.");
-                    playersShielded.remove(player);
-                    //shieldEffect.cancel();
+                    player.removeMetadata("SHIELDSUP", plugin);
                 }, 202);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -60,82 +59,86 @@ public class ShieldsUp implements Listener, SpellParama {
 
 
     public void shieldAnimation(Player player){
-        ArmorStand sword1 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
-            armorStand.setInvisible(true);
-            armorStand.setInvulnerable(true);
-            armorStand.setGravity(false);
-            armorStand.setRotation(-90,0);
-            armorStand.setArms(true);
-            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
-            armorStand.setCanPickupItems(false);
-            armorStand.setCustomName("animation");
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        playerParama.addEntity("SHIELD1",
+                player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+                    armorStand.setInvisible(true);
+                    armorStand.setInvulnerable(true);
+                    armorStand.setGravity(false);
+                    armorStand.setRotation(-90,0);
+                    armorStand.setArms(true);
+                    armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+                    armorStand.setCanPickupItems(false);
+                    armorStand.setCustomName("animation");
 
-            EntityEquipment equipment1 = armorStand.getEquipment();
-            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
-        });
-        ArmorStand sword2 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
-            armorStand.setInvisible(true);
-            armorStand.setInvulnerable(true);
-            armorStand.setGravity(false);
-            armorStand.setRotation(90,0);
-            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
-            armorStand.setCanPickupItems(false);
-            armorStand.setCustomName("animation");
+                    EntityEquipment equipment1 = armorStand.getEquipment();
+                    assert equipment1 != null;
+                    equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+                }));
+        playerParama.addEntity("SHIELD2",
+                player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+                    armorStand.setInvisible(true);
+                    armorStand.setInvulnerable(true);
+                    armorStand.setGravity(false);
+                    armorStand.setRotation(90,0);
+                    armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+                    armorStand.setCanPickupItems(false);
+                    armorStand.setCustomName("animation");
 
-            EntityEquipment equipment1 = armorStand.getEquipment();
-            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
-        });
-        ArmorStand sword3 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
-            armorStand.setInvisible(true);
-            armorStand.setInvulnerable(true);
-            armorStand.setGravity(false);
-            armorStand.setRotation(180,0);
-            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
-            armorStand.setCanPickupItems(false);
-            armorStand.setCustomName("animation");
+                    EntityEquipment equipment1 = armorStand.getEquipment();
+                    assert equipment1 != null;
+                    equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+                }));
+        playerParama.addEntity("SHIELD3",
+                player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+                    armorStand.setInvisible(true);
+                    armorStand.setInvulnerable(true);
+                    armorStand.setGravity(false);
+                    armorStand.setRotation(180,0);
+                    armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+                    armorStand.setCanPickupItems(false);
+                    armorStand.setCustomName("animation");
 
-            EntityEquipment equipment1 = armorStand.getEquipment();
-            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
-        });
-        ArmorStand sword4 = player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
-            armorStand.setInvisible(true);
-            armorStand.setInvulnerable(true);
-            armorStand.setGravity(false);
-            armorStand.setRotation(0,0);
-            armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
-            armorStand.setCanPickupItems(false);
-            armorStand.setCustomName("animation");
+                    EntityEquipment equipment1 = armorStand.getEquipment();
+                    assert equipment1 != null;
+                    equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+                }));
+        playerParama.addEntity("SHIELD4",
+                player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
+                    armorStand.setInvisible(true);
+                    armorStand.setInvulnerable(true);
+                    armorStand.setGravity(false);
+                    armorStand.setRotation(0,0);
+                    armorStand.setRightArmPose(new EulerAngle(1.6,-1.6,0));
+                    armorStand.setCanPickupItems(false);
+                    armorStand.setCustomName("animation");
 
-            EntityEquipment equipment1 = armorStand.getEquipment();
-            equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
-        });
-
-        Location swordLocation1 = player.getLocation().add(0.5,-1,-0.8);
-        swordLocation1.setDirection(new Vector(1, 0, 0));
-        Location swordLocation2 = player.getLocation().add(-0.5,-1,0.8);
-        swordLocation2.setDirection(new Vector(-1, 0, 0));
-        Location swordLocation3 = player.getLocation().add(-0.8,-1,-0.5);
-        swordLocation3.setDirection(new Vector(0, 0, -1));
-        Location swordLocation4 = player.getLocation().add(0.8,-1,0.5);
-        swordLocation4.setDirection(new Vector(0, 0, 1));
+                    EntityEquipment equipment1 = armorStand.getEquipment();
+                    assert equipment1 != null;
+                    equipment1.setItemInMainHand(new ItemStack(Material.SHIELD));
+                }));
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            sword1.teleport(swordLocation1);
-            sword2.teleport(swordLocation2);
-            sword3.teleport(swordLocation3);
-            sword4.teleport(swordLocation4);
+            playerParama.getEntity("SHIELD1").teleport(player.getLocation().add(0.5,-1,-0.8).setDirection(new Vector(1, 0, 0)));
+            playerParama.getEntity("SHIELD2").teleport(player.getLocation().add(-0.5,-1,0.8).setDirection(new Vector(-1, 0, 0)));
+            playerParama.getEntity("SHIELD3").teleport(player.getLocation().add(-0.8,-1,-0.5).setDirection(new Vector(0, 0, -1)));
+            playerParama.getEntity("SHIELD4").teleport(player.getLocation().add(0.8,-1,0.5).setDirection(new Vector(0, 0, 1)));
         }, 1);
         BukkitTask swordAnimation = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            sword1.teleport(sword1.getLocation().add(0, +0.6, 0));
-            sword2.teleport(sword2.getLocation().add(0,+0.6,0));
-            sword3.teleport(sword3.getLocation().add(0,+0.6,0));
-            sword4.teleport(sword4.getLocation().add(0,+0.6,0));
+            ArmorStand shield1 = (ArmorStand) playerParama.getEntity("SHIELD1");
+            ArmorStand shield2 = (ArmorStand) playerParama.getEntity("SHIELD2");
+            ArmorStand shield3 = (ArmorStand) playerParama.getEntity("SHIELD3");
+            ArmorStand shield4 = (ArmorStand) playerParama.getEntity("SHIELD4");
+            shield1.teleport(shield1.getLocation().add(0, +0.6, 0));
+            shield2.teleport(shield2.getLocation().add(0,+0.6,0));
+            shield3.teleport(shield3.getLocation().add(0,+0.6,0));
+            shield4.teleport(shield4.getLocation().add(0,+0.6,0));
         }, 0, 1);
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
             swordAnimation.cancel();
-            sword1.remove();
-            sword2.remove();
-            sword3.remove();
-            sword4.remove();
+            playerParama.removeEntity("SHIELD1");
+            playerParama.removeEntity("SHIELD2");
+            playerParama.removeEntity("SHIELD3");
+            playerParama.removeEntity("SHIELD4");
         }, 10);
     }
 
@@ -144,7 +147,7 @@ public class ShieldsUp implements Listener, SpellParama {
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
             //Reflect damage if shields up
-            if(playersShielded.contains(player)){
+            if(player.hasMetadata("SHIELDSUP")){
                 if(event.getDamager() instanceof Damageable){
                     Damageable attacker = (Damageable) event.getDamager();
                     plugin.experienceListener.addExp(player, ClassType.SWORDSMAN, 1);
@@ -156,10 +159,6 @@ public class ShieldsUp implements Listener, SpellParama {
 
     public int getManaCost(){
         return manaCost;
-    }
-
-    public List<Player> getPlayersShielded(){
-        return playersShielded;
     }
 
 }

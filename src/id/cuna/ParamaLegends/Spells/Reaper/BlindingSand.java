@@ -1,23 +1,20 @@
 package id.cuna.ParamaLegends.Spells.Reaper;
 
-import id.cuna.ParamaLegends.ClassListener.ReaperListener;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
 import id.cuna.ParamaLegends.Spells.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class BlindingSand implements Listener, SpellParama {
@@ -25,10 +22,6 @@ public class BlindingSand implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 30;
-    private final HashMap<Player, Snowball> ballsThrown = new HashMap<>();
-    private final HashMap<Player, BukkitTask> ballsThrownTasks = new HashMap<>();
-    private final HashMap<Player, FallingBlock> ballsDirt = new HashMap<>();
-    private final List<Entity> entitiesBlinded = new ArrayList<>();
 
     public BlindingSand(ParamaLegends plugin){
         this.plugin = plugin;
@@ -47,21 +40,19 @@ public class BlindingSand implements Listener, SpellParama {
                 ball.setItem(new ItemStack(Material.SAND));
                 ball.setGravity(true);
                 ball.setVelocity(velocity);
-                ballsThrown.put(player, ball);
+                playerParama.addEntity("SANDBALL", ball);
             }, 2);
-            ballsThrownTasks.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                if(ballsDirt.containsKey(player)){
-                    ballsDirt.get(player).remove();
-                    ballsDirt.remove(player);
-                }
-                Snowball ball = ballsThrown.get(player);
-                if(ball != null) {
-                    ballsDirt.put(player, ball.getWorld().spawnFallingBlock(ball.getLocation(), Material.SAND.createBlockData()));
-                    ballsDirt.get(player).setGravity(false);
-                } else {
-                    cancelFlingEarthTasks(player);
-                }
-            }, 2, 1));
+            playerParama.addTask("SANDTHROW",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        playerParama.removeEntity("SANDBLOCK");
+                        Snowball ball = (Snowball) playerParama.getEntity("SANDBALL");
+                        if(ball != null) {
+                            FallingBlock sand = ball.getWorld().spawnFallingBlock(ball.getLocation(), Material.SAND.createBlockData());
+                            playerParama.addEntity("SANDBLOCK", sand);
+                        } else {
+                            playerParama.cancelTask("SANDTHROW");
+                        }
+                    }, 2, 1));
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
@@ -71,13 +62,6 @@ public class BlindingSand implements Listener, SpellParama {
             }, 205);
         }
     }
-
-    public void cancelFlingEarthTasks(Player player){
-        if(ballsThrownTasks.get(player) != null)
-            ballsThrownTasks.get(player).cancel();
-        ballsThrownTasks.remove(player);
-    }
-
     //Deal damage when custom projectile hits entity
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event){
@@ -86,13 +70,12 @@ public class BlindingSand implements Listener, SpellParama {
             if(projectile.getCustomName().equals("blindsand")){
                 event.setCancelled(true);
                 Player player = (Player) projectile.getShooter();
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(ballsDirt.get(player) != null)
-                        ballsDirt.get(player).remove();
-                    ballsDirt.remove(player);
+                    playerParama.removeEntity("SANDBLOCK");
                 }, 2);
-                ballsThrown.remove(player);
-                cancelFlingEarthTasks(player);
+                playerParama.removeEntity("SANDBALL");
+                playerParama.cancelTask("SANDTHROW");
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
                         List<Entity> blinded = player.getWorld().getNearbyEntities(event.getHitEntity().getLocation(), 1.5,1.5,1.5).stream().toList();
@@ -101,11 +84,11 @@ public class BlindingSand implements Listener, SpellParama {
                                 continue;
                             }
                             if (blind instanceof Damageable) {
-                                entitiesBlinded.add(blind);
+                                blind.setMetadata("BLINDED",new FixedMetadataValue(plugin, "BLINDED"));
                                 ((Damageable) blind).damage(1.034, player);
                                 player.getWorld().spawnParticle(Particle.BLOCK_CRACK, blind.getLocation(), 3, 0.25, 0.25, 0.25, 0, Material.SAND.createBlockData());
                                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                    entitiesBlinded.remove(blind);
+                                    blind.removeMetadata("BLINDED", plugin);
                                 }, 100);
                             }
                         }
@@ -118,14 +101,14 @@ public class BlindingSand implements Listener, SpellParama {
     //cancel attacks from blinded enemies
     @EventHandler
     public void onEntityDamageByEntitySand(EntityDamageByEntityEvent event){
-        if(entitiesBlinded.contains(event.getDamager())){
+        if(event.getDamager().hasMetadata("BLINDED")){
             event.setCancelled(true);
         }
         if(event.getDamager() instanceof Arrow){
             Projectile arrow = (Projectile) event.getDamager();
             if(arrow.getShooter() instanceof Entity){
                 Entity shooter = (Entity) arrow.getShooter();
-                if(entitiesBlinded.contains(shooter)){
+                if(shooter.hasMetadata("BLINDED")){
                     event.setCancelled(true);
                 }
             }

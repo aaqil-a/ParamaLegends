@@ -1,6 +1,5 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.DataManager;
 import id.cuna.ParamaLegends.ParamaLegends;
@@ -10,15 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 import org.bukkit.attribute.Attribute;
@@ -29,6 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class VoicesOfTheDamned implements Listener, SpellParama {
 
@@ -49,7 +41,9 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(5);
             location.add(offset);
-            ArmorStand dummy = (ArmorStand) player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND);
+            playerParama.addEntity("DAMNEDPORTAL",
+                    player.getWorld().spawnEntity(new Location(player.getWorld(), 0,0,0), EntityType.ARMOR_STAND));
+            ArmorStand dummy = (ArmorStand) playerParama.getEntity("DAMNEDPORTAL");
             dummy.setVisible(false);
             dummy.setCustomName(ChatColor.DARK_PURPLE + player.getName() +"'s Portal");
             dummy.setCustomNameVisible(true);
@@ -59,70 +53,73 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 dummy.teleport(location);
-                dummy.getLocation().add(new Vector(0,1,0));
             }, 2);
-            BukkitTask portalEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                dummy.getWorld().spawnParticle(Particle.CLOUD, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
-                dummy.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
-                dummy.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, dummy.getLocation(), 1, 0.25, 1, 0.25,0);
-            },3, 3);
-            List<Phantom> damnedListPhantom = new ArrayList<Phantom>();
-            BukkitTask portalSpawnPhantom = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                Phantom damned = (Phantom) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.PHANTOM);
-                damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
-                damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
-                damned.setCustomNameVisible(true);
-                damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(20.069);
-                damned.setTarget(null);
-                damnedListPhantom.add(damned);
-            },3, 100);
-            List<Silverfish> damnedListSilverfish = new ArrayList<Silverfish>();
-            BukkitTask portalSpawnSilverfish = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                Silverfish damned = (Silverfish) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.SILVERFISH);
-                damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
-                damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
-                damned.setCustomNameVisible(true);
-                damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(10.069);
-                damned.setTarget(null);
-                damnedListSilverfish.add(damned);
-            },53, 100);
-            BukkitTask setDamnedTarget = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                List<Entity> entities = player.getNearbyEntities(10,10,10).stream().toList();
-                double closestDistance = Double.MAX_VALUE;
-                Entity closestEntity = null;
-                for(Entity entity : entities){
-                    if(entity instanceof Villager || entity instanceof Player || entity instanceof Silverfish
-                            || entity instanceof ArmorStand || entity instanceof Phantom )
-                        continue;
-                    if(entity instanceof LivingEntity){
-                        double distance = entity.getLocation().distance(player.getLocation());
-                        if(distance < closestDistance){
-                            closestDistance = distance;
-                            closestEntity = entity;
+            playerParama.addTask("DAMNEDEFFECT",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        dummy.getWorld().spawnParticle(Particle.CLOUD, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
+                        dummy.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, dummy.getLocation(), 1, 0.25, 1, 0.25, 0);
+                        dummy.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, dummy.getLocation(), 1, 0.25, 1, 0.25,0);
+                    },3, 3));
+            playerParama.addTask("DAMNEDSPAWNPHANTOM",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        Phantom damned = (Phantom) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.PHANTOM);
+                        damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                        damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
+                        damned.setCustomNameVisible(true);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(10.069);
+                        damned.setTarget(null);
+                        playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
+                    },3, 100));
+            playerParama.addTask("DAMNEDSPAWNSILVERFISH",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        Silverfish damned = (Silverfish) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.SILVERFISH);
+                        damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                        damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
+                        damned.setCustomNameVisible(true);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(10.069);
+                        damned.setTarget(null);
+                        playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
+                    },53, 100));
+            playerParama.addTask("DAMNEDTARGET",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        List<Entity> entities = player.getNearbyEntities(10,10,10).stream().toList();
+                        double closestDistance = Double.MAX_VALUE;
+                        Entity closestEntity = null;
+                        for(Entity entity : entities){
+                            if(entity instanceof Villager || entity instanceof Player || entity instanceof Silverfish
+                                    || entity instanceof ArmorStand || entity instanceof Phantom )
+                                continue;
+                            if(entity instanceof LivingEntity){
+                                double distance = entity.getLocation().distance(player.getLocation());
+                                if(distance < closestDistance){
+                                    closestDistance = distance;
+                                    closestEntity = entity;
+                                }
+                            }
                         }
-                    }
-                }
-                if(closestEntity != null){
-                    for(Phantom damned : damnedListPhantom)
-                        if(damned.getTarget() == null)
-                            damned.setTarget((LivingEntity) closestEntity);
-                    for(Silverfish damned : damnedListSilverfish)
-                        if(damned.getTarget() == null)
-                            damned.setTarget((LivingEntity) closestEntity);
-                }
-            },3, 20);
+                        if(closestEntity != null){
+                            for(Entity entity : playerParama.getEntities().values())
+                                if(entity instanceof Phantom || entity instanceof Silverfish){
+                                    Mob damned = (Mob) entity;
+                                    if(damned.getTarget() == null || damned.getTarget() instanceof Player)
+                                        damned.setTarget((LivingEntity) closestEntity);
+                                }
+                        }
+                    },3, 20));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                portalEffect.cancel();
-                portalSpawnPhantom.cancel();
-                portalSpawnSilverfish.cancel();
+                playerParama.cancelTask("DAMNEDEFFECT");
+                playerParama.cancelTask("DAMNEDSPAWNPHANTOM");
+                playerParama.cancelTask("DAMNEDSPAWNSILVERFISH");
                 dummy.remove();
             }, 600);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                setDamnedTarget.cancel();
-                for(Phantom damned : damnedListPhantom)
-                    damned.remove();
-                for(Silverfish damned : damnedListSilverfish)
-                    damned.remove();
+                playerParama.cancelTask("DAMNEDTARGET");
+                playerParama.getEntities().forEach((k, v)-> {
+                    if(v instanceof Phantom || v instanceof Silverfish) {
+                        v.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, v.getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                        v.remove();
+                    }
+                });
             }, 800);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
@@ -153,14 +150,6 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                     if(event.getDamager().hasMetadata(player.getName()))
                         summoner = player;
                 plugin.experienceListener.addExp(summoner, ClassType.MAGIC, 1);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if(event.getDamager() instanceof Phantom){
-                        event.getDamager().getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
-                    } else {
-                        event.getDamager().getWorld().spawnParticle(Particle.SMOKE_NORMAL, event.getDamager().getLocation(), 8, 0.5, 0.5, 0.5, 0);
-                    }
-                    event.getDamager().remove();
-                }, 60);
 
                 //Check if damned killed enemy and give exp if so
                 Damageable victim = (Damageable) event.getEntity();

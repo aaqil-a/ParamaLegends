@@ -16,6 +16,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,7 +30,6 @@ public class Superconducted implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 300;
-    private final List<Entity> entitiesBlinded = new ArrayList<Entity>();
 
     public Superconducted(ParamaLegends plugin){
         this.plugin = plugin;
@@ -46,7 +46,7 @@ public class Superconducted implements Listener, SpellParama {
                 List<Entity> toDamage = new ArrayList<Entity>();
                 for(Entity hit : entities){
                     if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof ArmorStand)){
-                        entitiesBlinded.add(hit);
+                        hit.setMetadata("SUPERCONDUCTED", new FixedMetadataValue(plugin, "SUPERCONDUCTED"));
                         ((LivingEntity) hit).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 8, 5, false, false, false));
                         toDamage.add(hit);
                     }
@@ -65,7 +65,7 @@ public class Superconducted implements Listener, SpellParama {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     for(Entity hit: entities){
                         if(hit instanceof LivingEntity && !(hit instanceof Player)){
-                            entitiesBlinded.remove(hit);
+                            hit.removeMetadata("SUPERCONDUCTED", plugin);
                         }
                     }
                 }, 160);
@@ -94,7 +94,7 @@ public class Superconducted implements Listener, SpellParama {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof Player){
-            if(entitiesBlinded.contains(event.getDamager())){
+            if(event.getDamager().hasMetadata("SUPERCONDUCTED")){
                 event.setCancelled(true);
             }
         }

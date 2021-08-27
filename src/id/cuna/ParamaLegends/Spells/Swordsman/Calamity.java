@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Damageable;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -23,7 +24,6 @@ public class Calamity implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 500;
-    private final List<Player> playersCalamity = new ArrayList<Player>();
 
     public Calamity(ParamaLegends plugin){
         this.plugin = plugin;
@@ -35,37 +35,38 @@ public class Calamity implements SpellParama {
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
-                playersCalamity.add(player);
-                BukkitTask calamity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    List<Entity> entities = player.getNearbyEntities(10,10,10);
-                    List<Entity> toDamage = new ArrayList<Entity>();
-                    for(Entity hit : entities){
-                        if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof Villager) && !(hit instanceof ArmorStand)) {
-                            toDamage.add(hit);
-                        }
-                    }
-                    player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
-                    player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getEyeLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
+                player.setMetadata("CALAMITY", new FixedMetadataValue(plugin, "CALAMITY"));
+                playerParama.addTask("CALAMITY",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            List<Entity> entities = player.getNearbyEntities(10,10,10);
+                            List<Entity> toDamage = new ArrayList<Entity>();
+                            for(Entity hit : entities){
+                                if(hit instanceof LivingEntity && !(hit instanceof Player) && !(hit instanceof Villager) && !(hit instanceof ArmorStand)) {
+                                    toDamage.add(hit);
+                                }
+                            }
+                            player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
+                            player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getEyeLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
 
-                    Random rand = new Random();
-                    if(toDamage.size() > 0){
-                        Entity striked = toDamage.get(rand.nextInt(toDamage.size()));
-                        striked.getWorld().strikeLightningEffect(striked.getLocation());
-                        striked.getWorld().spawnParticle(Particle.FLASH, striked.getLocation().add(new Vector(0,1,0)), 5);
-                        ((Damageable) striked).damage(30.072, player);
-                        plugin.experienceListener.addExp(player, ClassType.SWORDSMAN, 1);
-                    }
-                }, 62, 20);
-                BukkitTask calamityEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation().add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
-                    player.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, player.getEyeLocation().add(0,1.5,0), 1, 0.5, 0.5, 0.5, 0);
-                    player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation().add(0,1.5,0), 1, 0.5, 0.5, 0.5, 0);
-                }, 0, 5);
-
+                            Random rand = new Random();
+                            if(toDamage.size() > 0){
+                                Entity striked = toDamage.get(rand.nextInt(toDamage.size()));
+                                striked.getWorld().strikeLightningEffect(striked.getLocation());
+                                striked.getWorld().spawnParticle(Particle.FLASH, striked.getLocation().add(new Vector(0,1,0)), 5);
+                                ((Damageable) striked).damage(30.072, player);
+                                plugin.experienceListener.addExp(player, ClassType.SWORDSMAN, 1);
+                            }
+                        }, 62, 20));
+                playerParama.addTask("CALAMITYEFFECT",
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                            player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, player.getEyeLocation().add(0,1,0), 1, 0.5, 0.5, 0.5, 0);
+                            player.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, player.getEyeLocation().add(0,1.5,0), 1, 0.5, 0.5, 0.5, 0);
+                            player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation().add(0,1.5,0), 1, 0.5, 0.5, 0.5, 0);
+                        }, 0, 5));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    calamity.cancel();
-                    playersCalamity.remove(player);
-                    calamityEffect.cancel();
+                    playerParama.cancelTask("CALAMITY");
+                    player.removeMetadata("CALAMITY", plugin);
+                    playerParama.cancelTask("CALAMITYEFFECT");
                 }, 302);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -80,10 +81,6 @@ public class Calamity implements SpellParama {
 
     public int getManaCost() {
         return manaCost;
-    }
-
-    public List<Player> getPlayersCalamity(){
-        return playersCalamity;
     }
 
 }

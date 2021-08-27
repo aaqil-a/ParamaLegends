@@ -1,6 +1,5 @@
 package id.cuna.ParamaLegends.Spells.Magic;
 
-import id.cuna.ParamaLegends.ClassListener.MagicListener;
 import id.cuna.ParamaLegends.ClassType;
 import id.cuna.ParamaLegends.ParamaLegends;
 import id.cuna.ParamaLegends.PlayerParama;
@@ -15,15 +14,12 @@ import org.bukkit.util.Vector;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DragonBreath implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 200;
-    private final HashMap<Player, BukkitTask> dragonBreath = new HashMap<>();
 
     public DragonBreath(ParamaLegends plugin){
         this.plugin = plugin;
@@ -81,21 +77,21 @@ public class DragonBreath implements SpellParama {
             Location breathLocation = player.getLocation().add(player.getLocation().getDirection().setY(0).normalize().multiply(5));
             breathLocation.add(0,0.5,0);
 
-            //test
-            dragonBreath.put(player, Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                player.getWorld().spawnParticle(Particle.DRAGON_BREATH, breathLocation, 64, 1, 0, 1, 0);
-                List<Entity> entities = player.getWorld().getNearbyEntities(gustBox).stream().toList();
-                for(Entity knocked : entities){
-                    if(knocked.equals(player)){
-                        continue;
-                    }
-                    if(knocked instanceof Damageable){
-                        plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
-                        ((Damageable) knocked).damage(10.069, player);
-                    }
-                }
-            }, 3, 20));
-            Bukkit.getScheduler().runTaskLater(plugin, dragonBreath.get(player)::cancel, 125);
+            playerParama.addTask("DRAGONBREATH",
+                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                        player.getWorld().spawnParticle(Particle.DRAGON_BREATH, breathLocation, 64, 1, 0, 1, 0);
+                        List<Entity> entities = player.getWorld().getNearbyEntities(gustBox).stream().toList();
+                        for(Entity knocked : entities){
+                            if(knocked.equals(player)){
+                                continue;
+                            }
+                            if(knocked instanceof Damageable){
+                                plugin.experienceListener.addExp(player, ClassType.MAGIC, 1);
+                                ((Damageable) knocked).damage(10.069, player);
+                            }
+                        }
+                    }, 3, 20));
+            Bukkit.getScheduler().runTaskLater(plugin, ()-> playerParama.cancelTask("DRAGONBREATH"),200);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");

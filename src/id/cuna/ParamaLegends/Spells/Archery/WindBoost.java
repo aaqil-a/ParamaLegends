@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,6 @@ public class WindBoost implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 60;
-
-    private final List<String> playersWindBoosted = new ArrayList<>();
 
     public WindBoost(ParamaLegends plugin){
         this.plugin = plugin;
@@ -29,7 +28,7 @@ public class WindBoost implements SpellParama {
             Player player = playerParama.getPlayer();
             player.sendMessage(ChatColor.GREEN+"Wind Boost activated.");
             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0,1,0),8, 0.5, 0.5, 0.5, 0);
-            playersWindBoosted.add(player.getUniqueId().toString());
+            player.setMetadata("WINDBOOSTPARAMA", new FixedMetadataValue(plugin, "WINDBOOSTPARAMA"));
 
             //add player to cooldown
             playerParama.addToCooldown(this);
@@ -37,7 +36,7 @@ public class WindBoost implements SpellParama {
             //wind boost expire
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Wind Boost wore off.");
-                playersWindBoosted.remove(player.getUniqueId().toString());
+                player.removeMetadata("WINDBOOSTPARAMA", plugin);
             }, 280);
 
             //remove fro mcooldown
@@ -48,10 +47,6 @@ public class WindBoost implements SpellParama {
                 }
             }, 600);
         }
-    }
-
-    public List<String> getPlayersWindBoosted(){
-        return playersWindBoosted;
     }
 
     public int getManaCost(){

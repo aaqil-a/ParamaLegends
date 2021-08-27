@@ -13,6 +13,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ public class TerrifyingCruelty implements Listener, SpellParama {
 
     private final ParamaLegends plugin;;
     private final int manaCost = 200;
-    private final List<Entity> entitiesTerrified = new ArrayList<Entity>();
 
     public TerrifyingCruelty(ParamaLegends plugin){
         this.plugin = plugin;
@@ -43,9 +43,9 @@ public class TerrifyingCruelty implements Listener, SpellParama {
                             hit.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, hit.getLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
                         }, 20, 20);
                         plugin.experienceListener.addExp(player, ClassType.SWORDSMAN, 1);
-                        entitiesTerrified.add(hit);
+                        hit.setMetadata("TERRIFIED", new FixedMetadataValue(plugin, "TERRIFIED"));
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            entitiesTerrified.remove(hit);
+                            hit.removeMetadata("TERRIFIED", plugin);
                             hitEffect.cancel();
                         }, 120);
                     }
@@ -64,7 +64,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof Player){
-            if(entitiesTerrified.contains(event.getDamager())){
+            if(event.getDamager().hasMetadata("TERRIFIED")){
                 Random rand = new Random();
                 if(rand.nextInt(100) < 60){
                     event.setCancelled(true);
@@ -75,10 +75,6 @@ public class TerrifyingCruelty implements Listener, SpellParama {
 
     public int getManaCost() {
         return manaCost;
-    }
-
-    public List<Entity> getEntitiesTerrified(){
-        return entitiesTerrified;
     }
 
 }

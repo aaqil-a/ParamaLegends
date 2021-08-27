@@ -11,18 +11,16 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
 
 public class Neurotoxin implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 50;
-    private final HashMap<Entity, BukkitTask> poisonTasks = new HashMap<>();
 
     public Neurotoxin(ParamaLegends plugin){
         this.plugin = plugin;
@@ -41,19 +39,20 @@ public class Neurotoxin implements Listener, ArrowParama {
     public void hitArrow(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Arrow){
             Arrow arrow = (Arrow) event.getDamager();
-            if(arrow.getCustomName() != null && arrow.getCustomName().equals("neurotoxin")){
-                if(!plugin.archeryListener.getEntitiesPoisoned().contains(event.getEntity())){
-                    plugin.archeryListener.getEntitiesPoisoned().add(event.getEntity());
-                    poisonTasks.put(event.getEntity(), Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
-                        if(event.getEntity() instanceof LivingEntity && arrow.getShooter() instanceof Player){
-                            ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
-                            ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
-                            event.getEntity().setVelocity(new Vector(0,0,0));
-                        }
-                    }, 20, 20));
+            if(arrow.getCustomName() != null && arrow.getCustomName().equals("neurotoxin") && arrow.getShooter() instanceof Player){
+                Entity hit = event.getEntity();
+                if(!hit.hasMetadata("POISONPARAMA")){
+                    hit.setMetadata("POISONPARAMA",new FixedMetadataValue(plugin,"POISONPARAMA"));
+                    PlayerParama player = plugin.getPlayerParama((Player) arrow.getShooter());
+                    player.addTask("NEUROTOXIN"+event.getEntity().getUniqueId().toString(),
+                            Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                                ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
+                                ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
+                                event.getEntity().setVelocity(new Vector(0,0,0));
+                            }, 20, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        poisonTasks.get(event.getEntity()).cancel();
-                        plugin.archeryListener.getEntitiesPoisoned().remove(event.getEntity());
+                        player.cancelTask("NEUROTOXIN"+event.getEntity().getUniqueId().toString());
+                        hit.removeMetadata("POISONPARAMA",plugin);
                     }, 162);
                 }
             }
