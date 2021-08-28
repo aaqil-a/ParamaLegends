@@ -167,7 +167,7 @@ public class PlayerShopListener implements Listener {
                                     lectrum -= price;
                                     player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
                                     data.getConfig().set("players."+uuid+".lectrum", lectrumSeller);
-                                    data.getConfig().set("players."+player.getUniqueId().toString()+"lectrum", lectrum);
+                                    data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
                                     data.saveConfig();
                                 } else {
                                     player.sendMessage(ChatColor.RED+"Shop out of stock.");
