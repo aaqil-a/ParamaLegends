@@ -7,31 +7,31 @@ world:
   maxdepth: 30
 mobs:
   zombie:
-    health: 50
-    damage: 10
+    health: 70
+    damage: 14
     lectrum: 5
     exp: 25
   spider:
-    damage: 6
-    health: 30
+    damage: 8
+    health: 40
     lectrum: 5
     exp: 25
   skeleton:
-    health: 30
-    arrowbonusdamage: 5
+    health: 40
+    arrowbonusdamage: 7
     lectrum: 4
     exp: 20
   creeper:
-    health: 40
+    health: 60
     lectrum: 7
     exp: 30
   witch:
-    health: 40
+    health: 60
     lectrum: 4
     exp: 25
   enderman:
     damage: 15
-    health: 80
+    health: 100
     lectrum: 10
     exp: 40
 players:

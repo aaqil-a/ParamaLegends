@@ -1,0 +1,53 @@
+package me.cuna.ParamaLegends.Spells.Archery;
+
+import me.cuna.ParamaLegends.ParamaLegends;
+import me.cuna.ParamaLegends.PlayerParama;
+import me.cuna.ParamaLegends.Spells.SpellParama;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+
+public class WindBoost implements SpellParama {
+
+    private final ParamaLegends plugin;
+    private final int manaCost = 60;
+
+    public WindBoost(ParamaLegends plugin){
+        this.plugin = plugin;
+    }
+
+    public void castSpell(PlayerParama playerParama){
+        if(playerParama.checkCooldown(this)){
+            plugin.sendCooldownMessage(playerParama, "Wind Boost");
+        } else if (playerParama.subtractMana(manaCost)) {
+            Player player = playerParama.getPlayer();
+            player.sendMessage(ChatColor.GREEN+"Wind Boost activated.");
+            player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0,1,0),8, 0.5, 0.5, 0.5, 0);
+            player.setMetadata("WINDBOOSTPARAMA", new FixedMetadataValue(plugin, "WINDBOOSTPARAMA"));
+
+            //add player to cooldown
+            playerParama.addToCooldown(this);
+
+            //wind boost expire
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                player.sendMessage(ChatColor.GREEN+"Wind Boost wore off.");
+                player.removeMetadata("WINDBOOSTPARAMA", plugin);
+            }, 280);
+
+            //remove fro mcooldown
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if(playerParama.checkCooldown(this)){
+                    plugin.sendNoLongerCooldownMessage(playerParama, "Wind Boost");
+                    playerParama.removeFromCooldown(this);
+                }
+            }, 600);
+        }
+    }
+
+    public int getManaCost(){
+        return manaCost;
+    }
+
+}

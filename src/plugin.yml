@@ -1,7 +1,7 @@
 name: ParamaLegends
 version: 1.0.0
 author: cuna
-main: id.cuna.ParamaLegends.ParamaLegends
+main: me.cuna.ParamaLegends.ParamaLegends
 api-version: 1.17
 commands:
   yourmom:
