@@ -27,6 +27,7 @@ public class GutPunch implements AttackParama {
                 double finalDamage = damage + entityHealth*0.2;
                 finalDamage = Math.max(finalDamage, 15);
                 finalDamage = Math.min(finalDamage,50);
+                finalDamage = Math.ceil(finalDamage+0.034);
                 playerParama.addToCooldown(this);
 
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 62, 3));
