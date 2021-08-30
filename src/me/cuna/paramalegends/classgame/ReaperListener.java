@@ -115,11 +115,15 @@ public class ReaperListener implements Listener{
             if(item.hasItemMeta() && Objects.requireNonNull(item.getItemMeta()).hasDisplayName()){
                 switch(item.getItemMeta().getDisplayName()){
                     case "§4Gut Punch" -> {
-                        if (player.isNotSilenced())
-                            if(player.checkLevel( 8, ClassGameType.REAPER)){
+                        if (player.isNotSilenced()){
+                            if(!player.checkCooldown(gutPunch)){
                                 event.setCancelled(true);
+                            }
+                            if(player.checkLevel( 8, ClassGameType.REAPER)){
                                 gutPunch.attackEntity(player, event.getEntity(), event.getDamage());
                             }
+                        }
+
                     }
                     case "§4Memento Mori" -> {
                         if(!player.checkCooldown(mementoMori)) {
