@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class WiseOldManListener implements Listener {
+public class Destiny implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
@@ -32,7 +32,7 @@ public class WiseOldManListener implements Listener {
 
 
 
-    public WiseOldManListener(final ParamaLegends plugin){
+    public Destiny(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
         xpNeeded = plugin.experienceListener.xpNeeded;

@@ -1,7 +1,6 @@
 package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
-import me.cuna.paramalegends.shopgame.NPCShopListener;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RetiredWeaponsmith extends NPCShopListener {
+public class SwordsmanShop extends GameShop {
 
     //Prices array
     public static HashMap<Integer, Integer> prices = new HashMap<Integer, Integer>(){{
@@ -34,7 +33,7 @@ public class RetiredWeaponsmith extends NPCShopListener {
         put(14,500);
     }};
 
-    public RetiredWeaponsmith(ParamaLegends plugin) {
+    public SwordsmanShop(ParamaLegends plugin) {
         super(plugin, "§2Dull Anvil");
     }
 

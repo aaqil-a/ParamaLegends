@@ -24,9 +24,9 @@ public class GutPunch implements AttackParama {
         if (!playerParama.checkCooldown(this) && playerParama.subtractMana(manaCost)) {
             if(entity instanceof LivingEntity){
                 double entityHealth = ((LivingEntity) entity).getHealth();
-                double maxHealth = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-                double percentHealth = (entityHealth / maxHealth);
-                double finalDamage = damage + (30 * percentHealth) + 0.34;
+                double finalDamage = damage + entityHealth*0.2;
+                finalDamage = Math.max(finalDamage, 15);
+                finalDamage = Math.min(finalDamage,50);
                 playerParama.addToCooldown(this);
 
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 62, 3));

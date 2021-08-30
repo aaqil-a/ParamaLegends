@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class NPCShopListener implements Listener {
+public class GameShop implements Listener {
 
     private final String NPCName;
     public final ParamaLegends plugin;
@@ -29,7 +29,7 @@ public class NPCShopListener implements Listener {
     public DataManager data;
 
 
-    public NPCShopListener(final ParamaLegends plugin, String NPCName){
+    public GameShop(final ParamaLegends plugin, String NPCName){
         this.plugin = plugin;
         data = plugin.getData();
         this.NPCName = NPCName;

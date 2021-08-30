@@ -22,7 +22,7 @@ public class ParamaLegends extends JavaPlugin {
 
     public DataManager data;
     public MobSpawnListener mobSpawnListener;
-    public WiseOldManListener wiseOldManListener;
+    public Destiny wiseOldManListener;
     public PlayerManagerListener playerManagerListener;
     public WorldRuleListener worldRuleListener;
     public ExperienceListener experienceListener;
@@ -35,11 +35,11 @@ public class ParamaLegends extends JavaPlugin {
     public ArcheryListener archeryListener;
     public MagicListener magicListener;
 
-    public NPCShopListener banishedMagus;
-    public NPCShopListener seniorRanger;
-    public NPCShopListener retiredWeaponsmith;
-    public NPCShopListener oddWares;
-    public NPCShopListener suspiciousPeasant;
+    public GameShop banishedMagus;
+    public GameShop seniorRanger;
+    public GameShop retiredWeaponsmith;
+    public GameShop oddWares;
+    public GameShop suspiciousPeasant;
 
     public StartAltarListener startAltarListener;
     public NatureAltarListener natureAltarListener;
@@ -75,7 +75,7 @@ public class ParamaLegends extends JavaPlugin {
         playerManagerListener = new PlayerManagerListener(this);
         worldRuleListener = new WorldRuleListener(this);
         experienceListener = new ExperienceListener(this);
-        wiseOldManListener = new WiseOldManListener(this);
+        wiseOldManListener = new Destiny(this);
         playerShopListener = new PlayerShopListener(this);
         commandStartGame = new CommandStartGame(this);
         commandSetupGame = new CommandSetupGame(this);
@@ -144,11 +144,11 @@ public class ParamaLegends extends JavaPlugin {
     }
 
     public void initializeNPCShop(){
-        banishedMagus = new BanishedMagus(this);
-        seniorRanger = new SeniorRanger(this);
-        retiredWeaponsmith = new RetiredWeaponsmith(this);
-        suspiciousPeasant = new SuspiciousPeasant(this);
-        oddWares = new OddWares(this);
+        banishedMagus = new MagicShop(this);
+        seniorRanger = new ArcheryShop(this);
+        retiredWeaponsmith = new SwordsmanShop(this);
+        suspiciousPeasant = new ReaperShop(this);
+        oddWares = new GeneralShop(this);
     }
 
     public void registerNPCShopListener(){

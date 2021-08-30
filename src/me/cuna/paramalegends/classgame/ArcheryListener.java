@@ -4,8 +4,10 @@ import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.archery.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
 
@@ -114,6 +117,17 @@ public class ArcheryListener implements Listener{
                     double damage = ((AbstractArrow) event.getProjectile()).getDamage();
                     ((AbstractArrow) event.getProjectile()).setDamage(damage*1.15);
                     ((AbstractArrow) event.getProjectile()).setKnockbackStrength(2);
+                }
+                if(player.hasMetadata("HUAYRAFURY") && event.getProjectile() instanceof Arrow){
+                    Arrow arrow = (Arrow) event.getProjectile();
+                    if(arrow.isCritical()){
+                        arrow.setGlowing(true);
+                        arrow.setPierceLevel(127);
+                        arrow.setGravity(false);
+                        arrow.setVelocity(arrow.getVelocity().multiply(1.5));
+                        arrow.setMetadata("HUAYRAARROW", new FixedMetadataValue(plugin, true));
+                        Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 105);
+                    }
                 }
             }
         }

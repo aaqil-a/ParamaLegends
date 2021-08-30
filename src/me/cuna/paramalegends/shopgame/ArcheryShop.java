@@ -1,7 +1,6 @@
 package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
-import me.cuna.paramalegends.shopgame.NPCShopListener;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SeniorRanger extends NPCShopListener {
+public class ArcheryShop extends GameShop {
 
     private final ParamaLegends plugin;
 
@@ -37,14 +36,14 @@ public class SeniorRanger extends NPCShopListener {
         put(8,80);
         put(10,10);
         put(12,200);
-        put(14,30);
+        put(14,15);
         put(16,300);
-        put(20,50);
+        put(20,20);
         put(22,400);
         put(24,400);
     }};
 
-    public SeniorRanger(ParamaLegends plugin) {
+    public ArcheryShop(ParamaLegends plugin) {
         super(plugin, "§aFletcher's Table");
         this.plugin = plugin;
     }
@@ -213,7 +212,7 @@ public class SeniorRanger extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your speed is temporarily increased.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.retreat.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "15 Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
@@ -223,12 +222,12 @@ public class SeniorRanger extends NPCShopListener {
             item.setType(Material.SKELETON_SKULL);
             meta.setDisplayName(ChatColor.RESET + "§aHuayra's Fury");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "You reawaken the wrath of Huayra,");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "sacrificing some of your life force");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "to shoot 20 consecutive arrows at");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "great speeds without consuming mana.");
-            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "You cannot move while firing.");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "cursing critical arrows you shoot");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "to strike at incredible speeds and");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "have the ability to pierce through");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your enemies.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.huayraFury.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1.5 minutes");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
@@ -244,7 +243,7 @@ public class SeniorRanger extends NPCShopListener {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making it explode on impact.");;
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.blast.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 8");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "50 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);

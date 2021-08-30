@@ -11,7 +11,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.cuna.paramalegends.DataManager;
-import me.cuna.paramalegends.shopgame.NPCShopListener;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class OddWares extends NPCShopListener {
+public class GeneralShop extends GameShop {
 
     private final int[] expansePrice = {400, 750, 1500, 2500, 4000, 8000, 10000};
 
@@ -45,7 +44,7 @@ public class OddWares extends NPCShopListener {
         put(10,50);
     }};
 
-    public OddWares(ParamaLegends plugin) {
+    public GeneralShop(ParamaLegends plugin) {
         super(plugin, "§6Odd Wares");
     }
 

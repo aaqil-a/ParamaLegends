@@ -1,7 +1,6 @@
 package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
-import me.cuna.paramalegends.shopgame.NPCShopListener;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SuspiciousPeasant extends NPCShopListener {
+public class ReaperShop extends GameShop {
 
     //Prices array
     public static HashMap<Integer, Integer> prices = new HashMap<Integer, Integer>(){{
@@ -36,7 +35,7 @@ public class SuspiciousPeasant extends NPCShopListener {
         put(17,600);
     }};
 
-    public SuspiciousPeasant(final ParamaLegends plugin){
+    public ReaperShop(final ParamaLegends plugin){
         super(plugin, "§4Reaper Grindstone");
     }
 
