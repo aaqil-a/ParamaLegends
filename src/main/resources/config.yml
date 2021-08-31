@@ -1,0 +1,62 @@
+# ParamaLegends game config
+# Please refrain from changing values manually,
+# as it may cause unwanted consequences!
+world:
+  level: 0
+  started: false
+  maxdepth: 30
+mobs:
+  zombie:
+    health: 70
+    damage: 14
+    lectrum: 5
+    exp: 25
+  spider:
+    damage: 8
+    health: 40
+    lectrum: 5
+    exp: 25
+  skeleton:
+    health: 40
+    arrowbonusdamage: 7
+    lectrum: 4
+    exp: 20
+  creeper:
+    health: 60
+    lectrum: 7
+    exp: 30
+  witch:
+    health: 60
+    lectrum: 4
+    exp: 25
+  enderman:
+    damage: 15
+    health: 100
+    lectrum: 10
+    exp: 40
+players:
+levelupmessage:
+  magic:
+    2: You begin to fathom the essence of fire.
+    3: The wind whispers in your ear.
+    4: You start to feel the life of lesser beings.
+    5: The world appears to shrink before you.
+    6: The secrets of thunder are revealed to you.
+    7: You begin to study arcanery from other worlds.
+    8: Even the power of mighty dragons serve you.
+    9: You hear wails of pain from deep below.
+    10: Your mastery of magic is now unparalleled.
+  archery:
+    2: The druids have given you their knowledge.
+    3: Your bow begins to feel lighter.
+    4: You gain a stronger affinity with the wind.
+    5: The world might need a little toxicity.
+    6: Your bow has become an extension of you.
+    7: Your wisdom in combat increases.
+    8: Your arrow wields the power of destruction.
+    9: Your proficency gets the attention of other realms.
+    10: You are now an uparalleled hunter of evil creatures.
+
+
+
+
