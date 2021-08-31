@@ -20,6 +20,8 @@ public class PhoenixDive implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 100;
+    private final int cooldown = 300;
+    private final int damage = 2;
 
     public PhoenixDive(ParamaLegends plugin){
         this.plugin = plugin;
@@ -52,11 +54,9 @@ public class PhoenixDive implements SpellParama {
                                         BukkitTask burnEntity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                                             plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
                                             burned.getWorld().spawnParticle(Particle.SMALL_FLAME, burned.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                            ((Damageable) burned).damage(2.072, player);
+                                            ((Damageable) burned).damage(damage+0.072, player);
                                         }, 0, 20);
-                                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                            burnEntity.cancel();
-                                        },  62);
+                                        Bukkit.getScheduler().runTaskLater(plugin, burnEntity::cancel,  62);
                                     }
                                 }
                                 playerParama.cancelTask("PHOENIXDIVE");
@@ -68,7 +68,7 @@ public class PhoenixDive implements SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Phoenix Dive");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 300);
+                }, cooldown);
             }
         }
     }
@@ -77,4 +77,8 @@ public class PhoenixDive implements SpellParama {
         return manaCost;
     }
 
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
 }

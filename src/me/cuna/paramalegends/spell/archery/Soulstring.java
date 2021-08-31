@@ -26,6 +26,7 @@ public class Soulstring implements SpellParama {
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
     private final int manaCost = 100;
+    private final int cooldown = 600;
 
     public Soulstring(ParamaLegends plugin){
         this.plugin = plugin;
@@ -43,7 +44,7 @@ public class Soulstring implements SpellParama {
                     plugin.sendNoLongerCooldownMessage(player, "Soulstring");
                     player.removeFromCooldown(this);
                 }
-            }, 600);
+            }, cooldown);
         }
     }
 
@@ -152,4 +153,5 @@ public class Soulstring implements SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown(){return cooldown;}
 }

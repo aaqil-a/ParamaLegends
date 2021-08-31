@@ -7,6 +7,7 @@ import me.cuna.paramalegends.spell.archery.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.AbstractArrow;
@@ -121,6 +122,9 @@ public class ArcheryListener implements Listener{
                 if(player.hasMetadata("HUAYRAFURY") && event.getProjectile() instanceof Arrow){
                     Arrow arrow = (Arrow) event.getProjectile();
                     if(arrow.isCritical()){
+                        //play fireowrk sound
+                        arrow.getWorld().playSound(arrow.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 0.8f, 1.5f );
+                        //set arrow proprties
                         arrow.setGlowing(true);
                         arrow.setPierceLevel(127);
                         arrow.setGravity(false);

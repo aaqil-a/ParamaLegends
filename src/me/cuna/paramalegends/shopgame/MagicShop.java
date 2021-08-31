@@ -99,7 +99,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "small area, dealing damage");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "over time.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.ignite.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 7 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.ignite.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 2");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
             meta.setLore(lore);
@@ -115,7 +115,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Pushes away targets within an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area of where you are facing.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.gust.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.gust.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
             meta.setLore(lore);
@@ -130,7 +130,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Periodically drains the life of");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.lifeDrain.getManaCost()+" per second");
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.lifeDrain.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 4");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
             meta.setLore(lore);
@@ -145,7 +145,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Instantaneously teleport to");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the targeted location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.blink.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.blink.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 5");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
             meta.setLore(lore);
@@ -162,7 +162,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "and smite all enemies in an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.summonLightning.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.summonLightning.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 6");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
@@ -180,7 +180,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "orb is travelling teleports the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "caster to its location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.illusoryOrb.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.illusoryOrb.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 7");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
@@ -198,7 +198,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that harms all beings it comes");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "into contact with.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.dragonBreath.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.dragonBreath.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 8");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
@@ -215,7 +215,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "creatures that are in sight.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.voicesOfTheDamned.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.voicesOfTheDamned.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
@@ -229,7 +229,7 @@ public class MagicShop extends GameShop {
             meta.setDisplayName(ChatColor.RESET + "§5Nova");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "爆裂, 爆裂, la la la");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.nova.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 2 minutes");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.nova.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Magic 10");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
             meta.setLore(lore);

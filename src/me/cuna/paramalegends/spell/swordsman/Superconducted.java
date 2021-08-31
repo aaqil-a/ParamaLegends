@@ -30,6 +30,8 @@ public class Superconducted implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 300;
+    private final int cooldown = 1200;
+    private final int damage = 20;
 
     public Superconducted(ParamaLegends plugin){
         this.plugin = plugin;
@@ -56,7 +58,7 @@ public class Superconducted implements Listener, SpellParama {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         if(damaged instanceof Damageable){
                             plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
-                            ((Damageable) damaged).damage(20.072, player);
+                            ((Damageable) damaged).damage(damage+0.072, player);
                             createFireworkEffect(damaged.getLocation(), player);
                         }
                     }, delay);
@@ -75,7 +77,7 @@ public class Superconducted implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Superconducted");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 1200);
+                }, cooldown);
             }
         }
     }
@@ -102,5 +104,10 @@ public class Superconducted implements Listener, SpellParama {
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
     }
 }

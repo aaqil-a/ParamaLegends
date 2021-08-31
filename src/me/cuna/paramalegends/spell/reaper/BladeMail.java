@@ -2,7 +2,6 @@ package me.cuna.paramalegends.spell.reaper;
 
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
-import me.cuna.paramalegends.classgame.ClassGameType;
 import me.cuna.paramalegends.spell.AttackParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -19,6 +18,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class BladeMail implements AttackParama, Listener {
 
     private final ParamaLegends plugin;
+    private final int cooldown = 82;
+    private final int minDamage = 10;
 
     public BladeMail(ParamaLegends plugin){
         this.plugin = plugin;
@@ -30,14 +31,14 @@ public class BladeMail implements AttackParama, Listener {
             Player player = playerParama.getPlayer();
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.7f, 1.2f);
             if (entity instanceof LivingEntity){
-                damage = Math.min(damage * 0.1, 10);
+                damage = Math.min(damage * 0.1, minDamage);
                 damage = Math.ceil(damage);
                 ((LivingEntity) entity).damage(damage + 0.0349, player);
             }
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 playerParama.removeFromCooldown(this);
-            }, 82);
+            }, cooldown);
         }
     }
 

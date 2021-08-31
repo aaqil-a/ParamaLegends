@@ -15,6 +15,7 @@ public class GutPunch implements AttackParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
+    private final int cooldown = 182;
 
     public GutPunch(ParamaLegends plugin){
         this.plugin = plugin;
@@ -27,24 +28,28 @@ public class GutPunch implements AttackParama {
                 double finalDamage = damage + entityHealth*0.2;
                 finalDamage = Math.max(finalDamage, 15);
                 finalDamage = Math.min(finalDamage,50);
-                finalDamage = Math.ceil(finalDamage+0.034);
+                finalDamage = Math.ceil(finalDamage);
                 playerParama.addToCooldown(this);
 
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 62, 3));
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 62, 3));
-                ((LivingEntity) entity).damage(finalDamage, playerParama.getPlayer());
+                ((LivingEntity) entity).damage(finalDamage+0.034, playerParama.getPlayer());
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         playerParama.removeFromCooldown(this);
                         plugin.sendNoLongerCooldownMessage(playerParama, "Gut Punch");
                     }
-                }, 182);
+                }, cooldown);
             }
         }
     }
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    public int getCooldown() {
+        return cooldown;
     }
 }

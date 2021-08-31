@@ -19,6 +19,9 @@ public class DragonBreath implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 200;
+    private final int cooldown = 400;
+    private final int duration = 200;
+    private final int damage = 10;
 
     public DragonBreath(ParamaLegends plugin){
         this.plugin = plugin;
@@ -86,21 +89,22 @@ public class DragonBreath implements SpellParama {
                             }
                             if(knocked instanceof Damageable){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                ((Damageable) knocked).damage(10.069, player);
+                                ((Damageable) knocked).damage(damage+0.069, player);
                             }
                         }
                     }, 3, 20));
-            Bukkit.getScheduler().runTaskLater(plugin, ()-> playerParama.cancelTask("DRAGONBREATH"),200);
+            Bukkit.getScheduler().runTaskLater(plugin, ()-> playerParama.cancelTask("DRAGONBREATH"),duration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 400);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown(){return cooldown;}
 }

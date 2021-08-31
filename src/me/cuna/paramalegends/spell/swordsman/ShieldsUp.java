@@ -25,6 +25,8 @@ public class ShieldsUp implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 50;
+    private final int duration = 202;
+    private final int cooldown = 400;
 
     public ShieldsUp(ParamaLegends plugin){
         this.plugin = plugin;
@@ -42,14 +44,14 @@ public class ShieldsUp implements Listener, SpellParama {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     player.sendMessage(ChatColor.GREEN+"Shields Up wore off.");
                     player.removeMetadata("SHIELDSUP", plugin);
-                }, 202);
+                }, duration);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         plugin.sendNoLongerCooldownMessage(playerParama, "Shields Up");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 400);
+                }, cooldown);
             }
         }
     }
@@ -158,4 +160,8 @@ public class ShieldsUp implements Listener, SpellParama {
         return manaCost;
     }
 
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
 }

@@ -18,6 +18,10 @@ public class LifeDrain implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 10;
+    private final int range = 10;
+    private final int cooldown = 120;
+    private final int damage = 3;
+    private final int healing = 1;
 
     public LifeDrain(ParamaLegends plugin){
         this.plugin = plugin;
@@ -34,12 +38,12 @@ public class LifeDrain implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 120);
+            }, cooldown);
         } else if(playerParama.checkCooldown(this)) {
             plugin.sendCooldownMessage(playerParama, "Life Drain");
         } else {
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER,
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER,
                     true, 1.5, notPlayer);
             if(rayTrace != null) {
                 if (rayTrace.getHitEntity() != null) {
@@ -48,37 +52,44 @@ public class LifeDrain implements Listener, SpellParama {
                         player.sendMessage(ChatColor.GREEN + "Life Drain activated.");
                         playerParama.addTask("LIFEDRAIN",
                                 Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                    if(drained.isDead() || player.isDead() || player.getLocation().distance(drained.getLocation())>8){
+                                    if(drained.isDead() || player.isDead() || player.getLocation().distance(drained.getLocation())>range){
                                         player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
-                                        playerParama.cancelTask("LIFEDRAIN");
                                         playerParama.addToCooldown(this);
                                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                                             if(playerParama.checkCooldown(this)){
                                                 plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                                                 playerParama.removeFromCooldown(this);
                                             }
-                                        }, 120);
-                            } else if(playerParama.subtractMana( manaCost)){
-                                if(drained instanceof Player){
-                                    drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
-                                    plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                    Player healed = (Player) drained;
-                                    if(healed.getHealth() <= 19 && player.getHealth() > 1){
-                                        healed.setHealth(healed.getHealth()+1);
-                                        player.setHealth(player.getHealth()-1);
+                                        }, cooldown);
+                                        playerParama.cancelTask("LIFEDRAIN");
+                                    } else if(playerParama.subtractMana( manaCost)){
+                                        if(drained instanceof Player){
+                                            drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
+                                            plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                                            Player healed = (Player) drained;
+                                            if(healed.getHealth() <= (20-healing) && player.getHealth() > healing){
+                                                healed.setHealth(healed.getHealth()+healing);
+                                                player.setHealth(player.getHealth()-healing);
+                                            }
+                                        } else {
+                                            player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
+                                            plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                                            ((Damageable) drained).damage(damage+0.069, player);
+                                            if(player.getHealth() <= (20-healing)){
+                                                player.setHealth(player.getHealth()+healing);
+                                            }
+                                        }
+                                    } else {
+                                        player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
+                                        playerParama.addToCooldown(this);
+                                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                            if(playerParama.checkCooldown(this)){
+                                                plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                                                playerParama.removeFromCooldown(this);
+                                            }
+                                        }, cooldown);
+                                        playerParama.cancelTask("LIFEDRAIN");
                                     }
-                                } else {
-                                    player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
-                                    plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                    ((Damageable) drained).damage(3.069, player);
-                                    if(player.getHealth() <= 19){
-                                        player.setHealth(player.getHealth()+1);
-                                    }
-                                }
-                            } else {
-                                player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
-                                playerParama.cancelTask("LIFEDRAIN");
-                            }
                         }, 0, 20));
                     }
                 }
@@ -89,5 +100,6 @@ public class LifeDrain implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() { return cooldown;}
 
 }

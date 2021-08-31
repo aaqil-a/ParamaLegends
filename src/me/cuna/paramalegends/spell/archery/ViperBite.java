@@ -18,6 +18,8 @@ public class ViperBite implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 15;
+    private final int damage = 1;
+    private final int duration = 162;
 
     public ViperBite(ParamaLegends plugin){
         this.plugin = plugin;
@@ -45,14 +47,14 @@ public class ViperBite implements Listener, ArrowParama {
                     player.addTask("VIPERBITE"+event.getEntity().getUniqueId().toString(),
                         Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                             if(event.getEntity() instanceof Damageable && arrow.getShooter() instanceof Player){
-                                ((Damageable) event.getEntity()).damage(1.016, (Player) arrow.getShooter());
+                                ((Damageable) event.getEntity()).damage(damage+0.016, (Player) arrow.getShooter());
                                 event.getEntity().setVelocity(new Vector(0,0,0));
                             }
                         }, 20, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.cancelTask("VIPERBITE"+event.getEntity().getUniqueId().toString());
                         hit.removeMetadata("POISONPARAMA", plugin);
-                    }, 162);
+                    }, duration);
                 }
             }
         }

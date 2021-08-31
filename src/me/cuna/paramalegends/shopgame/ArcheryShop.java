@@ -146,7 +146,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location, rooting enemies caught");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "in its location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.totsukaCreation.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 15 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.totsukaCreation.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
             meta.setLore(lore);
@@ -162,7 +162,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "boost your arrows, dealing more");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and knockback.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.windBoost.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.windBoost.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 4");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
             meta.setLore(lore);
@@ -194,7 +194,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "periodically shoots very sharp");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "arrows at nearby enemies.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.soulstring.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 30 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.soulstring.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 6");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
@@ -227,7 +227,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "have the ability to pierce through");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your enemies.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.huayraFury.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.huayraFury.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
@@ -257,7 +257,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Calls in a continuous arrow");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "barrage on the targeted location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.royalArtillery.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.royalArtillery.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);

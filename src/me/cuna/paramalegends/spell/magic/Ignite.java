@@ -22,6 +22,9 @@ public class Ignite implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
+    private final int damage = 3;
+    private final int duration = 105;
+    private final int cooldown = 140;
 
     public Ignite(ParamaLegends plugin){
         this.plugin = plugin;
@@ -57,9 +60,9 @@ public class Ignite implements Listener, SpellParama {
                     playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                                 ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                ((Damageable) ignited).damage(3.069, player);
+                                ((Damageable) ignited).damage(damage+0.069, player);
                             }, 0, 20));
-                    Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("IGNITED"+ignited.getUniqueId().toString()), 105);
+                    Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("IGNITED"+ignited.getUniqueId().toString()), duration);
                 }
             }
             playerParama.addToCooldown(this);
@@ -68,11 +71,12 @@ public class Ignite implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Ignite");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 140);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() { return cooldown;}
 }

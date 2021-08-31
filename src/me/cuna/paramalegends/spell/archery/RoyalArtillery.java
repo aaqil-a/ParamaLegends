@@ -30,7 +30,8 @@ public class RoyalArtillery implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
-
+    private final int cooldown = 1200;
+    private final int damage = 6;
 
     public RoyalArtillery(ParamaLegends plugin){
         this.plugin = plugin;
@@ -77,7 +78,7 @@ public class RoyalArtillery implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Royal Artillery");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 1200);
+                }, cooldown);
             }
         }
     }
@@ -126,7 +127,7 @@ public class RoyalArtillery implements Listener, SpellParama {
             List<Entity> entities = location.getWorld().getNearbyEntities(location, 2.5, 5, 2.5).stream().toList();
             for(Entity hit : entities){
                 if(hit instanceof LivingEntity && !(hit instanceof Player)){
-                    ((LivingEntity) hit).damage(6.016, player);
+                    ((LivingEntity) hit).damage(damage+0.016, player);
                 }
             }
         }, 5, 10));
@@ -154,4 +155,5 @@ public class RoyalArtillery implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown(){return cooldown;}
 }

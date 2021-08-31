@@ -21,6 +21,8 @@ public class BlindingSand implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 30;
+    private final int duration = 100;
+    private final int cooldown = 205;
 
     public BlindingSand(ParamaLegends plugin){
         this.plugin = plugin;
@@ -58,7 +60,7 @@ public class BlindingSand implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Blinding Sand");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 205);
+            }, cooldown);
         }
     }
     //Deal damage when custom projectile hits entity
@@ -88,7 +90,7 @@ public class BlindingSand implements Listener, SpellParama {
                                 player.getWorld().spawnParticle(Particle.BLOCK_CRACK, blind.getLocation(), 3, 0.25, 0.25, 0.25, 0, Material.SAND.createBlockData());
                                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                                     blind.removeMetadata("BLINDED", plugin);
-                                }, 100);
+                                }, duration);
                             }
                         }
                     }
@@ -116,5 +118,9 @@ public class BlindingSand implements Listener, SpellParama {
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    public int getCooldown() {
+        return cooldown;
     }
 }

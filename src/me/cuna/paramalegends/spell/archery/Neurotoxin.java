@@ -21,6 +21,8 @@ public class Neurotoxin implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 50;
+    private final int damage = 2;
+    private final int duration = 162;
 
     public Neurotoxin(ParamaLegends plugin){
         this.plugin = plugin;
@@ -46,14 +48,14 @@ public class Neurotoxin implements Listener, ArrowParama {
                     PlayerParama player = plugin.getPlayerParama((Player) arrow.getShooter());
                     player.addTask("NEUROTOXIN"+event.getEntity().getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-                                ((LivingEntity) event.getEntity()).damage(2.016, (Entity) arrow.getShooter());
+                                ((LivingEntity) event.getEntity()).damage(damage+0.016, (Entity) arrow.getShooter());
                                 ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, 1));
                                 event.getEntity().setVelocity(new Vector(0,0,0));
                             }, 20, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.cancelTask("NEUROTOXIN"+event.getEntity().getUniqueId().toString());
                         hit.removeMetadata("POISONPARAMA",plugin);
-                    }, 162);
+                    }, duration);
                 }
             }
         }
@@ -62,5 +64,6 @@ public class Neurotoxin implements Listener, ArrowParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getDuration(){return duration;}
 
 }

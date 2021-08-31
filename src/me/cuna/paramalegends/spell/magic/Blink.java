@@ -18,6 +18,7 @@ public class Blink implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 50;
+    private final int cooldown = 300;
 
     public Blink(ParamaLegends plugin){
         this.plugin = plugin;
@@ -56,11 +57,12 @@ public class Blink implements SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Blink");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 300);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() {return cooldown;}
 }

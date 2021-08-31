@@ -6,11 +6,7 @@ import me.cuna.paramalegends.spell.ArrowParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -20,6 +16,7 @@ import java.util.List;
 public class Blast implements ArrowParama, Listener {
 
     private final int manaCost = 60;
+    private final int blastDamage = 8;
     private final ParamaLegends plugin;
 
     public Blast(ParamaLegends plugin){
@@ -53,13 +50,13 @@ public class Blast implements ArrowParama, Listener {
             Bukkit.getScheduler().runTaskLater(plugin, ()->{
                 List<Entity> entities = arrow.getNearbyEntities(2,2,2);
                 for(Entity hit : entities){
-                    if(hit instanceof LivingEntity && !(hit instanceof Player)){
-                        ((LivingEntity) hit).damage(8.016, (Player) arrow.getShooter());
+                    if(hit instanceof Mob || hit instanceof Player){
+                        ((LivingEntity) hit).damage(blastDamage+0.016, (Player) arrow.getShooter());
                     }
                 }
             }, 5);
             arrow.getWorld().playSound(arrow.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.5f);
-            arrow.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, arrow.getLocation(), 8, 0.5, 0.5, 0.5, 0);
+            arrow.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, arrow.getLocation(), 8, 0.5, 0.5, 5d, 0);
         }
     }
 

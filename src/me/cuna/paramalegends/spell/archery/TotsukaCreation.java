@@ -29,6 +29,8 @@ public class TotsukaCreation implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 40;
+    private final int cooldown = 300;
+    private final int duration = 140;
 
     public TotsukaCreation(ParamaLegends plugin){
         this.plugin = plugin;
@@ -56,7 +58,7 @@ public class TotsukaCreation implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Totsuka's Creation");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 300);
+            }, cooldown);
         }
     }
 
@@ -102,7 +104,7 @@ public class TotsukaCreation implements Listener, SpellParama {
             web8.remove();
             web9.remove();
             player.removeMetadata("TOTSUKA", plugin);
-        }, 140);
+        }, duration);
     }
 
     @EventHandler
@@ -143,5 +145,6 @@ public class TotsukaCreation implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
-
+    public int getDuration() {return duration;}
+    public int getCooldown() {return cooldown;}
 }

@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 public class SecondWind implements AttackParama {
 
     private final ParamaLegends plugin;
-
+    private final int cooldown = 162;
 
     public SecondWind(ParamaLegends plugin){
         this.plugin = plugin;
@@ -28,7 +28,7 @@ public class SecondWind implements AttackParama {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 62, 2));
                 player.sendMessage(ChatColor.GREEN+"You gain a second wind.");
                 playerParama.addToCooldown(this);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> playerParama.removeFromCooldown(this), 162);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> playerParama.removeFromCooldown(this), cooldown);
             }
         }
     }

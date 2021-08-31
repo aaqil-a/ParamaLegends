@@ -13,6 +13,8 @@ public class WindBoost implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 60;
+    private final int duration = 280;
+    private final int cooldown = 600;
 
     public WindBoost(ParamaLegends plugin){
         this.plugin = plugin;
@@ -34,7 +36,7 @@ public class WindBoost implements SpellParama {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Wind Boost wore off.");
                 player.removeMetadata("WINDBOOSTPARAMA", plugin);
-            }, 280);
+            }, duration);
 
             //remove fro mcooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -42,12 +44,14 @@ public class WindBoost implements SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Wind Boost");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 600);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
     }
+    public int getDuration() {return duration;}
+    public int getCooldown() {return cooldown;}
 
 }

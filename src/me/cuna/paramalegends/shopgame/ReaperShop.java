@@ -181,7 +181,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "also inflicting Coated Blade");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "on the next attack.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.hiddenStrike.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.hiddenStrike.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 2");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
             meta.setLore(lore);
@@ -196,7 +196,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw sand into the enemy");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them temporarily confused.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.blindingSand.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 10 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.blindingSand.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 3");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
             meta.setLore(lore);
@@ -213,7 +213,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "inflicts high discomfort on");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "opponent.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.gutPunch.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 9 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.gutPunch.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 8");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
@@ -230,7 +230,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making them do less damage on");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the next attack.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.forbiddenSlash.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 20 seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.forbiddenSlash.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 9");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
@@ -246,7 +246,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "grim reaper, dealing immense");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage to a single target.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.mementoMori.getManaCost());
-            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: 1 minute");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.mementoMori.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 10");
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
             meta.setLore(lore);

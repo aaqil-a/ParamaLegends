@@ -17,6 +17,8 @@ public class Gust implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 30;
+    private final int cooldown = 200;
+    private final int damage = 2;
 
     public Gust(ParamaLegends plugin){
         this.plugin = plugin;
@@ -106,7 +108,7 @@ public class Gust implements SpellParama {
                     plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                     Vector velocity = knocked.getVelocity();
                     knocked.setVelocity(velocity.add(knockback));
-                    ((Damageable) knocked).damage(2.069, player);
+                    ((Damageable) knocked).damage(damage+0.069, player);
                 }
             }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -114,11 +116,12 @@ public class Gust implements SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Gust");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 200);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() {return cooldown;}
 }

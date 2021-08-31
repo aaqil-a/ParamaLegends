@@ -13,6 +13,8 @@ public class Enrage implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
+    private final int cooldown = 900;
+    private final int duration = 260;
 
     public Enrage(ParamaLegends plugin){
         this.plugin = plugin;
@@ -36,14 +38,14 @@ public class Enrage implements SpellParama {
                     player.removeMetadata("ENRAGING", plugin);
                     playerParama.setSilenced(false);
                     playerParama.cancelTask("ENRAGE");
-                },  260);
+                },  duration);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         plugin.sendNoLongerCooldownMessage(playerParama, "Enrage");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 900);
+                }, cooldown);
             }
         }
     }
@@ -52,4 +54,8 @@ public class Enrage implements SpellParama {
         return manaCost;
     }
 
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
 }

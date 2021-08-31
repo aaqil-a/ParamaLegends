@@ -23,6 +23,8 @@ public class TerrifyingCruelty implements Listener, SpellParama {
 
     private final ParamaLegends plugin;;
     private final int manaCost = 200;
+    private final int cooldown = 600;
+    private final int duration = 120;
 
     public TerrifyingCruelty(ParamaLegends plugin){
         this.plugin = plugin;
@@ -46,7 +48,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
                             hit.removeMetadata("TERRIFIED", plugin);
                             hitEffect.cancel();
-                        }, 120);
+                        }, duration);
                     }
                 }
                 playerParama.addToCooldown(this);
@@ -55,7 +57,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Terrifying Cruelty");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 600);
+                }, cooldown);
             }
         }
     }
@@ -76,4 +78,8 @@ public class TerrifyingCruelty implements Listener, SpellParama {
         return manaCost;
     }
 
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
 }

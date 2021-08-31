@@ -18,6 +18,7 @@ public class Retreat implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 70;
+    private final int speedDuration = 65;
 
     public Retreat(ParamaLegends plugin){
         this.plugin = plugin;
@@ -35,7 +36,7 @@ public class Retreat implements Listener, ArrowParama {
                         Bukkit.broadcastMessage(player.getMetadata("RETREATPARAMA").toString());
                         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed);
                         player.removeMetadata("RETREATPARAMA", plugin);
-                    }, 65);
+                    }, speedDuration);
                 }
                 entity.setCustomName("retreat");
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{

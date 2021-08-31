@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 public class CoatedBlade implements AttackParama {
 
     private final ParamaLegends plugin;
-
+    private final int cooldown = 80;
     public CoatedBlade(ParamaLegends plugin){
         this.plugin = plugin;
     }
@@ -33,7 +33,7 @@ public class CoatedBlade implements AttackParama {
                 attacker.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     attacker.removeFromCooldown(this);
-                }, 80);
+                }, cooldown);
             }
         }
     }

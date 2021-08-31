@@ -26,6 +26,10 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
     private final ParamaLegends plugin;
     private final DataManager data;
     private final int manaCost = 400;
+    private final int cooldown = 1200;
+    private final int spawnDuration = 600;
+    private final int livingDuration = 800;
+    private final int damage = 10;
 
     public VoicesOfTheDamned(ParamaLegends plugin){
         this.plugin = plugin;
@@ -65,7 +69,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                         damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
                         damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
                         damned.setCustomNameVisible(true);
-                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(10.069);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+0.069);
                         damned.setTarget(null);
                         playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
                     },3, 100));
@@ -75,7 +79,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                         damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
                         damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
                         damned.setCustomNameVisible(true);
-                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(10.069);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+0.069);
                         damned.setTarget(null);
                         playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
                     },53, 100));
@@ -110,7 +114,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                 playerParama.cancelTask("DAMNEDSPAWNPHANTOM");
                 playerParama.cancelTask("DAMNEDSPAWNSILVERFISH");
                 dummy.remove();
-            }, 600);
+            }, spawnDuration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 playerParama.cancelTask("DAMNEDTARGET");
                 playerParama.getEntities().forEach((k, v)-> {
@@ -119,13 +123,13 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                         v.remove();
                     }
                 });
-            }, 800);
+            }, livingDuration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Voices of the Damned");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 1200);
+            }, cooldown);
         }
     }
 
@@ -173,5 +177,10 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
     }
 }

@@ -13,6 +13,7 @@ public class ForbiddenSlash implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 200;
+    private final int cooldown = 402;
 
     public ForbiddenSlash(ParamaLegends plugin){
         this.plugin = plugin;
@@ -31,11 +32,16 @@ public class ForbiddenSlash implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Forbidden Slash");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 402);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
     }
 }

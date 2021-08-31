@@ -19,6 +19,7 @@ public class HunterEye implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
+    private final int duration = 200;
 
     public HunterEye(ParamaLegends plugin){
         this.plugin = plugin;
@@ -45,7 +46,7 @@ public class HunterEye implements Listener, ArrowParama {
                         ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 200, 0));
                         Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                             event.getEntity().removeMetadata("HUNTEREYE",plugin);
-                        }, 200);
+                        }, duration);
                     }
                 }
             }
@@ -56,4 +57,5 @@ public class HunterEye implements Listener, ArrowParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getDuration(){return duration;}
 }

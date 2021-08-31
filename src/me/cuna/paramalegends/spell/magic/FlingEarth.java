@@ -25,6 +25,8 @@ public class FlingEarth implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 3;
+    private final int cooldown = 16;
+    private final int damage = 5;
 
     public FlingEarth(ParamaLegends plugin){
         this.plugin = plugin;
@@ -87,7 +89,7 @@ public class FlingEarth implements Listener, SpellParama {
                     }, 6, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 playerParama.removeFromCooldown(this);
-            }, 16);
+            }, cooldown);
         }
     }
     //Deal damage when custom projectile hits entity
@@ -110,7 +112,7 @@ public class FlingEarth implements Listener, SpellParama {
                     if(event.getHitEntity() instanceof Damageable){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                         Damageable hit = (Damageable) event.getHitEntity();
-                        hit.damage(5.069, player);
+                        hit.damage(damage+0.069, player);
                     }
                 }
                 projectile.remove();
@@ -121,4 +123,5 @@ public class FlingEarth implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown(){return cooldown;}
 }

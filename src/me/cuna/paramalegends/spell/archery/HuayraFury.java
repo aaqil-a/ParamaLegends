@@ -5,7 +5,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -15,6 +15,8 @@ public class HuayraFury implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 150;
+    private final int duration = 400;
+    private final int cooldown = 1200;
 
     public HuayraFury(ParamaLegends plugin){
         this.plugin = plugin;
@@ -34,14 +36,14 @@ public class HuayraFury implements Listener, SpellParama {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Huayra's Fury wore off.");
                 player.removeMetadata("HUAYRAFURY", plugin);
-            }, 400);
+            }, duration);
             //remove fro mcooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Huayra's Fury");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 1200);//1200
+            }, cooldown);//1200
         }
     }
 
@@ -55,5 +57,7 @@ public class HuayraFury implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getDuration(){ return duration;}
+    public int getCooldown(){return cooldown;}
 
 }

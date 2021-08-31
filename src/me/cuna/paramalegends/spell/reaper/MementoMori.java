@@ -21,6 +21,8 @@ public class MementoMori implements AttackParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 300;
+    private final int cooldown = 1202;
+    private final int damage = 250;
 
     public MementoMori(ParamaLegends plugin){
         this.plugin = plugin;
@@ -34,7 +36,7 @@ public class MementoMori implements AttackParama {
                 playerParama.addToCooldown(this);
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    ((LivingEntity) entity).damage(damage+250.034, player);
+                    ((LivingEntity) entity).damage(damage+this.damage+250.034, player);
                     entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f, 1.3f);
                     entity.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, ((LivingEntity) entity).getEyeLocation(), 4, 0.5, 0.5, 0.5, 0);
                     entity.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, ((LivingEntity) entity).getEyeLocation(), 1, 0, 0, 0, 0);
@@ -45,7 +47,7 @@ public class MementoMori implements AttackParama {
                         playerParama.removeFromCooldown(this);
                         plugin.sendNoLongerCooldownMessage(playerParama, "Memento Mori");
                     }
-                }, 1202);//1202
+                }, cooldown);//1202
             }
         }
     }
@@ -79,5 +81,9 @@ public class MementoMori implements AttackParama {
     }
     public int getManaCost(){
         return manaCost;
+    }
+
+    public int getCooldown() {
+        return cooldown;
     }
 }

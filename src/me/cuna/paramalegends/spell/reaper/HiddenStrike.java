@@ -13,6 +13,7 @@ public class HiddenStrike implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
+    private final int cooldown = 202;
 
     public HiddenStrike(ParamaLegends plugin){
         this.plugin = plugin;
@@ -31,11 +32,16 @@ public class HiddenStrike implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Hidden Strike");
                     playerParama.removeFromCooldown(this);
                 }
-            }, 202);
+            }, cooldown);
         }
     }
 
     public int getManaCost(){
         return manaCost;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
     }
 }

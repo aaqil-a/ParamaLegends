@@ -5,4 +5,5 @@ import me.cuna.paramalegends.PlayerParama;
 public interface SpellParama {
     void castSpell(PlayerParama player);
     int getManaCost();
+    int getCooldown();
 }

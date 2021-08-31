@@ -26,6 +26,8 @@ public class SummonLightning implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 100;
+    private final int cooldown = 600;
+    private final int damage = 45;
 
     public SummonLightning(ParamaLegends plugin){
         this.plugin = plugin;
@@ -63,7 +65,7 @@ public class SummonLightning implements Listener, SpellParama {
                 for(Entity ignited : entities){
                     if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                        ((Damageable) ignited).damage(45.069, player);
+                        ((Damageable) ignited).damage(damage+0.069, player);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -71,12 +73,14 @@ public class SummonLightning implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Summon Lightning");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 600);
+                }, cooldown);
             }
         }
     }
-    @Override
     public int getManaCost() {
         return manaCost;
+    }
+    public int getCooldown() {
+        return cooldown;
     }
 }

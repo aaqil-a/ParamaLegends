@@ -23,6 +23,9 @@ public class Calamity implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 500;
+    private final int cooldown = 2400;
+    private final int duration = 302;
+    private final int lightningDamage = 30;
 
     public Calamity(ParamaLegends plugin){
         this.plugin = plugin;
@@ -52,7 +55,7 @@ public class Calamity implements SpellParama {
                                 Entity striked = toDamage.get(rand.nextInt(toDamage.size()));
                                 striked.getWorld().strikeLightningEffect(striked.getLocation());
                                 striked.getWorld().spawnParticle(Particle.FLASH, striked.getLocation().add(new Vector(0,1,0)), 5);
-                                ((Damageable) striked).damage(30.072, player);
+                                ((Damageable) striked).damage(lightningDamage+0.072, player);
                                 plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
                             }
                         }, 62, 20));
@@ -66,14 +69,14 @@ public class Calamity implements SpellParama {
                     playerParama.cancelTask("CALAMITY");
                     player.removeMetadata("CALAMITY", plugin);
                     playerParama.cancelTask("CALAMITYEFFECT");
-                }, 302);
+                }, duration);
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         plugin.sendNoLongerCooldownMessage(playerParama, "Calamity");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 2400);
+                }, cooldown);
             }
         }
     }
@@ -82,4 +85,8 @@ public class Calamity implements SpellParama {
         return manaCost;
     }
 
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
 }

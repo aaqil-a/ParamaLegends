@@ -22,6 +22,9 @@ public class IllusoryOrb implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 100;
+    private final int damage = 20;
+    private final int duration = 40;
+    private final int cooldown = 200;
 
     public IllusoryOrb(ParamaLegends plugin){
         this.plugin = plugin;
@@ -57,13 +60,13 @@ public class IllusoryOrb implements Listener, SpellParama {
                     playerParama.removeEntity("ILLUSORYORB");
                     playerParama.cancelTask("ORBFLASH");
                     if(player.hasMetadata("ORBCASTED")) player.removeMetadata("ORBCASTED",plugin);
-                }, 40);
+                }, duration);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         plugin.sendNoLongerCooldownMessage(playerParama, "Illusory Orb");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 200);
+                }, cooldown);
             }
         }
     }
@@ -87,7 +90,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                 if(event.getHitEntity() instanceof Damageable){
                     plugin.experienceListener.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();
-                    hit.damage(20.069, (Player) projectile.getShooter());
+                    hit.damage(damage+0.069, (Player) projectile.getShooter());
                 }
             }
         }
@@ -96,4 +99,5 @@ public class IllusoryOrb implements Listener, SpellParama {
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() { return cooldown;}
 }

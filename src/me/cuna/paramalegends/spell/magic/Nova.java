@@ -20,6 +20,8 @@ public class Nova implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 600;
+    private final int damage = 60;
+    private final int cooldown = 2400;
 
     public Nova(ParamaLegends plugin){
         this.plugin = plugin;
@@ -78,7 +80,7 @@ public class Nova implements SpellParama {
                     for (Entity exploded : entities) {
                         if (exploded instanceof Damageable) {
                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                            ((Damageable) exploded).damage(60.069, player);
+                            ((Damageable) exploded).damage(damage+0.069, player);
                         }
                     }
                 }, 125);
@@ -87,11 +89,12 @@ public class Nova implements SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Nova");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 2400);
+                }, cooldown);
             }
         }
     }
     public int getManaCost(){
         return manaCost;
     }
+    public int getCooldown() { return cooldown;}
 }

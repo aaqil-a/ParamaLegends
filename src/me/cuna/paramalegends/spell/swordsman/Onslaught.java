@@ -22,6 +22,8 @@ public class Onslaught implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 100;
+    private final int cooldown = 480;
+    private final int damage = 6;
 
     public Onslaught(ParamaLegends plugin){
         this.plugin = plugin;
@@ -46,7 +48,7 @@ public class Onslaught implements SpellParama {
                         if(hit instanceof Damageable && !(hit instanceof ArmorStand) && !(hit instanceof Player)){
                             plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
                             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, hit.getLocation().add(0, 1,0), 1, 0, 0, 0, 0);
-                            ((Damageable) hit).damage(6.072, player);
+                            ((Damageable) hit).damage(damage+0.072, player);
                         }
                     }
                 }, 0, 3));
@@ -65,7 +67,7 @@ public class Onslaught implements SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Onslaught");
                         playerParama.removeFromCooldown(this);
                     }
-                }, 480);
+                }, cooldown);
             }
         }
     }
@@ -155,5 +157,10 @@ public class Onslaught implements SpellParama {
     }
     public int getManaCost(){
         return manaCost;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
     }
 }
