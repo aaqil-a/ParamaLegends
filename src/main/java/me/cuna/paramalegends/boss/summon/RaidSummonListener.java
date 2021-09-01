@@ -31,14 +31,14 @@ public class RaidSummonListener implements Listener {
     public void onInteract(PlayerInteractEvent event){
         if(event.getItem() != null && event.getItem().hasItemMeta()){
             ItemMeta meta = event.getItem().getItemMeta();
-            if(meta.hasDisplayName() && meta.getDisplayName().equals("§6Esoteric Pearl")){
+            if(meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Esoteric Pearl")){
                 if(event.getAction().equals(Action.RIGHT_CLICK_AIR)){
                     event.setCancelled(true);
                     return;
                 }
                 if(!isRaidOccuring){
                     if(event.getPlayer().getWorld().getTime() < 13000 || event.getPlayer().getWorld().getTime() > 23000){
-                        event.getPlayer().sendMessage("§6Esoteric Pearl"+ChatColor.GRAY+" can only be used at night.");
+                        event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"6Esoteric Pearl"+ChatColor.GRAY+" can only be used at night.");
                     } else {
                         //Check if player is nearby the occult altar
                         if(occultAltarCheck(event.getPlayer())) {
@@ -46,9 +46,9 @@ public class RaidSummonListener implements Listener {
                             isRaidOccuring = true;
                             event.getPlayer().getWorld().setTime(14000);
                             plugin.raidFightListener.raidFight(event.getPlayer().getWorld());
-                        } else event.getPlayer().sendMessage("§6Esoteric Pearl"+ChatColor.GRAY+" can only be used nearby the §6Occult Altar"+ChatColor.GRAY+".");
+                        } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"6Esoteric Pearl"+ChatColor.GRAY+" can only be used nearby the "+ChatColor.GOLD+"Occult Altar"+ChatColor.GRAY+".");
                     }
-                } else event.getPlayer().sendMessage("§6Esoteric Pearl"+ChatColor.GRAY+" cannot be used during a raid.");
+                } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"6Esoteric Pearl"+ChatColor.GRAY+" cannot be used during a raid.");
                 event.setCancelled(true);
             }
         }
@@ -58,7 +58,7 @@ public class RaidSummonListener implements Listener {
         List<Entity> entities = player.getNearbyEntities(3,3,3);
         for(Entity e : entities){
             if(e instanceof ArmorStand){
-                if(e.getCustomName() != null && e.getCustomName().equals("§6Occult Altar")){
+                if(e.getCustomName() != null && e.getCustomName().equals(ChatColor.COLOR_CHAR+"6Occult Altar")){
                     return true;
                 }
             }

@@ -44,7 +44,7 @@ public class Destiny implements Listener {
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         if (event.getRightClicked() instanceof ArmorStand) {
-            if (event.getRightClicked().getName().equals("§6Your Destiny")){
+            if (event.getRightClicked().getName().equals(ChatColor.COLOR_CHAR+"6Your Destiny")){
                 event.setCancelled(true);
                 createGui(player);
                 player.openInventory(gui.get(player));
@@ -101,7 +101,7 @@ public class Destiny implements Listener {
 
     //Create main gui
     public void createGui(Player player){
-        Inventory openGui = Bukkit.createInventory(null,9, "§5Your Destiny");
+        Inventory openGui = Bukkit.createInventory(null,9, ChatColor.COLOR_CHAR+"5Your Destiny");
         gui.put(player, openGui);
 
         ItemStack item = new ItemStack(Material.IRON_SWORD);
@@ -167,7 +167,7 @@ public class Destiny implements Listener {
 
     //Create gui of destiny
     public void createGui2(Player player, String skill){
-        Inventory openGui = Bukkit.createInventory(null,54, "§5Your "+skill.substring(0,1).toUpperCase() + skill.substring(1)+" Destiny");
+        Inventory openGui = Bukkit.createInventory(null,54, ChatColor.COLOR_CHAR+"5Your "+skill.substring(0,1).toUpperCase() + skill.substring(1)+" Destiny");
         gui2.put(player, openGui);
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill);
         int itemLocations[] = {0, 48, 50, 40, 30, 31, 32, 22, 12, 14, 4};

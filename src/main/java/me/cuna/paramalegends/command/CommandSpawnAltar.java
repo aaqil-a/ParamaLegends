@@ -42,17 +42,17 @@ public class CommandSpawnAltar implements CommandExecutor {
                     case "naturealtar" ->
                         plugin.natureAltarListener.spawnAltar(player.getWorld(), (int) player.getLocation().getX(),(int) player.getLocation().getY(), (int) player.getLocation().getZ());
                     case "oddwares" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.CHEST,"§6Odd Wares").setCustomNameVisible(true);
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.CHEST,ChatColor.COLOR_CHAR+"6Odd Wares").setCustomNameVisible(true);
                     case "destiny" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.END_PORTAL_FRAME,"§6Your Destiny").setCustomNameVisible(true);
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.END_PORTAL_FRAME,ChatColor.COLOR_CHAR+"6Your Destiny").setCustomNameVisible(true);
                     case "archeryshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.FLETCHING_TABLE,"§aFletcher's Table");
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.FLETCHING_TABLE,ChatColor.COLOR_CHAR+"aFletcher's Table");
                     case "swordsmanshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ANVIL,"§2Dull Anvil");
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ANVIL,ChatColor.COLOR_CHAR+"2Dull Anvil");
                     case "reapershop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.GRINDSTONE,"§4Reaper Grindstone");
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.GRINDSTONE,ChatColor.COLOR_CHAR+"4Reaper Grindstone");
                     case "magicshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ENCHANTING_TABLE,"§5Ancient Tomes");
+                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ENCHANTING_TABLE,ChatColor.COLOR_CHAR+"5Ancient Tomes");
                     default -> sendAltarNames(player);
                 }
             }

@@ -3,6 +3,7 @@ package me.cuna.paramalegends.altar;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.boss.BossType;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,9 +27,9 @@ public class AltarListener implements Listener {
         this.plugin = plugin;
         this.data = plugin.getData();
         this.typeName = switch(type){
-            case START -> "§6Occult Altar";
-            case NATURE -> "§aMysterious Sludge";
-            case EARTH -> "§0Indestructible Stone";
+            case START -> ChatColor.COLOR_CHAR+"6Occult Altar";
+            case NATURE -> ChatColor.COLOR_CHAR+"aMysterious Sludge";
+            case EARTH -> ChatColor.COLOR_CHAR+"0Indestructible Stone";
             case WATER, FIRE, VOID-> null;
         };
     }

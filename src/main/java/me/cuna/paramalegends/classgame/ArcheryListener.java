@@ -72,27 +72,27 @@ public class ArcheryListener implements Listener{
         ItemStack item = event.getItem();
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){
-                case "§aTotsuka's Creation" -> {
+                case ChatColor.COLOR_CHAR+"aTotsuka's Creation" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel( 3, ClassGameType.ARCHERY))
                             totsukaCreation.castSpell(player);
                 }
-                case "§aWind Boost" -> {
+                case ChatColor.COLOR_CHAR+"aWind Boost" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel( 4, ClassGameType.ARCHERY))
                             windBoost.castSpell(player);
                 }
-                case "§aSoulstring" -> {
+                case ChatColor.COLOR_CHAR+"aSoulstring" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel( 6, ClassGameType.ARCHERY))
                             soulstring.castSpell(player);
                 }
-                case "§aRoyal Artillery" -> {
+                case ChatColor.COLOR_CHAR+"aRoyal Artillery" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel( 9, ClassGameType.ARCHERY))
                             royalArtillery.castSpell(player);
                 }
-                case "§aHuayra's Fury"-> {
+                case ChatColor.COLOR_CHAR+"aHuayra's Fury"-> {
                     if (player.isNotSilenced())
                         if(player.checkLevel( 7, ClassGameType.ARCHERY))
                             huayraFury.castSpell(player);
@@ -140,40 +140,40 @@ public class ArcheryListener implements Listener{
 
     public void shootArrow(PlayerParama playerParama, EntityShootBowEvent event, String name){
         switch(name){
-            case "§aHunter's Eye" -> {
+            case ChatColor.COLOR_CHAR+"aHunter's Eye" -> {
                 if(playerParama.isNotSilenced()){
                     hunterEye.shootArrow(playerParama, event.getProjectile());
                 }
             }
-            case "§aViper's Bite" -> {
+            case ChatColor.COLOR_CHAR+"aViper's Bite" -> {
                 if(playerParama.isNotSilenced()){
                     if(playerParama.checkLevel( 2, ClassGameType.ARCHERY)){
                         viperBite.shootArrow(playerParama, event.getProjectile());
                     }
                 }
             }
-            case "§aNeurotoxin" -> {
+            case ChatColor.COLOR_CHAR+"aNeurotoxin" -> {
                 if(playerParama.isNotSilenced()){
                     if(playerParama.checkLevel( 5, ClassGameType.ARCHERY)){
                         neurotoxin.shootArrow(playerParama, event.getProjectile());
                     }
                 }
             }
-            case "§aRetreat" -> {
+            case ChatColor.COLOR_CHAR+"aRetreat" -> {
                 if(playerParama.isNotSilenced()){
                     if(playerParama.checkLevel( 7, ClassGameType.ARCHERY)){
                         retreat.shootArrow(playerParama, event.getProjectile());
                     }
                 }
             }
-            case "§aBlast" -> {
+            case ChatColor.COLOR_CHAR+"aBlast" -> {
                 if(playerParama.isNotSilenced()){
                     if(playerParama.checkLevel( 8, ClassGameType.ARCHERY)){
                         blast.shootArrow(playerParama, event.getProjectile());
                     }
                 }
             }
-            case "§aWhistling Wind" -> {
+            case ChatColor.COLOR_CHAR+"aWhistling Wind" -> {
                 if(event.getProjectile() instanceof SpectralArrow){
                     ((SpectralArrow) event.getProjectile()).setGlowingTicks(0);
                 }
@@ -206,7 +206,7 @@ public class ArcheryListener implements Listener{
         if(event.getItemInHand().hasItemMeta()){
             ItemStack placed = event.getItemInHand();
             switch(Objects.requireNonNull(placed.getItemMeta()).getDisplayName()){
-                case "§aTotsuka's Creation", "§aSoulstring", "§aHuayra's Fury" -> event.setCancelled(true);
+                case ChatColor.COLOR_CHAR+"aTotsuka's Creation", ChatColor.COLOR_CHAR+"aSoulstring", ChatColor.COLOR_CHAR+"aHuayra's Fury" -> event.setCancelled(true);
             }
         }
     }

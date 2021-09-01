@@ -43,7 +43,7 @@ public class CommandSetupGame implements CommandExecutor {
                 //create wand item
                 ItemStack wand = new ItemStack(Material.SHEARS);
                 ItemMeta meta = wand.getItemMeta();
-                meta.setDisplayName("§6Game Wand");
+                meta.setDisplayName(ChatColor.COLOR_CHAR+"6Game Wand");
                 wand.setItemMeta(meta);
                 ((Player) sender).getInventory().addItem(wand);
 

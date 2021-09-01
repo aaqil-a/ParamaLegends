@@ -26,7 +26,7 @@ public class Recipes {
         //add esoteric pearl
         ItemStack item = new ItemStack(Material.ENDER_PEARL);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§6Esoteric Pearl");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"6Esoteric Pearl");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY+"A mysterious pearl with");
         lore.add(ChatColor.GRAY+"a threatening aura.");
@@ -49,7 +49,7 @@ public class Recipes {
         //essence of nature
         item = new ItemStack(Material.SLIME_BALL);
         meta = item.getItemMeta();
-        meta.setDisplayName("§aEssence of Nature");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"aEssence of Nature");
         lore.add(ChatColor.GRAY+"A sticky substance that");
         lore.add(ChatColor.GRAY+"radiates life essence.");
         meta.setLore(lore);
@@ -71,7 +71,7 @@ public class Recipes {
         //winery
         item = new ItemStack(Material.BARREL);
         meta = item.getItemMeta();
-        meta.setDisplayName("§6Winery Barrel");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"6Winery Barrel");
         lore.add(ChatColor.GRAY+"Used to refine beverages that");
         lore.add(ChatColor.GRAY+"impair the mind.");
         meta.setLore(lore);

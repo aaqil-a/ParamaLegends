@@ -2,6 +2,7 @@ package me.cuna.paramalegends.command;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,15 +23,15 @@ public class CommandRemoveAltar implements CommandExecutor {
     public CommandRemoveAltar(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
-        customAltarNames.add("§6Occult Altar");
-        customAltarNames.add("§aMysterious Sludge");
-        customAltarNames.add("§0Indestructible Stone");
-        customAltarNames.add("§6Your Destiny");
-        customAltarNames.add("§6Odd Wares");
-        customAltarNames.add("§5Ancient Tomes");
-        customAltarNames.add("§4Reaper Grindstone");
-        customAltarNames.add("§2Dull Anvil");
-        customAltarNames.add("§aFletcher's Table");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"6Occult Altar");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"aMysterious Sludge");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"0Indestructible Stone");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"6Your Destiny");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"6Odd Wares");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"5Ancient Tomes");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"4Reaper Grindstone");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"2Dull Anvil");
+        customAltarNames.add(ChatColor.COLOR_CHAR+"aFletcher's Table");
     }
 
 

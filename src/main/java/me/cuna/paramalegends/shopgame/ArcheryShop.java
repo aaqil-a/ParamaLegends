@@ -36,7 +36,7 @@ public class ArcheryShop extends GameShop {
     }};
 
     public ArcheryShop(ParamaLegends plugin) {
-        super(plugin, "§aFletcher's Table");
+        super(plugin, ChatColor.GREEN+"Fletcher's Table");
         this.plugin = plugin;
     }
 
@@ -80,7 +80,7 @@ public class ArcheryShop extends GameShop {
     public Inventory createGui(Player player, DataManager data){
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".archery");
         Inventory gui;
-        gui = Bukkit.createInventory(null,27, "§aRanger Gear");
+        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"aRanger Gear");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -101,7 +101,7 @@ public class ArcheryShop extends GameShop {
         PotionMeta tippedArrowMeta = (PotionMeta) tippedArrowItem.getItemMeta();
         tippedArrowMeta.setColor(Color.YELLOW);
         tippedArrowMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aHunter's Eye");
+        tippedArrowMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aHunter's Eye");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Tag an enemy, revealing them");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "for some time and increasing");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "its incoming damage.");
@@ -116,7 +116,7 @@ public class ArcheryShop extends GameShop {
 
         if(playerLevel >= 2){
             // Viper's Bite;
-            tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aViper's Bite");
+            tippedArrowMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aViper's Bite");
             tippedArrowMeta.setColor(Color.GREEN);
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Poisons your target for a short");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "duration.");
@@ -132,7 +132,7 @@ public class ArcheryShop extends GameShop {
         if(playerLevel >= 3){
             // Totsuka's Creation
             item.setType(Material.COBWEB);
-            meta.setDisplayName(ChatColor.RESET + "§aTotsuka's Creation");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aTotsuka's Creation");
             meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Throw a web to the targeted");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "location, rooting enemies caught");
@@ -149,7 +149,7 @@ public class ArcheryShop extends GameShop {
         if(playerLevel >= 4){
             // Wind Boost
             item.setType(Material.FEATHER);
-            meta.setDisplayName(ChatColor.RESET + "§aWind Boost");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aWind Boost");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Harness the power of wind to");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "boost your arrows, dealing more");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and knockback.");
@@ -164,7 +164,7 @@ public class ArcheryShop extends GameShop {
         }
         if(playerLevel >= 5){
             // Neurotoxin
-            tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aNeurotoxin");
+            tippedArrowMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aNeurotoxin");
             tippedArrowMeta.setColor(Color.LIME);
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Imbue your arrow with neurotoxin,");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "poisoning and slowing targets for");
@@ -181,7 +181,7 @@ public class ArcheryShop extends GameShop {
         if(playerLevel >= 6){
             // Soulstring
             item.setType(Material.TRIPWIRE_HOOK);
-            meta.setDisplayName(ChatColor.RESET + "§aSoulstring");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aSoulstring");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a bow companion that");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "periodically shoots very sharp");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "arrows at nearby enemies.");
@@ -196,7 +196,7 @@ public class ArcheryShop extends GameShop {
         }
         if(playerLevel >= 7){
             // Retreat
-            tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aRetreat");
+            tippedArrowMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aRetreat");
             tippedArrowMeta.setColor(Color.WHITE);
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Shoots two arrows with the first");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "dealing less damage. After shooting,");
@@ -212,7 +212,7 @@ public class ArcheryShop extends GameShop {
             lore.clear();
             // Huayra's Fury
             item.setType(Material.SKELETON_SKULL);
-            meta.setDisplayName(ChatColor.RESET + "§aHuayra's Fury");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aHuayra's Fury");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "You reawaken the wrath of Huayra,");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "cursing critical arrows you shoot");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "to strike at incredible speeds and");
@@ -229,7 +229,7 @@ public class ArcheryShop extends GameShop {
         }
         if(playerLevel >= 8){
             // Blast
-            tippedArrowMeta.setDisplayName(ChatColor.RESET + "§aBlast");
+            tippedArrowMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aBlast");
             tippedArrowMeta.setColor(Color.RED);
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Imbue your arrow with gunpowder,");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making it explode on impact.");;
@@ -245,7 +245,7 @@ public class ArcheryShop extends GameShop {
         if(playerLevel >= 9){
             // Royal Artillery
             item.setType(Material.NAUTILUS_SHELL);
-            meta.setDisplayName(ChatColor.RESET + "§aRoyal Artillery");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aRoyal Artillery");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Calls in a continuous arrow");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "barrage on the targeted location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.royalArtillery.getManaCost());
@@ -260,7 +260,7 @@ public class ArcheryShop extends GameShop {
         if(playerLevel >= 10){
             // Whistling Wind
             item.setType(Material.SPECTRAL_ARROW);
-            meta.setDisplayName(ChatColor.RESET + "§aWhistling Wind");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"aWhistling Wind");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "An arrow that directs itself towards");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "every enemy around its shooter and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "returns after.");

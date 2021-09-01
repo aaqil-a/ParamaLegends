@@ -35,7 +35,7 @@ public class WineryListener implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         //Check if item clicked is in gui
-        if (!event.getView().getTitle().equals("§6Winery Barrel")) {
+        if (!event.getView().getTitle().equals(ChatColor.COLOR_CHAR+"6Winery Barrel")) {
             return;
         }
         event.setCancelled(true);
@@ -43,9 +43,9 @@ public class WineryListener implements Listener {
         if(expiration > player.getWorld().getGameTime()){
             ItemStack itemClicked = event.getCurrentItem();
             if(itemClicked != null && itemClicked.getItemMeta() != null) {
-                if(itemClicked.getItemMeta().getDisplayName().startsWith("§dUnaged")){
+                if(itemClicked.getItemMeta().getDisplayName().startsWith(ChatColor.COLOR_CHAR+"dUnaged")){
                     beginAging(event);
-                } else if(itemClicked.getItemMeta().getDisplayName().startsWith("§dAged")){
+                } else if(itemClicked.getItemMeta().getDisplayName().startsWith(ChatColor.COLOR_CHAR+"dAged")){
                     event.getClickedInventory().clear(event.getSlot());
                     player.getInventory().addItem(itemClicked);
                 }
@@ -79,7 +79,7 @@ public class WineryListener implements Listener {
             }
         }
         meta.setLore(lore);
-        meta.setDisplayName("§dAging"+meta.getDisplayName().substring(8));
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"dAging"+meta.getDisplayName().substring(8));
         drink.setItemMeta(meta);
         event.getInventory().addItem(drink);
         player.getInventory().clear(event.getSlot());
@@ -87,7 +87,7 @@ public class WineryListener implements Listener {
     //update age when opening winery
     @EventHandler
     public void onOpenInventory(InventoryOpenEvent event){
-        if(event.getView().getTitle().equals("§6Winery Barrel")){
+        if(event.getView().getTitle().equals(ChatColor.COLOR_CHAR+"6Winery Barrel")){
             Player player = (Player) event.getPlayer();
             for(ItemStack potion : event.getInventory().getStorageContents()){
                 if(potion == null || potion.getItemMeta().getDisplayName().contains("Aged")) continue;
@@ -139,7 +139,7 @@ public class WineryListener implements Listener {
                 meta.setLore(lore);
             }
         }
-        meta.setDisplayName("§dAged "+meta.getDisplayName().substring(8));
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"dAged "+meta.getDisplayName().substring(8));
         return meta;
     }
 }

@@ -36,7 +36,7 @@ public class SetupListener implements Listener {
     public void onInteract(PlayerInteractEvent event){
         if(event.getItem() != null && event.getItem().hasItemMeta()){
             ItemMeta meta = event.getItem().getItemMeta();
-            if(meta.hasDisplayName() && meta.getDisplayName().equals("§6Game Wand")){
+            if(meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Game Wand")){
                 event.setCancelled(true);
                 if(verify){
                     spawnAltar(event.getPlayer(), event.getClickedBlock());

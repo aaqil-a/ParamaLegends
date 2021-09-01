@@ -45,7 +45,7 @@ public class GeneralShop extends GameShop {
     }};
 
     public GeneralShop(ParamaLegends plugin) {
-        super(plugin, "§6Odd Wares");
+        super(plugin, ChatColor.COLOR_CHAR+"6Odd Wares");
     }
 
     //Get prices
@@ -58,7 +58,7 @@ public class GeneralShop extends GameShop {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        gui = Bukkit.createInventory(null,18, "§6Odd Wares");
+        gui = Bukkit.createInventory(null,18, ChatColor.COLOR_CHAR+"6Odd Wares");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -86,7 +86,7 @@ public class GeneralShop extends GameShop {
         // Healing Potion
         ItemStack potion = new ItemStack(Material.POTION, 1);
         PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
-        potionMeta.setDisplayName(ChatColor.RESET + "§6Healing Potion");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"6Healing Potion");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "3 Lectrum");
         potionMeta.setLore(lore);
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HEAL, 1, 1), true);
@@ -96,7 +96,7 @@ public class GeneralShop extends GameShop {
         lore.clear();
 
         // Healing Potion
-        potionMeta.setDisplayName(ChatColor.RESET + "§6Regeneration Potion");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"6Regeneration Potion");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "4 Lectrum");
         potionMeta.setLore(lore);
         potionMeta.removeCustomEffect(PotionEffectType.HEAL);

@@ -24,7 +24,7 @@ public class AlcoholRecipes {
         //apple wine
         ItemStack item = new ItemStack(Material.POTION);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setDisplayName(ChatColor.RESET + "§dUnaged Apple Wine");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"dUnaged Apple Wine");
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 60, 1), true);
         potionMeta.setColor(Color.ORANGE);
         potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -44,7 +44,7 @@ public class AlcoholRecipes {
         //vodka
         item = new ItemStack(Material.POTION);
         potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setDisplayName(ChatColor.RESET + "§dUnaged Vodka");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"dUnaged Vodka");
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 60, 2), true);
         potionMeta.setColor(Color.WHITE);
         potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -63,7 +63,7 @@ public class AlcoholRecipes {
         //pale ale
         item = new ItemStack(Material.POTION);
         potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setDisplayName(ChatColor.RESET + "§dUnaged Pale Ale");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"dUnaged Pale Ale");
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 80, 1), true);
         potionMeta.setColor(Color.RED);
         potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);

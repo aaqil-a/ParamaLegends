@@ -102,7 +102,7 @@ public class EarthAltarListener extends AltarListener implements Listener {
 
         // Raid boss summoning item
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.setDisplayName("§6Esoteric Pearl");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"6Esoteric Pearl");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY+"A mysterious pearl with");
         lore.add(ChatColor.GRAY+"a threatening aura.");
@@ -112,7 +112,7 @@ public class EarthAltarListener extends AltarListener implements Listener {
         lore.clear();
 
         item.setType(Material.PAPER);
-        meta.setDisplayName("§7Evoking Components");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"7Evoking Components");
         lore.add(ChatColor.DARK_GRAY+"A pearl of end");
         lore.add(ChatColor.DARK_GRAY+"Four exploding powder");
         lore.add(ChatColor.DARK_GRAY+"Four osseous matter");

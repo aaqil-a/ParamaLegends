@@ -66,51 +66,51 @@ public class MagicListener implements Listener {
             if(item.getItemMeta() != null){
                 //Call cast spell function according to book name
                 switch(item.getItemMeta().getDisplayName()){
-                    case "§5Fling Earth":
+                    case ChatColor.COLOR_CHAR+"5Fling Earth":
                         if(player.isNotSilenced())
                             flingEarth.castSpell(player);
                         break;
-                    case "§5Ignite":
+                    case ChatColor.COLOR_CHAR+"5Ignite":
                         if(player.checkLevel(2, ClassGameType.MAGIC) && player.isNotSilenced()){
                             ignite.castSpell(player);
                         }
                         break;
-                    case "§5Gust":
+                    case ChatColor.COLOR_CHAR+"5Gust":
                         if(player.checkLevel(3, ClassGameType.MAGIC) && player.isNotSilenced()){
                             gust.castSpell(player);
                         }
                         break;
-                    case "§5Life Drain":
+                    case ChatColor.COLOR_CHAR+"5Life Drain":
                         if(player.checkLevel(4, ClassGameType.MAGIC) && player.isNotSilenced()){
                             lifeDrain.castSpell(player);
                         }
                         break;
-                    case "§5Blink":
+                    case ChatColor.COLOR_CHAR+"5Blink":
                         if(player.checkLevel(5, ClassGameType.MAGIC) && player.isNotSilenced()){
                             blink.castSpell(player);
                         }
                         break;
-                    case "§5Summon Lightning":
+                    case ChatColor.COLOR_CHAR+"5Summon Lightning":
                         if(player.checkLevel(6, ClassGameType.MAGIC) && player.isNotSilenced()){
                             summonLightning.castSpell(player);
                         }
                         break;
-                    case "§5Illusory Orb":
+                    case ChatColor.COLOR_CHAR+"5Illusory Orb":
                         if(player.checkLevel(7, ClassGameType.MAGIC) && player.isNotSilenced()){
                             illusoryOrb.castSpell(player);
                         }
                         break;
-                    case "§5Dragon's Breath":
+                    case ChatColor.COLOR_CHAR+"5Dragon's Breath":
                         if(player.checkLevel(8, ClassGameType.MAGIC) && player.isNotSilenced()){
                             dragonBreath.castSpell(player);
                         }
                         break;
-                    case "§5Voices of the Damned":
+                    case ChatColor.COLOR_CHAR+"5Voices of the Damned":
                         if(player.checkLevel(9, ClassGameType.MAGIC) && player.isNotSilenced()){
                             voicesOfTheDamned.castSpell(player);
                         }
                         break;
-                    case "§5Nova":
+                    case ChatColor.COLOR_CHAR+"5Nova":
                         if(player.checkLevel(10, ClassGameType.MAGIC) && player.isNotSilenced()){
                             nova.castSpell(player);
                         }

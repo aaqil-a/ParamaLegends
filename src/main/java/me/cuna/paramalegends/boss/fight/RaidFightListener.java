@@ -111,7 +111,7 @@ public class RaidFightListener implements Listener {
                     if((rand.nextInt(4) == 1) || (player.getLocation().getY() < world.getHighestBlockYAt(player.getLocation())))
                         entities.add(world.spawn(spawnLocation, Zombie.class, zombie -> {
                             zombie.setTarget(player);
-                            zombie.setCustomName("§5Void Destroyer");
+                            zombie.setCustomName(ChatColor.COLOR_CHAR+"5Void Destroyer");
                             zombie.setCustomNameVisible(true);
                         }));
 
@@ -123,19 +123,19 @@ public class RaidFightListener implements Listener {
                             switch(spawnMap[x].charAt(z)) {
                                 case 'S' -> entities.add(world.spawn(world.getHighestBlockAt(spawnLocation).getLocation().add(0,1,0), Skeleton.class, skeleton -> {
                                     skeleton.setTarget(player);
-                                    skeleton.setCustomName("§5Void Skeleton");
+                                    skeleton.setCustomName(ChatColor.COLOR_CHAR+"5Void Skeleton");
                                 }));
                                 case 'Z' ->  entities.add(world.spawn(world.getHighestBlockAt(spawnLocation).getLocation().add(0,1,0), Zombie.class, zombie -> {
                                     zombie.setTarget(player);
-                                    zombie.setCustomName("§5Void Zombie");
+                                    zombie.setCustomName(ChatColor.COLOR_CHAR+"5Void Zombie");
                                 }));
                                 case 'R' ->  entities.add(world.spawn(world.getHighestBlockAt(spawnLocation).getLocation().add(0,1,0), Spider.class, spider -> {
                                     spider.setTarget(player);
-                                    spider.setCustomName("§5Void Spider");
+                                    spider.setCustomName(ChatColor.COLOR_CHAR+"5Void Spider");
                                 }));
                                 case 'P' -> entities.add(world.spawn(world.getHighestBlockAt(spawnLocation).getLocation().add(0,3,0), Phantom.class, phantom -> {
                                     phantom.setTarget(player);
-                                    phantom.setCustomName("§5Void Phantom");
+                                    phantom.setCustomName(ChatColor.COLOR_CHAR+"5Void Phantom");
                                 }));
                             }
                             spawnLocation.add(0,0,1);
@@ -184,7 +184,7 @@ public class RaidFightListener implements Listener {
 
         //Spawn new entity
         entities.add(world.spawn(spawnLocation.add(0,1,0), Wither.class, wither -> {
-            wither.setCustomName("§5Void Nullifier");
+            wither.setCustomName(ChatColor.COLOR_CHAR+"5Void Nullifier");
             wither.getAttribute(Attribute.GENERIC_MAX_HEALTH)
                     .setBaseValue(750);
             wither.setHealth(750);
@@ -222,12 +222,12 @@ public class RaidFightListener implements Listener {
             //Explode if void destroyer dies
             if(event.getEntity().getCustomName().contains("Void Destroyer")) destroyBlocks(event.getEntity());
             //End raid and drop void essence if void nullifier dies
-            else if(event.getEntity().getCustomName().equals("§5Void Nullifier")){
+            else if(event.getEntity().getCustomName().equals(ChatColor.COLOR_CHAR+"5Void Nullifier")){
                 endRaid();
                 raidBossBar.setProgress(0);
                 ItemStack voidEssence = new ItemStack(Material.ENDER_EYE);
                 ItemMeta meta = voidEssence.getItemMeta();
-                meta.setDisplayName("§5Void Essence");
+                meta.setDisplayName(ChatColor.COLOR_CHAR+"5Void Essence");
                 meta.addEnchant(Enchantment.DURABILITY, 10, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 List<String> lore = new ArrayList<>();

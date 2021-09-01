@@ -164,7 +164,7 @@ public class ExperienceListener implements Listener {
                 }
             } else {
                 if(currExp >= xpNeeded[currLevel]){
-                    if(currLevel < maxLevel[worldLevel]){
+                    if(currLevel < maxLevel[worldLevel] || skillType.equals(ClassGameType.REAPER)){
                         currExp -= xpNeeded[currLevel];
                         currLevel += 1;
                         levelUpMessage(player, skill, currLevel);

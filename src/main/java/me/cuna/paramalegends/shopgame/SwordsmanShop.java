@@ -34,7 +34,7 @@ public class SwordsmanShop extends GameShop {
     }};
 
     public SwordsmanShop(ParamaLegends plugin) {
-        super(plugin, "§2Dull Anvil");
+        super(plugin, ChatColor.COLOR_CHAR+"2Dull Anvil");
     }
 
     //Get prices
@@ -58,7 +58,7 @@ public class SwordsmanShop extends GameShop {
     public Inventory createGui(Player player, DataManager data){
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".swordsmanship");
         Inventory gui;
-        gui = Bukkit.createInventory(null,18, "§2Swordsman Buffs");
+        gui = Bukkit.createInventory(null,18, ChatColor.COLOR_CHAR+"2Swordsman Buffs");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -76,7 +76,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 3){
             // Shields Up
             item.setType(Material.SHIELD);
-            meta.setDisplayName(ChatColor.RESET + "§2Shields Up");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Shields Up");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Reduces incoming damage and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reflects some back at the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy.");
@@ -92,7 +92,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 5){
             // Phoenix Dive
             item.setType(Material.FIRE_CHARGE);
-            meta.setDisplayName(ChatColor.RESET + "§2Phoenix Dive");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Phoenix Dive");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Leaps through the air and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "deals burn damage over time");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "upon landing.");
@@ -108,7 +108,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 6){
             // Enrage
             item.setType(Material.BLAZE_POWDER);
-            meta.setDisplayName(ChatColor.RESET + "§2Enrage");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Enrage");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Tremendously increase critical");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "damage and critical chance but");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "be unable to cast abilities");
@@ -125,7 +125,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 7){
             // Onslaught
             item.setType(Material.GUNPOWDER);
-            meta.setDisplayName(ChatColor.RESET + "§2Onslaught");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Onslaught");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Strike enemies around you");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with a flurry of attacks");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "of astonishing speed.");
@@ -141,7 +141,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 8){
             // Terrifying Cruelty
             item.setType(Material.MAGMA_CREAM);
-            meta.setDisplayName(ChatColor.RESET + "§2Terrifying Cruelty");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Terrifying Cruelty");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Radiate an intimidating aura");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "causing enemies to be afraid,");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "taking more damage and missing");
@@ -160,7 +160,7 @@ public class SwordsmanShop extends GameShop {
             item.setType(Material.IRON_SWORD);
             meta.addEnchant(Enchantment.DURABILITY, 10, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.setDisplayName(ChatColor.RESET + "§2Superconducted");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Superconducted");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Shocks all enemies around");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you with chaotic discharges that");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "temporarily blinds them.");
@@ -176,7 +176,7 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 10){
             // Calamity
             item.setType(Material.NETHER_STAR);
-            meta.setDisplayName(ChatColor.RESET + "§2Calamity");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Calamity");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summon a raging chaotic storm");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "that strikes down enemies around");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "you. Your hits are guaranteed");

@@ -36,7 +36,7 @@ public class MagicShop extends GameShop {
     }};
 
     public MagicShop(ParamaLegends plugin) {
-        super(plugin, "§5Ancient Tomes");
+        super(plugin, ChatColor.COLOR_CHAR+"5Ancient Tomes");
     }
 
     //Get prices
@@ -60,7 +60,7 @@ public class MagicShop extends GameShop {
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".magic");
-        gui = Bukkit.createInventory(null,27, "§5Magic Tomes");
+        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"5Magic Tomes");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -77,7 +77,7 @@ public class MagicShop extends GameShop {
 
         // Fling Earth
         item.setType(Material.ENCHANTED_BOOK);
-        meta.setDisplayName(ChatColor.RESET + "§5Fling Earth");
+        meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Fling Earth");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Gathers nearby earth into");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "a dense cube, then flinging");
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "it towards whatever may be");
@@ -94,7 +94,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 2){
             // Ignite
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Ignite");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Ignite");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Sets targets ablaze within a");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "small area, dealing damage");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "over time.");
@@ -111,7 +111,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 3){
             // Gust
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Gust");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Gust");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Pushes away targets within an");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "area of where you are facing.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.gust.getManaCost());
@@ -126,7 +126,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 4){
             // Life Drain
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Life Drain");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Life Drain");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Periodically drains the life of");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "nearby beings when activated.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.lifeDrain.getManaCost()+" per second");
@@ -141,7 +141,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 5){
             // Blink
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Blink");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Blink");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Instantaneously teleport to");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the targeted location.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.blink.getManaCost());
@@ -156,7 +156,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 6){
             // Summon Lightning
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Summon Lightning");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Summon Lightning");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Call upon the wrath of the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "thundergod to summon lightning");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "and smite all enemies in an");
@@ -173,7 +173,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 7){
             // Illusory orb
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Illusory Orb");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Illusory Orb");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Casts an arcane orb that hurts");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "any being it comes into contact");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "with. Casting the spell while an");
@@ -191,7 +191,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 8){
             // Dragon breath
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Dragon's Breath");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Dragon's Breath");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Imbuing your essence with draconic");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "powers, you unleash a wide dragon");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "breath attack in front of you");
@@ -209,7 +209,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 9){
             // Voices of the Damned
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Voices of the Damned");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Voices of the Damned");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Summons a portal to the realm of");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "the damned. Creatures will appear");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "from the portal and attack any");
@@ -226,7 +226,7 @@ public class MagicShop extends GameShop {
         if(playerLevel >= 10){
             // Nova
             item.setType(Material.ENCHANTED_BOOK);
-            meta.setDisplayName(ChatColor.RESET + "§5Nova");
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"5Nova");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "爆裂, 爆裂, la la la");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.magicListener.nova.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.magicListener.nova.getCooldown()/20+" seconds");

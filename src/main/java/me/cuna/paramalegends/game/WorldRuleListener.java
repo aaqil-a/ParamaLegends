@@ -51,15 +51,15 @@ public class WorldRuleListener implements Listener {
         //enable crafting of custom items
         if(inv.getStorageContents()[0].hasItemMeta()){
             ItemMeta meta = inv.getStorageContents()[0].getItemMeta();
-            if(meta.getDisplayName().equals("§aEssence of Nature")){
+            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"aEssence of Nature")){
                 ItemStack essence = inv.getStorageContents()[5];
                 if(essence.hasItemMeta()){
                     ItemMeta essenceMeta = essence.getItemMeta();
-                    event.setCancelled(!essenceMeta.getDisplayName().equals("§5Void Essence"));
+                    event.setCancelled(!essenceMeta.getDisplayName().equals(ChatColor.COLOR_CHAR+"5Void Essence"));
                 }
             }
-            if(meta.getDisplayName().equals("§6Esoteric Pearl")) event.setCancelled(false);
-            if(meta.getDisplayName().equals("§6Winery Barrel")) event.setCancelled(false);
+            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Esoteric Pearl")) event.setCancelled(false);
+            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Winery Barrel")) event.setCancelled(false);
         }
     }
 
@@ -76,7 +76,7 @@ public class WorldRuleListener implements Listener {
     public void onInteract(PlayerInteractEvent event){
         if(event.getItem() != null && event.getItem().hasItemMeta()){
             ItemMeta meta = event.getItem().getItemMeta();
-            if(meta.hasDisplayName() && meta.getDisplayName().equals("§5Void Essence")){
+            if(meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"5Void Essence")){
                 event.setCancelled(true);
             }
         }

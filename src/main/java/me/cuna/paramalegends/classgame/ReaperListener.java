@@ -4,6 +4,7 @@ import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.reaper.*;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -114,7 +115,7 @@ public class ReaperListener implements Listener{
             }
             if(item.hasItemMeta() && Objects.requireNonNull(item.getItemMeta()).hasDisplayName()){
                 switch(item.getItemMeta().getDisplayName()){
-                    case "§4Gut Punch" -> {
+                    case ChatColor.COLOR_CHAR+"4Gut Punch" -> {
                         if (player.isNotSilenced()){
                             if(!player.checkCooldown(gutPunch)){
                                 event.setCancelled(true);
@@ -125,7 +126,7 @@ public class ReaperListener implements Listener{
                         }
 
                     }
-                    case "§4Memento Mori" -> {
+                    case ChatColor.COLOR_CHAR+"4Memento Mori" -> {
                         if(!player.checkCooldown(mementoMori)) {
                             event.setCancelled(true);
                         }
@@ -152,17 +153,17 @@ public class ReaperListener implements Listener{
         PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){
-                case "§4Hidden Strike" -> {
+                case ChatColor.COLOR_CHAR+"4Hidden Strike" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel(2, ClassGameType.REAPER))
                             hiddenStrike.castSpell(player);
                 }
-                case "§4Blinding Sand" -> {
+                case ChatColor.COLOR_CHAR+"4Blinding Sand" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel(3, ClassGameType.REAPER))
                             blindingSand.castSpell(player);
                 }
-                case "§4Forbidden Slash" -> {
+                case ChatColor.COLOR_CHAR+"4Forbidden Slash" -> {
                     if (player.isNotSilenced())
                         if(player.checkLevel(9, ClassGameType.REAPER))
                             forbiddenSlash.castSpell(player);
@@ -177,7 +178,7 @@ public class ReaperListener implements Listener{
         if(event.getItemInHand().hasItemMeta()){
             ItemStack placed = event.getItemInHand();
             switch(Objects.requireNonNull(placed.getItemMeta()).getDisplayName()){
-                case "§4Blinding Sand", "§4Gut Punch", "§4Forbidden Slash" -> event.setCancelled(true);
+                case ChatColor.COLOR_CHAR+"4Blinding Sand", ChatColor.COLOR_CHAR+"4Gut Punch", ChatColor.COLOR_CHAR+"4Forbidden Slash" -> event.setCancelled(true);
             }
         }
     }

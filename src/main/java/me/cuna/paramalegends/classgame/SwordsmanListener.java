@@ -5,6 +5,7 @@ import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.swordsman.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -104,37 +105,37 @@ public class SwordsmanListener implements Listener{
         PlayerParama playerParama = plugin.getPlayerParama(player);
         if (item.getItemMeta() != null)
             switch (item.getItemMeta().getDisplayName()) {
-                case "§2Shields Up" -> {
+                case ChatColor.COLOR_CHAR+"2Shields Up" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(3, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         shieldsUp.castSpell(playerParama);
                 }
-                case "§2Phoenix Dive" -> {
+                case ChatColor.COLOR_CHAR+"2Phoenix Dive" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(5, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         phoenixDive.castSpell(playerParama);
                 }
-                case "§2Enrage" -> {
+                case ChatColor.COLOR_CHAR+"2Enrage" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(6, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         enrage.castSpell(playerParama);
                 }
-                case "§2Onslaught" -> {
+                case ChatColor.COLOR_CHAR+"2Onslaught" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(7, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         onslaught.castSpell(playerParama);
                 }
-                case "§2Terrifying Cruelty" -> {
+                case ChatColor.COLOR_CHAR+"2Terrifying Cruelty" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(8, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         terrifyingCruelty.castSpell(playerParama);
                 }
-                case "§2Superconducted" -> {
+                case ChatColor.COLOR_CHAR+"2Superconducted" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(9, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         superconducted.castSpell(playerParama);
                 }
-                case "§2Calamity" -> {
+                case ChatColor.COLOR_CHAR+"2Calamity" -> {
                     event.setCancelled(true);
                     if (playerParama.checkLevel(10, ClassGameType.SWORDSMAN) && playerParama.isNotSilenced())
                         calamity.castSpell(playerParama);

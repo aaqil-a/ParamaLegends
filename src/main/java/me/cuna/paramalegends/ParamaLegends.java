@@ -14,6 +14,7 @@ import me.cuna.paramalegends.game.*;
 import me.cuna.paramalegends.shopgame.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -157,6 +158,7 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(retiredWeaponsmith, this);
         getServer().getPluginManager().registerEvents(suspiciousPeasant, this);
         getServer().getPluginManager().registerEvents(oddWares, this);
+        Bukkit.broadcastMessage("Registed npcs!");
     }
 
     public void initializeGameClass(){

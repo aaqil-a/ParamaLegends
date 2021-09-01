@@ -118,7 +118,7 @@ public class NatureAltarListener extends AltarListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.setDisplayName("§5Void Essence");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"5Void Essence");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY+"A cryptic orb that emits");
         lore.add(ChatColor.GRAY+"a sinister aura.");

@@ -42,7 +42,7 @@ public class AlcoholListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
         if(item.getItemMeta() != null) {
-            if(item.getItemMeta().getDisplayName().startsWith("§dAged")){
+            if(item.getItemMeta().getDisplayName().startsWith(ChatColor.COLOR_CHAR+"dAged")){
                 List<String> lore = item.getItemMeta().getLore();
                 long expire = Integer.parseInt(lore.get(0).substring(6));
                 if(expire < player.getWorld().getGameTime()){

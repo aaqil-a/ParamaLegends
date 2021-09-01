@@ -143,18 +143,18 @@ public class CommandStartGame implements CommandExecutor {
     public void spawnAllArmorStand(Location location){
         //Create Destiny
         Location destinyLocation = getHighestNonTreeLocation(location.getWorld().getHighestBlockAt(location.clone().add(3.5,0,0.5)).getLocation());
-        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.END_PORTAL_FRAME,"§6Your Destiny").setCustomNameVisible(true);
+        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.END_PORTAL_FRAME,ChatColor.COLOR_CHAR+"6Your Destiny").setCustomNameVisible(true);
         //Create shop
         destinyLocation = getHighestNonTreeLocation(location.getWorld().getHighestBlockAt(location.clone().add(-2.5,0,0.5)).getLocation());
-        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.CHEST,"§6Odd Wares").setCustomNameVisible(true);
+        spawnArmorStand(destinyLocation.clone().add(0.5, 0, 0.5), Material.CHEST,ChatColor.COLOR_CHAR+"6Odd Wares").setCustomNameVisible(true);
         //Create magic
-        spawnArmorStand(location.clone().add(3.5, -11.3, 0.5), Material.ENCHANTING_TABLE,"§5Ancient Tomes");
+        spawnArmorStand(location.clone().add(3.5, -11.3, 0.5), Material.ENCHANTING_TABLE,ChatColor.COLOR_CHAR+"5Ancient Tomes");
         //Create reaper
-        spawnArmorStand(location.clone().add(-2.5, -11.3, 0.5),Material.GRINDSTONE,"§4Reaper Grindstone");
+        spawnArmorStand(location.clone().add(-2.5, -11.3, 0.5),Material.GRINDSTONE,ChatColor.COLOR_CHAR+"4Reaper Grindstone");
         //Create swordman
-        spawnArmorStand(location.clone().add(0.5, -11.3, 3.5), Material.ANVIL,"§2Dull Anvil");
+        spawnArmorStand(location.clone().add(0.5, -11.3, 3.5), Material.ANVIL,ChatColor.COLOR_CHAR+"2Dull Anvil");
         //Create archery
-        spawnArmorStand(location.clone().add(0.5, -11.3, -2.5), Material.FLETCHING_TABLE,"§aFletcher's Table");
+        spawnArmorStand(location.clone().add(0.5, -11.3, -2.5), Material.FLETCHING_TABLE,ChatColor.COLOR_CHAR+"aFletcher's Table");
     }
 
     public ArmorStand spawnArmorStand(Location location, Material head, String name){
