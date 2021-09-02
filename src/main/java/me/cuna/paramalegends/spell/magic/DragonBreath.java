@@ -4,10 +4,7 @@ import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import me.cuna.paramalegends.spell.SpellParama;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
@@ -36,10 +33,11 @@ public class DragonBreath implements SpellParama {
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             Player player = playerParama.getPlayer();
+            player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.7f, 1.5f);
             playerParama.addTask("DRAGONBREATHEFFECT",
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                         spawnBreathParticles(player.getEyeLocation());
-                    }, 1, 10));
+                    }, 1, 7));
             playerParama.addTask("DRAGONBREATH",
                     Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                         Location location = player.getEyeLocation();
