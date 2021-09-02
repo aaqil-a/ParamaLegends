@@ -2,6 +2,7 @@ package me.cuna.paramalegends.game;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -27,11 +28,13 @@ public class PlayerShopListener implements Listener {
 
     public DataManager data;
     private final ParamaLegends plugin;
+    private final NamespacedKey key;
 
     public PlayerShopListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        key = new NamespacedKey(plugin, "shopowner");
     }
 
     //Creating shop
@@ -88,7 +91,7 @@ public class PlayerShopListener implements Listener {
                 //lock shops
                 if(block.getState() instanceof Chest) {
                     Chest chest = (Chest) block.getState();
-                    String uuid = chest.getPersistentDataContainer().get(new NamespacedKey(plugin, "shopowner"), PersistentDataType.STRING);
+                    String uuid = chest.getPersistentDataContainer().get(key, PersistentDataType.STRING);
                     if (uuid != null) {
                         if (!player.getUniqueId().toString().equals(uuid)) {
                             player.sendMessage(ChatColor.RED + "You are not the owner of this shop.");
@@ -107,10 +110,10 @@ public class PlayerShopListener implements Listener {
                             if(player.getEquipment() != null){
                                 Chest chest = (Chest) attached.getState();
                                 ItemStack item = player.getEquipment().getItemInMainHand();
-                                chest.getPersistentDataContainer().set(new NamespacedKey(plugin, "shopowner"), PersistentDataType.STRING, player.getUniqueId().toString());
+                                chest.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
                                 chest.update();
-                                sign.getPersistentDataContainer().set(new NamespacedKey(plugin, "shopowner"), PersistentDataType.STRING, player.getUniqueId().toString());
-                                sign.setLine(0, ChatColor.BOLD+"[ParamaShop]");
+                                sign.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
+                                sign.setLine(0, ChatColor.BOLD+player.getName());
                                 sign.setLine(1, ChatColor.GOLD+sign.getLine(1));
                                 sign.setLine(2, item.getType().toString());
                                 sign.update();
@@ -119,8 +122,8 @@ public class PlayerShopListener implements Listener {
                         }
                     }
                     //buying items
-                    if(sign.getLine(0).equals(ChatColor.BOLD+"[ParamaShop]")){
-                        String uuid = sign.getPersistentDataContainer().get(new NamespacedKey(plugin, "shopowner"), PersistentDataType.STRING);
+                    if(sign.getPersistentDataContainer().has(key, PersistentDataType.STRING)){
+                        String uuid = sign.getPersistentDataContainer().get(key, PersistentDataType.STRING);
                         if(uuid != null){
                             if(player.getUniqueId().toString().equals(uuid)) return;
                             int price;

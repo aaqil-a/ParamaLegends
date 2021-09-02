@@ -67,7 +67,7 @@ public class Nova implements SpellParama {
                         }, 70, 10));
                 playerParama.addTask("FIREWORKEFFECT3",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                            player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0, -2, 0), 16, 0, 0, 0, 0);
+                            player.getWorld().spawnParticle(Particle.FLASH, startExplosionFlash.add(0, -2, 0), 16, 0, 0, 0, 0, null, true);
                         }, 102, 1));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.cancelTask("FIREWORKEFFECT2");

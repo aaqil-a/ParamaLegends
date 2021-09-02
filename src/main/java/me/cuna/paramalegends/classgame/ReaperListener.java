@@ -56,18 +56,20 @@ public class ReaperListener implements Listener{
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(defender);
+            int level = player.getLevelFromClassType(ClassGameType.REAPER);
             //blade mail
             if (player.checkLevel(4, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int bladeMailRandom = rand.nextInt(5);
-                if (bladeMailRandom == 1) {
+                if (bladeMailRandom == 1 || (level>=10 && bladeMailRandom<2)) {
                     bladeMail.attackEntity(player, attacker, damage);
                 }
             }
+            //second wind
             if (player.checkLevel(6, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int secondWindRandom = rand.nextInt(10);
-                if (secondWindRandom == 1){
+                if (secondWindRandom == 1 || (level>=10 && secondWindRandom<3)){
                     secondWind.attackEntity(player, attacker, damage);
                 }
             }
@@ -75,7 +77,7 @@ public class ReaperListener implements Listener{
             if (player.checkLevel(5, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int tooSlowRandom = rand.nextInt(10);
-                if (tooSlowRandom == 1){
+                if (tooSlowRandom == 1  || (level>=10 && tooSlowRandom<3)){
                     event.setCancelled(true);
                 }
             }
@@ -84,11 +86,12 @@ public class ReaperListener implements Listener{
             LivingEntity defender = (LivingEntity) event.getEntity();
             Player attacker = (Player) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(attacker);
+            int level = player.getLevelFromClassType(ClassGameType.REAPER);
             //bloody fervour
             if (player.checkLevel(7, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int bloodyFervourRandom = rand.nextInt(20);
-                if (bloodyFervourRandom == 1){
+                if (bloodyFervourRandom == 1 || (level>=10 && bloodyFervourRandom<5)){
                     bloodyFervour.attackEntity(player, defender, damage);
                 }
             }
@@ -100,6 +103,7 @@ public class ReaperListener implements Listener{
         if (event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(attacker);
+            int level = player.getLevelFromClassType(ClassGameType.REAPER);
             ItemStack item = Objects.requireNonNull(attacker.getPlayer()).getInventory().getItemInMainHand();
             switch (item.getType()) {
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
@@ -107,7 +111,7 @@ public class ReaperListener implements Listener{
                         //Coated blade listener
                         Random rand = new Random();
                         int coatedRandom = rand.nextInt(5);
-                        if (coatedRandom == 1) {
+                        if (coatedRandom == 1 || (level>=10 && coatedRandom<2)) {
                             coatedBlade.attackEntity(player, event.getEntity(), 1);
                         }
                     }

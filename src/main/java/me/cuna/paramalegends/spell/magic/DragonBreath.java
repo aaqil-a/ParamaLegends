@@ -7,13 +7,16 @@ import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DragonBreath implements SpellParama {
 
@@ -21,7 +24,7 @@ public class DragonBreath implements SpellParama {
     private final int manaCost = 200;
     private final int cooldown = 400;
     private final int duration = 200;
-    private final int damage = 10;
+    private final int damage = 5;
 
     public DragonBreath(ParamaLegends plugin){
         this.plugin = plugin;
@@ -33,66 +36,38 @@ public class DragonBreath implements SpellParama {
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             Player player = playerParama.getPlayer();
-            Location location = player.getLocation();
-            double playerX = location.getX();
-            double playerY = location.getY();
-            double playerZ = location.getZ();
-            double boxX1 = playerX, boxX2 = playerX, boxZ1 = playerZ, boxZ2 = playerZ;
-            double boxY1 = playerY - 3, boxY2 = playerY + 3;
-            Vector direction = player.getLocation().getDirection();
-            direction.setY(0);
-            direction.normalize();
-            if(direction.getX() < Math.sin(Math.PI/8) && direction.getX() > -1*Math.sin(Math.PI/8)){
-                if(direction.getZ() >= 0){
-                    boxX1 += 3;
-                    boxX2 -= 3;
-                    boxZ2 += 8;
-                } else {
-                    boxX1 -= 3;
-                    boxX2 += 3;
-                    boxZ2 -= 8;
-                }
-            } else if(direction.getZ() < Math.sin(Math.PI/8) && direction.getZ() > -1*Math.sin(Math.PI/8)) {
-                if(direction.getX() >= 0){
-                    boxZ1 += 3;
-                    boxZ2 -= 3;
-                    boxX2 += 8;
-                } else {
-                    boxZ1 -= 3;
-                    boxZ2 += 3;
-                    boxX2 -= 8;
-                }
-            } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)){
-                boxX2 += 5;
-                boxZ2 += 5;
-            } else if(direction.getZ() > Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
-                boxX2 -= 5;
-                boxZ2 += 5;
-            } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() < -1*Math.sin(Math.PI/8)){
-                boxX2 -= 5;
-                boxZ2 -= 5;
-            } else if(direction.getZ() < -1*Math.sin(Math.PI/8) && direction.getX() > Math.sin(Math.PI/8)) {
-                boxX2 += 5;
-                boxZ2 -= 5;
-            }
-            BoundingBox gustBox = new BoundingBox(boxX1,boxY1, boxZ1, boxX2, boxY2, boxZ2);
-            Location breathLocation = player.getLocation().add(player.getLocation().getDirection().setY(0).normalize().multiply(5));
-            breathLocation.add(0,0.5,0);
-
+            playerParama.addTask("DRAGONBREATHEFFECT",
+                    Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                        spawnBreathParticles(player.getEyeLocation());
+                    }, 1, 10));
             playerParama.addTask("DRAGONBREATH",
                     Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                        player.getWorld().spawnParticle(Particle.DRAGON_BREATH, breathLocation, 64, 1, 0, 1, 0);
-                        for(Entity knocked : player.getWorld().getNearbyEntities(gustBox)){
-                            if(knocked.equals(player)){
+                        Location location = player.getEyeLocation();
+                        Vector direction = location.getDirection();
+                        //create rectangular box in front of player
+                        Location start = location.clone().add(new Vector(-1*direction.getZ(), 0, direction.getX()));
+                        Location end = location.clone().add((new Vector(direction.getZ(), 0, -1*direction.getX())));
+                        end.add(direction.clone().multiply(10));
+                        //expand boxes y value
+                        end.add(0, 2, 0);
+                        start.add(0, -2 ,0);
+                        BoundingBox breathBox = new BoundingBox(
+                                start.getX(), start.getY(), start.getZ(),
+                                end.getX(), end.getY(), end.getZ());
+                        for(Entity hit : player.getWorld().getNearbyEntities(breathBox)){
+                            if(hit.equals(player)){
                                 continue;
                             }
-                            if(knocked instanceof Damageable){
+                            if(hit instanceof Mob){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                ((Damageable) knocked).damage(damage+0.069, player);
+                                ((Mob) hit).damage(damage+0.069, player);
                             }
                         }
-                    }, 3, 20));
-            Bukkit.getScheduler().runTaskLater(plugin, ()-> playerParama.cancelTask("DRAGONBREATH"),duration);
+                    }, 1, 5));
+            Bukkit.getScheduler().runTaskLater(plugin, ()-> {
+                playerParama.cancelTask("DRAGONBREATH");
+                playerParama.cancelTask("DRAGONBREATHEFFECT");
+            },duration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
@@ -100,6 +75,26 @@ public class DragonBreath implements SpellParama {
                 }
             }, cooldown);
         }
+    }
+
+    public void spawnBreathParticles(Location location){
+        Vector direction = location.getDirection();
+        location.add(0, -0.4, 0);
+        World world = location.getWorld();
+        assert world != null;
+        world.spawnParticle(Particle.DRAGON_BREATH, location.add(direction), 4, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
+        if(location.add(direction).getBlock().getType().isSolid()) return;
+        world.spawnParticle(Particle.DRAGON_BREATH, location, 3, 0.2, 0.2, 0.2, 0);
     }
 
     public int getManaCost(){
