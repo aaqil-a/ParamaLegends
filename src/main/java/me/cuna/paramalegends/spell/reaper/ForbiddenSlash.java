@@ -12,8 +12,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class ForbiddenSlash implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 200;
-    private final int cooldown = 402;
+    private final int manaCost = 120;
+    private final int cooldown = 202;
 
     public ForbiddenSlash(ParamaLegends plugin){
         this.plugin = plugin;
