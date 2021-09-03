@@ -49,6 +49,7 @@ public class RaidFightListener implements Listener {
     double startX;
     double startZ;
     double startSize;
+    Wither boss;
     BukkitTask spawnTask;
     BukkitTask endRaidTask;
 
@@ -69,7 +70,9 @@ public class RaidFightListener implements Listener {
             spawnSquadron(world);
         }, 0, 1200);
         endRaidTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-            if(world.getTime() > 23000 || world.getTime() < 13000) endRaid();
+            if(world.getTime() > 23000 || world.getTime() < 13000) {
+                if(!entities.contains(boss)) endRaid();
+            }
         }, 0, 100);
     }
 
@@ -100,9 +103,19 @@ public class RaidFightListener implements Listener {
         if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
         else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
         Player mostDamageTaken = getPlayer(damageTaken);
-        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: Nobody");
+        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: Nobody");
         else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostDamageTaken.getName());
+        sendPlayerStatistics();
+    }
 
+    public void sendPlayerStatistics(){
+        for(Player player : plugin.getServer().getOnlinePlayers()){
+            player.sendMessage(ChatColor.GREEN+"Most Kills: "+kills.get(player));
+            player.sendMessage(ChatColor.RED+"Most Deaths: "+deaths.get(player));
+            player.sendMessage(ChatColor.GREEN+"Most Damage Dealt: "+damageDealt.get(player));
+            player.sendMessage(ChatColor.RED+"Most Damage Taken: "+damageTaken.get(player));
+
+        }
     }
 
     public Player getPlayer(HashMap<Player, Integer> map){
@@ -220,14 +233,15 @@ public class RaidFightListener implements Listener {
         entities.clear();
 
         //Spawn new entity
-        entities.add(world.spawn(spawnLocation.add(0,1,0), Wither.class, wither -> {
-            wither.setCustomName(ChatColor.COLOR_CHAR+"5Void Nullifier");
-            wither.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                    .setBaseValue(750);
-            wither.setHealth(750);
-            wither.setCustomNameVisible(true);
-            wither.setGlowing(true);
-        }));
+        boss = world.spawn(spawnLocation.add(0,1,0), Wither.class, wither -> {
+                    wither.setCustomName(ChatColor.COLOR_CHAR + "5Void Nullifier");
+                    wither.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                            .setBaseValue(750);
+                    wither.setHealth(750);
+                    wither.setCustomNameVisible(true);
+                    wither.setGlowing(true);
+                });
+        entities.add(boss);
         raidBossBar.removeAll();
         raidBossBar.setVisible(false);
     }
