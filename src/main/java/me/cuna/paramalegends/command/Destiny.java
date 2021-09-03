@@ -9,12 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class CommandDestiny implements CommandExecutor {
+public class Destiny implements CommandExecutor {
 
     private final ParamaLegends plugin;
     public DataManager data;
 
-    public CommandDestiny(final ParamaLegends plugin){
+    public Destiny(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }

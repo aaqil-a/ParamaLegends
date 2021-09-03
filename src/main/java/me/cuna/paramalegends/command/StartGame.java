@@ -30,13 +30,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 import java.util.Random;
 
-public class CommandStartGame implements CommandExecutor {
+public class StartGame implements CommandExecutor {
 
     private final ParamaLegends plugin;
     private final int sceneLength = 400;
     public DataManager data;
 
-    public CommandStartGame(final ParamaLegends plugin){
+    public StartGame(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }

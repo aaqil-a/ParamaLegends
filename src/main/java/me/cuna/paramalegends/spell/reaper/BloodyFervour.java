@@ -21,6 +21,10 @@ public class BloodyFervour implements AttackParama {
     public void attackEntity(PlayerParama playerParama, Entity entity, double damage){
         Player player = playerParama.getPlayer();
         double currHealth = player.getHealth();
+
+        //prevent reviving
+        if(currHealth <= 0) return;
+
         double maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
         if (currHealth < maxHealth) {
             player.setHealth(Math.min((currHealth + damage), maxHealth));

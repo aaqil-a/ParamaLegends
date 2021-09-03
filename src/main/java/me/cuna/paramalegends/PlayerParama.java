@@ -65,7 +65,7 @@ public class PlayerParama {
 
         //welcome message
         player.sendMessage(ChatColor.GOLD+"This server is running a very early version of Parama Legends");
-        player.sendMessage(ChatColor.GOLD+"Please report any bugs you may find or give feedback");
+        player.sendMessage(ChatColor.GOLD+"Check out what's new using /whatsnew");
 
         //set archery speed passive
         if(archeryLevel >= 4){

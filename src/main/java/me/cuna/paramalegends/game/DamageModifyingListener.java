@@ -73,9 +73,9 @@ public class DamageModifyingListener implements Listener {
             Random rand = new Random();
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
+                    //swordmanship critical hit check
                     if(plugin.checkCustomDamageSource(damage) == null ||
                             plugin.checkCustomDamageSource(damage).equals(ClassGameType.SWORDSMAN)) {
-                        //Deal crit damage according to player level
                         int playerLevel = playerParama.getLevelFromClassType(ClassGameType.SWORDSMAN);
                         int critRoll = rand.nextInt(100);
                         if(attacker.hasMetadata("ENRAGING")){
@@ -115,6 +115,7 @@ public class DamageModifyingListener implements Listener {
                         }
                     }
                 }
+                //reaper passive check
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
                     if(item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("Scythe")){
                         if(plugin.checkCustomDamageSource(damage) == null
@@ -150,7 +151,6 @@ public class DamageModifyingListener implements Listener {
         }
         event.setDamage(damage);
     }
-
 
     //Modifying entity damage by anything
     @EventHandler

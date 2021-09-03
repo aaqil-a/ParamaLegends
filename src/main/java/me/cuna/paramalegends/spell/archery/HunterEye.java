@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 public class HunterEye implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 20;
+    private final int manaCost = 5;
     private final int duration = 200;
 
     public HunterEye(ParamaLegends plugin){

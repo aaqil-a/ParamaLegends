@@ -1,0 +1,29 @@
+
+zombie:
+  health: 70
+  damage: 14
+  lectrum: 5
+  exp: 25
+spider:
+  damage: 8
+  health: 40
+  lectrum: 5
+  exp: 25
+skeleton:
+  health: 40
+  arrowbonusdamage: 7
+  lectrum: 4
+  exp: 20
+creeper:
+  health: 60
+  lectrum: 7
+  exp: 30
+witch:
+  health: 60
+  lectrum: 4
+  exp: 25
+enderman:
+  damage: 15
+  health: 100
+  lectrum: 10
+  exp: 40

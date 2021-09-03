@@ -10,12 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class CommandSpawnAltar implements CommandExecutor {
+public class SpawnAltar implements CommandExecutor {
 
     public DataManager data;
     private ParamaLegends plugin;
 
-    public CommandSpawnAltar(final ParamaLegends plugin){
+    public SpawnAltar(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }
@@ -42,17 +42,17 @@ public class CommandSpawnAltar implements CommandExecutor {
                     case "naturealtar" ->
                         plugin.natureAltarListener.spawnAltar(player.getWorld(), (int) player.getLocation().getX(),(int) player.getLocation().getY(), (int) player.getLocation().getZ());
                     case "oddwares" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.CHEST,ChatColor.COLOR_CHAR+"6Odd Wares").setCustomNameVisible(true);
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.CHEST,ChatColor.COLOR_CHAR+"6Odd Wares").setCustomNameVisible(true);
                     case "destiny" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.END_PORTAL_FRAME,ChatColor.COLOR_CHAR+"6Your Destiny").setCustomNameVisible(true);
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.END_PORTAL_FRAME,ChatColor.COLOR_CHAR+"6Your Destiny").setCustomNameVisible(true);
                     case "archeryshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.FLETCHING_TABLE,ChatColor.COLOR_CHAR+"aFletcher's Table");
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.FLETCHING_TABLE,ChatColor.COLOR_CHAR+"aFletcher's Table");
                     case "swordsmanshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ANVIL,ChatColor.COLOR_CHAR+"2Dull Anvil");
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.ANVIL,ChatColor.COLOR_CHAR+"2Dull Anvil");
                     case "reapershop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.GRINDSTONE,ChatColor.COLOR_CHAR+"4Reaper Grindstone");
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.GRINDSTONE,ChatColor.COLOR_CHAR+"4Reaper Grindstone");
                     case "magicshop" ->
-                        plugin.commandStartGame.spawnArmorStand(player.getLocation(), Material.ENCHANTING_TABLE,ChatColor.COLOR_CHAR+"5Ancient Tomes");
+                        plugin.startGame.spawnArmorStand(player.getLocation(), Material.ENCHANTING_TABLE,ChatColor.COLOR_CHAR+"5Ancient Tomes");
                     default -> sendAltarNames(player);
                 }
             }

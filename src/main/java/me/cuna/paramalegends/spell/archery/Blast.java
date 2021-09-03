@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Blast implements ArrowParama, Listener {
 
-    private final int manaCost = 60;
+    private final int manaCost = 25;
     private final int blastDamage = 8;
     private final ParamaLegends plugin;
 

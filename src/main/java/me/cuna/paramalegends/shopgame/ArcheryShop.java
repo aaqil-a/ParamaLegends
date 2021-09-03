@@ -21,18 +21,18 @@ public class ArcheryShop extends GameShop {
     private final ParamaLegends plugin;
 
     //Prices array
-    public static HashMap<Integer, Integer> prices = new HashMap<Integer, Integer>(){{
-        put(2,1);
-        put(4,3);
-        put(6,40);
-        put(8,80);
-        put(10,10);
-        put(12,200);
-        put(14,15);
-        put(16,300);
-        put(20,20);
-        put(22,400);
-        put(24,400);
+    public HashMap<Integer, Integer> prices = new HashMap<>(){{
+        put(2,1); //hunter's eye
+        put(4,3); //viper's bite
+        put(6,40); //totsuka's creation
+        put(8,80); //windboost
+        put(10,8); //neurotoxin
+        put(12,200); //soulstring
+        put(14,10); //retreat
+        put(16,300); //huayra's fury
+        put(20,15); //blast
+        put(22,400); //royal artillery
+        put(24,400); //whistling wind
     }};
 
     public ArcheryShop(ParamaLegends plugin) {
@@ -107,7 +107,7 @@ public class ArcheryShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "its incoming damage.");
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.hunterEye.getManaCost());
         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 1");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "1 Lectrum");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(2)+" Lectrum");
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setAmount(8);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
@@ -122,7 +122,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "duration.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.viperBite.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 2");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "3 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(4)+" Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
@@ -140,7 +140,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.totsukaCreation.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.totsukaCreation.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 3");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(6)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(6, item);
@@ -156,7 +156,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.windBoost.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.windBoost.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 4");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(8)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(8, item);
@@ -171,7 +171,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "a medium duration.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.neurotoxin.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 5");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(10)+" Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
@@ -188,7 +188,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.soulstring.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.soulstring.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 6");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(12)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(12, item);
@@ -204,7 +204,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your speed is temporarily increased.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.retreat.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "15 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(14)+" Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
@@ -221,7 +221,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.huayraFury.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.huayraFury.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 7");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(16)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(16, item);
@@ -235,7 +235,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "making it explode on impact.");;
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.blast.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 8");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(20)+" Lectrum");
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
@@ -251,7 +251,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.royalArtillery.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.archeryListener.royalArtillery.getCooldown()/20+" seconds");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 9");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(22)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(22, item);
@@ -266,7 +266,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "returns after.");
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.archeryListener.whistlingWind.getManaCost());
             lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Archery 10");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(24)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(24, item);

@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandRemoveAltar implements CommandExecutor {
+public class RemoveAltar implements CommandExecutor {
 
     public DataManager data;
     private ParamaLegends plugin;
     private final List<String> customAltarNames = new ArrayList<>();
 
-    public CommandRemoveAltar(final ParamaLegends plugin){
+    public RemoveAltar(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
         customAltarNames.add(ChatColor.COLOR_CHAR+"6Occult Altar");

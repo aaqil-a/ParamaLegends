@@ -12,13 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CommandSetupGame implements CommandExecutor {
+public class SetupGame implements CommandExecutor {
 
     private final ParamaLegends plugin;
     public DataManager data;
     private boolean currentlySettingUp;
 
-    public CommandSetupGame(final ParamaLegends plugin){
+    public SetupGame(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
         currentlySettingUp = false;

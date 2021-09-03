@@ -20,7 +20,7 @@ import org.bukkit.util.Vector;
 public class Neurotoxin implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 50;
+    private final int manaCost = 15;
     private final int damage = 2;
     private final int duration = 162;
 

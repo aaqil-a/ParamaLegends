@@ -28,12 +28,16 @@ public class DragonBreath implements SpellParama {
     }
 
     public void castSpell(PlayerParama playerParama){
-        if(playerParama.checkCooldown(this)){
+        if(playerParama.hasTask("DRAGONBREATH") || playerParama.hasTask("DRAGONBREATHEFFECT")){
+            playerParama.cancelTask("DRAGONBREATH");
+            playerParama.cancelTask("DRAGONBREATHEFFECT");
+            playerParama.getPlayer().sendMessage(ChatColor.GREEN+"Dragon's Breath deactivated.");
+        } else if(playerParama.checkCooldown(this)){
             plugin.sendCooldownMessage(playerParama, "Dragon's Breath");
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             Player player = playerParama.getPlayer();
-            player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.7f, 1.5f);
+            player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.7f, 1.5f);
             playerParama.addTask("DRAGONBREATHEFFECT",
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                         spawnBreathParticles(player.getEyeLocation());
@@ -56,15 +60,18 @@ public class DragonBreath implements SpellParama {
                             if(hit.equals(player)){
                                 continue;
                             }
-                            if(hit instanceof Mob){
+                            if(hit instanceof Mob || hit instanceof Player){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                ((Mob) hit).damage(damage+0.069, player);
+                                ((Damageable) hit).damage(damage+0.069, player);
                             }
                         }
                     }, 1, 5));
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                playerParama.cancelTask("DRAGONBREATH");
-                playerParama.cancelTask("DRAGONBREATHEFFECT");
+                if(playerParama.hasTask("DRAGONBREATH") || playerParama.hasTask("DRAGONBREAHEFFECT")){
+                    playerParama.cancelTask("DRAGONBREATH");
+                    playerParama.cancelTask("DRAGONBREATHEFFECT");
+                    player.sendMessage(ChatColor.GREEN+"Dragon's Breath wore off.");
+                }
             },duration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){

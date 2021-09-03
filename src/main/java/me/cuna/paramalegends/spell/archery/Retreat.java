@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Retreat implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 70;
+    private final int manaCost = 20;
     private final int speedDuration = 65;
 
     public Retreat(ParamaLegends plugin){

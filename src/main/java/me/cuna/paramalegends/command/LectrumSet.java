@@ -10,12 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class CommandLectrumSet implements CommandExecutor {
+public class LectrumSet implements CommandExecutor {
 
     private final ParamaLegends plugin;
     public DataManager data;
 
-    public CommandLectrumSet(final ParamaLegends plugin){
+    public LectrumSet(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }

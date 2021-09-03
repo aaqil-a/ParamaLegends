@@ -47,6 +47,9 @@ commands:
     usage: /worldlevelset <level>
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
+  whatsnew:
+    description: Check out what's new in the ParamaLegends plugin.
+    usage: /whatsnew
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

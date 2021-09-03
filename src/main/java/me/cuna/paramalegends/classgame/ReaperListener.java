@@ -61,7 +61,7 @@ public class ReaperListener implements Listener{
             if (player.checkLevel(4, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int bladeMailRandom = rand.nextInt(5);
-                if (bladeMailRandom == 1 || (level>=10 && bladeMailRandom<2)) {
+                if (bladeMailRandom == 1 || (level>=10 && bladeMailRandom<3)) {
                     bladeMail.attackEntity(player, attacker, damage);
                 }
             }
@@ -69,7 +69,7 @@ public class ReaperListener implements Listener{
             if (player.checkLevel(6, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int secondWindRandom = rand.nextInt(10);
-                if (secondWindRandom == 1 || (level>=10 && secondWindRandom<3)){
+                if (secondWindRandom == 1 || (level>=10 && secondWindRandom<4)){
                     secondWind.attackEntity(player, attacker, damage);
                 }
             }
@@ -77,7 +77,7 @@ public class ReaperListener implements Listener{
             if (player.checkLevel(5, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int tooSlowRandom = rand.nextInt(10);
-                if (tooSlowRandom == 1  || (level>=10 && tooSlowRandom<3)){
+                if (tooSlowRandom == 1  || (level>=10 && tooSlowRandom<4)){
                     event.setCancelled(true);
                 }
             }
@@ -91,7 +91,7 @@ public class ReaperListener implements Listener{
             if (player.checkLevel(7, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
                 int bloodyFervourRandom = rand.nextInt(20);
-                if (bloodyFervourRandom == 1 || (level>=10 && bloodyFervourRandom<5)){
+                if (bloodyFervourRandom == 1 || (level>=10 && bloodyFervourRandom<6)){
                     bloodyFervour.attackEntity(player, defender, damage);
                 }
             }
@@ -111,7 +111,7 @@ public class ReaperListener implements Listener{
                         //Coated blade listener
                         Random rand = new Random();
                         int coatedRandom = rand.nextInt(5);
-                        if (coatedRandom == 1 || (level>=10 && coatedRandom<2)) {
+                        if (coatedRandom == 1 || (level>=10 && coatedRandom<3)) {
                             coatedBlade.attackEntity(player, event.getEntity(), 1);
                         }
                     }

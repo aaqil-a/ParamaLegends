@@ -23,52 +23,71 @@ public class MobSpawnListener implements Listener {
     //Listen for mob spawns and set health, damage and other stats accordingly
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
-        if(event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM){
-            if(event.getEntityType().equals(EntityType.PHANTOM)){
-                event.setCancelled(true);
-                return;
-            }
+        int worldLevel = plugin.experienceListener.getWorldLevel();
+        int bonusHealth;
+        int bonusDamage;
+        if(worldLevel >= 2) {
+            bonusHealth = 10*(worldLevel-1);
+            bonusDamage = 2*(worldLevel-1);
+        } else {
+            bonusHealth=0;
+            bonusDamage=0;
         }
         boolean hostile = true;
         switch (event.getEntityType()) {
-            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN, ZOGLIN -> {
+            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN, ZOGLIN,
+                    EVOKER, PILLAGER, VINDICATOR -> {
                 event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health")+bonusHealth);
                 event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage"));
-                event.getEntity().setHealth(data.getConfig().getDouble("mobs.zombie.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage")+bonusDamage);
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.zombie.health")+bonusHealth);
             }
             case SKELETON, STRAY, PHANTOM, BLAZE, GHAST -> {
                 event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health"));
-                event.getEntity().setHealth(data.getConfig().getDouble("mobs.skeleton.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health")+bonusHealth);
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.skeleton.health")+bonusHealth);
             }
             case SPIDER, CAVE_SPIDER, MAGMA_CUBE -> {
                 event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                    .setBaseValue(data.getConfig().getDouble("mobs.spider.health"));
-                event.getEntity().setHealth(data.getConfig().getDouble("mobs.spider.health"));
+                    .setBaseValue(data.getConfig().getDouble("mobs.spider.health")+bonusHealth);
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.spider.health")+bonusHealth);
                 event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                    .setBaseValue(data.getConfig().getDouble("mobs.spider.damage"));
+                    .setBaseValue(data.getConfig().getDouble("mobs.spider.damage")+bonusDamage);
             }
             case CREEPER -> {
                 Creeper c = (Creeper) event.getEntity();
                 c.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.creeper.health"));
-                c.setHealth(data.getConfig().getDouble("mobs.creeper.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.creeper.health")+bonusHealth);
+                c.setHealth(data.getConfig().getDouble("mobs.creeper.health")+bonusHealth);
             }
             case WITCH -> {
                 Witch w = (Witch) event.getEntity();
                 w.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.witch.health"));
-                w.setHealth(data.getConfig().getDouble("mobs.witch.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.witch.health")+bonusHealth);
+                w.setHealth(data.getConfig().getDouble("mobs.witch.health")+bonusHealth);
             }
             case ENDERMAN -> {
                 Enderman e = (Enderman) event.getEntity();
                 e.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.health"));
-                e.setHealth(data.getConfig().getDouble("mobs.enderman.health"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.health")+bonusHealth);
+                e.setHealth(data.getConfig().getDouble("mobs.enderman.health")+bonusHealth);
                 e.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.damage"));
+                        .setBaseValue(data.getConfig().getDouble("mobs.enderman.damage")+bonusDamage);
+            }
+            case RAVAGER -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.health")*5+bonusHealth);
+                event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage")*2.5);
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.zombie.health")*5+bonusHealth);
+            }
+            case VEX -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(data.getConfig().getDouble("mobs.skeleton.health")+bonusHealth);
+                event.getEntity().setHealth(data.getConfig().getDouble("mobs.skeleton.health")+bonusHealth);
+                event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(data.getConfig().getDouble("mobs.zombie.damage")+bonusDamage);
             }
             default -> {
                 hostile = false;
@@ -82,12 +101,16 @@ public class MobSpawnListener implements Listener {
     //Increase damage of arrows shot by skeletons
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event){
-        Entity damager = event.getDamager();
+        Entity damager = event.getDamager();    
         if (damager instanceof Arrow && event.getEntityType() == EntityType.PLAYER) {
             Arrow arrow = (Arrow) damager;
-            if (arrow.getShooter() instanceof Skeleton || arrow.getShooter() instanceof Stray) {
+            if (arrow.getShooter() instanceof Skeleton || arrow.getShooter() instanceof Stray
+                || arrow.getShooter() instanceof Pillager) {
+                int worldLevel = plugin.experienceListener.getWorldLevel();
+                int bonusDamage = worldLevel>=2 ? worldLevel*2 : 0;
                 event.setDamage(event.getDamage()
-                        + data.getConfig().getDouble("mobs.skeleton.arrowbonusdamage"));
+                        + data.getConfig().getDouble("mobs.skeleton.arrowbonusdamage")
+                        + bonusDamage);
             }
         }
     }

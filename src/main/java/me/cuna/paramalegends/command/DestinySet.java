@@ -11,12 +11,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class CommandDestinySet implements CommandExecutor {
+public class DestinySet implements CommandExecutor {
 
     private final ParamaLegends plugin;
     public DataManager data;
 
-    public CommandDestinySet(final ParamaLegends plugin){
+    public DestinySet(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }

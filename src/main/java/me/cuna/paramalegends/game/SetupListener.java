@@ -54,7 +54,7 @@ public class SetupListener implements Listener {
 
     private String path;
     public void markLocation(Player player, Block clicked){
-        if(plugin.commandSetupGame.isCurrentlySettingUp() && clicked != null){
+        if(plugin.setupGame.isCurrentlySettingUp() && clicked != null){
             //determine config.yml path for marked location type
             path = switch(markType){
                 case START -> "world.startlocation";
@@ -141,7 +141,7 @@ public class SetupListener implements Listener {
     }
 
     public void finishSetup(Player player){
-        plugin.commandSetupGame.setCurrentlySettingUp(false);
+        plugin.setupGame.setCurrentlySettingUp(false);
         data.getConfig().set("world.level", 1);
         player.sendMessage(ChatColor.GREEN+"Parama Legends setup complete. Begin game with /startgame.");
         player.sendMessage(ChatColor.GRAY+"It is recommended to set spawn-protection in server.properties to 0.");

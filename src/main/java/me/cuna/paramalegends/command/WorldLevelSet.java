@@ -8,11 +8,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 
-public class CommandWorldLevelSet implements CommandExecutor {
+public class WorldLevelSet implements CommandExecutor {
 
     public DataManager data;
 
-    public CommandWorldLevelSet(final ParamaLegends plugin){
+    public WorldLevelSet(final ParamaLegends plugin){
         data = plugin.getData();
     }
 
