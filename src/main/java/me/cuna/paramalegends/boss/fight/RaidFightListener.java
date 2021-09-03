@@ -12,14 +12,17 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +30,11 @@ public class RaidFightListener implements Listener {
 
     private ParamaLegends plugin;
     private DataManager data;
+    private final HashMap<Player, Integer> damageDealt = new HashMap<>();
+    private final HashMap<Player, Integer> deaths = new HashMap<>();
+    private final HashMap<Player, Integer> kills = new HashMap<>();
+    private final HashMap<Player, Integer> damageTaken = new HashMap<>();
+
 
     public RaidFightListener(ParamaLegends plugin){
         this.plugin = plugin;
@@ -47,6 +55,10 @@ public class RaidFightListener implements Listener {
     public void raidFight(World world){
         entitiesSlain = 0;
         playerCount = world.getPlayers().size();
+        damageDealt.clear();
+        deaths.clear();
+        kills.clear();
+        damageTaken.clear();
         entities.clear();
         startX = data.getConfig().getDouble("world.startX");
         startZ = data.getConfig().getDouble("world.startZ");
@@ -77,7 +89,32 @@ public class RaidFightListener implements Listener {
             plugin.experienceListener.setWorldLevel(2);
         }
         entities.clear();
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
+        Player mostKills = getPlayer(kills);
+        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
+        Player mostDeaths = getPlayer(deaths);
+        if(mostDeaths == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Deaths: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.RED+"Most Deaths: "+mostDeaths.getName());
+        Player mostDamageDealt = getPlayer(damageDealt);
+        if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
+        Player mostDamageTaken = getPlayer(damageTaken);
+        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostDamageTaken.getName());
 
+    }
+
+    public Player getPlayer(HashMap<Player, Integer> map){
+        int max = -1;
+        Player maxPlayer = null;
+        for(Player player : map.keySet()){
+            if(map.get(player) > max){
+                max = map.get(player);
+                maxPlayer = player;
+            }
+        }
+        return maxPlayer;
     }
 
     public void createRaidBossBar(World world){
@@ -213,8 +250,16 @@ public class RaidFightListener implements Listener {
             double progress = raidBossBar.getProgress()-(1/((double)playerCount*35));
             if(progress < 0) progress = 0;
             raidBossBar.setProgress(progress);
-            if(entitiesSlain >= playerCount*35 && !raidBossSpawned){
+            if(entitiesSlain >= playerCount*30 && !raidBossSpawned){
                 spawnRaidBoss(event.getEntity().getWorld());
+            }
+            if(event.getEntity().getKiller() != null){
+                Player player = event.getEntity().getKiller();
+                if(kills.containsKey(player)){
+                    kills.put(player, kills.get(player)+1);
+                } else {
+                    kills.put(player, 1);
+                }
             }
             entities.remove(event.getEntity());
         }
@@ -236,6 +281,39 @@ public class RaidFightListener implements Listener {
                 meta.setLore(lore);
                 voidEssence.setItemMeta(meta);
                 event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), voidEssence).setCustomName("Void Essence");
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+        if(plugin.raidSummonListener.isRaidOccuring()){
+            if(event.getEntity() instanceof Player){
+                Player player = (Player) event.getEntity();
+                if(damageTaken.containsKey(player)){
+                    damageTaken.put(player, damageTaken.get(player)+(int)event.getDamage());
+                } else {
+                    damageTaken.put(player, (int) event.getDamage());
+                }
+            } else if(event.getDamager() instanceof Player) {
+                Player player = (Player) event.getDamager();
+                if(damageDealt.containsKey(player)){
+                    damageDealt.put(player, damageDealt.get(player)+(int)event.getDamage());
+                } else {
+                    damageDealt.put(player, (int) event.getDamage());
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        if(plugin.raidSummonListener.isRaidOccuring()){
+            Player player = event.getEntity();
+            if(deaths.containsKey(player)){
+                deaths.put(player, deaths.get(player)+1);
+            } else {
+                deaths.put(player, 1);
             }
         }
     }

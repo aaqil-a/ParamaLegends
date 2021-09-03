@@ -70,4 +70,7 @@ public class RaidSummonListener implements Listener {
         this.isRaidOccuring = isRaidOccuring;
     }
 
+    public boolean isRaidOccuring() {
+        return this.isRaidOccuring;
+    }
 }
