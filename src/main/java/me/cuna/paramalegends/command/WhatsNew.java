@@ -88,7 +88,7 @@ public class WhatsNew implements CommandExecutor {
                         +ChatColor.BLACK+"\u2022 EXP required\n  to level up\n  swordsmanship\n  increased.",
                 ""+ChatColor.GOLD+ChatColor.BOLD+"1.0.0 10/8/21\n"
                         +ChatColor.BLACK+"\u2022 Created\n  ParamaLegends.\n"
-                        +ChatColor.BLACK+"\u2022 Thanks for\n  playing my game!\n  "+ChatColor.GOLD+"-cuna\n  -aenzt"
+                        +ChatColor.BLACK+"\u2022 Thanks for\n  playing my game!\n  "+ChatColor.GOLD+"-cuna\n  -aenzt\n  -Hachuwu"
 
         );
         meta.setAuthor("ParamaLegends");

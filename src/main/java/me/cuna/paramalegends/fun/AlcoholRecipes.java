@@ -58,6 +58,7 @@ public class AlcoholRecipes {
         recipe.addIngredient(Material.WHEAT);
         recipe.addIngredient(Material.POTATO);
 
+
         Bukkit.addRecipe(recipe);
 
         //pale ale

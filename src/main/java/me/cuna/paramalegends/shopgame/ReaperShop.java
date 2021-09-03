@@ -147,7 +147,7 @@ public class ReaperShop extends GameShop {
     public Inventory createGui(Player player, DataManager data){
         int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".reaper");
         Inventory gui;
-        gui = Bukkit.createInventory(null,18, ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
+        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
