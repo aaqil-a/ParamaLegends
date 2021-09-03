@@ -30,9 +30,10 @@ public class ReaperShop extends GameShop {
         put(4,5);
         put(9,10);
         put(11,40);
-        put(13,300);
-        put(15,400);
-        put(17,600);
+        put(13, 100);
+        put(19,300);
+        put(21,400);
+        put(23,600);
     }};
 
     public ReaperShop(final ParamaLegends plugin){
@@ -204,6 +205,21 @@ public class ReaperShop extends GameShop {
             gui.setItem(11, item);
             lore.clear();
         }
+        if(playerLevel >= 5){
+            // Prowl
+            item.setType(Material.SUGAR);
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"4Prowl");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Focus your energy, increasing");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "your movement speed and damage.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.prowl.getManaCost());
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.prowl.getCooldown()/20+" seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 5");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "100 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(13, item);
+            lore.clear();
+        }
         if(playerLevel >= 8){
             // Gut Punch
             item.setType(Material.LIGHTNING_ROD);
@@ -218,7 +234,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(13, item);
+            gui.setItem(19, item);
             lore.clear();
         }
         if(playerLevel >= 9){
@@ -235,7 +251,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(15, item);
+            gui.setItem(21, item);
             lore.clear();
         }
         if(playerLevel >= 10){
@@ -251,7 +267,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(17, item);
+            gui.setItem(23, item);
             lore.clear();
         }
         return gui;

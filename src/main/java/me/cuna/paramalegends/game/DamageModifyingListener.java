@@ -132,6 +132,10 @@ public class DamageModifyingListener implements Listener {
                                 attacker.getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1.5f);
                                 attacker.removeMetadata("FORBIDDENSLASH", plugin);
                             }
+                            if(attacker.hasMetadata("PROWL")){
+                                damage *= 1.5;
+                                attacker.playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1f, 1.5f);
+                            }
                         }
                     }
                 }

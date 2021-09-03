@@ -28,6 +28,7 @@ public class ReaperListener implements Listener{
     public final BlindingSand blindingSand;
     public final BladeMail bladeMail;
     public final SecondWind secondWind;
+    public final Prowl prowl;
     public final BloodyFervour bloodyFervour;
     public final GutPunch gutPunch;
     public final ForbiddenSlash forbiddenSlash;
@@ -46,6 +47,7 @@ public class ReaperListener implements Listener{
         gutPunch = new GutPunch(plugin);
         forbiddenSlash = new ForbiddenSlash(plugin);
         mementoMori = new MementoMori(plugin);
+        prowl = new Prowl(plugin);
     }
 
     //Passive listeners
@@ -171,6 +173,11 @@ public class ReaperListener implements Listener{
                     if (player.isNotSilenced())
                         if(player.checkLevel(9, ClassGameType.REAPER))
                             forbiddenSlash.castSpell(player);
+                }
+                case ChatColor.COLOR_CHAR+"4Prowl" -> {
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(5, ClassGameType.REAPER))
+                            prowl.castSpell(player);
                 }
             }
         }

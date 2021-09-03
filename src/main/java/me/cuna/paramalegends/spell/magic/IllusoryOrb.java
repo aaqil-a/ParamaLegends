@@ -6,6 +6,7 @@ import me.cuna.paramalegends.classgame.ClassGameType;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
@@ -55,6 +56,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                 playerParama.addTask("ORBFLASH",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                             newOrb.getWorld().spawnParticle(Particle.FLASH, newOrb.getLocation(), 1);
+                            newOrb.getWorld().playSound(newOrb.getLocation(), Sound.BLOCK_BEACON_AMBIENT, 0.8f, 1.5f);
                         }, 0, 5));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.removeEntity("ILLUSORYORB");

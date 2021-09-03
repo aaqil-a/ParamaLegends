@@ -2,6 +2,7 @@ package me.cuna.paramalegends.boss.fight;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -104,17 +105,22 @@ public class RaidFightListener implements Listener {
         else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
         Player mostDamageTaken = getPlayer(damageTaken);
         if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: Nobody");
-        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostDamageTaken.getName());
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: "+mostDamageTaken.getName());
         sendPlayerStatistics();
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
     }
 
     public void sendPlayerStatistics(){
         for(Player player : plugin.getServer().getOnlinePlayers()){
-            player.sendMessage(ChatColor.GREEN+"Most Kills: "+kills.get(player));
-            player.sendMessage(ChatColor.RED+"Most Deaths: "+deaths.get(player));
-            player.sendMessage(ChatColor.GREEN+"Most Damage Dealt: "+damageDealt.get(player));
-            player.sendMessage(ChatColor.RED+"Most Damage Taken: "+damageTaken.get(player));
+            player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
+            player.sendMessage(ChatColor.RED+"Your Deaths: "+deaths.get(player));
+            player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
+            player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
 
+            //give player rewards
+            PlayerParama playerParama = plugin.getPlayerParama(player);
+            playerParama.addLectrum(1000);
+            player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
         }
     }
 
@@ -236,8 +242,8 @@ public class RaidFightListener implements Listener {
         boss = world.spawn(spawnLocation.add(0,1,0), Wither.class, wither -> {
                     wither.setCustomName(ChatColor.COLOR_CHAR + "5Void Nullifier");
                     wither.getAttribute(Attribute.GENERIC_MAX_HEALTH)
-                            .setBaseValue(750);
-                    wither.setHealth(750);
+                            .setBaseValue(1000);
+                    wither.setHealth(1000);
                     wither.setCustomNameVisible(true);
                     wither.setGlowing(true);
                 });

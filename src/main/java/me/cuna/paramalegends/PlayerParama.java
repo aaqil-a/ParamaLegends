@@ -27,6 +27,7 @@ public class PlayerParama {
     private final List<AttackParama> attackOnCooldown = new ArrayList<>();
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
+    private final DataManager data;
     private int playerCurrentMana;
     private int playerManaLevel;
     private int magicLevel;
@@ -36,7 +37,7 @@ public class PlayerParama {
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
-        DataManager data = plugin.getData();
+        data = plugin.getData();
         this.player = player;
 
         if (!data.getConfig().contains("players." + player.getUniqueId().toString())){
@@ -224,6 +225,13 @@ public class PlayerParama {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "You are silenced!"));
         }
         return !silenced;
+    }
+
+    public void addLectrum(int amount){
+        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+        lectrum += amount;
+        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+        data.saveConfig();
     }
 
     public Player getPlayer(){
