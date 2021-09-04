@@ -35,27 +35,18 @@ public class FoodRecipes {
         ItemStack sushi = makeSkull( "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTUzNDdkYWRmNjgxOTlmYTdhMWI2NmYwNDgxYWQ4ZTlkYWVlMTUxMDg2NWFkZDZmMzNkMTVmYjM3OGQxM2U5MSJ9fX0=");
         ItemMeta sushiItemmeta = sushi.getItemMeta();
         sushiItemmeta.setDisplayName(ChatColor.COLOR_CHAR+"5Sushi");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE+"From KamiSama Land with Love");
-        sushiItemmeta.setLore(lore);
         sushi.setItemMeta(sushiItemmeta);
-        lore.clear();
 
         //rice
         rice = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzM3N2UzZDZjMzc5ZmUzNGEyZTZhZmFiYmEzMmU3YWVjZjc3YmNkMzFhMWMzODM2ZWMzNTRhOTM1YTdlOSJ9fX0=");
         ItemMeta riceItemmeta = rice.getItemMeta();
         riceItemmeta.setDisplayName(ChatColor.COLOR_CHAR+"5Bowl Of Rice");
-        lore.add(ChatColor.WHITE+"Kamu tau ga beda kamu sama nasi?");
-        riceItemmeta.setLore(lore);
         rice.setItemMeta(riceItemmeta);
-        lore.clear();
 
         //sandwich
         ItemStack sandwich = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVmYWZkODk3MmI2Yjc2OTBmYjEzMWRjM2Y5MTdjNTU5OTkzOGY4N2I1ODRjMmY1ZTdkNDBhMGRlNDFlNTJmIn19fQ==");
         ItemMeta sandwichItemMeta = sandwich.getItemMeta();
         sandwichItemMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Sandwich");
-        lore.add(ChatColor.WHITE+"Did someone say sandWICH?");
-        sandwichItemMeta.setLore(lore);
         sandwich.setItemMeta(sandwichItemMeta);
 
         NamespacedKey sushiKey = new NamespacedKey(plugin, "sushi");
@@ -72,8 +63,9 @@ public class FoodRecipes {
 
         //rice recipe
         recipe = new ShapedRecipe(riceKey, rice);
-        recipe.shape("WWW", "WWW");
+        recipe.shape("WWW", "WWW", " B ");
         recipe.setIngredient('W', Material.WHEAT);
+        recipe.setIngredient('B', Material.BOWL);
         Bukkit.addRecipe(recipe);
 
         //sandwich recipe
