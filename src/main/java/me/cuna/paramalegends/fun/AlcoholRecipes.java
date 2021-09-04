@@ -3,6 +3,7 @@ package me.cuna.paramalegends.fun;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.food.FoodRecipes;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -78,6 +79,7 @@ public class AlcoholRecipes {
         recipe.addIngredient(Material.SWEET_BERRIES);
 
         Bukkit.addRecipe(recipe);
+        
     }
 
 }

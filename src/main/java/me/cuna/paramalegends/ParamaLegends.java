@@ -8,6 +8,8 @@ import me.cuna.paramalegends.boss.summon.RaidSummonListener;
 import me.cuna.paramalegends.classgame.*;
 import me.cuna.paramalegends.command.*;
 import me.cuna.paramalegends.command.Destiny;
+import me.cuna.paramalegends.food.FoodListener;
+import me.cuna.paramalegends.food.FoodRecipes;
 import me.cuna.paramalegends.fun.AlcoholListener;
 import me.cuna.paramalegends.fun.AlcoholRecipes;
 import me.cuna.paramalegends.fun.WineryListener;
@@ -67,6 +69,8 @@ public class ParamaLegends extends JavaPlugin {
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
+    public FoodRecipes foodRecipes;
+    public FoodListener foodListener;
 
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
@@ -94,6 +98,8 @@ public class ParamaLegends extends JavaPlugin {
         wineryListener = new WineryListener(this);
         setupListener = new SetupListener(this);
         recipes = new Recipes(this);
+        foodRecipes = new FoodRecipes(this);
+        foodListener = new FoodListener(this);
         alcoholRecipes = new AlcoholRecipes(this);
         alcoholListener = new AlcoholListener(this);
 
@@ -123,12 +129,14 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(wineryListener, this);
         getServer().getPluginManager().registerEvents(alcoholListener, this);
 
+
         registerNPCShopListener();
         registerGameClass();
         registerSpells();
         registerAltars();
         registerSummons();
         registerBossFights();
+        Bukkit.broadcastMessage("Ready");
 
     }
 

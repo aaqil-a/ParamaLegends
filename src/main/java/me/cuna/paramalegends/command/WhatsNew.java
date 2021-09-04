@@ -29,14 +29,18 @@ public class WhatsNew implements CommandExecutor {
         BookMeta meta = (BookMeta)  book.getItemMeta();
         assert meta != null;
         meta.addPage(""+
-                ChatColor.GOLD+ChatColor.BOLD+"1.1.6 3/9/21\n"
+                        ChatColor.GOLD+ChatColor.BOLD+"1.1.6.1 4/9/21\n"
+                        +ChatColor.BLACK+"\u2022 Added Custom Food\n  and recipe.\n"
+                        +ChatColor.BLACK+"\u2022 For the recipe,\n  you must learn it in\n  aenzt cooking\n  school.",
+                ""+ChatColor.GOLD+ChatColor.BOLD+"1.1.6 3/9/21\n"
                     +ChatColor.BLACK+"\u2022 Added /whatsnew\n  command.\n"
                     +ChatColor.BLACK+"\u2022 Buffed illagers.\n"
                     +ChatColor.BLACK+"\u2022 Reduced custom\n  arrow prices.\n"
                     +ChatColor.BLACK+"\u2022 Reduced custom\n  arrow mana costs.\n"
                     +ChatColor.BLACK+"\u2022 Dragon's Breath can\n  now be cancelled.\n"
                     +ChatColor.BLACK+"\u2022 Dragon's Breath now\n  affects players.\n"
-                    +ChatColor.BLACK+"\u2022 Fixed bug where\n  reapers can 'revive'.\n",
+                    +ChatColor.BLACK+"\u2022 Fixed bug where\n  reapers can 'revive'.\n"
+                    +ChatColor.BLACK+"\u2022 Added Custom Food and recipe.",
                 ""+ChatColor.GOLD+ChatColor.BOLD+"1.1.5 2/9/21\n"
                         +ChatColor.BLACK+"\u2022 Reworked Dragon's\n  Breath.\n"
                         +ChatColor.BLACK+"\u2022 Shop signs now\n  display show owner\n  name.\n"
