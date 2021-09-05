@@ -56,12 +56,13 @@ public class BlindingSand implements Listener, SpellParama {
                         }
                     }, 2, 1));
             playerParama.addToCooldown(this);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playerParama.addToReaperRefreshCooldown("Blinding Sand", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Blinding Sand");
                     playerParama.removeFromCooldown(this);
+                    playerParama.removeFromReaperRefreshCooldown("Blinding Sand");
                 }
-            }, cooldown);
+            }, cooldown));
         }
     }
     //Deal damage when custom projectile hits entity

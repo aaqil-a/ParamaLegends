@@ -33,6 +33,8 @@ public class ReaperListener implements Listener{
     public final GutPunch gutPunch;
     public final ForbiddenSlash forbiddenSlash;
     public final MementoMori mementoMori;
+    public final DashStrike dashStrike;
+    public final Rejuvenate rejuvenate;
 
     public ReaperListener(ParamaLegends plugin) {
         this.plugin = plugin;
@@ -44,10 +46,12 @@ public class ReaperListener implements Listener{
         secondWind = new SecondWind(plugin);
         blindingSand = new BlindingSand(plugin);
         bloodyFervour = new BloodyFervour(plugin);
+        dashStrike = new DashStrike(plugin);
         gutPunch = new GutPunch(plugin);
         forbiddenSlash = new ForbiddenSlash(plugin);
         mementoMori = new MementoMori(plugin);
         prowl = new Prowl(plugin);
+        rejuvenate = new Rejuvenate(plugin);
     }
 
     //Passive listeners
@@ -178,6 +182,16 @@ public class ReaperListener implements Listener{
                     if (player.isNotSilenced())
                         if(player.checkLevel(5, ClassGameType.REAPER))
                             prowl.castSpell(player);
+                }
+                case ChatColor.COLOR_CHAR+"4Dash Strike" -> {
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(6, ClassGameType.REAPER))
+                            dashStrike.castSpell(player);
+                }
+                case ChatColor.COLOR_CHAR+"4Rejuvenate" -> {
+                    if (player.isNotSilenced())
+                        if(player.checkLevel(7, ClassGameType.REAPER))
+                            rejuvenate.castSpell(player);
                 }
             }
         }

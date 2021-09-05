@@ -66,10 +66,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof Player){
             if(event.getDamager().hasMetadata("TERRIFIED")){
-                Random rand = new Random();
-                if(rand.nextInt(100) < 60){
-                    event.setCancelled(true);
-                }
+                event.setCancelled(true);
             }
         }
     }

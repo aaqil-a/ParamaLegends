@@ -27,12 +27,13 @@ public class HiddenStrike implements Listener, SpellParama {
             player.setMetadata("HIDDENSTRIKE", new FixedMetadataValue(plugin, "HIDDENSTRIKE"));
             player.sendMessage(ChatColor.GREEN+"You conceal your scythe.");
             playerParama.addToCooldown(this);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playerParama.addToReaperRefreshCooldown("Hidden Strike", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Hidden Strike");
                     playerParama.removeFromCooldown(this);
+                    playerParama.removeFromReaperRefreshCooldown("Hidden Strike");
                 }
-            }, cooldown);
+            }, cooldown));
         }
     }
 

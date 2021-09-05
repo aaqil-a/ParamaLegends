@@ -27,12 +27,13 @@ public class ForbiddenSlash implements Listener, SpellParama {
             player.setMetadata("FORBIDDENSLASH", new FixedMetadataValue(plugin, "FORBIDDENSLASH"));
             player.sendMessage(ChatColor.GREEN+"You ready your scythe.");
             playerParama.addToCooldown(this);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playerParama.addToReaperRefreshCooldown("Forbidden Slash", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.sendNoLongerCooldownMessage(playerParama, "Forbidden Slash");
                     playerParama.removeFromCooldown(this);
+                    playerParama.removeFromReaperRefreshCooldown("Forbidden Slash");
                 }
-            }, cooldown);
+            }, cooldown));
         }
     }
 

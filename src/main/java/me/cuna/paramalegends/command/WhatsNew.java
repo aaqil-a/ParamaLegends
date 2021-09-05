@@ -28,10 +28,15 @@ public class WhatsNew implements CommandExecutor {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta)  book.getItemMeta();
         assert meta != null;
-        meta.addPage(""+
-                        ChatColor.GOLD+ChatColor.BOLD+"1.1.6.1 4/9/21\n"
-                        +ChatColor.BLACK+"\u2022 Added Custom Food\n  and recipe.\n"
-                        +ChatColor.BLACK+"\u2022 For the recipe,\n  you must learn it in\n  aenzt cooking\n  school.",
+        meta.addPage(
+                ""+
+                    ChatColor.GOLD+ChatColor.BOLD+"1.1.7 5/9/21\n"
+                    +ChatColor.BLACK+"\u2022 Added Prowl,\n  Rejuvenate and\n  Dash Strike\n  reaper spells.\n"
+                    +ChatColor.BLACK+"\u2022 Fixed Illusory\n  Orb Sound.\n",
+                ""+
+                    ChatColor.GOLD+ChatColor.BOLD+"1.1.6.1 4/9/21\n"
+                    +ChatColor.BLACK+"\u2022 Added Custom Food\n  and recipe.\n"
+                    +ChatColor.BLACK+"\u2022 For the recipe,\n  you must learn it in\n  aenzt cooking\n  school.",
                 ""+ChatColor.GOLD+ChatColor.BOLD+"1.1.6 3/9/21\n"
                     +ChatColor.BLACK+"\u2022 Added /whatsnew\n  command.\n"
                     +ChatColor.BLACK+"\u2022 Buffed illagers.\n"

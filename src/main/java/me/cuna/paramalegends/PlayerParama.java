@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ public class PlayerParama {
     private final List<AttackParama> attackOnCooldown = new ArrayList<>();
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
+    public final HashMap<String, BukkitTask> refreshReaperCooldown = new HashMap<>();
     private final DataManager data;
     private int playerCurrentMana;
     private int playerManaLevel;
@@ -233,6 +235,10 @@ public class PlayerParama {
         data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
         data.saveConfig();
     }
+    public void addToReaperRefreshCooldown(String spell, BukkitTask task){
+        refreshReaperCooldown.put(spell,task);
+    }
+    public void removeFromReaperRefreshCooldown(String spell){refreshReaperCooldown.remove(spell);}
 
     public Player getPlayer(){
         return player;

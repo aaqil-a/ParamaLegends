@@ -34,12 +34,13 @@ public class GutPunch implements AttackParama {
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 62, 3));
                 ((LivingEntity) entity).damage(finalDamage+0.034, playerParama.getPlayer());
 
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                playerParama.addToReaperRefreshCooldown("Gut Punch", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         playerParama.removeFromCooldown(this);
                         plugin.sendNoLongerCooldownMessage(playerParama, "Gut Punch");
+                        playerParama.removeFromReaperRefreshCooldown("Gut Punch");
                     }
-                }, cooldown);
+                }, cooldown));
             }
         }
     }

@@ -53,10 +53,10 @@ public class IllusoryOrb implements Listener, SpellParama {
                 newOrb.setVelocity(velocity);
                 playerParama.addEntity("ILLUSORYORB", newOrb);
                 player.setMetadata("ORBCASTED", new FixedMetadataValue(plugin, "ORBCASTED"));
+                newOrb.getWorld().playSound(newOrb.getLocation(), Sound.BLOCK_BEACON_AMBIENT, 1f, 2f);
                 playerParama.addTask("ORBFLASH",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                             newOrb.getWorld().spawnParticle(Particle.FLASH, newOrb.getLocation(), 1);
-                            newOrb.getWorld().playSound(newOrb.getLocation(), Sound.BLOCK_BEACON_AMBIENT, 0.8f, 1.5f);
                         }, 0, 5));
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.removeEntity("ILLUSORYORB");

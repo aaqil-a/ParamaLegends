@@ -226,21 +226,5 @@ public class ArcheryListener implements Listener{
            location.add(1,0,0);
         }
     }
-
-    public HunterEye getHunterEye(){
-        return hunterEye;
-    }
-    public ViperBite getViperBite(){
-        return viperBite;
-    }
-    public Neurotoxin getNeurotoxin() {
-        return neurotoxin;
-    }
-    public Retreat getRetreat() {
-        return retreat;
-    }
-    public Blast getBlast() {
-        return blast;
-    }
 }
 

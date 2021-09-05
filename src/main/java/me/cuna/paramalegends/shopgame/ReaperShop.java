@@ -31,6 +31,8 @@ public class ReaperShop extends GameShop {
         put(9,10);
         put(11,40);
         put(13, 100);
+        put(15, 150);
+        put(17, 200);
         put(19,300);
         put(21,400);
         put(23,600);
@@ -175,7 +177,7 @@ public class ReaperShop extends GameShop {
         if(playerLevel >= 2){
             // Hidden Strike
             item.setType(Material.LEATHER);
-            meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+            meta.addEnchant(Enchantment.DURABILITY, 10, true);
             meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"4Hidden Strike");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Conceal your weapon, stabbing the");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy at a critical location while");
@@ -218,6 +220,37 @@ public class ReaperShop extends GameShop {
             meta.setLore(lore);
             item.setItemMeta(meta);
             gui.setItem(13, item);
+            lore.clear();
+        }
+        if(playerLevel >= 6){
+            // Dash Strike
+            item.setType(Material.IRON_HOE);
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"4Dash Strike");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Dash forwards, striking any");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "enemy you slam into.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.dashStrike.getManaCost());
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.dashStrike.getCooldown()/20+" seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 6");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "150 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(15, item);
+            lore.clear();
+        }
+        if(playerLevel >= 7){
+            // Rejuvenate
+            item.setType(Material.GHAST_TEAR);
+            meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"4Rejuvenate");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Clear your state of mind,");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "refreshing most reaper");
+            lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "cooldowns.");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Mana Cost: "+plugin.reaperListener.rejuvenate.getManaCost());
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: "+plugin.reaperListener.rejuvenate.getCooldown()/20+" seconds");
+            lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Prerequisite: Reaper 7");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            gui.setItem(17, item);
             lore.clear();
         }
         if(playerLevel >= 8){
