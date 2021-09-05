@@ -33,7 +33,6 @@ public class Retreat implements Listener, ArrowParama {
                     Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed*1.1);
                     player.setMetadata("RETREATPARAMA", new FixedMetadataValue( plugin, oldSpeed));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        Bukkit.broadcastMessage(player.getMetadata("RETREATPARAMA").toString());
                         Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(oldSpeed);
                         player.removeMetadata("RETREATPARAMA", plugin);
                     }, speedDuration);
