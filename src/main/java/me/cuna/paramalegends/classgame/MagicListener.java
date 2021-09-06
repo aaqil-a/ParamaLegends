@@ -179,7 +179,6 @@ public class MagicListener implements Listener {
             int masteryExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+".masteryexp."+spellName);
             masteryExp += exp;
 
-            Bukkit.broadcastMessage(masteryExp+" needed:"+masteryLevelUp[masteryLevel]);
             // level up
             if(masteryExp >= masteryLevelUp[masteryLevel]){
                 data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, masteryLevel+1);
