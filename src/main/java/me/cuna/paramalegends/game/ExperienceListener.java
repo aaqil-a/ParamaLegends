@@ -46,10 +46,6 @@ public class ExperienceListener implements Listener {
                 case ".016", ".015", ".017" -> skill = ClassGameType.ARCHERY;
             }
         }
-        //Check if entity was exploded by magic
-        if(entity.getLastDamageCause() != null && entity.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
-            skill = ClassGameType.MAGIC;
-        }
         //Check if damage source is from magic
         if(skill == null){
             //Check if damage source is from swordsmanship or reaper

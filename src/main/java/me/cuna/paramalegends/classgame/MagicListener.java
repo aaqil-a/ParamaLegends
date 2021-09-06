@@ -168,7 +168,7 @@ public class MagicListener implements Listener {
     }
 
     //mastery listener
-    private final int[] masteryLevelUp = {0,100,200,400,600,800};
+    private final int[] masteryLevelUp = {0,100,200,400,600,800, Integer.MAX_VALUE};
     public void addMastery(PlayerParama playerParama, String spellName, int exp){
         Player player = playerParama.getPlayer();
         int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spellName);
