@@ -19,7 +19,7 @@ public class DragonBreath implements SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 200;
-    private final int cooldown = 400;
+    private final int cooldown = 600;
     private final int duration = 200;
     private final int damage = 5;
     private final int damageBonus = 1;
