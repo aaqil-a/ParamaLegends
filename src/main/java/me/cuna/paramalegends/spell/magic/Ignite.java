@@ -25,6 +25,8 @@ public class Ignite implements Listener, SpellParama {
     private final int damage = 3;
     private final int duration = 105;
     private final int cooldown = 140;
+    private final int damageBonus = 1;
+    private final int cooldownReduction = 10;
 
     public Ignite(ParamaLegends plugin){
         this.plugin = plugin;
@@ -48,6 +50,7 @@ public class Ignite implements Listener, SpellParama {
             } else{
                 location = player.getEyeLocation().add(player.getLocation().getDirection().multiply(20));
             }
+            int masteryLevel = playerParama.getMasteryLevel("ignite");
             player.getWorld().spawnParticle(Particle.FLAME, location.add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
             player.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location.add(0,1,0), 5,0.5,0.5,0.5,0);
             for(Entity ignited : player.getWorld().getNearbyEntities(location, 2,2,2)){
@@ -59,7 +62,8 @@ public class Ignite implements Listener, SpellParama {
                     playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                                 ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                ((Damageable) ignited).damage(damage+0.069, player);
+                                ((Damageable) ignited).damage(damage+damageBonus*masteryLevel+0.069, player);
+                                plugin.magicListener.addMastery(playerParama, "ignite", 4);
                             }, 0, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("IGNITED"+ignited.getUniqueId().toString()), duration);
                 }
@@ -70,7 +74,7 @@ public class Ignite implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Ignite");
                     playerParama.removeFromCooldown(this);
                 }
-            }, cooldown);
+            }, cooldown- (long) cooldownReduction *masteryLevel);
         }
     }
 

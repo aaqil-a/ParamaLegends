@@ -26,6 +26,8 @@ public class IllusoryOrb implements Listener, SpellParama {
     private final int damage = 20;
     private final int duration = 40;
     private final int cooldown = 200;
+    private final int damageBonus = 4;
+    private final int cooldownReduction = 10;
 
     public IllusoryOrb(ParamaLegends plugin){
         this.plugin = plugin;
@@ -44,10 +46,11 @@ public class IllusoryOrb implements Listener, SpellParama {
             if(playerParama.checkCooldown(this)){
                 plugin.sendCooldownMessage(playerParama, "Illusory Orb");
             } else if (playerParama.subtractMana(manaCost)) {
+                int masteryLevel = playerParama.getMasteryLevel("illusoryorb");
                 EnderPearl newOrb = player.launchProjectile(EnderPearl.class);
                 playerParama.addToCooldown(this);
                 Vector velocity = newOrb.getVelocity();
-                velocity.multiply(0.5);
+                velocity.multiply(0.7);
                 newOrb.setCustomName("illusoryorb");
                 newOrb.setGravity(false);
                 newOrb.setVelocity(velocity);
@@ -68,7 +71,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Illusory Orb");
                         playerParama.removeFromCooldown(this);
                     }
-                }, cooldown);
+                }, cooldown- (long) cooldownReduction *masteryLevel);
             }
         }
     }
@@ -90,9 +93,12 @@ public class IllusoryOrb implements Listener, SpellParama {
             event.setCancelled(true);
             if(event.getHitEntity() != null){
                 if(event.getHitEntity() instanceof Damageable){
+                    PlayerParama playerParama = plugin.getPlayerParama((Player) projectile.getShooter());
+                    int masteryLevel = playerParama.getMasteryLevel("illusoryorb");
                     plugin.experienceListener.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();
-                    hit.damage(damage+0.069, (Player) projectile.getShooter());
+                    hit.damage(damage+damageBonus*masteryLevel+0.069, (Player) projectile.getShooter());
+                    plugin.magicListener.addMastery(playerParama, "illusoryorb", 5);
                 }
             }
         }

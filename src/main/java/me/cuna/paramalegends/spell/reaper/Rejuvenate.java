@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class Rejuvenate implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 100;
+    private final int manaCost = 50;
     private final int cooldown = 1200;
 
     public Rejuvenate(ParamaLegends plugin){

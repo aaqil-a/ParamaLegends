@@ -30,6 +30,12 @@ public class WhatsNew implements CommandExecutor {
         assert meta != null;
         meta.addPage(
                 ""+
+                        ChatColor.GOLD+ChatColor.BOLD+"1.1.8 6/9/21\n"
+                        +ChatColor.BLACK+"\u2022 Added magic\n  mastery system.\n"
+                        +ChatColor.BLACK+"\u2022 Dash Strike\n  now affects\n  players.\n"
+                        +ChatColor.BLACK+"\u2022 Added Huayra's\n  Fury sound.\n"
+                        +ChatColor.BLACK+"\u2022 Illusory Orb\n  speed increased.",
+                ""+
                     ChatColor.GOLD+ChatColor.BOLD+"1.1.7 5/9/21\n"
                     +ChatColor.BLACK+"\u2022 Added Prowl,\n  Rejuvenate and\n  Dash Strike\n  reaper spells.\n"
                     +ChatColor.BLACK+"\u2022 Fixed Illusory\n  Orb Sound.\n",

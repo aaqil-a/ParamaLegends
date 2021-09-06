@@ -145,4 +145,5 @@ public class RoyalArtillery implements Listener, SpellParama {
         return manaCost;
     }
     public int getCooldown(){return cooldown;}
+
 }

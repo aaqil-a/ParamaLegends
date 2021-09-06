@@ -26,6 +26,9 @@ public class LifeDrain implements Listener, SpellParama {
     private final int cooldown = 120;
     private final int damage = 3;
     private final int healing = 1;
+    private final int damageBonus = 1;
+    private final int rangeBonus = 1;
+    private final int cooldownReduction = 10;
 
     public LifeDrain(ParamaLegends plugin){
         this.plugin = plugin;
@@ -46,8 +49,9 @@ public class LifeDrain implements Listener, SpellParama {
         } else if(playerParama.checkCooldown(this)) {
             plugin.sendCooldownMessage(playerParama, "Life Drain");
         } else {
+            int masteryLevel = playerParama.getMasteryLevel("lifedrain");
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER,
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), range+rangeBonus*masteryLevel, FluidCollisionMode.NEVER,
                     true, 1.5, notPlayer);
             if(rayTrace != null) {
                 if (rayTrace.getHitEntity() != null) {
@@ -56,7 +60,7 @@ public class LifeDrain implements Listener, SpellParama {
                         player.sendMessage(ChatColor.GREEN + "Life Drain activated.");
                         playerParama.addTask("LIFEDRAIN",
                                 Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                    if(drained.isDead() || player.isDead() || player.getLocation().distance(drained.getLocation())>range){
+                                    if(drained.isDead() || player.isDead() || player.getLocation().distance(drained.getLocation())>(range+rangeBonus*masteryLevel)){
                                         player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                         playerParama.addToCooldown(this);
                                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
@@ -78,11 +82,12 @@ public class LifeDrain implements Listener, SpellParama {
                                         } else {
                                             player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                            ((Damageable) drained).damage(damage+0.069, player);
+                                            ((Damageable) drained).damage(damage+masteryLevel*damageBonus+0.069, player);
                                             if(player.getHealth() <= (20-healing)){
                                                 player.setHealth(player.getHealth()+healing);
                                             }
                                         }
+                                        plugin.magicListener.addMastery(playerParama, "lifedrain", 3);
                                     } else {
                                         player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                         playerParama.addToCooldown(this);
@@ -91,7 +96,7 @@ public class LifeDrain implements Listener, SpellParama {
                                                 plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                                                 playerParama.removeFromCooldown(this);
                                             }
-                                        }, cooldown);
+                                        }, cooldown- (long) masteryLevel *cooldownReduction);
                                         playerParama.cancelTask("LIFEDRAIN");
                                     }
                         }, 0, 20));

@@ -50,6 +50,9 @@ commands:
   whatsnew:
     description: Check out what's new in the ParamaLegends plugin.
     usage: /whatsnew
+  mastery:
+    description: Check your mastery of a magic spell.
+    usage: /mastery <spellname>
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

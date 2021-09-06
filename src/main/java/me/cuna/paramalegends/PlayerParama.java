@@ -29,6 +29,7 @@ public class PlayerParama {
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
     public final HashMap<String, BukkitTask> refreshReaperCooldown = new HashMap<>();
+    private final HashMap<String, Integer> magicMasteryLevel = new HashMap<>();
     private final DataManager data;
     private int playerCurrentMana;
     private int playerManaLevel;
@@ -73,6 +74,12 @@ public class PlayerParama {
         //set archery speed passive
         if(archeryLevel >= 4){
             applySpeedPassive();
+        }
+
+        //set mastery levels
+        for(String spell : plugin.magicListener.getSpellNames()){
+            int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spell);
+            magicMasteryLevel.put(spell, masteryLevel);
         }
     }
 
@@ -239,6 +246,14 @@ public class PlayerParama {
         refreshReaperCooldown.put(spell,task);
     }
     public void removeFromReaperRefreshCooldown(String spell){refreshReaperCooldown.remove(spell);}
+
+    public int getMasteryLevel(String key){
+        if(magicMasteryLevel.containsKey(key)) return magicMasteryLevel.get(key);
+        return 0;
+    }
+    public void setMasteryLevel(String key, int level){
+        magicMasteryLevel.put(key, level);
+    }
 
     public Player getPlayer(){
         return player;

@@ -30,6 +30,8 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
     private final int spawnDuration = 600;
     private final int livingDuration = 800;
     private final int damage = 10;
+    private final int damageBonus = 2;
+    private final int cooldownReduction = 40;
 
     public VoicesOfTheDamned(ParamaLegends plugin){
         this.plugin = plugin;
@@ -40,6 +42,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
         if(playerParama.checkCooldown(this)){
             plugin.sendCooldownMessage(playerParama, "Voices of the Damned");
         } else if (playerParama.subtractMana(manaCost)) {
+            int masteryLevel = playerParama.getMasteryLevel("voicesofthedamned");
             Player player = playerParama.getPlayer();
             Location location = player.getEyeLocation();
             Vector offset = player.getEyeLocation().getDirection().setY(0).normalize().multiply(5);
@@ -66,20 +69,20 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
             playerParama.addTask("DAMNEDSPAWNPHANTOM",
                     Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                         Phantom damned = (Phantom) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.PHANTOM);
-                        damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                        damned.setMetadata("caster", new FixedMetadataValue(plugin, player.getName()));
                         damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
                         damned.setCustomNameVisible(true);
-                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+0.069);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+damageBonus*masteryLevel+0.069);
                         damned.setTarget(null);
                         playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
                     },3, 100));
             playerParama.addTask("DAMNEDSPAWNSILVERFISH",
                     Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                         Silverfish damned = (Silverfish) dummy.getWorld().spawnEntity(dummy.getLocation(), EntityType.SILVERFISH);
-                        damned.setMetadata(player.getName(), new FixedMetadataValue(plugin, "summoner"));
+                        damned.setMetadata("caster", new FixedMetadataValue(plugin, player.getName()));
                         damned.setCustomName(ChatColor.DARK_PURPLE+"Damned Soul");
                         damned.setCustomNameVisible(true);
-                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+0.069);
+                        Objects.requireNonNull(damned.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)).setBaseValue(damage+damageBonus*masteryLevel+0.069);
                         damned.setTarget(null);
                         playerParama.addEntity("DAMNED"+damned.getUniqueId().toString(), damned);
                     },53, 100));
@@ -128,7 +131,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Voices of the Damned");
                     playerParama.removeFromCooldown(this);
                 }
-            }, cooldown);
+            }, cooldown- (long) cooldownReduction *masteryLevel);
         }
     }
 
@@ -147,11 +150,9 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Phantom || event.getDamager() instanceof Silverfish){
             if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
-                Player summoner = null;
-                for (Player player: Bukkit.getOnlinePlayers())
-                    if(event.getDamager().hasMetadata(player.getName()))
-                        summoner = player;
+                Player summoner = Bukkit.getPlayer(event.getDamager().getMetadata("caster").get(0).asString());
                 plugin.experienceListener.addExp(summoner, ClassGameType.MAGIC, 1);
+                plugin.magicListener.addMastery(plugin.getPlayerParama(summoner), "voicesofthedamned", 5);
 
                 //Check if damned killed enemy and give exp if so
                 Damageable victim = (Damageable) event.getEntity();

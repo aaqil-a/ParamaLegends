@@ -24,6 +24,8 @@ public class SummonLightning implements Listener, SpellParama {
     private final int manaCost = 100;
     private final int cooldown = 600;
     private final int damage = 45;
+    private final int damageBonus = 4;
+    private final int cooldownReduction = 40;
 
     public SummonLightning(ParamaLegends plugin){
         this.plugin = plugin;
@@ -33,6 +35,7 @@ public class SummonLightning implements Listener, SpellParama {
         if(playerParama.checkCooldown(this)){
             plugin.sendCooldownMessage(playerParama, "Summon Lightning");
         } else {
+            int masteryLevel = playerParama.getMasteryLevel("summonlightning");
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 100, FluidCollisionMode.NEVER, true, 0,
@@ -60,7 +63,8 @@ public class SummonLightning implements Listener, SpellParama {
                 for(Entity ignited : player.getWorld().getNearbyEntities(location, 3,4,3)){
                     if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                        ((Damageable) ignited).damage(damage+0.069, player);
+                        ((Damageable) ignited).damage(damage+masteryLevel*damageBonus+0.069, player);
+                        plugin.magicListener.addMastery(playerParama, "summonlightning", 10);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -68,7 +72,7 @@ public class SummonLightning implements Listener, SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Summon Lightning");
                         playerParama.removeFromCooldown(this);
                     }
-                }, cooldown);
+                }, cooldown- (long) masteryLevel *cooldownReduction);
             }
         }
     }

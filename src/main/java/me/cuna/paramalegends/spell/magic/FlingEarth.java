@@ -21,6 +21,7 @@ public class FlingEarth implements Listener, SpellParama {
     private final int manaCost = 3;
     private final int cooldown = 16;
     private final int damage = 5;
+    private final int damageBonus = 1;
 
     public FlingEarth(ParamaLegends plugin){
         this.plugin = plugin;
@@ -102,11 +103,13 @@ public class FlingEarth implements Listener, SpellParama {
                 }, 2);
                 playerParama.removeEntity("FLINGEARTHBALL");
                 playerParama.cancelTask("EARTHTHROWN");
+                int masteryLevel = playerParama.getMasteryLevel("flingearth");
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                         Damageable hit = (Damageable) event.getHitEntity();
-                        hit.damage(damage+0.069, player);
+                        hit.damage(damage+damageBonus*masteryLevel+0.069, player);
+                        plugin.magicListener.addMastery(playerParama, "flingearth", 1);
                     }
                 }
                 projectile.remove();

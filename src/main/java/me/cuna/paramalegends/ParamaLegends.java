@@ -66,6 +66,7 @@ public class ParamaLegends extends JavaPlugin {
     public LectrumSet lectrumSet;
     public WorldLevelSet worldLevelSet;
     public WhatsNew whatsNew;
+    public Mastery mastery;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -102,6 +103,7 @@ public class ParamaLegends extends JavaPlugin {
         foodListener = new FoodListener(this);
         alcoholRecipes = new AlcoholRecipes(this);
         alcoholListener = new AlcoholListener(this);
+        mastery = new Mastery(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -120,6 +122,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("lectrumset").setExecutor(lectrumSet);
         getCommand("worldlevelset").setExecutor(worldLevelSet);
         getCommand("whatsnew").setExecutor(whatsNew);
+        getCommand("mastery").setExecutor(mastery);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);

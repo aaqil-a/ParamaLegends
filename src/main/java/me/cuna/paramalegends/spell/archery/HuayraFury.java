@@ -5,6 +5,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +32,7 @@ public class HuayraFury implements Listener, SpellParama {
             player.sendMessage(ChatColor.GREEN+"Huayra's Fury activated.");
             playerParama.addToCooldown(this);
             player.setMetadata("HUAYRAFURY", new FixedMetadataValue(plugin, true));
-
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1f, 1.5f);
             //huayra fury expire
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.sendMessage(ChatColor.GREEN+"Huayra's Fury wore off.");
@@ -59,5 +60,5 @@ public class HuayraFury implements Listener, SpellParama {
     }
     public int getDuration(){ return duration;}
     public int getCooldown(){return cooldown;}
-
 }
+

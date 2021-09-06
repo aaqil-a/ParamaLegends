@@ -22,6 +22,9 @@ public class DragonBreath implements SpellParama {
     private final int cooldown = 400;
     private final int duration = 200;
     private final int damage = 5;
+    private final int damageBonus = 1;
+    private final int cooldownReduction = 40;
+
 
     public DragonBreath(ParamaLegends plugin){
         this.plugin = plugin;
@@ -37,6 +40,7 @@ public class DragonBreath implements SpellParama {
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             Player player = playerParama.getPlayer();
+            int masteryLevel = playerParama.getMasteryLevel("dragonbreath");
             player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.7f, 1.5f);
             playerParama.addTask("DRAGONBREATHEFFECT",
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
@@ -62,7 +66,8 @@ public class DragonBreath implements SpellParama {
                             }
                             if(hit instanceof Mob || hit instanceof Player){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                                ((Damageable) hit).damage(damage+0.069, player);
+                                ((Damageable) hit).damage(damage+damageBonus*masteryLevel+0.069, player);
+                                plugin.magicListener.addMastery(playerParama, "dragonbreath", 1);
                             }
                         }
                     }, 1, 5));
@@ -78,7 +83,7 @@ public class DragonBreath implements SpellParama {
                     plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
                     playerParama.removeFromCooldown(this);
                 }
-            }, cooldown);
+            }, cooldown- (long) cooldownReduction *masteryLevel);
         }
     }
 

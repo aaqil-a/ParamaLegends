@@ -466,18 +466,31 @@ public class Destiny implements Listener {
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "to an attacker.");
                     }
                     case 5 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Prowl");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Focus your energy, increasing");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "your movement speed and damage.");
                         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Too Slow!");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Occasionally dodge an enemy's attack,");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "making it deal no damage.");
                     }
                     case 6 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Dash Strike");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Dash forwards, striking any");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "enemy you slam into.");
                         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Second Wind");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "When taking damage, have a chance");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "to gain a second wind.");
                     }
                     case 7 -> {
+                        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Rejuvenate");
+                        lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Active");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Clear your state of mind,");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "refreshing most reaper");
+                        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "cooldowns.");
                         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Bloody Fervour");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Passive");
                         lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "When dealing damage, have a slight");

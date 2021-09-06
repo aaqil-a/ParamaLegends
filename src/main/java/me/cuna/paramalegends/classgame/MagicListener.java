@@ -3,6 +3,7 @@ package me.cuna.paramalegends.classgame;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
+import me.cuna.paramalegends.spell.SpellParama;
 import me.cuna.paramalegends.spell.magic.*;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -32,6 +33,17 @@ public class MagicListener implements Listener {
     public final DragonBreath dragonBreath;
     public final VoicesOfTheDamned voicesOfTheDamned;
     public final Nova nova;
+    public String[] spellNames = {
+            "dragonbreath",
+            "flingearth",
+            "gust",
+            "ignite",
+            "illusoryorb",
+            "lifedrain",
+            "nova",
+            "summonlightning",
+            "voicesofthedamned"
+    };
 
     public MagicListener(final ParamaLegends plugin){
         this.plugin = plugin;
@@ -153,5 +165,36 @@ public class MagicListener implements Listener {
         } else if(location.getBlock().getRelative(BlockFace.EAST).getType().isAir()){
             player.teleport(location.add(1,0,0));
         }
+    }
+
+    //mastery listener
+    private final int[] masteryLevelUp = {0,100,200,400,600,800};
+    public void addMastery(PlayerParama playerParama, String spellName, int exp){
+        Player player = playerParama.getPlayer();
+        int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spellName);
+        if(masteryLevel == 0){
+            data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, 1);
+            data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, exp);
+        } else {
+            int masteryExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+".masteryexp."+spellName);
+            masteryExp += exp;
+
+            Bukkit.broadcastMessage(masteryExp+" needed:"+masteryLevelUp[masteryLevel]);
+            // level up
+            if(masteryExp >= masteryLevelUp[masteryLevel]){
+                data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, masteryLevel+1);
+                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, 0);
+                playerParama.setMasteryLevel(spellName, masteryLevel+1);
+                player.sendMessage(ChatColor.GOLD+spellName.substring(0,1).toUpperCase()+spellName.substring(1)+" mastery leveled up to "+(masteryLevel+1));
+            } else {
+                // no level up
+                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, masteryExp);
+            }
+        }
+        data.saveConfig();
+    }
+
+    public String[] getSpellNames(){
+        return spellNames;
     }
 }

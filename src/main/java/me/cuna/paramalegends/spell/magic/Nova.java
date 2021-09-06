@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,6 +23,8 @@ public class Nova implements SpellParama {
     private final int manaCost = 600;
     private final int damage = 60;
     private final int cooldown = 2400;
+    private final int cooldownReduction = 100;
+    private final int damageBonus = 10;
 
     public Nova(ParamaLegends plugin){
         this.plugin = plugin;
@@ -31,6 +34,7 @@ public class Nova implements SpellParama {
         if (playerParama.checkCooldown(this)) {
             plugin.sendCooldownMessage(playerParama, "Nova");
         } else {
+            int masteryLevel = playerParama.getMasteryLevel("nova");
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 50, FluidCollisionMode.NEVER, true, 0,
@@ -79,7 +83,8 @@ public class Nova implements SpellParama {
                     for (Entity exploded : player.getWorld().getNearbyEntities(finalLocationExplosion, 8, 10, 8)) {
                         if (exploded instanceof Damageable) {
                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
-                            ((Damageable) exploded).damage(damage+0.069, player);
+                            ((Damageable) exploded).damage(damage+masteryLevel*damageBonus+0.069, player);
+                            plugin.magicListener.addMastery(playerParama, "nova", 10);
                         }
                     }
                 }, 125);
@@ -88,7 +93,7 @@ public class Nova implements SpellParama {
                         plugin.sendNoLongerCooldownMessage(playerParama, "Nova");
                         playerParama.removeFromCooldown(this);
                     }
-                }, cooldown);
+                }, cooldown- (long) masteryLevel *cooldownReduction);
             }
         }
     }

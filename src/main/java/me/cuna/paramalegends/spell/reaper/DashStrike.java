@@ -5,6 +5,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -29,12 +30,21 @@ public class DashStrike implements SpellParama {
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.setVelocity(player.getLocation().getDirection().setY(0).normalize().multiply(2));
-            // how to damage?
+
+
+
             playerParama.cancelTask("DASHSTRIKE");
+            playerParama.cancelTask("DASHSTRIKEEND");
+            player.setInvulnerable(true);
+            playerParama.addTask("DASHSTRIKEEND", Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                player.setInvulnerable(false);
+            }, 20));
             playerParama.addTask("DASHSTRIKE",
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-                        for(Entity entity : player.getNearbyEntities(1, 3, 1).stream().filter(entity -> entity instanceof Mob).toList()){
-                            Mob mob = (Mob) entity;
+                        for(Entity entity : player.getNearbyEntities(1, 3, 1).stream()
+                                .filter(entity -> (entity instanceof Mob || entity instanceof Player)).toList()){
+                            if(entity.equals(player)) continue;
+                            Damageable mob = (Damageable) entity;
                             mob.damage(damage+0.034, player);
                         }
                     }, 0, 4));

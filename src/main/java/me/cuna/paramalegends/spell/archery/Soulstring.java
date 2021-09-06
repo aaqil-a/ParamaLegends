@@ -148,4 +148,5 @@ public class Soulstring implements SpellParama {
         return manaCost;
     }
     public int getCooldown(){return cooldown;}
+
 }
