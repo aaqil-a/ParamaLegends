@@ -65,8 +65,6 @@ public class SwordsmanShop extends GameShop {
 
         // Your Lectrum
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
@@ -78,6 +76,8 @@ public class SwordsmanShop extends GameShop {
         if(playerLevel >= 3){
             // Shields Up
             item.setType(Material.SHIELD);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            meta.addEnchant(Enchantment.DURABILITY, 10, true);
             meta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"2Shields Up");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Reduces incoming damage and");
             lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "reflects some back at the");
