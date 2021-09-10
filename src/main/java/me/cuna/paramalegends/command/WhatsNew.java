@@ -33,6 +33,7 @@ public class WhatsNew implements CommandExecutor {
                         ChatColor.GOLD+ChatColor.BOLD+"1.2.0 10/9/21\n"
                         +ChatColor.BLACK+"\u2022 Added Nature Boss\n  Fight.\n"
                         +ChatColor.BLACK+"\u2022 Added King Slime.\n"
+                        +ChatColor.BLACK+"\u2022 Added mana potion.\n"
                         +ChatColor.BLACK+"\u2022 Increased magic\n  mastery damage\n  bonus.\n"
                         +ChatColor.BLACK+"\u2022 Prowl now increases\n  attack speed.\n",
                 ""+

@@ -3,6 +3,7 @@ package me.cuna.paramalegends.game;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -112,6 +114,20 @@ public class WorldRuleListener implements Listener {
         if(lectrum >= 10) lectrum -= lost;
         data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
         player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");
+    }
+
+    //listen for mana potion drink
+    @EventHandler
+    public void onConsume(PlayerItemConsumeEvent event){
+        if(event.getItem().getType().equals(Material.POTION)){
+            if(event.getItem().getItemMeta() != null) {
+                if(event.getItem().getItemMeta().getDisplayName().contains(ChatColor.COLOR_CHAR+"9Mana Potion")){
+                    plugin.getPlayerParama(event.getPlayer()).addMana(100);
+                } else if(event.getItem().getItemMeta().getDisplayName().contains(ChatColor.COLOR_CHAR+"9Greater Mana Potion")){
+                    plugin.getPlayerParama(event.getPlayer()).addMana(200);
+                }
+            }
+        }
     }
 
 }

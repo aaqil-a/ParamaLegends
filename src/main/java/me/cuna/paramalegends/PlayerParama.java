@@ -193,6 +193,11 @@ public class PlayerParama {
         }
     }
 
+    public void addMana(int mana){
+        playerCurrentMana = Math.min(playerCurrentMana+mana, plugin.getMaxMana()[playerManaLevel]);
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.getMaxMana()[playerManaLevel]));
+    }
+
     public void levelUpMana(int level){
         if(playerManaLevel < level){
             playerManaLevel = level;

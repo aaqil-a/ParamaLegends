@@ -42,6 +42,8 @@ public class GeneralShop extends GameShop {
         put(6,4);
         put(8,5);
         put(10,50);
+        put(12,10);
+        put(14,20);
     }};
 
     public GeneralShop(ParamaLegends plugin) {
@@ -86,7 +88,7 @@ public class GeneralShop extends GameShop {
         // Healing Potion
         ItemStack potion = new ItemStack(Material.POTION, 1);
         PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
-        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"6Healing Potion");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"dHealing Potion");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "3 Lectrum");
         potionMeta.setLore(lore);
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HEAL, 1, 1), true);
@@ -96,7 +98,7 @@ public class GeneralShop extends GameShop {
         lore.clear();
 
         // Healing Potion
-        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"6Regeneration Potion");
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"dRegeneration Potion");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "4 Lectrum");
         potionMeta.setLore(lore);
         potionMeta.removeCustomEffect(PotionEffectType.HEAL);
@@ -134,6 +136,28 @@ public class GeneralShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
         gui.setItem(10, item);
+        lore.clear();
+
+        // Mana Potion
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"9Mana Potion");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Replenishes 100 mana points.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
+        potionMeta.setLore(lore);
+        potionMeta.removeCustomEffect(PotionEffectType.REGENERATION);
+        potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 0, 0), true);
+        potionMeta.setColor(Color.BLUE);
+        potion.setItemMeta(potionMeta);
+        gui.setItem(12, potion);
+        lore.clear();
+
+        // Greater Mana Potion
+        potionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.COLOR_CHAR+"9Greater Mana Potion");
+        lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "Replenishes 200 mana points.");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
+        potionMeta.setLore(lore);
+        potion.setItemMeta(potionMeta);
+        gui.setItem(14, potion);
         lore.clear();
 
         return gui;
