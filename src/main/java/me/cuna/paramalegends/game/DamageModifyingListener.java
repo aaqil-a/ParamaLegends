@@ -3,10 +3,7 @@ package me.cuna.paramalegends.game;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -152,6 +149,10 @@ public class DamageModifyingListener implements Listener {
                 player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.4f, 0f);
                 damage *= 0.3;
             }
+        }
+        //reduce damage if slime king
+        if(event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(ChatColor.COLOR_CHAR+"aKing Slime")){
+            damage *= (1/((double) (plugin.natureFightListener.getPlayerCount())));
         }
         event.setDamage(damage);
     }

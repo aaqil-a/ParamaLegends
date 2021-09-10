@@ -21,7 +21,7 @@ public class FlingEarth implements Listener, SpellParama {
     private final int manaCost = 3;
     private final int cooldown = 16;
     private final int damage = 5;
-    private final int damageBonus = 1;
+    private final int damageBonus = 2;
 
     public FlingEarth(ParamaLegends plugin){
         this.plugin = plugin;

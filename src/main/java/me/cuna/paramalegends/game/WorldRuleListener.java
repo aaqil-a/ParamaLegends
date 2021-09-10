@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -51,7 +52,7 @@ public class WorldRuleListener implements Listener {
         //enable crafting of custom items
         if(inv.getStorageContents()[0].hasItemMeta()){
             ItemMeta meta = inv.getStorageContents()[0].getItemMeta();
-            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"aEssence of Nature")){
+            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"aMysterious Ooze")){
                 ItemStack essence = inv.getStorageContents()[5];
                 if(essence.hasItemMeta()){
                     ItemMeta essenceMeta = essence.getItemMeta();
@@ -77,6 +78,17 @@ public class WorldRuleListener implements Listener {
         if(event.getItem() != null && event.getItem().hasItemMeta()){
             ItemMeta meta = event.getItem().getItemMeta();
             if(meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"5Void Essence")){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    //Disable placing of certain game items
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event){
+        if(event.getItemInHand().hasItemMeta()){
+            ItemMeta meta = event.getItemInHand().getItemMeta();
+            if(meta.hasDisplayName() && meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"aEssence of Nature")){
                 event.setCancelled(true);
             }
         }

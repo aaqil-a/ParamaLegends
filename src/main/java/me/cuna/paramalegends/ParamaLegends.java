@@ -3,7 +3,9 @@ package me.cuna.paramalegends;
 import me.cuna.paramalegends.altar.EarthAltarListener;
 import me.cuna.paramalegends.altar.NatureAltarListener;
 import me.cuna.paramalegends.altar.StartAltarListener;
+import me.cuna.paramalegends.boss.fight.NatureFightListener;
 import me.cuna.paramalegends.boss.fight.RaidFightListener;
+import me.cuna.paramalegends.boss.summon.NatureSummonListener;
 import me.cuna.paramalegends.boss.summon.RaidSummonListener;
 import me.cuna.paramalegends.classgame.*;
 import me.cuna.paramalegends.command.*;
@@ -50,8 +52,10 @@ public class ParamaLegends extends JavaPlugin {
     public EarthAltarListener earthAltarListener;
 
     public RaidSummonListener raidSummonListener;
+    public NatureSummonListener natureSummonListener;
 
     public RaidFightListener raidFightListener;
+    public NatureFightListener natureFightListener;
 
     public WineryListener wineryListener;
     public AlcoholListener alcoholListener;
@@ -145,6 +149,7 @@ public class ParamaLegends extends JavaPlugin {
 
     public void initializeSummons(){
         raidSummonListener = new RaidSummonListener(this);
+        natureSummonListener = new NatureSummonListener(this);
     }
 
     public void registerSummons(){
@@ -153,6 +158,7 @@ public class ParamaLegends extends JavaPlugin {
 
     public void initializeBossFights(){
         raidFightListener = new RaidFightListener(this);
+        natureFightListener = new NatureFightListener(this);
     }
 
     public void registerBossFights(){
@@ -173,7 +179,6 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(retiredWeaponsmith, this);
         getServer().getPluginManager().registerEvents(suspiciousPeasant, this);
         getServer().getPluginManager().registerEvents(oddWares, this);
-        Bukkit.broadcastMessage("Registed npcs!");
     }
 
     public void initializeGameClass(){

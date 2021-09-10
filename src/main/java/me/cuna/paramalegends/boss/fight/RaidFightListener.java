@@ -98,24 +98,30 @@ public class RaidFightListener implements Listener {
         if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
         else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
         Player mostDeaths = getPlayer(deaths);
-        if(mostDeaths == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Deaths: Nobody");
+        if(mostDeaths == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Deaths: Nobody");
         else Bukkit.broadcastMessage(ChatColor.RED+"Most Deaths: "+mostDeaths.getName());
         Player mostDamageDealt = getPlayer(damageDealt);
         if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
         else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
         Player mostDamageTaken = getPlayer(damageTaken);
-        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: Nobody");
-        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Taken: "+mostDamageTaken.getName());
-        sendPlayerStatistics();
+        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: "+mostDamageTaken.getName());
         Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
+
+        sendPlayerStatistics();
     }
 
     public void sendPlayerStatistics(){
         for(Player player : plugin.getServer().getOnlinePlayers()){
-            player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
-            player.sendMessage(ChatColor.RED+"Your Deaths: "+deaths.get(player));
-            player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
-            player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
+            if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
+            if(deaths.get(player)==null) player.sendMessage(ChatColor.RED+"Your Deaths: 0");
+            else player.sendMessage(ChatColor.RED+"Your Deaths: "+deaths.get(player));
+            if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
+            if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
+            else player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
+
 
             //give player rewards
             PlayerParama playerParama = plugin.getPlayerParama(player);

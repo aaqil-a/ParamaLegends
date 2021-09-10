@@ -25,7 +25,7 @@ public class Ignite implements Listener, SpellParama {
     private final int damage = 3;
     private final int duration = 105;
     private final int cooldown = 140;
-    private final int damageBonus = 1;
+    private final int damageBonus = 2;
     private final int cooldownReduction = 10;
 
     public Ignite(ParamaLegends plugin){

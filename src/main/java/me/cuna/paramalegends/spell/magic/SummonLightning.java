@@ -24,7 +24,7 @@ public class SummonLightning implements Listener, SpellParama {
     private final int manaCost = 100;
     private final int cooldown = 600;
     private final int damage = 45;
-    private final int damageBonus = 4;
+    private final int damageBonus = 8;
     private final int cooldownReduction = 40;
 
     public SummonLightning(ParamaLegends plugin){

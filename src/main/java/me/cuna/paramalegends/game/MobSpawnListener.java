@@ -34,6 +34,14 @@ public class MobSpawnListener implements Listener {
             bonusDamage=0;
         }
         boolean hostile = true;
+        //temporary workaround for nature fight
+        if(event.getEntityType().equals(EntityType.PHANTOM) || event.getEntityType().equals(EntityType.WITCH)){
+            if(event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)){
+                event.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.7);
+                return;
+            }
+        }
+
         switch (event.getEntityType()) {
             case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN, ZOGLIN,
                     EVOKER, PILLAGER, VINDICATOR -> {

@@ -24,7 +24,7 @@ public class ExperienceListener implements Listener {
     public DataManager data;
     public final int[] xpNeeded = {0,920,1480,1920,2320,2400,4320,6750,8010,8370, Integer.MAX_VALUE};
     public final int[] xpNeededSwordsman = {0,1196,1924,2496,3016,3120,5616,8775,10413,10881, Integer.MAX_VALUE};
-    private final int[] maxLevel = {0, 6, 8, 9, 10, 10};
+    private final int[] maxLevel = {0, 6, 8, 10, 10, 10};
     private int worldLevel;
 
     public ExperienceListener(final ParamaLegends plugin){
@@ -46,7 +46,6 @@ public class ExperienceListener implements Listener {
                 case ".016", ".015", ".017" -> skill = ClassGameType.ARCHERY;
             }
         }
-        //Check if damage source is from magic
         if(skill == null){
             //Check if damage source is from swordsmanship or reaper
             skill = switch (player.getInventory().getItemInMainHand().getType()) {

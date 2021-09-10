@@ -30,7 +30,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
     private final int spawnDuration = 600;
     private final int livingDuration = 800;
     private final int damage = 10;
-    private final int damageBonus = 2;
+    private final int damageBonus = 4;
     private final int cooldownReduction = 40;
 
     public VoicesOfTheDamned(ParamaLegends plugin){

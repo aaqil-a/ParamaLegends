@@ -26,7 +26,7 @@ public class IllusoryOrb implements Listener, SpellParama {
     private final int damage = 20;
     private final int duration = 40;
     private final int cooldown = 200;
-    private final int damageBonus = 4;
+    private final int damageBonus = 6;
     private final int cooldownReduction = 10;
 
     public IllusoryOrb(ParamaLegends plugin){

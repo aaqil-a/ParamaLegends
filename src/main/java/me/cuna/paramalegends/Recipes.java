@@ -46,10 +46,10 @@ public class Recipes {
         Bukkit.addRecipe(recipe);
         lore.clear();
 
-        //essence of nature
+        //mysterious ooze
         item = new ItemStack(Material.SLIME_BALL);
         meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.COLOR_CHAR+"aEssence of Nature");
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"aMysterious Ooze");
         lore.add(ChatColor.GRAY+"A sticky substance that");
         lore.add(ChatColor.GRAY+"radiates life essence.");
         meta.setLore(lore);

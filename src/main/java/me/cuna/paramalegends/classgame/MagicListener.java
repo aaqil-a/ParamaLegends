@@ -72,62 +72,60 @@ public class MagicListener implements Listener {
         if(event.getAction() == Action.PHYSICAL){
             return;
         }
-        //Check if held item is book
+        //Check if held item is spell
         ItemStack item = event.getItem();
-        if (item.getType().equals(Material.ENCHANTED_BOOK)){
-            if(item.getItemMeta() != null){
-                //Call cast spell function according to book name
-                switch(item.getItemMeta().getDisplayName()){
-                    case ChatColor.COLOR_CHAR+"5Fling Earth":
-                        if(player.isNotSilenced())
-                            flingEarth.castSpell(player);
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Ignite":
-                        if(player.checkLevel(2, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            ignite.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Gust":
-                        if(player.checkLevel(3, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            gust.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Life Drain":
-                        if(player.checkLevel(4, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            lifeDrain.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Blink":
-                        if(player.checkLevel(5, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            blink.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Summon Lightning":
-                        if(player.checkLevel(6, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            summonLightning.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Illusory Orb":
-                        if(player.checkLevel(7, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            illusoryOrb.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Dragon's Breath":
-                        if(player.checkLevel(8, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            dragonBreath.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Voices of the Damned":
-                        if(player.checkLevel(9, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            voicesOfTheDamned.castSpell(player);
-                        }
-                        break;
-                    case ChatColor.COLOR_CHAR+"5Nova":
-                        if(player.checkLevel(10, ClassGameType.MAGIC) && player.isNotSilenced()){
-                            nova.castSpell(player);
-                        }
-                        break;
-                }
+        if(item.getItemMeta() != null){
+            //Call cast spell function according to name
+            switch(item.getItemMeta().getDisplayName()){
+                case ChatColor.COLOR_CHAR+"5Fling Earth":
+                    if(player.isNotSilenced())
+                        flingEarth.castSpell(player);
+                    break;
+                case ChatColor.COLOR_CHAR+"5Ignite":
+                    if(player.checkLevel(2, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        ignite.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Gust":
+                    if(player.checkLevel(3, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        gust.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Life Drain":
+                    if(player.checkLevel(4, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        lifeDrain.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Blink":
+                    if(player.checkLevel(5, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        blink.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Summon Lightning":
+                    if(player.checkLevel(6, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        summonLightning.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Illusory Orb":
+                    if(player.checkLevel(7, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        illusoryOrb.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Dragon's Breath":
+                    if(player.checkLevel(8, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        dragonBreath.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Voices of the Damned":
+                    if(player.checkLevel(9, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        voicesOfTheDamned.castSpell(player);
+                    }
+                    break;
+                case ChatColor.COLOR_CHAR+"5Nova":
+                    if(player.checkLevel(10, ClassGameType.MAGIC) && player.isNotSilenced()){
+                        nova.castSpell(player);
+                    }
+                    break;
             }
         }
     }
@@ -184,7 +182,18 @@ public class MagicListener implements Listener {
                 data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, masteryLevel+1);
                 data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, 0);
                 playerParama.setMasteryLevel(spellName, masteryLevel+1);
-                player.sendMessage(ChatColor.GOLD+spellName.substring(0,1).toUpperCase()+spellName.substring(1)+" mastery leveled up to "+(masteryLevel+1));
+
+                player.sendMessage(ChatColor.GOLD+
+                        switch(spellName){
+                            case "dragonbreath" -> "Dragon's Breath";
+                            case "flingearth" -> "Fling Earth";
+                            case "illusoryorb" -> "Illusory Orb";
+                            case "lifedrain" -> "Life Drain";
+                            case "summonlightning" -> "Summon Lightning";
+                            case "voicesofthedamned" -> "Voices of The Damned";
+                            default -> spellName.substring(0,1).toUpperCase()+spellName.substring(1);
+                        }
+                        +" mastery leveled up to "+(masteryLevel+1));
             } else {
                 // no level up
                 data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, masteryExp);

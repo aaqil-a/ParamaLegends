@@ -30,6 +30,12 @@ public class WhatsNew implements CommandExecutor {
         assert meta != null;
         meta.addPage(
                 ""+
+                        ChatColor.GOLD+ChatColor.BOLD+"1.2.0 10/9/21\n"
+                        +ChatColor.BLACK+"\u2022 Added Nature Boss\n  Fight.\n"
+                        +ChatColor.BLACK+"\u2022 Added King Slime.\n"
+                        +ChatColor.BLACK+"\u2022 Increased magic\n  mastery damage\n  bonus.\n"
+                        +ChatColor.BLACK+"\u2022 Prowl now increases\n  attack speed.\n",
+                ""+
                         ChatColor.GOLD+ChatColor.BOLD+"1.1.8 6/9/21\n"
                         +ChatColor.BLACK+"\u2022 Added magic\n  mastery system.\n"
                         +ChatColor.BLACK+"\u2022 Dash Strike\n  now affects\n  players.\n"

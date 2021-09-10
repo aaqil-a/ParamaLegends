@@ -24,7 +24,7 @@ public class Nova implements SpellParama {
     private final int damage = 60;
     private final int cooldown = 2400;
     private final int cooldownReduction = 100;
-    private final int damageBonus = 10;
+    private final int damageBonus = 15;
 
     public Nova(ParamaLegends plugin){
         this.plugin = plugin;

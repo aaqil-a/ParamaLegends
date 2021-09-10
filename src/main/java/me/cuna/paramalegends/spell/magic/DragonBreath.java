@@ -22,7 +22,7 @@ public class DragonBreath implements SpellParama {
     private final int cooldown = 600;
     private final int duration = 200;
     private final int damage = 5;
-    private final int damageBonus = 1;
+    private final int damageBonus = 2;
     private final int cooldownReduction = 40;
 
 
