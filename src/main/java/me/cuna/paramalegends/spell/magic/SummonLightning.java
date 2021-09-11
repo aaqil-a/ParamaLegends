@@ -6,10 +6,7 @@ import me.cuna.paramalegends.classgame.ClassGameType;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -64,7 +61,7 @@ public class SummonLightning implements Listener, SpellParama {
                     if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                         ((Damageable) ignited).damage(damage+masteryLevel*damageBonus+0.069, player);
-                        plugin.magicListener.addMastery(playerParama, "summonlightning", 10);
+                        if(ignited instanceof Monster) plugin.magicListener.addMastery(playerParama, "summonlightning", 10);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {

@@ -5,10 +5,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.*;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -67,7 +64,7 @@ public class DragonBreath implements SpellParama {
                             if(hit instanceof Mob || hit instanceof Player){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                                 ((Damageable) hit).damage(damage+damageBonus*masteryLevel+0.069, player);
-                                plugin.magicListener.addMastery(playerParama, "dragonbreath", 1);
+                                if(hit instanceof Monster) plugin.magicListener.addMastery(playerParama, "dragonbreath", 1);
                             }
                         }
                     }, 1, 5));

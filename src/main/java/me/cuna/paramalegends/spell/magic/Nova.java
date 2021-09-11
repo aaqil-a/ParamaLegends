@@ -8,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.List;
@@ -84,7 +81,7 @@ public class Nova implements SpellParama {
                         if (exploded instanceof Damageable) {
                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                             ((Damageable) exploded).damage(damage+masteryLevel*damageBonus+0.069, player);
-                            plugin.magicListener.addMastery(playerParama, "nova", 10);
+                            if(exploded instanceof Monster) plugin.magicListener.addMastery(playerParama, "nova", 10);
                         }
                     }
                 }, 125);

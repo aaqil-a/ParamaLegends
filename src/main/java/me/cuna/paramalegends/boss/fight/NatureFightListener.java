@@ -733,7 +733,7 @@ public class NatureFightListener implements Listener {
                 if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().contains("Slime Bomber")){
                     Slime slime = (Slime) event.getDamager();
                     World world = slime.getWorld();
-                    world.createExplosion(slime.getLocation(), 0.5F, false, true);
+                    world.createExplosion(slime.getLocation(), 1F, false, false);
                     for(Entity poisoned : slime.getNearbyEntities(1,1,1)){
                         if(poisoned instanceof Player){
                             ((Player) poisoned).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 0, true));

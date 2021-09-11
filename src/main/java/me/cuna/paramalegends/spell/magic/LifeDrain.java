@@ -8,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -87,7 +84,7 @@ public class LifeDrain implements Listener, SpellParama {
                                                 player.setHealth(player.getHealth()+healing);
                                             }
                                         }
-                                        plugin.magicListener.addMastery(playerParama, "lifedrain", 3);
+                                        if(drained instanceof Monster) plugin.magicListener.addMastery(playerParama, "lifedrain", 3);
                                     } else {
                                         player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                         playerParama.addToCooldown(this);

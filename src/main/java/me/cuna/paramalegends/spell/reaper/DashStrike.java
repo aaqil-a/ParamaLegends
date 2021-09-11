@@ -47,7 +47,7 @@ public class DashStrike implements SpellParama {
                             Damageable mob = (Damageable) entity;
                             mob.damage(damage+0.034, player);
                         }
-                    }, 0, 4));
+                    }, 0, 1));
             Bukkit.getScheduler().runTaskLater(plugin, ()->{playerParama.cancelTask("DASHSTRIKE");}, 13);
             playerParama.addToCooldown(this);
             playerParama.addToReaperRefreshCooldown("Dash Strike", Bukkit.getScheduler().runTaskLater(plugin, () -> {

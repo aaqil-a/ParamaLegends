@@ -152,8 +152,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
             if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
                 Player summoner = Bukkit.getPlayer(event.getDamager().getMetadata("caster").get(0).asString());
                 plugin.experienceListener.addExp(summoner, ClassGameType.MAGIC, 1);
-                plugin.magicListener.addMastery(plugin.getPlayerParama(summoner), "voicesofthedamned", 5);
-
+                if(event.getDamager() instanceof Monster) plugin.magicListener.addMastery(plugin.getPlayerParama(summoner), "voicesofthedamned", 5);
                 //Check if damned killed enemy and give exp if so
                 Damageable victim = (Damageable) event.getEntity();
                 if(event.getFinalDamage() > victim.getHealth()){

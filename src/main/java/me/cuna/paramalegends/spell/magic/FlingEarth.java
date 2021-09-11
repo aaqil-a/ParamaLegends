@@ -109,7 +109,7 @@ public class FlingEarth implements Listener, SpellParama {
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                         Damageable hit = (Damageable) event.getHitEntity();
                         hit.damage(damage+damageBonus*masteryLevel+0.069, player);
-                        plugin.magicListener.addMastery(playerParama, "flingearth", 1);
+                        if(event.getEntity() instanceof Monster) plugin.magicListener.addMastery(playerParama, "flingearth", 1);
                     }
                 }
                 projectile.remove();

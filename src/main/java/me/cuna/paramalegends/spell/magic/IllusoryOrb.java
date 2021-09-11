@@ -7,10 +7,7 @@ import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -98,7 +95,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                     plugin.experienceListener.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();
                     hit.damage(damage+damageBonus*masteryLevel+0.069, (Player) projectile.getShooter());
-                    plugin.magicListener.addMastery(playerParama, "illusoryorb", 5);
+                    if(hit instanceof Monster) plugin.magicListener.addMastery(playerParama, "illusoryorb", 5);
                 }
             }
         }
