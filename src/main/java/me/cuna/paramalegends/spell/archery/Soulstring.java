@@ -19,13 +19,11 @@ import java.util.Objects;
 public class Soulstring implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
     private final int manaCost = 100;
     private final int cooldown = 600;
 
     public Soulstring(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = plugin.archeryListener;
     }
 
     public void castSpell(PlayerParama player){
@@ -48,7 +46,7 @@ public class Soulstring implements SpellParama {
         Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
         location.add(offset);
         if(!(location.getBlock().isEmpty() || location.getBlock().isLiquid())){
-            archeryListener.findAir(location);
+            plugin.archeryListener.findAir(location);
         }
 
         ItemStack shirt = new ItemStack(Material.LEATHER_CHESTPLATE);

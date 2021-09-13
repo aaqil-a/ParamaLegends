@@ -168,6 +168,10 @@ public class PlayerShopListener implements Listener {
                                     lectrumSeller += price;
                                     lectrum -= price;
                                     player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
+                                    Player seller = plugin.getServer().getPlayer(uuid);
+                                    if(seller != null){
+                                        seller.sendMessage(ChatColor.GREEN+player.getName()+" purchased "+sign.getLine(3) + " " + sign.getLine(2) + " from you for " + price + " lectrum.");
+                                    }
                                     data.getConfig().set("players."+uuid+".lectrum", lectrumSeller);
                                     data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
                                     data.saveConfig();

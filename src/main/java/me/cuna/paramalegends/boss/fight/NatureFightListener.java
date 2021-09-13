@@ -57,6 +57,9 @@ public class NatureFightListener implements Listener {
     int curWave;
     int waveSize;
     boolean secondPhase;
+    BukkitTask spawnTask;
+    BukkitTask freezeTime;
+    int deathCount;
 
     public void bossFight(World world, Location location){
         playerCount = world.getPlayers().size();
@@ -68,8 +71,13 @@ public class NatureFightListener implements Listener {
         startX = location.getX();
         startY = location.getY();
         startZ = location.getZ();
+        deathCount = 0;
         secondPhase = false;
         alive.addAll(Bukkit.getOnlinePlayers());
+        double time = world.getTime();
+        freezeTime = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+            world.setTime((long) time);
+        }, 0, 200);
         curWave = 1;
         Bukkit.getScheduler().runTaskLater(plugin, ()->spawnWave(world), 100);
     }
@@ -133,23 +141,23 @@ public class NatureFightListener implements Listener {
                     createBossBar(world, "First Wave");
                 }
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(entities.size() < 150){
+                    player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
+                    final String[] spawnMap = new String[]{"---", "-KS"};
+                    spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                         Location spawnLocation = randomLocation(player);
-                        world.playSound(spawnLocation, Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                            final String[] spawnMap = new String[]{"---","-KS"};
-                            for(int x = 0; x < 2; x++){
-                                for(int z = 0; z < 3; z++){
-                                    switch(spawnMap[x].charAt(z)) {
+                        if(entities.size() < 150) {
+                            for (int x = 0; x < 2; x++) {
+                                for (int z = 0; z < 3; z++) {
+                                    switch (spawnMap[x].charAt(z)) {
                                         case 'S' -> spawnSkeleton(world, spawnLocation, player);
                                         case 'K' -> spawnSlime(world, spawnLocation, player);
                                     }
-                                    spawnLocation.add(0,0,1);
+                                    spawnLocation.add(0, 0, 1);
                                 }
-                                spawnLocation.add(1,0,0);
+                                spawnLocation.add(1, 0, 0);
                             }
-                        }, 100);
-                    }
+                        }
+                    }, 100, 1200);
                 }
             }
             //second wave
@@ -161,11 +169,11 @@ public class NatureFightListener implements Listener {
                     createBossBar(world, "Third Wave");
                 }
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(entities.size() < 150){
-                        Location spawnLocation = randomLocation(player);
-                        world.playSound(spawnLocation, Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                            final String[] spawnMap = new String[]{"-P-","-KS"};
+                    player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
+                    final String[] spawnMap = new String[]{"-P-","-KS"};
+                    spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                        if(entities.size() < 150) {
+                            Location spawnLocation = randomLocation(player);
                             for(int x = 0; x < 2; x++){
                                 for(int z = 0; z < 3; z++){
                                     switch(spawnMap[x].charAt(z)) {
@@ -177,8 +185,8 @@ public class NatureFightListener implements Listener {
                                 }
                                 spawnLocation.add(1,0,0);
                             }
-                        }, 100);
-                    }
+                        }
+                    }, 100, 1200);
                 }
             }
             //third wave
@@ -190,11 +198,11 @@ public class NatureFightListener implements Listener {
                     createBossBar(world, "Fifth Wave");
                 }
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(entities.size() < 150){
-                        Location spawnLocation = randomLocation(player);
-                        world.playSound(spawnLocation, Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                            final String[] spawnMap = new String[]{"-P-","WKS"};
+                    player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
+                    final String[] spawnMap = new String[]{"-P-","WKS"};
+                    spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                        if(entities.size() < 150) {
+                            Location spawnLocation = randomLocation(player);
                             for(int x = 0; x < 2; x++){
                                 for(int z = 0; z < 3; z++){
                                     switch(spawnMap[x].charAt(z)) {
@@ -207,8 +215,8 @@ public class NatureFightListener implements Listener {
                                 }
                                 spawnLocation.add(1,0,0);
                             }
-                        }, 100);
-                    }
+                        }
+                    }, 100, 1200);
                 }
             }
             //fourth wave
@@ -220,26 +228,26 @@ public class NatureFightListener implements Listener {
                     createBossBar(world, "Seventh Wave");
                 }
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(entities.size() < 150){
-                        Location spawnLocation = randomLocation(player);
-                        world.playSound(spawnLocation, Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                            final String[] spawnMap = new String[]{"ZPW","-KS"};
-                            for(int x = 0; x < 2; x++){
-                                for(int z = 0; z < 3; z++){
-                                    switch(spawnMap[x].charAt(z)) {
+                    final String[] spawnMap = new String[]{"ZPW","-KS"};
+                    player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
+                    spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                        if(entities.size() < 150) {
+                            Location spawnLocation = randomLocation(player);
+                            for(int x = 0; x < 2; x++) {
+                                for (int z = 0; z < 3; z++) {
+                                    switch (spawnMap[x].charAt(z)) {
                                         case 'S' -> spawnSkeleton(world, spawnLocation, player);
                                         case 'K' -> spawnSlime(world, spawnLocation, player);
                                         case 'P' -> spawnPhantom(world, spawnLocation, player);
                                         case 'W' -> spawnWitch(world, spawnLocation, player);
                                         case 'Z' -> spawnZombieHorse(world, spawnLocation, player);
                                     }
-                                    spawnLocation.add(0,0,1);
+                                    spawnLocation.add(0, 0, 1);
                                 }
-                                spawnLocation.add(1,0,0);
+                                spawnLocation.add(1, 0, 0);
                             }
-                        }, 100);
-                    }
+                        }
+                    }, 100, 1200);
                 }
             }
             //fifth wave
@@ -251,11 +259,11 @@ public class NatureFightListener implements Listener {
                     createBossBar(world, "Ninth Wave");
                 }
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    if(entities.size() < 150){
-                        Location spawnLocation = randomLocation(player);
-                        world.playSound(spawnLocation, Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                            final String[] spawnMap = new String[]{"ZPW","-KS", "ZK-"};
+                    final String[] spawnMap = new String[]{"ZPW","-KS", "ZK-"};
+                    player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
+                    spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                        if(entities.size() < 150) {
+                            Location spawnLocation = randomLocation(player);
                             for(int x = 0; x < 3; x++){
                                 for(int z = 0; z < 3; z++){
                                     switch(spawnMap[x].charAt(z)) {
@@ -269,8 +277,8 @@ public class NatureFightListener implements Listener {
                                 }
                                 spawnLocation.add(1,0,0);
                             }
-                        }, 100);
-                    }
+                        }
+                    }, 100, 1200);
                 }
             }
         }
@@ -286,8 +294,10 @@ public class NatureFightListener implements Listener {
         plugin.natureSummonListener.setFightOccuring(false);
         bossBar.removeAll();
         for(Entity entity : entities){
-            entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getLocation(), 8, 0.5, 0.5, 0.5, 0);
-            entity.remove();
+            if(entity != null){
+                entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                entity.remove();
+            }
         }
         if(plugin.experienceListener.getWorldLevel() < 3 && win){
             plugin.experienceListener.setWorldLevel(3);
@@ -300,6 +310,7 @@ public class NatureFightListener implements Listener {
             }
         }
         entities.clear();
+        freezeTime.cancel();
         Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
         Player mostKills = getPlayer(kills);
         if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
@@ -317,8 +328,8 @@ public class NatureFightListener implements Listener {
             for(Player player : plugin.getServer().getOnlinePlayers()){
                 //give player rewards
                 PlayerParama playerParama = plugin.getPlayerParama(player);
-                playerParama.addLectrum(500);
-                player.sendMessage(ChatColor.GOLD+"+500 Lectrum");
+                playerParama.addLectrum(1000);
+                player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
             }
         }
     }
@@ -356,12 +367,12 @@ public class NatureFightListener implements Listener {
     //Get random location to spawn mob
     public Location randomLocation(Player player){
         Random rand = new Random();
-        int offsetX = 10 - rand.nextInt(20);
-        int offsetZ = 10 - rand.nextInt(20);
-        if(offsetX > 0) offsetX += 10;
-        else offsetX -= 10;
-        if(offsetZ > 0) offsetZ += 10;
-        else offsetZ -= 10;
+        int offsetX = 5 - rand.nextInt(10);
+        int offsetZ = 5 - rand.nextInt(10);
+        if(offsetX > 0) offsetX += 5;
+        else offsetX -= 5;
+        if(offsetZ > 0) offsetZ += 5;
+        else offsetZ -= 5;
         int spawnX = (int) player.getLocation().getX() + offsetX;
         int spawnZ = (int) player.getLocation().getZ() + offsetZ;
         return new Location(player.getWorld(), spawnX, player.getWorld().getHighestBlockYAt(spawnX, spawnZ), spawnZ).add(0,1,0);
@@ -370,15 +381,18 @@ public class NatureFightListener implements Listener {
     public void spawnBoss(World world){
         //Despawn current entities
         for(Entity entity : entities){
-            entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getLocation(), 8, 0.5, 0.5, 0.5, 0);
-            entity.remove();
+            if(entity != null){
+                entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                entity.remove();
+            }
         }
         entities.clear();
         bossBar.removeAll();
         bossBar.setVisible(false);
 
         //spawn slime king
-        Location spawnLocation = new Location(world, startX, world.getHighestBlockYAt((int) startX, (int) startZ), startZ);
+        Random rand = new Random();
+        Location spawnLocation = world.getHighestBlockAt(alive.get(rand.nextInt(alive.size())).getLocation()).getLocation();
         boss = world.spawn(spawnLocation, Slime.class, slime ->{
             slime.setSize(10);
             slime.setCustomName(ChatColor.COLOR_CHAR+"aKing Slime");
@@ -388,6 +402,7 @@ public class NatureFightListener implements Listener {
             slime.setAware(true);
             Objects.requireNonNull(slime.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE))
                     .setBaseValue(6);
+            slime.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
             bossThrowSlimeball(slime);
             bossJumpAttack(slime);
             slimePhaseAttack(slime);
@@ -609,9 +624,9 @@ public class NatureFightListener implements Listener {
         meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE)
                 .flicker(true).trail(true).withColor(Color.WHITE, Color.GREEN, Color.YELLOW)
                 .withTrail().withFlicker().build());
-        meta.setPower(4);
+        meta.setPower(2);
         firework.setFireworkMeta(meta);
-        Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 40);
+        Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 20);
     }
 
     //king slime ball attack listener
@@ -650,13 +665,6 @@ public class NatureFightListener implements Listener {
                     double progress = bossBar.getProgress()-(1/((double) waveSize));
                     if(progress < 0) progress = 0;
                     bossBar.setProgress(progress);
-
-                    //set entities glowing when 35% remaining
-                    if(progress <= 0.35){
-                        for(Entity entity : entities){
-                            entity.setGlowing(true);
-                        }
-                    }
                 }
                 if(event.getEntity().getKiller() != null){
                     Player player = event.getEntity().getKiller();
@@ -666,10 +674,19 @@ public class NatureFightListener implements Listener {
                         kills.put(player, 1);
                     }
                 }
+                deathCount++;
                 entities.remove(event.getEntity());
-                if(entities.isEmpty()){
+                if(deathCount >= waveSize){
                     bossBar.removeAll();
+                    deathCount = 0;
                     curWave++;
+                    for(Entity entity : entities){
+                        if(entity != null){
+                            entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getLocation(), 8, 0.5, 0.5, 0.5, 0);
+                            entity.remove();
+                        }
+                    }
+                    spawnTask.cancel();
                     if(curWave<=10){
                         Bukkit.getScheduler().runTaskLater(plugin, ()->spawnWave(event.getEntity().getWorld()), 200);
                     } else {

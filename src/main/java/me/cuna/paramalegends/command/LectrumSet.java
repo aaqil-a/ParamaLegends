@@ -48,7 +48,17 @@ public class LectrumSet implements CommandExecutor {
                 }
                 data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
                 data.saveConfig();
-
+                ItemStack voidEssence = new ItemStack(Material.ENDER_EYE);
+                ItemMeta meta = voidEssence.getItemMeta();
+                meta.setDisplayName(ChatColor.COLOR_CHAR+"5Void Essence");
+                meta.addEnchant(Enchantment.DURABILITY, 10, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatColor.GRAY+"A cryptic orb that emits");
+                lore.add(ChatColor.GRAY+"a sinister aura.");
+                meta.setLore(lore);
+                voidEssence.setItemMeta(meta);
+                player.getInventory().addItem(voidEssence);
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");
             }
