@@ -688,6 +688,7 @@ public class NatureFightListener implements Listener {
                     double progress = bossBar.getProgress()-(1/((double) waveSize));
                     if(progress < 0) progress = 0;
                     bossBar.setProgress(progress);
+                    deathCount++;
                 }
                 if(event.getEntity().getKiller() != null){
                     Player player = event.getEntity().getKiller();
@@ -697,7 +698,6 @@ public class NatureFightListener implements Listener {
                         kills.put(player, 1);
                     }
                 }
-                deathCount++;
                 entities.remove(event.getEntity());
                 if(deathCount >= waveSize){
                     bossBar.removeAll();

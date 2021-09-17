@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -91,10 +92,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                         double closestDistance = Double.MAX_VALUE;
                         Entity closestEntity = null;
                         for(Entity entity : player.getNearbyEntities(10,10,10)){
-                            if(entity instanceof Villager || entity instanceof Player || entity instanceof Silverfish
-                                    || entity instanceof ArmorStand || entity instanceof Phantom )
-                                continue;
-                            if(entity instanceof LivingEntity){
+                            if(entity instanceof Monster){
                                 double distance = entity.getLocation().distance(player.getLocation());
                                 if(distance < closestDistance){
                                     closestDistance = distance;
@@ -142,6 +140,18 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
         if(entity.getCustomName() != null){
             if(entity.getCustomName().contains("Damned Soul") || entity.getCustomName().contains("Soulstring"))
                 event.setCancelled(true);
+        }
+    }
+
+    //make damned souls not target players
+    @EventHandler
+    public void onChangeTarget(EntityTargetLivingEntityEvent event){
+        if(event.getEntity().getCustomName() != null){
+            if(event.getEntity().getCustomName().contains("Damned Soul")){
+                if(event.getTarget() instanceof Player){
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 

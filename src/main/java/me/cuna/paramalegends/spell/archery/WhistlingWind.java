@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -48,8 +49,8 @@ public class WhistlingWind implements Listener {
                 }
 
                 arrow.remove();
-                List <Entity> entities = player.getNearbyEntities(10,10,10);
-                entities.removeIf(hit -> !(hit instanceof LivingEntity) || hit instanceof Player || hit instanceof ArmorStand || hit instanceof Villager);
+                List <Entity> entities = player.getNearbyEntities(15,15,15);
+                entities.removeIf(hit -> !(hit instanceof Monster));
                 entitiesWhistlingWind.put(player, entities);
                 if(entities.size() == 0){
                     entitiesWhistlingWind.remove(player);
@@ -131,8 +132,6 @@ public class WhistlingWind implements Listener {
             }, 20);
 
         }
-
-
     }
 
     public void directArrowToEntity(Entity entity, Player player){
@@ -183,7 +182,18 @@ public class WhistlingWind implements Listener {
             }
         }
     }
-
+    //make whistling wind not hurt player
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+        if(event.getDamager() instanceof SpectralArrow && event.getDamager().getCustomName() != null){
+            SpectralArrow arrow = (SpectralArrow) event.getDamager();
+            if(arrow.getCustomName().equals("whistlingwind") || arrow.getCustomName().equals("return")){
+                if(!(event.getEntity() instanceof Monster)){
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
     //Deal when projectile hits block
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event){
