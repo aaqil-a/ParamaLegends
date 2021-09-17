@@ -41,7 +41,7 @@ public class DashStrike implements SpellParama {
             }, 20));
             playerParama.addTask("DASHSTRIKE",
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-                        for(Entity entity : player.getNearbyEntities(1, 3, 1).stream()
+                        for(Entity entity : player.getNearbyEntities(1, 2, 1).stream()
                                 .filter(entity -> (entity instanceof Mob || entity instanceof Player)).toList()){
                             if(entity.equals(player)) continue;
                             Damageable mob = (Damageable) entity;

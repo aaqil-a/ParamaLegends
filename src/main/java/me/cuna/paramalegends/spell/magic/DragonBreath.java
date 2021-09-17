@@ -15,8 +15,8 @@ import java.util.Objects;
 public class DragonBreath implements SpellParama {
 
     private final ParamaLegends plugin;
-    private final int manaCost = 200;
-    private final int cooldown = 600;
+    private final int manaCost = 250;
+    private final int cooldown = 700;
     private final int duration = 200;
     private final int damage = 5;
     private final int damageBonus = 2;
@@ -48,9 +48,9 @@ public class DragonBreath implements SpellParama {
                         Location location = player.getEyeLocation();
                         Vector direction = location.getDirection();
                         //create rectangular box in front of player
-                        Location start = location.clone().add(new Vector(-1*direction.getZ(), 0, direction.getX()));
-                        Location end = location.clone().add((new Vector(direction.getZ(), 0, -1*direction.getX())));
-                        end.add(direction.clone().multiply(10));
+                        Location start = location.clone().add(new Vector(-0.7*direction.getZ(), 0, 0.7*direction.getX()));
+                        Location end = location.clone().add((new Vector(0.7*direction.getZ(), 0, -0.7*direction.getX())));
+                        end.add(direction.clone().multiply(7));
                         //expand boxes y value
                         end.add(0, 2, 0);
                         start.add(0, -2 ,0);

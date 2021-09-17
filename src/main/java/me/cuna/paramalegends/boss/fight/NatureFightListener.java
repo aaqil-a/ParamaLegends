@@ -131,6 +131,7 @@ public class NatureFightListener implements Listener {
     }
     //spawn waves
     public void spawnWave(World world){
+        Random rand = new Random();
         switch(curWave){
             // First Wave
             case 1,2 -> {
@@ -144,6 +145,9 @@ public class NatureFightListener implements Listener {
                 if(spawnTask != null)spawnTask.cancel();
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
+                        if(!alive.contains(player)){
+                            player = alive.get(rand.nextInt(alive.size()));
+                        }
                         player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                         Location spawnLocation = randomLocation(player);
                         if(entities.size() < 150) {
@@ -174,6 +178,9 @@ public class NatureFightListener implements Listener {
                 if(spawnTask != null)spawnTask.cancel();
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
+                        if(!alive.contains(player)){
+                            player = alive.get(rand.nextInt(alive.size()));
+                        }
                         player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                         if (entities.size() < 150) {
                             Location spawnLocation = randomLocation(player);
@@ -203,6 +210,9 @@ public class NatureFightListener implements Listener {
                 if(spawnTask != null)spawnTask.cancel();
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
+                        if(!alive.contains(player)){
+                            player = alive.get(rand.nextInt(alive.size()));
+                        }
                         player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                         final String[] spawnMap = new String[]{"-P-","WKS"};
                         if(entities.size() < 150) {
@@ -235,6 +245,9 @@ public class NatureFightListener implements Listener {
                     if(spawnTask != null)spawnTask.cancel();
                     spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                         for(Player player : Bukkit.getOnlinePlayers()) {
+                            if(!alive.contains(player)){
+                                player = alive.get(rand.nextInt(alive.size()));
+                            }
                             player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                             if(entities.size() < 150) {
                                 Location spawnLocation = randomLocation(player);
@@ -267,6 +280,9 @@ public class NatureFightListener implements Listener {
                 final String[] spawnMap = new String[]{"ZPW","-KS", "ZK-"};
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
+                        if(!alive.contains(player)){
+                            player = alive.get(rand.nextInt(alive.size()));
+                        }
                         player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                         if (entities.size() < 150) {
                             Location spawnLocation = randomLocation(player);

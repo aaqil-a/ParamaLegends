@@ -24,7 +24,8 @@ public class BloodyFervour implements AttackParama {
 
         //prevent reviving
         if(currHealth <= 0) return;
-
+        //set max life steal to 8
+        damage = Math.min(damage, 8);
         double maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
         if (currHealth < maxHealth) {
             player.setHealth(Math.min((currHealth + damage), maxHealth));
