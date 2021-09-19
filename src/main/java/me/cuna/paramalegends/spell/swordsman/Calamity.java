@@ -19,7 +19,7 @@ public class Calamity implements SpellParama {
     private final ParamaLegends plugin;
     private final int manaCost = 500;
     private final int cooldown = 2400;
-    private final int duration = 302;
+    private final int duration = 502;
     private final int lightningDamage = 30;
 
     public Calamity(ParamaLegends plugin){

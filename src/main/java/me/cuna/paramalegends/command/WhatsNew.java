@@ -30,6 +30,11 @@ public class WhatsNew implements CommandExecutor {
         assert meta != null;
         meta.addPage(
                 ""+
+                        ChatColor.GOLD+ChatColor.BOLD+"1.2.1 19/9/21\n"
+                        +ChatColor.BLACK+"\u2022 Inreased duration\n  of Calamity\n"
+                        +ChatColor.BLACK+"\u2022 Increased duration\n  of Terrifying\n   Cruelty.\n"
+                        +ChatColor.BLACK+"\u2022 Inreased cooldown\n  of Terrifying\n   Cruelty.\n",
+                ""+
                         ChatColor.GOLD+ChatColor.BOLD+"1.2.0 10/9/21\n"
                         +ChatColor.BLACK+"\u2022 Added Nature Boss\n  Fight.\n"
                         +ChatColor.BLACK+"\u2022 Added King Slime.\n"
