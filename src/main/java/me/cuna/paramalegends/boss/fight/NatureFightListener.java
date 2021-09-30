@@ -135,13 +135,13 @@ public class NatureFightListener implements Listener {
         switch(curWave){
             // First Wave
             case 1,2 -> {
-                waveSize = 2*playerCount;
+                waveSize = 4*playerCount;
                 if (curWave % 2 == 0) {
                     createBossBar(world, "Second Wave");
                 } else {
                     createBossBar(world, "First Wave");
                 }
-                final String[] spawnMap = new String[]{"---", "-KS"};
+                final String[] spawnMap = new String[]{"-KK", "-KS"};
                 if(spawnTask != null)spawnTask.cancel();
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
@@ -168,13 +168,13 @@ public class NatureFightListener implements Listener {
             }
             //second wave
             case 3,4 -> {
-                waveSize = 3*playerCount;
+                waveSize = 5*playerCount;
                 if (curWave % 2 == 0) {
                     createBossBar(world, "Fourth Wave");
                 } else {
                     createBossBar(world, "Third Wave");
                 }
-                final String[] spawnMap = new String[]{"-P-","-KS"};
+                final String[] spawnMap = new String[]{"-PK","KKS"};
                 if(spawnTask != null)spawnTask.cancel();
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
@@ -201,7 +201,7 @@ public class NatureFightListener implements Listener {
             }
             //third wave
             case 5,6 -> {
-                waveSize = 4*playerCount;
+                waveSize = 6*playerCount;
                 if (curWave % 2 == 0) {
                     createBossBar(world, "Sixth Wave");
                 } else {
@@ -214,7 +214,7 @@ public class NatureFightListener implements Listener {
                             player = alive.get(rand.nextInt(alive.size()));
                         }
                         player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
-                        final String[] spawnMap = new String[]{"-P-","WKS"};
+                        final String[] spawnMap = new String[]{"SPK","WKS"};
                         if(entities.size() < 150) {
                             Location spawnLocation = randomLocation(player);
                             for(int x = 0; x < 2; x++){
@@ -235,13 +235,13 @@ public class NatureFightListener implements Listener {
             }
             //fourth wave
             case 7,8 -> {
-                waveSize = 5*playerCount;
+                waveSize = 7*playerCount;
                 if (curWave % 2 == 0) {
                     createBossBar(world, "Eighth Wave");
                 } else {
                     createBossBar(world, "Seventh Wave");
                 }
-                    final String[] spawnMap = new String[]{"ZPW","-KS"};
+                    final String[] spawnMap = new String[]{"ZPW","SKS","K--"};
                     if(spawnTask != null)spawnTask.cancel();
                     spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                         for(Player player : Bukkit.getOnlinePlayers()) {
@@ -251,7 +251,7 @@ public class NatureFightListener implements Listener {
                             player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, 2f, 1f);
                             if(entities.size() < 150) {
                                 Location spawnLocation = randomLocation(player);
-                                for(int x = 0; x < 2; x++) {
+                                for(int x = 0; x < 3; x++) {
                                     for (int z = 0; z < 3; z++) {
                                         switch (spawnMap[x].charAt(z)) {
                                             case 'S' -> spawnSkeleton(world, spawnLocation, player);
@@ -270,14 +270,14 @@ public class NatureFightListener implements Listener {
                 }
             //fifth wave
             case 9,10 -> {
-                waveSize = 7*playerCount;
+                waveSize = 9*playerCount;
                 if (curWave % 2 == 0) {
                     createBossBar(world, "Tenth Wave");
                 } else {
                     createBossBar(world, "Ninth Wave");
                 }
                 if(spawnTask != null)spawnTask.cancel();
-                final String[] spawnMap = new String[]{"ZPW","-KS", "ZK-"};
+                final String[] spawnMap = new String[]{"ZPW","SKS", "ZKK"};
                 spawnTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Player player : Bukkit.getOnlinePlayers()) {
                         if(!alive.contains(player)){

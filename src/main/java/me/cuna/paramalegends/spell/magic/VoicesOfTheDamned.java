@@ -92,7 +92,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                         double closestDistance = Double.MAX_VALUE;
                         Entity closestEntity = null;
                         for(Entity entity : player.getNearbyEntities(10,10,10)){
-                            if(entity instanceof Monster){
+                            if(entity instanceof Monster || entity instanceof Slime){
                                 double distance = entity.getLocation().distance(player.getLocation());
                                 if(distance < closestDistance){
                                     closestDistance = distance;

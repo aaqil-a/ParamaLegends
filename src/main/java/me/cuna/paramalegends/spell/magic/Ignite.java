@@ -59,7 +59,7 @@ public class Ignite implements Listener, SpellParama {
                     playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                                 ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
-                                if(ignited instanceof Monster){
+                                if(ignited instanceof Monster || ignited instanceof Phantom || ignited instanceof Slime){
                                     ((Damageable) ignited).damage(damage+damageBonus*masteryLevel+0.069, player);
                                 }
                                 plugin.magicListener.addMastery(playerParama, "ignite", 4);

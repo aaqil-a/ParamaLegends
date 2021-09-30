@@ -24,7 +24,7 @@ public class WhistlingWind implements Listener {
 
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
-    private final int manaCost = 200;
+    private final int manaCost = 120;
     private final HashMap<Player, List<Entity>> entitiesWhistlingWind = new HashMap<>();
     private final HashMap<Player, Entity> targetWhistlingWind = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class WhistlingWind implements Listener {
 
                 arrow.remove();
                 List <Entity> entities = player.getNearbyEntities(15,15,15);
-                entities.removeIf(hit -> !(hit instanceof Monster));
+                entities.removeIf(hit -> !(hit instanceof Monster || hit instanceof Phantom || hit instanceof Slime));
                 entitiesWhistlingWind.put(player, entities);
                 if(entities.size() == 0){
                     entitiesWhistlingWind.remove(player);
@@ -104,7 +104,7 @@ public class WhistlingWind implements Listener {
                 if(entitiesWhistlingWind.containsKey(player)){
                     Entity target = targetWhistlingWind.get(player);
                     if(target.equals(entity)){
-                        if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
+                        if (target instanceof LivingEntity)((LivingEntity) target).damage(40.016, player);
                         target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
@@ -120,7 +120,7 @@ public class WhistlingWind implements Listener {
                     if(entitiesWhistlingWind.containsKey(player)){
                         Entity target = targetWhistlingWind.get(player);
                         if(target.equals(entity)){
-                            if (target instanceof LivingEntity)((LivingEntity) target).damage(20.016, player);
+                            if (target instanceof LivingEntity)((LivingEntity) target).damage(40.016, player);
                             target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
                             target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 2f);
                             Bukkit.getScheduler().runTaskLater(plugin, ()->{
@@ -188,7 +188,7 @@ public class WhistlingWind implements Listener {
         if(event.getDamager() instanceof SpectralArrow && event.getDamager().getCustomName() != null){
             SpectralArrow arrow = (SpectralArrow) event.getDamager();
             if(arrow.getCustomName().equals("whistlingwind") || arrow.getCustomName().equals("return")){
-                if(!(event.getEntity() instanceof Monster)){
+                if(!(event.getEntity() instanceof Monster || event.getEntity() instanceof Phantom || event.getEntity() instanceof Slime)){
                     event.setCancelled(true);
                 }
             }
@@ -206,7 +206,7 @@ public class WhistlingWind implements Listener {
                 arrow.remove();
                 if(entitiesWhistlingWind.containsKey(player)){
                     Entity target = targetWhistlingWind.get(player);
-                    if (target instanceof LivingEntity)((LivingEntity) target).damage(30.016, player);
+                    if (target instanceof LivingEntity)((LivingEntity) target).damage(40.016, player);
                     target.getWorld().spawnParticle(Particle.FLASH, target.getLocation(), 1, 0, 0, 0 ,0);
                     target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
@@ -221,7 +221,7 @@ public class WhistlingWind implements Listener {
                         if(event.getHitEntity().equals(player)){
                             arrow.remove();
                         } else {
-                            ((LivingEntity) event.getHitEntity()).damage(30.016, player);
+                            ((LivingEntity) event.getHitEntity()).damage(40.016, player);
                         }
                     }
 

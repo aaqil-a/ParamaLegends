@@ -38,7 +38,7 @@ public class Calamity implements SpellParama {
                             List<Entity> entities = player.getNearbyEntities(10,10,10);
                             List<Entity> toDamage = new ArrayList<Entity>();
                             for(Entity hit : entities){
-                                if(hit instanceof Monster) {
+                                if(hit instanceof Monster || hit instanceof Phantom || hit instanceof Slime) {
                                     toDamage.add(hit);
                                 }
                             }
