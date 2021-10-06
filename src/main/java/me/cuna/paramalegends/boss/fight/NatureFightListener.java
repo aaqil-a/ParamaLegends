@@ -355,6 +355,9 @@ public class NatureFightListener implements Listener {
                 player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
             }
         }
+        kills.clear();
+        damageDealt.clear();
+        damageTaken.clear();
     }
 
     public void sendPlayerStatistics(){

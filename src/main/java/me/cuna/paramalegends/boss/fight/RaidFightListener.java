@@ -109,6 +109,10 @@ public class RaidFightListener implements Listener {
         Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
 
         sendPlayerStatistics();
+        kills.clear();
+        deaths.clear();
+        damageDealt.clear();
+        damageTaken.clear();
     }
 
     public void sendPlayerStatistics(){

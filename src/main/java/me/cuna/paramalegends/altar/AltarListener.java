@@ -20,7 +20,7 @@ public class AltarListener implements Listener {
 
     private final ParamaLegends plugin;
     private final DataManager data;
-    private final HashMap<Player, Inventory> gui = new HashMap<>();
+    public final HashMap<Player, Inventory> gui = new HashMap<>();
     private final String typeName;
 
     public AltarListener(ParamaLegends plugin, BossType type){

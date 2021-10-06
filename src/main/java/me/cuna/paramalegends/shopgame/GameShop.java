@@ -26,7 +26,7 @@ public class GameShop implements Listener {
 
     private final String NPCName;
     public final ParamaLegends plugin;
-    private final HashMap<Player, Inventory> gui = new HashMap<>();
+    public final HashMap<Player, Inventory> gui = new HashMap<>();
     public DataManager data;
 
 

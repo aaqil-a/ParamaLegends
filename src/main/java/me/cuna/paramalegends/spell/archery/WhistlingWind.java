@@ -25,8 +25,8 @@ public class WhistlingWind implements Listener {
     private final ParamaLegends plugin;
     private final ArcheryListener archeryListener;
     private final int manaCost = 120;
-    private final HashMap<Player, List<Entity>> entitiesWhistlingWind = new HashMap<>();
-    private final HashMap<Player, Entity> targetWhistlingWind = new HashMap<>();
+    public final HashMap<Player, List<Entity>> entitiesWhistlingWind = new HashMap<>();
+    public final HashMap<Player, Entity> targetWhistlingWind = new HashMap<>();
 
     public WhistlingWind(ParamaLegends plugin){
         this.plugin = plugin;

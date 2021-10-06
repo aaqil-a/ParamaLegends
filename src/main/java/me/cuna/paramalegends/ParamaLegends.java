@@ -40,6 +40,7 @@ public class ParamaLegends extends JavaPlugin {
     public SwordsmanListener swordsmanListener;
     public ArcheryListener archeryListener;
     public MagicListener magicListener;
+    public TinkerListener tinkerListener;
 
     public GameShop banishedMagus;
     public GameShop seniorRanger;
@@ -71,6 +72,7 @@ public class ParamaLegends extends JavaPlugin {
     public WorldLevelSet worldLevelSet;
     public WhatsNew whatsNew;
     public Mastery mastery;
+    public Tinker tinker;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -108,6 +110,7 @@ public class ParamaLegends extends JavaPlugin {
         alcoholRecipes = new AlcoholRecipes(this);
         alcoholListener = new AlcoholListener(this);
         mastery = new Mastery(this);
+        tinker = new Tinker(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -127,6 +130,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("worldlevelset").setExecutor(worldLevelSet);
         getCommand("whatsnew").setExecutor(whatsNew);
         getCommand("mastery").setExecutor(mastery);
+        getCommand("tinker").setExecutor(tinker);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
@@ -143,7 +147,6 @@ public class ParamaLegends extends JavaPlugin {
         registerAltars();
         registerSummons();
         registerBossFights();
-        Bukkit.broadcastMessage("Ready");
 
     }
 
@@ -186,6 +189,7 @@ public class ParamaLegends extends JavaPlugin {
         reaperListener = new ReaperListener(this);;
         swordsmanListener = new SwordsmanListener(this);
         archeryListener = new ArcheryListener(this);
+        tinkerListener = new TinkerListener(this);
     }
 
     public void registerGameClass(){

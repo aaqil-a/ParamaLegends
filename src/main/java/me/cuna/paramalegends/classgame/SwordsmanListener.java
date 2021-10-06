@@ -57,6 +57,12 @@ public class SwordsmanListener implements Listener{
     }
 
     @EventHandler
+    public void onPlayerLeave(PlayerJoinEvent event){
+        playerCrippleAttackCount.remove(event.getPlayer());
+    }
+
+
+    @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();

@@ -30,10 +30,26 @@ public class PlayerManagerListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
-        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
-        if(player != null){
-            player.cancelAllTasks();
-            player.removeAllEntities();
+        PlayerParama playerParama = getPlayerParama(event.getPlayer());
+        if(playerParama != null){
+            Player player = playerParama.getPlayer();
+            players.remove(player);
+            playerParama.cancelAllTasks();
+            playerParama.removeAllEntities();
+            plugin.wiseOldManListener.gui.remove(player);
+            plugin.wiseOldManListener.gui2.remove(player);
+            plugin.seniorRanger.gui.remove(player);
+            plugin.oddWares.gui.remove(player);
+            plugin.suspiciousPeasant.gui.remove(player);
+            plugin.banishedMagus.gui.remove(player);
+            plugin.retiredWeaponsmith.gui.remove(player);
+            plugin.earthAltarListener.gui.remove(player);
+            plugin.natureAltarListener.gui.remove(player);
+            plugin.alcoholListener.playersDrunk.remove(player);
+            plugin.alcoholListener.playerBarrier.remove(player);
+            plugin.alcoholListener.playerFallTasks.remove(player);
+            plugin.archeryListener.whistlingWind.entitiesWhistlingWind.remove(player);
+            plugin.archeryListener.whistlingWind.targetWhistlingWind.remove(player);
         }
     }
 

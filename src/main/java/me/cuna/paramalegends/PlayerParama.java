@@ -29,6 +29,7 @@ public class PlayerParama {
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
     public final HashMap<String, BukkitTask> refreshReaperCooldown = new HashMap<>();
+    public final HashMap<String, BukkitTask> refreshTinkerCooldown = new HashMap<>();
     private final HashMap<String, Integer> magicMasteryLevel = new HashMap<>();
     private final DataManager data;
     private int playerCurrentMana;
@@ -251,6 +252,10 @@ public class PlayerParama {
         refreshReaperCooldown.put(spell,task);
     }
     public void removeFromReaperRefreshCooldown(String spell){refreshReaperCooldown.remove(spell);}
+    public void addToTinkerRefreshCooldown(String spell, BukkitTask task){
+        refreshTinkerCooldown.put(spell,task);
+    }
+    public void removeFromTinkerRefreshCooldown(String spell){refreshTinkerCooldown.remove(spell);}
 
     public int getMasteryLevel(String key){
         if(magicMasteryLevel.containsKey(key)) return magicMasteryLevel.get(key);
