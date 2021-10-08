@@ -455,7 +455,7 @@ public class NatureFightListener implements Listener {
                         Snowball ball = slime.launchProjectile(Snowball.class, velocity);
                         ball.setMetadata("slimekingball", new FixedMetadataValue(plugin, true));
                         ball.setItem(new ItemStack(Material.SLIME_BALL));
-                        ball.setGravity(false);
+                        ball.setGravity(true);
                     }
                 }
             }

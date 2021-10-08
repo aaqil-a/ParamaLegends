@@ -3,6 +3,7 @@ package me.cuna.paramalegends;
 import me.cuna.paramalegends.altar.EarthAltarListener;
 import me.cuna.paramalegends.altar.NatureAltarListener;
 import me.cuna.paramalegends.altar.StartAltarListener;
+import me.cuna.paramalegends.boss.fight.DragonFightListener;
 import me.cuna.paramalegends.boss.fight.NatureFightListener;
 import me.cuna.paramalegends.boss.fight.RaidFightListener;
 import me.cuna.paramalegends.boss.summon.NatureSummonListener;
@@ -57,6 +58,7 @@ public class ParamaLegends extends JavaPlugin {
 
     public RaidFightListener raidFightListener;
     public NatureFightListener natureFightListener;
+    public DragonFightListener dragonFightListener;
 
     public WineryListener wineryListener;
     public AlcoholListener alcoholListener;
@@ -162,6 +164,7 @@ public class ParamaLegends extends JavaPlugin {
     public void initializeBossFights(){
         raidFightListener = new RaidFightListener(this);
         natureFightListener = new NatureFightListener(this);
+        dragonFightListener = new DragonFightListener(this);
     }
 
     public void registerBossFights(){

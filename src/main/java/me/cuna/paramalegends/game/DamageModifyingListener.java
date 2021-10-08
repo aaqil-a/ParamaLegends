@@ -5,6 +5,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.*;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -153,6 +154,10 @@ public class DamageModifyingListener implements Listener {
         //reduce damage if slime king
         if(event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(ChatColor.COLOR_CHAR+"aKing Slime")){
             damage *= (1/((double) (plugin.natureFightListener.getPlayerCount())));
+        }
+        //reduce damage if ender dragon
+        if(event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
+            damage *= (1/((double) 100));
         }
         event.setDamage(damage);
     }
