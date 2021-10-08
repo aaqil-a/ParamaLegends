@@ -295,15 +295,19 @@ public class DragonFightListener implements Listener {
             damage = 10;
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 1));
         }
-        if(event.getEntityType().equals(EntityType.ENDER_DRAGON)){
-            EnderDragon dragon = (EnderDragon) event.getEntity();
-            //increase damage while charging
+        event.setDamage(damage);
+    }
+
+    @EventHandler
+    public void onPlayerDamagedByDragon(EntityDamageByEntityEvent event){
+        if(event.getEntityType().equals(EntityType.PLAYER) && event.getDamager().getType().equals(EntityType.ENDER_DRAGON)){
+            double damage = event.getDamage();
+            EnderDragon dragon = (EnderDragon) event.getDamager();
             if(dragon.getPhase().equals(EnderDragon.Phase.CHARGE_PLAYER)){
                 damage += 20;
             }
+            damage += 15;
+            event.setDamage(damage);
         }
-        //increase dragon damage
-        damage += 15;
-        event.setDamage(damage);
     }
 }
