@@ -98,7 +98,7 @@ public class MobSpawnListener implements Listener {
                 event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(50*5+bonusHealth);
                 event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(50*2.5);
+                        .setBaseValue(10*2.5+bonusDamage);
                 event.getEntity().setHealth(50*5+bonusHealth);
             }
             case VEX -> {
