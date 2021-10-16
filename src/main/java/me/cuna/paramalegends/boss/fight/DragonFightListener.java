@@ -27,12 +27,14 @@ public class DragonFightListener implements Listener {
     private final HashMap<Player, Integer> kills = new HashMap<>();
     private final HashMap<Player, Integer> deaths = new HashMap<>();
     private final HashMap<Player, Integer> damageTaken = new HashMap<>();
+    private final Random rand = new Random();
+    private int crystalCount;
 
 
     public DragonFightListener(final ParamaLegends plugin){
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-
+        crystalCount = 0;
     }
 
     @EventHandler
@@ -142,6 +144,11 @@ public class DragonFightListener implements Listener {
                 damageTaken.clear();
                 kills.clear();
                 deaths.clear();
+                for(Player player : dragon.getWorld().getPlayers()){
+                    player.sendMessage(ChatColor.DARK_PURPLE+"End crystals seem to fuel the dragon's reign.");
+                }
+                crystalCount = 10;
+                return;
             }
             switch(event.getNewPhase()){
                 //stun player being charged
@@ -171,13 +178,12 @@ public class DragonFightListener implements Listener {
                 }
                 //summon enderman to charge players
                 case FLY_TO_PORTAL, STRAFING -> {
-                    for(Player player : Bukkit.getOnlinePlayers()){
-                        if(player.getWorld().equals(dragon.getWorld())){
-                            Location spawnLocation = player.getWorld().getHighestBlockAt(player.getLocation().add(10,0,10)).getLocation();
-                            player.getWorld().spawn(spawnLocation, Enderman.class, enderman -> {
-                                enderman.setTarget(player);
-                            });
-                        }
+                    for(Player player : event.getEntity().getWorld().getPlayers()){
+                        Location spawnLocation = player.getWorld().getHighestBlockAt(player.getLocation().add(10,0,10)).getLocation();
+                        player.getWorld().spawn(spawnLocation, Enderman.class, enderman -> {
+                            enderman.setTarget(player);
+                        });
+                        player.sendMessage(ChatColor.DARK_PURPLE+"The dragon commands her followers to her aid.");
                     }
                 }
                 //make playesrs levitate
@@ -185,8 +191,10 @@ public class DragonFightListener implements Listener {
                     for(Player player : Bukkit.getOnlinePlayers()){
                         if(player.getWorld().equals(dragon.getWorld())){
                             player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 0));
+                            player.sendMessage(ChatColor.DARK_PURPLE+"The dragon levitates you to the air, preparing to slam you down.");
                         }
                     }
+
                 }
                 //blind nearby players after roarign
                 case ROAR_BEFORE_ATTACK -> {
@@ -195,8 +203,8 @@ public class DragonFightListener implements Listener {
                             if(player.getLocation().distance(dragon.getLocation()) < 30){
                                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
                             }
+                            player.sendMessage(ChatColor.DARK_PURPLE+"The dragon's mighty roar blinds everyone who dares defy her.");
                         }
-
                     }
                 }
             }
@@ -208,9 +216,13 @@ public class DragonFightListener implements Listener {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 10));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 4));
                         }
+                        player.sendMessage(ChatColor.DARK_PURPLE+"The dragon's descent paralyzes all who are near.");
                     }
                 }
             }
+        } else {
+            // world is empty, remove metadata
+            dragon.removeMetadata("BUFFED", plugin);
         }
     }
 
@@ -283,7 +295,45 @@ public class DragonFightListener implements Listener {
                         event.getEntity().getLocation().add(x,2,z).getBlock().setType(Material.IRON_BARS);
                     }
                 }
-            }, 400);
+                // send message
+                for(Player player : event.getEntity().getWorld().getPlayers()){
+                    if(rand.nextInt(2) == 0){
+                        player.sendMessage(ChatColor.DARK_PURPLE+"The dragon summons a crystal to her aid.");
+                    } else {
+                        player.sendMessage(ChatColor.DARK_PURPLE+"Another crystal has come to aid the dragon.");
+                    }
+                }
+                if(crystalCount<10)crystalCount++;
+                if (crystalCount == 6) {
+                    for (Player player : event.getEntity().getWorld().getPlayers()) {
+                        player.sendMessage(ChatColor.DARK_PURPLE + "The dragon has regained her full might. Your attacks wouldn't suffice even a tiny bit.");
+                    }
+                }
+                event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 4f, 1f);
+            }, 800);
+            if(crystalCount>0)crystalCount--;
+            switch(crystalCount) {
+                case 6 -> {
+                    for(Player player : event.getEntity().getWorld().getPlayers()){
+                        player.sendMessage(ChatColor.DARK_PURPLE+"Her shield has diminished, yet the crystals still fuels her might.");
+                    }
+                }
+                case 4 -> {
+                    for(Player player : event.getEntity().getWorld().getPlayers()){
+                        player.sendMessage(ChatColor.DARK_PURPLE+"The crystals seem to be unable to heal the dragon, though it still gives her strength.");
+                    }
+                }
+                case 2 -> {
+                    for(Player player : event.getEntity().getWorld().getPlayers()){
+                        player.sendMessage(ChatColor.DARK_PURPLE+"You sense the dragon getting weaker.");
+                    }
+                }
+                case 1 -> {
+                    for(Player player : event.getEntity().getWorld().getPlayers()){
+                        player.sendMessage(ChatColor.DARK_PURPLE+"The crystals could barely give her any strength, you sense her staggering and distressed.");
+                    }
+                }
+            }
         }
     }
     @EventHandler
@@ -306,8 +356,23 @@ public class DragonFightListener implements Listener {
             if(dragon.getPhase().equals(EnderDragon.Phase.CHARGE_PLAYER)){
                 damage += 20;
             }
+            if(crystalCount > 4) damage += 5;
             damage += 15;
             event.setDamage(damage);
+        }
+    }
+
+    @EventHandler
+    public void onDragonDamaged(EntityDamageByEntityEvent event){
+        if(event.getEntityType().equals(EntityType.ENDER_DRAGON)){
+            if(crystalCount > 6) event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onDragonHeal(EntityRegainHealthEvent event) {
+        if(event.getEntityType().equals(EntityType.ENDER_DRAGON)){
+            event.setCancelled(true);
         }
     }
 }
