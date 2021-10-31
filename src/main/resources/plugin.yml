@@ -56,6 +56,18 @@ commands:
   tinker:
     description: Gives you tinker spells to play with.
     usage: /tinker
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  bloodmoon:
+    description: Start or stop a blood moon event.
+    usage: /bloodmoon <start/stop>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
+  dragonfightstop:
+    description: Stop dragon fight (counts as loss)
+    usage: /dragonfightstop
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

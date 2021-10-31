@@ -35,6 +35,7 @@ public class ReaperListener implements Listener{
     public final MementoMori mementoMori;
     public final DashStrike dashStrike;
     public final Rejuvenate rejuvenate;
+    public final VampireKnives vampireKnives;
 
     public ReaperListener(ParamaLegends plugin) {
         this.plugin = plugin;
@@ -52,6 +53,7 @@ public class ReaperListener implements Listener{
         mementoMori = new MementoMori(plugin);
         prowl = new Prowl(plugin);
         rejuvenate = new Rejuvenate(plugin);
+        vampireKnives = new VampireKnives(plugin);
     }
 
     //Passive listeners
@@ -192,6 +194,10 @@ public class ReaperListener implements Listener{
                     if (player.isNotSilenced())
                         if(player.checkLevel(7, ClassGameType.REAPER))
                             rejuvenate.castSpell(player);
+                }
+                case ChatColor.COLOR_CHAR+"4Vampire Knives" -> {
+                    if(player.isNotSilenced())
+                        vampireKnives.castSpell(player);
                 }
             }
         }

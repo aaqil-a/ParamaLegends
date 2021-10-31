@@ -4,15 +4,13 @@ import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.*;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Objects;
 import java.util.Random;
@@ -159,6 +157,18 @@ public class DamageModifyingListener implements Listener {
         if(event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
             damage *= (1/((double) 100));
         }
+        //increase damage from elder guardian
+        if(event.getDamager().getType().equals(EntityType.ELDER_GUARDIAN)){
+            damage *= 2;
+        }
+        if(event.getDamager().getType().equals(EntityType.PLAYER)){
+            spawnDamageIndicator(event.getEntity(), damage);
+        }
+        if(event.getDamager() instanceof Projectile){
+            if(((Projectile) event.getDamager()).getShooter() instanceof Player){
+                spawnDamageIndicator(event.getEntity(), damage);
+            }
+        }
         event.setDamage(damage);
     }
 
@@ -168,9 +178,41 @@ public class DamageModifyingListener implements Listener {
         double damage = event.getDamage();
         if(event.getEntity() instanceof Player){
             Player player = (Player) event.getEntity();
+            // increase elder guardian
 
         }
         event.setDamage(damage);
+    }
+
+    public void spawnDamageIndicator(Entity entity, double damage){
+        ChatColor color = ChatColor.YELLOW;
+        if(damage > 50){
+            color = ChatColor.RED;
+        } else if(damage > 100){
+            color = ChatColor.GOLD;
+        }
+        ChatColor finalColor = color;
+        Location location = entity.getLocation();
+        if(entity instanceof LivingEntity){
+            location = ((LivingEntity) entity).getEyeLocation();
+        }
+        Location finalLocation = location;
+        entity.getWorld().spawn(location, ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setCustomName(ChatColor.BOLD+""+finalColor+""+(int) Math.ceil(damage));
+            armorStand.setCustomNameVisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setSmall(true);
+            armorStand.setCollidable(false);
+            armorStand.setMarker(true);
+            armorStand.setAI(false);
+            BukkitTask animation = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
+                armorStand.teleport(finalLocation.add(0,0.05,0));
+            }, 0, 1);
+            Bukkit.getScheduler().runTaskLater(plugin, animation::cancel, 20);
+            Bukkit.getScheduler().runTaskLater(plugin, armorStand::remove, 30);
+        });
     }
 
 }

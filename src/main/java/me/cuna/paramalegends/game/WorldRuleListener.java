@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -61,11 +62,25 @@ public class WorldRuleListener implements Listener {
                     event.setCancelled(!essenceMeta.getDisplayName().equals(ChatColor.COLOR_CHAR+"5Void Essence"));
                 }
             }
+            if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"4Crimson Root")) event.setCancelled(false);
             if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Esoteric Pearl")) event.setCancelled(false);
             if(meta.getDisplayName().equals(ChatColor.COLOR_CHAR+"6Winery Barrel")) event.setCancelled(false);
         }
     }
 
+    //disable anvilling certain items
+    @EventHandler
+    public void onAnvil(PrepareAnvilEvent event){
+        for(ItemStack item : event.getInventory()){
+            if(item != null && item.getItemMeta() != null
+                    && (item.getItemMeta().getDisplayName().contains("4Sanguine")
+                        || item.getItemMeta().getDisplayName().contains("4Blood Rain")
+                        || item.getItemMeta().getDisplayName().contains("4Vampire Knives"))){
+                event.setResult(item);
+                return;
+            }
+        }
+    }
     //Disable interacting with armor stands with custom names
     @EventHandler
     public void onInteractArmorStand(PlayerArmorStandManipulateEvent event){

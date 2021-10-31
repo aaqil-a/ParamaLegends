@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -34,9 +35,6 @@ public class SwordsmanListener implements Listener{
     public final TerrifyingCruelty terrifyingCruelty;
     public final Calamity calamity;
     public final Superconducted superconducted;
-
-    private final HashMap<Player, Integer> playerCrippleAttackCount = new HashMap<Player, Integer>();
-
     public SwordsmanListener(ParamaLegends plugin) {
         this.plugin = plugin;
         data = plugin.getData();
@@ -53,14 +51,8 @@ public class SwordsmanListener implements Listener{
     //Set cripple attack count to 0
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        playerCrippleAttackCount.put(event.getPlayer(), 0);
+        event.getPlayer().setMetadata("CRIPPLE", new FixedMetadataValue(plugin, 0));
     }
-
-    @EventHandler
-    public void onPlayerLeave(PlayerJoinEvent event){
-        playerCrippleAttackCount.remove(event.getPlayer());
-    }
-
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
@@ -72,7 +64,7 @@ public class SwordsmanListener implements Listener{
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     //Check if attack cripples and add to counter
                     if(playerParama.getLevelFromClassType(ClassGameType.SWORDSMAN) >= 2){
-                        int crippleCount = playerCrippleAttackCount.get(attacker);
+                        int crippleCount = attacker.getMetadata("CRIPPLE").get(0).asInt();
                         crippleCount++;
                         if(crippleCount >= 5){
                             crippleCount = 0;
@@ -86,7 +78,7 @@ public class SwordsmanListener implements Listener{
                                 Bukkit.getScheduler().runTaskLater(plugin, bleed::cancel, 82);
                             }
                         }
-                        playerCrippleAttackCount.put(attacker, crippleCount);
+                        attacker.setMetadata("CRIPPLE", new FixedMetadataValue(plugin, crippleCount));
                     }
                 }
             }

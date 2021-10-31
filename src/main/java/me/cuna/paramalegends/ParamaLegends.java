@@ -3,9 +3,11 @@ package me.cuna.paramalegends;
 import me.cuna.paramalegends.altar.EarthAltarListener;
 import me.cuna.paramalegends.altar.NatureAltarListener;
 import me.cuna.paramalegends.altar.StartAltarListener;
+import me.cuna.paramalegends.boss.fight.BloodMoonListener;
 import me.cuna.paramalegends.boss.fight.DragonFightListener;
 import me.cuna.paramalegends.boss.fight.NatureFightListener;
 import me.cuna.paramalegends.boss.fight.RaidFightListener;
+import me.cuna.paramalegends.boss.summon.BloodMoonSummonListener;
 import me.cuna.paramalegends.boss.summon.NatureSummonListener;
 import me.cuna.paramalegends.boss.summon.RaidSummonListener;
 import me.cuna.paramalegends.classgame.*;
@@ -55,10 +57,12 @@ public class ParamaLegends extends JavaPlugin {
 
     public RaidSummonListener raidSummonListener;
     public NatureSummonListener natureSummonListener;
+    public BloodMoonSummonListener bloodMoonSummonListener;
 
     public RaidFightListener raidFightListener;
     public NatureFightListener natureFightListener;
     public DragonFightListener dragonFightListener;
+    public BloodMoonListener bloodMoonListener;
 
     public WineryListener wineryListener;
     public AlcoholListener alcoholListener;
@@ -75,6 +79,8 @@ public class ParamaLegends extends JavaPlugin {
     public WhatsNew whatsNew;
     public Mastery mastery;
     public Tinker tinker;
+    public BloodMoon bloodMoon;
+    public DragonEnd dragonEnd;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -113,6 +119,8 @@ public class ParamaLegends extends JavaPlugin {
         alcoholListener = new AlcoholListener(this);
         mastery = new Mastery(this);
         tinker = new Tinker(this);
+        bloodMoon = new BloodMoon(this);
+        dragonEnd = new DragonEnd(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -133,6 +141,8 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("whatsnew").setExecutor(whatsNew);
         getCommand("mastery").setExecutor(mastery);
         getCommand("tinker").setExecutor(tinker);
+        getCommand("bloodmoon").setExecutor(bloodMoon);
+        getCommand("dragonfightstop").setExecutor(dragonEnd);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
@@ -150,11 +160,13 @@ public class ParamaLegends extends JavaPlugin {
         registerSummons();
         registerBossFights();
 
+
     }
 
     public void initializeSummons(){
         raidSummonListener = new RaidSummonListener(this);
         natureSummonListener = new NatureSummonListener(this);
+        bloodMoonSummonListener = new BloodMoonSummonListener(this);
     }
 
     public void registerSummons(){
@@ -165,6 +177,7 @@ public class ParamaLegends extends JavaPlugin {
         raidFightListener = new RaidFightListener(this);
         natureFightListener = new NatureFightListener(this);
         dragonFightListener = new DragonFightListener(this);
+        bloodMoonListener = new BloodMoonListener(this);
     }
 
     public void registerBossFights(){

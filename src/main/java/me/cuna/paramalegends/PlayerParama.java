@@ -1,6 +1,7 @@
 package me.cuna.paramalegends;
 
 import me.cuna.paramalegends.classgame.ClassGameType;
+import me.cuna.paramalegends.spell.ArrowParama;
 import me.cuna.paramalegends.spell.AttackParama;
 import me.cuna.paramalegends.spell.SpellParama;
 import net.md_5.bungee.api.ChatMessageType;
@@ -26,6 +27,7 @@ public class PlayerParama {
     private boolean silenced = false;
     private final List<SpellParama> spellOnCooldown = new ArrayList<>();
     private final List<AttackParama> attackOnCooldown = new ArrayList<>();
+    private final List<ArrowParama> arrowOnCooldown = new ArrayList<>();
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
     public final HashMap<String, BukkitTask> refreshReaperCooldown = new HashMap<>();
@@ -116,6 +118,16 @@ public class PlayerParama {
     }
     public boolean checkCooldown(AttackParama attack){
         return attackOnCooldown.contains(attack);
+    }
+
+    public void addToCooldown(ArrowParama arrow){
+        arrowOnCooldown.add(arrow);
+    }
+    public void removeFromCooldown(ArrowParama arrow){
+        arrowOnCooldown.remove(arrow);
+    }
+    public boolean checkCooldown(ArrowParama arrow){
+        return arrowOnCooldown.contains(arrow);
     }
 
     public void addTask(String key, BukkitTask task){

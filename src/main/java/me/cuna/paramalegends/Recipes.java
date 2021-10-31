@@ -68,6 +68,28 @@ public class Recipes {
         Bukkit.addRecipe(recipe);
         lore.clear();
 
+        //crimson root
+        item = new ItemStack(Material.FERMENTED_SPIDER_EYE);
+        meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.COLOR_CHAR+"4Crimson Root");
+        lore.add(ChatColor.GRAY+"A sinister old root left");
+        lore.add(ChatColor.GRAY+"behind by the dark Orellians.");
+        meta.setLore(lore);
+        meta.addEnchant(Enchantment.DURABILITY, 10, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(meta);
+
+        key = new NamespacedKey(plugin, "crimson_root");
+
+        recipe = new ShapedRecipe(key, item);
+        recipe.shape("RNR", "NEN", "RNR");
+        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('N', Material.NETHER_WART);
+        recipe.setIngredient('E', Material.ENDER_EYE);
+
+        Bukkit.addRecipe(recipe);
+        lore.clear();
+
         //winery
         item = new ItemStack(Material.BARREL);
         meta = item.getItemMeta();

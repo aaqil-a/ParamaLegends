@@ -43,6 +43,12 @@ public class MobSpawnListener implements Listener {
                 return;
             }
         }
+        if(event.getEntityType().equals(EntityType.GHAST)){
+            if(event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)){
+                event.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
+                return;
+            }
+        }
         if(event.getEntityType().equals(EntityType.ENDERMAN)){
             if(event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)){
                 event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(15);
@@ -54,7 +60,7 @@ public class MobSpawnListener implements Listener {
 
         //set new attributes
         switch (event.getEntityType()) {
-            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN, ZOGLIN,
+            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, HOGLIN, WITHER_SKELETON, PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN,
                     EVOKER, PILLAGER, VINDICATOR -> {
                 event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
                         .setBaseValue(50+bonusHealth);
@@ -107,6 +113,16 @@ public class MobSpawnListener implements Listener {
                 event.getEntity().setHealth(30+bonusHealth);
                 event.getEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
                         .setBaseValue(10+bonusDamage);
+            }
+            case GUARDIAN -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(60+bonusHealth);
+                event.getEntity().setHealth(60+bonusHealth);
+            }
+            case ELDER_GUARDIAN -> {
+                event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                        .setBaseValue(160+bonusHealth);
+                event.getEntity().setHealth(160+bonusHealth);
             }
             default -> {
                 hostile = false;

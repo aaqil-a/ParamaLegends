@@ -63,12 +63,12 @@ public class ExperienceListener implements Listener {
         }
         //Check mob killed
         String mob = switch (entity.getType()) {
-            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED -> "zombie";
+            case ZOMBIE, ZOMBIE_VILLAGER, HUSK, DROWNED, ZOMBIFIED_PIGLIN, ZOGLIN, PILLAGER, VINDICATOR, VEX -> "zombie";
             case WITCH -> "witch";
-            case SKELETON, STRAY ->"skeleton";
+            case SKELETON, STRAY, GHAST ->"skeleton";
             case CREEPER -> "creeper";
-            case SPIDER, CAVE_SPIDER, PHANTOM -> "spider";
-            case ENDERMAN -> "enderman";
+            case SPIDER, CAVE_SPIDER, PHANTOM, GUARDIAN -> "spider";
+            case ENDERMAN, ELDER_GUARDIAN, RAVAGER -> "enderman";
             default -> "";
         };
         //Grant exp and lectrum to player according to mob killed

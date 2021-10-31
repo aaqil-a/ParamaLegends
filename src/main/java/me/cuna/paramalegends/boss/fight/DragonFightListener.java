@@ -11,24 +11,24 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class DragonFightListener implements Listener {
 
     private final ParamaLegends plugin;
     private final HashMap<Player, Integer> damageDealt = new HashMap<>();
     private final HashMap<Player, Integer> kills = new HashMap<>();
-    private final HashMap<Player, Integer> deaths = new HashMap<>();
     private final HashMap<Player, Integer> damageTaken = new HashMap<>();
     private final Random rand = new Random();
     private int crystalCount;
+    List<Player> alive = new ArrayList<>();
+
 
 
     public DragonFightListener(final ParamaLegends plugin){
@@ -53,9 +53,6 @@ public class DragonFightListener implements Listener {
             Player mostKills = getPlayer(kills);
             if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
             else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
-            Player mostDeaths = getPlayer(deaths);
-            if(mostDeaths == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Deaths: Nobody");
-            else Bukkit.broadcastMessage(ChatColor.RED+"Most Deaths: "+mostDeaths.getName());
             Player mostDamageDealt = getPlayer(damageDealt);
             if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
             else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
@@ -66,8 +63,6 @@ public class DragonFightListener implements Listener {
             for(Player player : plugin.getServer().getOnlinePlayers()){
                 if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
                 else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
-                if(deaths.get(player) == null) Bukkit.broadcastMessage(ChatColor.RED+"Your Deaths: Nobody");
-                else Bukkit.broadcastMessage(ChatColor.RED+"Your Deaths: "+deaths.get(player));
                 if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
                 else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
                 if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
@@ -79,6 +74,7 @@ public class DragonFightListener implements Listener {
                 playerParama.addLectrum(2000);
                 player.sendMessage(ChatColor.GOLD+"+2000 Lectrum");
             }
+            plugin.experienceListener.setWorldLevel(4);
         } else if(event.getEntity().getType().equals(EntityType.ENDERMAN)){
             if(event.getEntity().getKiller()!=null) {
                 Player player = event.getEntity().getKiller();
@@ -123,16 +119,6 @@ public class DragonFightListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event){
-        Player player = event.getEntity();
-        if(deaths.containsKey(player)){
-            deaths.put(player, deaths.get(player)+1);
-        } else {
-            deaths.put(player, 1);
-        }
-    }
-
-    @EventHandler
     public void onDragonChangePhase(EnderDragonChangePhaseEvent event){
         EnderDragon dragon = event.getEntity();
         if(!dragon.getWorld().getPlayers().isEmpty()){
@@ -143,11 +129,12 @@ public class DragonFightListener implements Listener {
                 damageDealt.clear();
                 damageTaken.clear();
                 kills.clear();
-                deaths.clear();
                 for(Player player : dragon.getWorld().getPlayers()){
                     player.sendMessage(ChatColor.DARK_PURPLE+"End crystals seem to fuel the dragon's reign.");
                 }
                 crystalCount = 10;
+                alive.clear();
+                alive.addAll(Bukkit.getOnlinePlayers());
                 return;
             }
             switch(event.getNewPhase()){
@@ -170,8 +157,10 @@ public class DragonFightListener implements Listener {
                     for(Player player : Bukkit.getOnlinePlayers()){
                         if(player.getWorld().equals(dragon.getWorld())){
                             if(rand.nextInt(3)==0){
-                                player.damage(30, dragon);
                                 player.getWorld().strikeLightningEffect(player.getLocation());
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 1));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 100, 1));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1));
                             }
                         }
                     }
@@ -222,7 +211,8 @@ public class DragonFightListener implements Listener {
             }
         } else {
             // world is empty, remove metadata
-            dragon.removeMetadata("BUFFED", plugin);
+            if(dragon.hasMetadata("BUFFED")) dragon.removeMetadata("BUFFED", plugin);
+            alive.clear();
         }
     }
 
@@ -373,6 +363,62 @@ public class DragonFightListener implements Listener {
     public void onDragonHeal(EntityRegainHealthEvent event) {
         if(event.getEntityType().equals(EntityType.ENDER_DRAGON)){
             event.setCancelled(true);
+        }
+    }
+
+    public void loseFight(){
+        alive.clear();
+        //send statistics
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
+        Player mostKills = getPlayer(kills);
+        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
+        Player mostDamageDealt = getPlayer(damageDealt);
+        if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
+        Player mostDamageTaken = getPlayer(damageTaken);
+        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: "+mostDamageTaken.getName());
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
+        for(Player player : plugin.getServer().getOnlinePlayers()){
+            if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
+            if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
+            if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
+            else player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
+            player.teleport(new Location(player.getServer().getWorld("world"), 329, 64, -158));
+            player.setGameMode(GameMode.SURVIVAL);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        Player player =  event.getEntity();
+        if(alive.contains(player)){
+            player.sendMessage(ChatColor.RED+"You died. Wait for fight to end to respawn.");
+            player.setGameMode(GameMode.SPECTATOR);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event){
+        if(alive.remove(event.getPlayer())){
+            if(alive.isEmpty()) {
+                loseFight();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event){
+        if(alive.contains(event.getPlayer())){
+            alive.remove(event.getPlayer());
+            event.setRespawnLocation(new Location(event.getPlayer().getWorld(), 100, 49, 0));
+            if(alive.isEmpty()) {
+                loseFight();
+            }
         }
     }
 }

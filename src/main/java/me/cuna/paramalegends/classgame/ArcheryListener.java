@@ -4,10 +4,7 @@ import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.spell.archery.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
@@ -18,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,6 +39,7 @@ public class ArcheryListener implements Listener{
     public final Blast blast;
     public final RoyalArtillery royalArtillery;
     public final WhistlingWind whistlingWind;
+    public final BloodRain bloodRain;
 
     public ArcheryListener(ParamaLegends plugin) {
         this.plugin = plugin;
@@ -56,6 +55,7 @@ public class ArcheryListener implements Listener{
         blast = new Blast(plugin);
         royalArtillery = new RoyalArtillery(plugin);
         whistlingWind = new WhistlingWind(plugin);
+        bloodRain = new BloodRain(plugin);
     }
 
     //When player right clicks a spell
@@ -134,6 +134,12 @@ public class ArcheryListener implements Listener{
                     }
                 }
             }
+            if(player.getItemInUse() != null && player.getItemInUse().getType().equals(Material.BOW)){
+                ItemStack bow = player.getItemInUse();
+                if(bow.getItemMeta() != null && bow.getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR+"4Blood Rain Bow")){
+                    bloodRain.shootArrow(plugin.getPlayerParama(player), event.getProjectile());
+                }
+            }
         }
     }
 
@@ -198,7 +204,6 @@ public class ArcheryListener implements Listener{
             }
         }
     }
-
 
     //Deal when player places illegal blocks
     @EventHandler

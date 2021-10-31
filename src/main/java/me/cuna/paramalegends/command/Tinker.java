@@ -4,9 +4,12 @@ import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -56,6 +59,7 @@ public class Tinker implements CommandExecutor {
             item.setItemMeta(meta);
             player.getWorld().dropItem(player.getLocation(), item);
             lore.clear();
+
         }
         return true;
     }

@@ -25,6 +25,10 @@ public class PlayerManagerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
+        //start blood moon task if not started
+        if(plugin.bloodMoonSummonListener.bloodMoonTask == null){
+            plugin.bloodMoonSummonListener.startBloodMoonTask();
+        }
         players.put(event.getPlayer(), new PlayerParama(plugin, event.getPlayer()));
     }
 
