@@ -52,8 +52,6 @@ public class PlayerManagerListener implements Listener {
             plugin.alcoholListener.playersDrunk.remove(player);
             plugin.alcoholListener.playerBarrier.remove(player);
             plugin.alcoholListener.playerFallTasks.remove(player);
-            plugin.archeryListener.whistlingWind.entitiesWhistlingWind.remove(player);
-            plugin.archeryListener.whistlingWind.targetWhistlingWind.remove(player);
         }
     }
 

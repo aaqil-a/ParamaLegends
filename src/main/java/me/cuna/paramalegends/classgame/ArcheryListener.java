@@ -186,21 +186,15 @@ public class ArcheryListener implements Listener{
                 Player player = playerParama.getPlayer();
                 if(playerParama.isNotSilenced()){
                     if(playerParama.checkLevel(10, ClassGameType.ARCHERY)){
-                        if(whistlingWind.getEntitiesWhistlingWind().containsKey(player)){
-                            ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                        if(player.hasMetadata("WHISTLINGWIND")){
                             player.sendMessage(ChatColor.GRAY+"A whistling wind is already in use.");
-                            whistlingWind.givePlayerWhistlingWind(player, event.getConsumable());
                         } else {
                             whistlingWind.castWhistlingWind(playerParama, event);
                         }
-                    } else {
-                        ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                        whistlingWind.givePlayerWhistlingWind(player, event.getConsumable());
                     }
-                } else {
-                    ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                    whistlingWind.givePlayerWhistlingWind(player, event.getConsumable());
                 }
+                ((SpectralArrow) event.getProjectile()).setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                whistlingWind.givePlayerWhistlingWind(player, event.getConsumable());
             }
         }
     }
