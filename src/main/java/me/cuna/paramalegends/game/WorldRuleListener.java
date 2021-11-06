@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 
 public class WorldRuleListener implements Listener {
@@ -136,10 +138,35 @@ public class WorldRuleListener implements Listener {
     public void onConsume(PlayerItemConsumeEvent event){
         if(event.getItem().getType().equals(Material.POTION)){
             if(event.getItem().getItemMeta() != null) {
-                if(event.getItem().getItemMeta().getDisplayName().contains(ChatColor.COLOR_CHAR+"9Mana Potion")){
-                    plugin.getPlayerParama(event.getPlayer()).addMana(100);
-                } else if(event.getItem().getItemMeta().getDisplayName().contains(ChatColor.COLOR_CHAR+"9Greater Mana Potion")){
-                    plugin.getPlayerParama(event.getPlayer()).addMana(200);
+                switch(event.getItem().getItemMeta().getDisplayName()){
+                    case ChatColor.COLOR_CHAR+"9Mana Potion" -> {
+                        plugin.getPlayerParama(event.getPlayer()).addMana(100);
+                        event.setCancelled(true);
+                        if(event.getPlayer().getItemInUse() != null){
+                            event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR+"9Greater Mana Potion" -> {
+                        plugin.getPlayerParama(event.getPlayer()).addMana(200);
+                        event.setCancelled(true);
+                        if(event.getPlayer().getItemInUse() != null){
+                            event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR+"dHealing Potion" -> {
+                        event.getPlayer().setHealth( Math.min(20, event.getPlayer().getHealth()+8));
+                        event.setCancelled(true);
+                        if(event.getPlayer().getItemInUse() != null){
+                            event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR+"dRegeneration Potion" -> {
+                        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 260, 1));
+                        event.setCancelled(true);
+                        if(event.getPlayer().getItemInUse() != null){
+                            event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
+                        }
+                    }
                 }
             }
         }

@@ -184,7 +184,7 @@ public class WhistlingWind implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof SpectralArrow && event.getDamager().getCustomName() != null){
             SpectralArrow arrow = (SpectralArrow) event.getDamager();
-            if(arrow.getCustomName().equals("whistlingwind")){
+            if(arrow.getCustomName().equals("whistlingwind") || arrow.getCustomName().equals("return")){
                 if(!(event.getEntity() instanceof Monster || event.getEntity() instanceof Phantom || event.getEntity() instanceof Slime)){
                     event.setCancelled(true);
                 }
@@ -221,8 +221,14 @@ public class WhistlingWind implements Listener {
                     event.setCancelled(true);
                 }
             } else if(arrow.getCustomName().equals("return")){
-                if(event.getHitEntity() != null && event.getHitEntity().equals(arrow.getShooter())){
-                    arrow.remove();
+                if(event.getHitEntity() != null){
+                    if(event.getHitEntity().equals(arrow.getShooter())){
+                        arrow.remove();
+                    } else {
+                        Player shooter = (Player) arrow.getShooter();
+                        hitEntity(shooter, event.getHitEntity());
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
