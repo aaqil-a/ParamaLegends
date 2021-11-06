@@ -71,6 +71,16 @@ public class WhistlingWind implements Listener {
             //if distance is tiny, no need to shoot
             if(targetLocation.distance(sourceLocation) < 1.5){
                 hitEntity(shooter, target);
+                //fire next whistling wind
+                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                    List <Entity> entities = shooter.getNearbyEntities(15,15,15);
+                    entities.removeIf(entity -> (!(entity instanceof Monster || entity instanceof Phantom || entity instanceof Slime) || entity.equals(target) || entity.isDead()));
+                    if(entities.size()>0){
+                        shootArrowToEntity(shooter, target, entities.get(rand.nextInt(entities.size())));
+                    } else {
+                        returnArrow(shooter, target);
+                    }
+                }, 8);
             } else {
                 //adjust target and source locations
                 targetLocation.add(0,-0.5,0);
@@ -100,7 +110,7 @@ public class WhistlingWind implements Listener {
 
                 //set timer for whistling wind in case of miss
                 Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                    if(arrow.isValid()){
+                    if(arrow.hasMetadata("TARGETWHISTLINGWIND") && Objects.equals(arrow.getMetadata("TARGETWHISTLINGWIND").get(0).value(), target)){
                         hitEntity(shooter, target);
                         arrow.remove();
                         //fire next whistling wind
@@ -110,7 +120,6 @@ public class WhistlingWind implements Listener {
                             if(entities.size()>0){
                                 shootArrowToEntity(shooter, target, entities.get(rand.nextInt(entities.size())));
                             } else {
-                                shooter.removeMetadata("WHISTLINGWIND", plugin);
                                 returnArrow(shooter, target);
                             }
                         }, 8);
@@ -136,6 +145,7 @@ public class WhistlingWind implements Listener {
         Location sourceLocation = source.getLocation();
         //if distance is tiny, no need to return
         if(targetLocation.distance(sourceLocation) < 1.5){
+            shooter.removeMetadata("WHISTLINGWIND", plugin);
             shooter.getWorld().spawnParticle(Particle.FLASH, shooter.getLocation(), 1, 0, 0, 0 ,0);
         } else {
             //adjust target and source locations
@@ -162,10 +172,11 @@ public class WhistlingWind implements Listener {
             arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
             arrow.setVelocity(sourceLocation.getDirection().multiply(2.5));
             dummyShooter.remove();
+            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                shooter.removeMetadata("WHISTLINGWIND", plugin);
+                shooter.getWorld().spawnParticle(Particle.FLASH, shooter.getLocation(), 1, 0, 0, 0 ,0);
+            }, 30);
         }
-        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            shooter.removeMetadata("WHISTLINGWIND", plugin);
-        }, 30);
     }
 
     //make whistling wind not hurt player
@@ -193,6 +204,7 @@ public class WhistlingWind implements Listener {
                     Entity hit = (Entity) arrow.getMetadata("TARGETWHISTLINGWIND").get(0).value();
                     arrow.remove();
                     hitEntity(shooter, hit);
+                    arrow.removeMetadata("TARGETWHISTLINGWIND", plugin);
                     //fire next whistling wind
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         List <Entity> entities = shooter.getNearbyEntities(15,15,15);
@@ -210,8 +222,6 @@ public class WhistlingWind implements Listener {
                 }
             } else if(arrow.getCustomName().equals("return")){
                 if(event.getHitEntity() != null && event.getHitEntity().equals(arrow.getShooter())){
-                    Player shooter = (Player) arrow.getShooter();
-                    shooter.getWorld().spawnParticle(Particle.FLASH, shooter.getLocation(), 1, 0, 0, 0 ,0);
                     arrow.remove();
                 }
             }
