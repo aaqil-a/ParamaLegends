@@ -180,7 +180,11 @@ public class GeneralShop extends GameShop {
             if(expanseFund <= 0){
                 //expand land
                 expandLand((Player) event.getWhoClicked());
-                expanseFund = expansePrice[expanseLevel+1];
+                if(expanseLevel > 6){
+                    expanseFund = expansePrice[6]*(expanseLevel-5);
+                } else {
+                    expanseFund = expansePrice[expanseLevel+1];
+                }
                 data.getConfig().set("world.expanseLevel", expanseLevel+1);
             }
             data.getConfig().set("world.expanseFund", expanseFund);

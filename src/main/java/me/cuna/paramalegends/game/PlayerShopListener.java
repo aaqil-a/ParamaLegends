@@ -23,6 +23,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlayerShopListener implements Listener {
 
@@ -168,9 +169,18 @@ public class PlayerShopListener implements Listener {
                                     lectrumSeller += price;
                                     lectrum -= price;
                                     player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
-                                    Player seller = plugin.getServer().getPlayer(uuid);
+                                    Player seller = plugin.getServer().getPlayer(UUID.fromString(uuid));
                                     if(seller != null){
                                         seller.sendMessage(ChatColor.GREEN+player.getName()+" purchased "+sign.getLine(3) + " " + sign.getLine(2) + " from you for " + price + " lectrum.");
+                                    }
+                                    //check tax
+                                    String mayorUuidString = data.getConfig().getString("mayoruuid");
+                                    if(mayorUuidString != null && !mayorUuidString.isBlank()){
+                                        int lectrumMayor = data.getConfig().getInt("players."+mayorUuidString+".lectrum");
+                                        int tax = (int) Math.ceil(price/20d);
+                                        lectrumSeller -= tax;
+                                        lectrumMayor += tax;
+                                        data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor);
                                     }
                                     data.getConfig().set("players."+uuid+".lectrum", lectrumSeller);
                                     data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
