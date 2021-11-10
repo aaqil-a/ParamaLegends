@@ -68,6 +68,11 @@ commands:
     usage: /dragonfightstop
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
+  setmayor:
+    description: Set the mayor of the server
+    usage: /setmayor <player>
+    permission: paramalegends.gameadmin
+    permission-message: You are not a game admin!
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

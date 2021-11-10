@@ -18,35 +18,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class LectrumSet implements CommandExecutor {
+public class SetMayor implements CommandExecutor {
 
     private final ParamaLegends plugin;
     public DataManager data;
 
-    public LectrumSet(final ParamaLegends plugin){
+    public SetMayor(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.getData();
     }
 
     public void sendUsage(CommandSender sender){
-        sender.sendMessage(ChatColor.RED+"Usage: /lectrumset <player> <lectrum>");
+        sender.sendMessage(ChatColor.RED+"Usage: /setmayor <player>");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length < 2){
+        if(args.length < 1){
             sendUsage(sender);
         } else {
             Player player = Bukkit.getPlayer(args[0]);
             if(player != null){
-                int lectrum;
-                try{
-                    lectrum = Integer.parseInt(args[1]);
-                } catch(NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED+"Invalid lectrum");
-                    return true;
-                }
-                data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+                data.getConfig().set("mayoruuid", player.getUniqueId().toString());
                 data.saveConfig();
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");

@@ -81,6 +81,7 @@ public class ParamaLegends extends JavaPlugin {
     public Tinker tinker;
     public BloodMoon bloodMoon;
     public DragonEnd dragonEnd;
+    public SetMayor setMayor;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -121,6 +122,7 @@ public class ParamaLegends extends JavaPlugin {
         tinker = new Tinker(this);
         bloodMoon = new BloodMoon(this);
         dragonEnd = new DragonEnd(this);
+        setMayor = new SetMayor(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -143,6 +145,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("tinker").setExecutor(tinker);
         getCommand("bloodmoon").setExecutor(bloodMoon);
         getCommand("dragonfightstop").setExecutor(dragonEnd);
+        getCommand("setmayor").setExecutor(setMayor);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
