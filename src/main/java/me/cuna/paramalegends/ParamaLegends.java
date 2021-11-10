@@ -82,6 +82,7 @@ public class ParamaLegends extends JavaPlugin {
     public BloodMoon bloodMoon;
     public DragonEnd dragonEnd;
     public SetMayor setMayor;
+    public SetSafeZoneSize safeZone;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -123,6 +124,7 @@ public class ParamaLegends extends JavaPlugin {
         bloodMoon = new BloodMoon(this);
         dragonEnd = new DragonEnd(this);
         setMayor = new SetMayor(this);
+        safeZone = new SetSafeZoneSize(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -146,6 +148,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("bloodmoon").setExecutor(bloodMoon);
         getCommand("dragonfightstop").setExecutor(dragonEnd);
         getCommand("setmayor").setExecutor(setMayor);
+        getCommand("safezone").setExecutor(safeZone);
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);
