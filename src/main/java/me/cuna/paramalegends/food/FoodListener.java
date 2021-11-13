@@ -42,10 +42,7 @@ public class FoodListener implements Listener {
                             player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 601, 1));
                             item.setAmount(item.getAmount() - 1);
-                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
-                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                player.removeMetadata("PARAMAFOOD", plugin);
-                            }, 100);
+                            addFoodCooldown(player, 1200);
                         }
                     }
                     case ChatColor.COLOR_CHAR +"5Sandwich" -> {
@@ -55,10 +52,7 @@ public class FoodListener implements Listener {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 2));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 2));
                             item.setAmount(item.getAmount() - 1);
-                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
-                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                player.removeMetadata("PARAMAFOOD", plugin);
-                            }, 100);
+                            addFoodCooldown(player, 1200);
                         }
                     }
                 }
@@ -74,5 +68,12 @@ public class FoodListener implements Listener {
                 case ChatColor.COLOR_CHAR+"5Bowl Of Rice", ChatColor.COLOR_CHAR+"5Sushi", ChatColor.COLOR_CHAR+"5Sandwich" -> event.setCancelled(true);
             }
         }
+    }
+
+    public void addFoodCooldown(Player player, int duration){
+        player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            player.removeMetadata("PARAMAFOOD", plugin);
+        }, duration);
     }
 }

@@ -3,6 +3,7 @@ package me.cuna.paramalegends;
 import me.cuna.paramalegends.altar.EarthAltarListener;
 import me.cuna.paramalegends.altar.NatureAltarListener;
 import me.cuna.paramalegends.altar.StartAltarListener;
+import me.cuna.paramalegends.armor.SanguineListener;
 import me.cuna.paramalegends.boss.fight.BloodMoonListener;
 import me.cuna.paramalegends.boss.fight.DragonFightListener;
 import me.cuna.paramalegends.boss.fight.NatureFightListener;
@@ -19,6 +20,8 @@ import me.cuna.paramalegends.fun.AlcoholListener;
 import me.cuna.paramalegends.fun.AlcoholRecipes;
 import me.cuna.paramalegends.fun.WineryListener;
 import me.cuna.paramalegends.game.*;
+import me.cuna.paramalegends.lib.armorequip.ArmorListener;
+import me.cuna.paramalegends.lib.armorequip.DispenserArmorListener;
 import me.cuna.paramalegends.shopgame.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -26,6 +29,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
 
 public class ParamaLegends extends JavaPlugin {
 
@@ -66,6 +71,8 @@ public class ParamaLegends extends JavaPlugin {
 
     public WineryListener wineryListener;
     public AlcoholListener alcoholListener;
+
+    public SanguineListener sanguineListener;
 
     public StartGame startGame;
     public SetupGame setupGame;
@@ -131,6 +138,7 @@ public class ParamaLegends extends JavaPlugin {
         initializeAltars();
         initializeSummons();
         initializeBossFights();
+        initializeArmor();
 
         getCommand("yourmom").setExecutor(new YourMom());
         getCommand("startgame").setExecutor(startGame);
@@ -166,7 +174,9 @@ public class ParamaLegends extends JavaPlugin {
         registerSummons();
         registerBossFights();
 
-
+        //initialize armor events
+        Bukkit.getPluginManager().registerEvents(new ArmorListener(new ArrayList<>()), this);
+        Bukkit.getPluginManager().registerEvents(new DispenserArmorListener(), this);
     }
 
     public void initializeSummons(){
@@ -252,6 +262,9 @@ public class ParamaLegends extends JavaPlugin {
         getServer().getPluginManager().registerEvents(earthAltarListener, this);
     }
 
+    public void initializeArmor(){
+        sanguineListener = new SanguineListener(this);
+    }
 
     public double increasedIncomingDamage(double damage, double multiplier){
         String damageString = String.valueOf(damage);

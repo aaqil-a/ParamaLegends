@@ -4,6 +4,7 @@ import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -154,7 +155,7 @@ public class WorldRuleListener implements Listener {
                         }
                     }
                     case ChatColor.COLOR_CHAR+"dHealing Potion" -> {
-                        event.getPlayer().setHealth( Math.min(20, event.getPlayer().getHealth()+8));
+                        event.getPlayer().setHealth( Math.min(event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), event.getPlayer().getHealth()+8));
                         event.setCancelled(true);
                         if(event.getPlayer().getItemInUse() != null){
                             event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
