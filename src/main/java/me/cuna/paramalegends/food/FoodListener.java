@@ -52,7 +52,30 @@ public class FoodListener implements Listener {
                         if(!player.hasMetadata("PARAMAFOOD")) {
                             player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
                             player.setFoodLevel(Math.min(20, player.getFoodLevel() + 10));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 2));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 1));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 2));
+                            item.setAmount(item.getAmount() - 1);
+                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
+                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                player.removeMetadata("PARAMAFOOD", plugin);
+                            }, 100);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR +"5Cilor" -> {
+                        if(!player.hasMetadata("PARAMAFOOD")) {
+                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
+                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
+                            item.setAmount(item.getAmount() - 1);
+                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
+                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                player.removeMetadata("PARAMAFOOD", plugin);
+                            }, 100);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR +"5Hot Chocolate" -> {
+                        if(!player.hasMetadata("PARAMAFOOD")) {
+                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 8));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 2));
                             item.setAmount(item.getAmount() - 1);
                             player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
@@ -71,7 +94,7 @@ public class FoodListener implements Listener {
         if (event.getItemInHand().hasItemMeta()){
             ItemStack placed = event.getItemInHand();
             switch(Objects.requireNonNull(placed.getItemMeta()).getDisplayName()){
-                case ChatColor.COLOR_CHAR+"5Bowl Of Rice", ChatColor.COLOR_CHAR+"5Sushi", ChatColor.COLOR_CHAR+"5Sandwich" -> event.setCancelled(true);
+                case ChatColor.COLOR_CHAR+"5Bowl Of Rice", ChatColor.COLOR_CHAR+"5Sushi", ChatColor.COLOR_CHAR+"5Sandwich", ChatColor.COLOR_CHAR+"5Cilor", ChatColor.COLOR_CHAR+"5Hot Chocolate", ChatColor.COLOR_CHAR+"5Cold Chocolate" -> event.setCancelled(true);
             }
         }
     }
