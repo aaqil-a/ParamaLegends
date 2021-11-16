@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.util.RayTraceResult;
@@ -72,7 +73,7 @@ public class LifeDrain implements Listener, SpellParama {
                                             drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                                             Player healed = (Player) drained;
-                                            if(healed.getHealth() <= (20-healing) && player.getHealth() > healing){
+                                            if(healed.getHealth() <= (healed.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healing) && player.getHealth() > healing){
                                                 healed.setHealth(healed.getHealth()+healing);
                                                 player.setHealth(player.getHealth()-healing);
                                             }
@@ -80,7 +81,7 @@ public class LifeDrain implements Listener, SpellParama {
                                             player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                                             ((Damageable) drained).damage(damage+masteryLevel*damageBonus+0.069, player);
-                                            if(player.getHealth() <= (20-healing)){
+                                            if(player.getHealth() <= (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healing)){
                                                 player.setHealth(player.getHealth()+healing);
                                             }
                                         }
