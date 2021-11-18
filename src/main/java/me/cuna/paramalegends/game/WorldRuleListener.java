@@ -2,6 +2,7 @@ package me.cuna.paramalegends.game;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -83,6 +84,20 @@ public class WorldRuleListener implements Listener {
                 return;
             }
         }
+        //cancel changing name of items with color char
+        ItemStack base = event.getInventory().getItem(0);
+        ItemStack result = event.getResult();
+        if(base != null && base.getItemMeta() != null && base.getItemMeta().getDisplayName().startsWith(ChatColor.COLOR_CHAR+"")){
+            if(result != null && result.getItemMeta() != null) {
+                if(!result.getItemMeta().getDisplayName().startsWith(ChatColor.COLOR_CHAR+"")){
+                    ItemMeta meta = result.getItemMeta();
+                    meta.setDisplayName(base.getItemMeta().getDisplayName());
+                    result.setItemMeta(meta);
+                    event.setResult(result);
+                }
+            }
+        }
+
     }
     //Disable interacting with armor stands with custom names
     @EventHandler

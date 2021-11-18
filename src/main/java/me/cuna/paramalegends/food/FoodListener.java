@@ -2,6 +2,8 @@ package me.cuna.paramalegends.food;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,59 +37,53 @@ public class FoodListener implements Listener {
             Player player = e.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
             if(item.getItemMeta() != null){
-                switch (item.getItemMeta().getDisplayName()){
-                    case ChatColor.COLOR_CHAR+"5Sushi" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 601, 1));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
-                        }
-                    }
-                    case ChatColor.COLOR_CHAR +"5Sandwich" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 10));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 0));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
-                        }
-                    }
-                    case ChatColor.COLOR_CHAR +"5Cilor" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
-                        }
-                    }
-                    case ChatColor.COLOR_CHAR +"5Hot Chocolate" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
-                        }
-                    }
-                    case ChatColor.COLOR_CHAR +"5Cold Brew" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 600, 0));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
-                        }
-                    }
-                    case ChatColor.COLOR_CHAR +"5Hot Coffee" -> {
-                        if(!player.hasMetadata("PARAMAFOOD")) {
-                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1200, 0));
-                            item.setAmount(item.getAmount() - 1);
-                            addFoodCooldown(player, 1200);
+                if(plugin.foodRecipes.getFoodNames().contains(item.getItemMeta().getDisplayName())){
+                    if(player.hasMetadata("PARAMAFOOD")){
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "You are too satiated to eat any more."));
+                    } else {
+                        switch (item.getItemMeta().getDisplayName()) {
+                            case ChatColor.COLOR_CHAR + "5Sushi" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 601, 1));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
+                            case ChatColor.COLOR_CHAR + "5Sandwich" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 10));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 0));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
+                            case ChatColor.COLOR_CHAR + "5Cilor" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
+                            case ChatColor.COLOR_CHAR + "5Hot Chocolate" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
+                            case ChatColor.COLOR_CHAR + "5Cold Brew" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 600, 0));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
+                            case ChatColor.COLOR_CHAR + "5Hot Coffee" -> {
+                                player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                                player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1200, 0));
+                                item.setAmount(item.getAmount() - 1);
+                                addFoodCooldown(player, 1200);
+                            }
                         }
                     }
                 }

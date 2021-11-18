@@ -24,6 +24,7 @@ public class FoodRecipes {
     private final DataManager data;
     private final ItemStack rice;
     private final ItemStack coffeeGround;
+    private final ArrayList<String> foodNames = new ArrayList<>();
 
     public FoodRecipes(ParamaLegends plugin){
         this.plugin = plugin;
@@ -32,50 +33,59 @@ public class FoodRecipes {
         //sushi
         ItemStack sushi = makeSkull( "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTUzNDdkYWRmNjgxOTlmYTdhMWI2NmYwNDgxYWQ4ZTlkYWVlMTUxMDg2NWFkZDZmMzNkMTVmYjM3OGQxM2U5MSJ9fX0=", 69696969);
         ItemMeta sushiItemmeta = sushi.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Sushi");
         sushiItemmeta.setDisplayName(ChatColor.COLOR_CHAR+"5Sushi");
         sushi.setItemMeta(sushiItemmeta);
 
         //rice
         rice = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzM3N2UzZDZjMzc5ZmUzNGEyZTZhZmFiYmEzMmU3YWVjZjc3YmNkMzFhMWMzODM2ZWMzNTRhOTM1YTdlOSJ9fX0=", 69696970);
         ItemMeta riceItemmeta = rice.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Bowl Of Rice");
         riceItemmeta.setDisplayName(ChatColor.COLOR_CHAR+"5Bowl Of Rice");
         rice.setItemMeta(riceItemmeta);
 
         //sandwich
         ItemStack sandwich = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVmYWZkODk3MmI2Yjc2OTBmYjEzMWRjM2Y5MTdjNTU5OTkzOGY4N2I1ODRjMmY1ZTdkNDBhMGRlNDFlNTJmIn19fQ==", 69696971);
         ItemMeta sandwichItemMeta = sandwich.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Sandwich");
         sandwichItemMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Sandwich");
         sandwich.setItemMeta(sandwichItemMeta);
 
         //cilor
         ItemStack cilor = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmUzMDUyYzUzNWUxNDU5N2E0MTNlYzMyYjMyYWFmZGQyODY4NmZkYWI2ZWVkNzMwMzBlMWI5NGY3YzM4ZmYifX19", 69696972);
         ItemMeta cilorMeta = cilor.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Cilor");
         cilorMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Cilor");
         cilor.setItemMeta(cilorMeta);
 
         //hot chocolate
         ItemStack coldChoco = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRhZTE5MmNlYzI4NTBiMjQ1YjgyM2ExNWNlNTVmMzMyZjA5YzQ5MWIxNWE5NjQ1Yzk4MmI4OGM1NjRkNGMyIn19fQ==", 69696973);
         ItemMeta coldChocoMeta = coldChoco.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Cold Chocolate");
         coldChocoMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Cold Chocolate");
         coldChoco.setItemMeta(coldChocoMeta);
 
         ItemStack hotChoco = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRhZTE5MmNlYzI4NTBiMjQ1YjgyM2ExNWNlNTVmMzMyZjA5YzQ5MWIxNWE5NjQ1Yzk4MmI4OGM1NjRkNGMyIn19fQ==", 69696974);
         ItemMeta hotChocoMeta = hotChoco.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Hot Chocolate");
         hotChocoMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Hot Chocolate");
         hotChoco.setItemMeta(hotChocoMeta);
 
         coffeeGround = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY2NTNmM2UwOWRjN2NiMGQyMGUyMzZiYWM2ZWEwMGRmZjZlZTVkYWExOGJiYzBiZmFkNDlmYWY4NDg3MGY0NyJ9fX0=",69696975 );
         ItemMeta coffeeGroundMeta = coffeeGround.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Coffee Ground");
         coffeeGroundMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Coffee Ground");
         coffeeGround.setItemMeta(coffeeGroundMeta);
 
         ItemStack coldBrew = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTQxYTY5ZTE2NmMzYmI1ZGI4OWUyNzQzZDczZGE1Y2QwNjE5ZGE1ZTJlOTIzZGE5OWMyZTU1YmE4NTNkOSJ9fX0=", 69696976);
         ItemMeta coldBrewMeta = coldBrew.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Cold Brew");
         coldBrewMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Cold Brew");
         coldBrew.setItemMeta(coldBrewMeta);
 
         ItemStack hotCoffee = makeSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNjNDU2YmIxYjVkZWY3MTYwOTUzMjA0NDYxYjIyY2ViZDE4OTc2NDE0Yzg1NGQ0Yjk4MTI2Mzk1MDMxIn19fQ==", 69696977);
         ItemMeta hotCoffeeMeta = hotCoffee.getItemMeta();
+        foodNames.add(ChatColor.COLOR_CHAR+"5Hot Coffee");
         hotCoffeeMeta.setDisplayName(ChatColor.COLOR_CHAR + "5Hot Coffee");
         hotCoffee.setItemMeta(hotCoffeeMeta);
 
@@ -179,7 +189,7 @@ public class FoodRecipes {
         return skull;
     }
 
-
+    public ArrayList<String> getFoodNames() {return foodNames;}
     public ItemStack getCoffeeGround() {return coffeeGround;}
     public ItemStack getRice() {
         return rice;
