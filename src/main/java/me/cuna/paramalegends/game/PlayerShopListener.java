@@ -165,9 +165,11 @@ public class PlayerShopListener implements Listener {
                                             if(amount <= 0)break;
                                         }
                                     }
+                                    plugin.getPlayerParama(player).removeLectrum(price);
+
                                     int lectrumSeller = data.getConfig().getInt("players."+uuid+".lectrum");
                                     lectrumSeller += price;
-                                    lectrum -= price;
+
                                     player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
                                     Player seller = plugin.getServer().getPlayer(UUID.fromString(uuid));
                                     if(seller != null){
@@ -181,10 +183,13 @@ public class PlayerShopListener implements Listener {
                                         lectrumSeller -= tax;
                                         lectrumMayor += tax;
                                         data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor);
+                                        plugin.leaderboard.updateNetWorth(mayorUuidString);
                                     }
+
                                     data.getConfig().set("players."+uuid+".lectrum", lectrumSeller);
-                                    data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
                                     data.saveConfig();
+                                    plugin.leaderboard.updateNetWorth(uuid);
+
                                 } else {
                                     player.sendMessage(ChatColor.RED+"Shop out of stock.");
                                 }

@@ -180,10 +180,7 @@ public class ExperienceListener implements Listener {
     //Add lectrum gained to player
     public void addLectrum(Player player, int amount){
         if(player != null){
-            int currLectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
-            currLectrum += amount;
-            data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", currLectrum);
-            data.saveConfig();
+            plugin.getPlayerParama(player).addLectrum(amount);
         }
     }
 

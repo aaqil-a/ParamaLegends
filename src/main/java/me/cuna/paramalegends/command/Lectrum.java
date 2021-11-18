@@ -13,8 +13,10 @@ import org.bukkit.entity.Player;
 public class Lectrum implements CommandExecutor {
 
     public DataManager data;
+    private ParamaLegends plugin;
 
     public Lectrum(final ParamaLegends plugin){
+        this.plugin = plugin;
         data = plugin.getData();
     }
 
@@ -43,12 +45,8 @@ public class Lectrum implements CommandExecutor {
                                     if (senderLectrum < amount) {
                                         player.sendMessage(ChatColor.RED + "Not enough lectrum!");
                                     } else {
-                                        int receiverLectrum = data.getConfig().getInt("players." + receiver.getUniqueId().toString() + ".lectrum");
-                                        senderLectrum -= amount;
-                                        receiverLectrum += amount;
-                                        data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", senderLectrum);
-                                        data.getConfig().set("players." + receiver.getUniqueId().toString() + ".lectrum", receiverLectrum);
-                                        data.saveConfig();
+                                        plugin.getPlayerParama(receiver).addLectrum(amount);
+                                        plugin.getPlayerParama(player).removeLectrum(amount);
                                         player.sendMessage(ChatColor.GOLD + "Successfully sent " + amount + " lectrum to " + args[1] + ".");
                                         receiver.sendMessage(ChatColor.GOLD + "Received " + amount + " lectrum from " + player.getName() + ".");
                                     }

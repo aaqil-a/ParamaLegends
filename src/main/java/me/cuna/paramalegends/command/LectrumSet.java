@@ -48,6 +48,7 @@ public class LectrumSet implements CommandExecutor {
                 }
                 data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
                 data.saveConfig();
+                plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");
             }

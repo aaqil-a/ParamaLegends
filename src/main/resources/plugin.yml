@@ -78,6 +78,9 @@ commands:
     usage: /safezone <maximize/minimize>
     permission: paramalegends.gameadmin
     permission-message: You are not a game admin!
+  leaderboard:
+    description: View the server's top players
+    usage: /leaderboard
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

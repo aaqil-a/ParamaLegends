@@ -259,6 +259,18 @@ public class PlayerParama {
         lectrum += amount;
         data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
         data.saveConfig();
+        plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
+    }
+    public void removeLectrum(int amount){
+        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+        lectrum -= amount;
+        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
+        data.saveConfig();
+        plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
+    }
+
+    public int getLectrum(){
+        return data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
     }
     public void addToReaperRefreshCooldown(String spell, BukkitTask task){
         refreshReaperCooldown.put(spell,task);

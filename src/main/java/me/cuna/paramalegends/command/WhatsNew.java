@@ -30,6 +30,10 @@ public class WhatsNew implements CommandExecutor {
         assert meta != null;
         meta.addPage(
                 ""+
+                        ChatColor.GOLD+ChatColor.BOLD+"1.2.2 - 1.2.? 18/11/21\n"
+                        +ChatColor.BLACK+"\u2022 Added a bunch\n  of shit I'll\n  sort it out \n  later.\n"
+                        +ChatColor.BLACK+"\u2022 Added /leaderboard \n  command.",
+                ""+
                         ChatColor.GOLD+ChatColor.BOLD+"1.2.1 19/9/21\n"
                         +ChatColor.BLACK+"\u2022 Inreased duration\n  of Calamity\n"
                         +ChatColor.BLACK+"\u2022 Increased duration\n  of Terrifying\n   Cruelty.\n"
@@ -117,7 +121,6 @@ public class WhatsNew implements CommandExecutor {
                 ""+ChatColor.GOLD+ChatColor.BOLD+"1.0.0 10/8/21\n"
                         +ChatColor.BLACK+"\u2022 Created\n  ParamaLegends.\n"
                         +ChatColor.BLACK+"\u2022 Thanks for\n  playing my game!\n  "+ChatColor.GOLD+"-cuna\n  -aenzt\n  -Hachuwu"
-
         );
         meta.setAuthor("ParamaLegends");
         meta.setTitle("Whats New!");

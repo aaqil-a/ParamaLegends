@@ -20,6 +20,7 @@ import me.cuna.paramalegends.fun.AlcoholListener;
 import me.cuna.paramalegends.fun.AlcoholRecipes;
 import me.cuna.paramalegends.fun.WineryListener;
 import me.cuna.paramalegends.game.*;
+import me.cuna.paramalegends.leaderboard.Leaderboard;
 import me.cuna.paramalegends.lib.armorequip.ArmorListener;
 import me.cuna.paramalegends.lib.armorequip.DispenserArmorListener;
 import me.cuna.paramalegends.shopgame.*;
@@ -74,6 +75,8 @@ public class ParamaLegends extends JavaPlugin {
 
     public SanguineListener sanguineListener;
 
+    public Leaderboard leaderboard;
+
     public StartGame startGame;
     public SetupGame setupGame;
     public Lectrum lectrum;
@@ -90,6 +93,7 @@ public class ParamaLegends extends JavaPlugin {
     public DragonEnd dragonEnd;
     public SetMayor setMayor;
     public SetSafeZoneSize safeZone;
+    public me.cuna.paramalegends.command.Leaderboard leaderboardCommand;
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -132,6 +136,8 @@ public class ParamaLegends extends JavaPlugin {
         dragonEnd = new DragonEnd(this);
         setMayor = new SetMayor(this);
         safeZone = new SetSafeZoneSize(this);
+        leaderboard = new Leaderboard(this);
+        leaderboardCommand = new me.cuna.paramalegends.command.Leaderboard(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -157,6 +163,8 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("dragonfightstop").setExecutor(dragonEnd);
         getCommand("setmayor").setExecutor(setMayor);
         getCommand("safezone").setExecutor(safeZone);
+        getCommand("leaderboard").setExecutor(leaderboardCommand);
+
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
         getServer().getPluginManager().registerEvents(worldRuleListener, this);

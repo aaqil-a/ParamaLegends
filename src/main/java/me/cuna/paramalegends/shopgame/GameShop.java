@@ -89,9 +89,7 @@ public class GameShop implements Listener {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
             } else {
-                lectrum -= price;
-                data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", lectrum);
-                data.saveConfig();
+                plugin.getPlayerParama(player).removeLectrum(price);
                 if(giveItem(event)) updateLectrum(event);
             }
         }
