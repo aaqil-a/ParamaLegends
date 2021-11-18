@@ -2,16 +2,16 @@ package me.cuna.paramalegends.food;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -49,13 +49,10 @@ public class FoodListener implements Listener {
                         if(!player.hasMetadata("PARAMAFOOD")) {
                             player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
                             player.setFoodLevel(Math.min(20, player.getFoodLevel() + 10));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 1));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 2));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 1201, 0));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
                             item.setAmount(item.getAmount() - 1);
-                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
-                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                player.removeMetadata("PARAMAFOOD", plugin);
-                            }, 100);
+                            addFoodCooldown(player, 1200);
                         }
                     }
                     case ChatColor.COLOR_CHAR +"5Cilor" -> {
@@ -63,17 +60,32 @@ public class FoodListener implements Listener {
                             player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1f, 1f);
                             player.setFoodLevel(Math.min(20, player.getFoodLevel() + 6));
                             item.setAmount(item.getAmount() - 1);
-                            player.setMetadata("PARAMAFOOD", new FixedMetadataValue(plugin, true));
-                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                player.removeMetadata("PARAMAFOOD", plugin);
-                            }, 100);
+                            addFoodCooldown(player, 1200);
                         }
                     }
                     case ChatColor.COLOR_CHAR +"5Hot Chocolate" -> {
                         if(!player.hasMetadata("PARAMAFOOD")) {
                             player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
-                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 8));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 2));
+                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 61, 1));
+                            item.setAmount(item.getAmount() - 1);
+                            addFoodCooldown(player, 1200);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR +"5Cold Brew" -> {
+                        if(!player.hasMetadata("PARAMAFOOD")) {
+                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 600, 0));
+                            item.setAmount(item.getAmount() - 1);
+                            addFoodCooldown(player, 1200);
+                        }
+                    }
+                    case ChatColor.COLOR_CHAR +"5Hot Coffee" -> {
+                        if(!player.hasMetadata("PARAMAFOOD")) {
+                            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_DRINK, 1f, 1f);
+                            player.setFoodLevel(Math.min(20, player.getFoodLevel() + 4));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1200, 0));
                             item.setAmount(item.getAmount() - 1);
                             addFoodCooldown(player, 1200);
                         }
@@ -87,8 +99,28 @@ public class FoodListener implements Listener {
     public void onPlace(BlockPlaceEvent event){
         if (event.getItemInHand().hasItemMeta()){
             ItemStack placed = event.getItemInHand();
-            switch(Objects.requireNonNull(placed.getItemMeta()).getDisplayName()){
-                case ChatColor.COLOR_CHAR+"5Bowl Of Rice", ChatColor.COLOR_CHAR+"5Sushi", ChatColor.COLOR_CHAR+"5Sandwich", ChatColor.COLOR_CHAR+"5Cilor", ChatColor.COLOR_CHAR+"5Hot Chocolate", ChatColor.COLOR_CHAR+"5Cold Chocolate" -> event.setCancelled(true);
+            switch (Objects.requireNonNull(placed.getItemMeta()).getDisplayName()) {
+                case ChatColor.COLOR_CHAR + "5Bowl Of Rice", ChatColor.COLOR_CHAR + "5Sushi", ChatColor.COLOR_CHAR + "5Sandwich", ChatColor.COLOR_CHAR + "5Cilor", ChatColor.COLOR_CHAR + "5Hot Chocolate", ChatColor.COLOR_CHAR + "5Cold Chocolate", ChatColor.COLOR_CHAR + "5Coffee Ground", ChatColor.COLOR_CHAR + "5Hot Coffee", ChatColor.COLOR_CHAR + "5Cold Brew" -> event.setCancelled(true);
+                case "Coffee Grinder" -> {
+                    event.getBlock().setMetadata("COFFEEGRINDER", new FixedMetadataValue(plugin, 1));
+                    event.getPlayer().sendMessage("Coffee Grinder placed!");
+                    Location location = event.getBlock().getLocation();
+                    data.getConfig().set("coffeegrinder", location);
+                    data.saveConfig();
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event){
+//        Bukkit.broadcastMessage(String.valueOf(Objects.requireNonNull(event.getClickedBlock()).hasMetadata("COFFEEGRINDER")));
+        if ((event.getClickedBlock() != null) && (event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getHand() == EquipmentSlot.HAND)){
+            if(event.getClickedBlock().getType() == Material.PLAYER_HEAD){
+                Location datax = data.getConfig().getLocation("coffeegrinder");
+                if(event.getClickedBlock().getLocation().equals(datax)){
+                    event.getPlayer().getWorld().dropItem(event.getClickedBlock().getLocation(), plugin.foodRecipes.getCoffeeGround());
+                }
             }
         }
     }
