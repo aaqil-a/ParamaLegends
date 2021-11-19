@@ -5,10 +5,14 @@ import me.cuna.paramalegends.ParamaLegends;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -18,12 +22,15 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class FoodListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
+    public UUID armorUUID;
 
     public FoodListener(final ParamaLegends plugin){
         this.plugin = plugin;
@@ -103,7 +110,23 @@ public class FoodListener implements Listener {
                     Location location = event.getBlock().getLocation();
                     data.getConfig().set("coffeegrinder", location);
                     data.saveConfig();
+//                    ArmorStand hologram = (ArmorStand) event.getPlayer().getWorld().spawnEntity(location.add(0.5, -1.5, 0.5), EntityType.ARMOR_STAND);
+//                    hologram.setVisible(false);
+//                    hologram.setCustomNameVisible(true);
+//                    hologram.setCustomName(ChatColor.BLUE + "Coffee Grinder");
+//                    hologram.setGravity(false);
+//                    armorUUID = hologram.getUniqueId();
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event){
+        if(event.getBlock().getType() == Material.PLAYER_HEAD && !event.getPlayer().isOp()){
+            Location datax = data.getConfig().getLocation("coffeegrinder");
+            if(event.getBlock().getLocation().equals(datax)) {
+                event.setCancelled(true);
             }
         }
     }
@@ -114,8 +137,18 @@ public class FoodListener implements Listener {
         if ((event.getClickedBlock() != null) && (event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getHand() == EquipmentSlot.HAND)){
             if(event.getClickedBlock().getType() == Material.PLAYER_HEAD){
                 Location datax = data.getConfig().getLocation("coffeegrinder");
-                if(event.getClickedBlock().getLocation().equals(datax)){
+                if(event.getClickedBlock().getLocation().equals(datax) && (event.getPlayer().getName().equalsIgnoreCase("ndhis") || event.getPlayer().getName().equalsIgnoreCase("Bludut") || event.getPlayer().isOp())){
                     event.getPlayer().getWorld().dropItem(event.getClickedBlock().getLocation(), plugin.foodRecipes.getCoffeeGround());
+                    int lectrum = data.getConfig().getInt("players."+event.getPlayer().getUniqueId().toString()+".lectrum");
+                    if(lectrum < 10){
+                        event.getPlayer().sendMessage(ChatColor.RED+"Insufficient lectrum.");
+                    }else{
+                        lectrum = lectrum - 10;
+                        data.getConfig().set("players."+event.getPlayer().getUniqueId().toString()+".lectrum", lectrum);
+                        event.getPlayer().sendMessage("Successfully bought coffe ground");
+                    }
+                }else{
+                    event.getPlayer().sendMessage(ChatColor.DARK_RED + "You do not know how to use this machine!");
                 }
             }
         }
