@@ -53,11 +53,6 @@ commands:
   mastery:
     description: Check your mastery of a magic spell.
     usage: /mastery <spellname>
-  tinker:
-    description: Gives you tinker spells to play with.
-    usage: /tinker
-    permission: paramalegends.gameadmin
-    permission-message: You are not a game admin!
   bloodmoon:
     description: Start or stop a blood moon event.
     usage: /bloodmoon <start/stop>

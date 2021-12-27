@@ -69,7 +69,7 @@ public class GeneralShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);

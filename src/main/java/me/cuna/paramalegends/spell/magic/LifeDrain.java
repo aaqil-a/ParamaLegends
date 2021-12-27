@@ -85,7 +85,7 @@ public class LifeDrain implements Listener, SpellParama {
                                                 player.setHealth(player.getHealth()+healing);
                                             }
                                         }
-                                        if(drained instanceof Monster) plugin.magicListener.addMastery(playerParama, "lifedrain", 3);
+                                        if(drained instanceof Monster) playerParama.addMastery( "lifedrain", 3);
                                     } else {
                                         player.sendMessage(ChatColor.GREEN + "Life Drain deactivated.");
                                         playerParama.addToCooldown(this);

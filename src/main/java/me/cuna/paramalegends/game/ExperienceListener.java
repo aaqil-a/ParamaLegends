@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class ExperienceListener implements Listener {
@@ -129,7 +128,13 @@ public class ExperienceListener implements Listener {
         addExp(player, skilltype, amount, 0);
     }
 
-    // Add exp to player and check if player levelled up
+    /**
+     * Add a player's class experience for a given class
+     * @param player The player to be rewarded
+     * @param skillType The corresponding class
+     * @param amount The amount of EXP to reward
+     * @param lectrum The amount of Lectrum to reward
+     */
     public void addExp(Player player, ClassGameType skillType, int amount, int lectrum){
         String skill = switch(skillType){
             case ARCHERY -> "Archery";
@@ -139,8 +144,8 @@ public class ExperienceListener implements Listener {
         };
         if(player != null){
             PlayerParama playerParama = plugin.getPlayerParama(player);
-            int currLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill.toLowerCase());
-            int currExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill.toLowerCase()+"exp");
+            int currLevel = playerParama.getClassLevel(skillType);
+            int currExp = playerParama.getClassExp(skillType);
             currExp += amount;
             if(amount >= 10){
                 sendActionBarMessage(player,lectrum, amount);
@@ -171,9 +176,8 @@ public class ExperienceListener implements Listener {
                 }
             }
 
-            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase(), currLevel);
-            data.getConfig().set("players."+player.getUniqueId().toString()+"."+skill.toLowerCase()+"exp", currExp);
-            data.saveConfig();
+            playerParama.setClassLevel(skillType, currLevel);
+            playerParama.setClassExp(skillType, currExp);
         }
     }
 

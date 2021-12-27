@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -147,7 +148,7 @@ public class ReaperShop extends GameShop {
     //Create shop gui
     @Override
     public Inventory createGui(Player player, DataManager data){
-        int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".reaper");
+        int playerLevel = plugin.getPlayerParama(player).getClassLevel(ClassGameType.REAPER);
         Inventory gui;
         gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
 
@@ -159,7 +160,7 @@ public class ReaperShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);

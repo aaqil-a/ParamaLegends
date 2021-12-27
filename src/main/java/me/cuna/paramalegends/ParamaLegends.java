@@ -49,7 +49,6 @@ public class ParamaLegends extends JavaPlugin {
     public SwordsmanListener swordsmanListener;
     public ArcheryListener archeryListener;
     public MagicListener magicListener;
-    public TinkerListener tinkerListener;
 
     public GameShop banishedMagus;
     public GameShop seniorRanger;
@@ -88,7 +87,6 @@ public class ParamaLegends extends JavaPlugin {
     public WorldLevelSet worldLevelSet;
     public WhatsNew whatsNew;
     public Mastery mastery;
-    public Tinker tinker;
     public BloodMoon bloodMoon;
     public DragonEnd dragonEnd;
     public SetMayor setMayor;
@@ -131,7 +129,6 @@ public class ParamaLegends extends JavaPlugin {
         alcoholRecipes = new AlcoholRecipes(this);
         alcoholListener = new AlcoholListener(this);
         mastery = new Mastery(this);
-        tinker = new Tinker(this);
         bloodMoon = new BloodMoon(this);
         dragonEnd = new DragonEnd(this);
         setMayor = new SetMayor(this);
@@ -158,7 +155,6 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("worldlevelset").setExecutor(worldLevelSet);
         getCommand("whatsnew").setExecutor(whatsNew);
         getCommand("mastery").setExecutor(mastery);
-        getCommand("tinker").setExecutor(tinker);
         getCommand("bloodmoon").setExecutor(bloodMoon);
         getCommand("dragonfightstop").setExecutor(dragonEnd);
         getCommand("setmayor").setExecutor(setMayor);
@@ -185,6 +181,9 @@ public class ParamaLegends extends JavaPlugin {
         //initialize armor events
         Bukkit.getPluginManager().registerEvents(new ArmorListener(new ArrayList<>()), this);
         Bukkit.getPluginManager().registerEvents(new DispenserArmorListener(), this);
+
+        //Start saving player's data every minute
+        Bukkit.getScheduler().runTaskTimer(this, this::saveAllOnlinePlayersData, 1200, 1200);
     }
 
     public void initializeSummons(){
@@ -229,7 +228,6 @@ public class ParamaLegends extends JavaPlugin {
         reaperListener = new ReaperListener(this);;
         swordsmanListener = new SwordsmanListener(this);
         archeryListener = new ArcheryListener(this);
-        tinkerListener = new TinkerListener(this);
     }
 
     public void registerGameClass(){
@@ -303,6 +301,58 @@ public class ParamaLegends extends JavaPlugin {
 
         }
         return null;
+    }
+
+    /**
+     * Save all online players' Lectrum, Levels, Experience,
+     * and Mastery to the config.yml file.
+     */
+    public void saveAllOnlinePlayersData(){
+        for(Player player : Bukkit.getOnlinePlayers()){
+            PlayerParama playerParama = getPlayerParama(player);
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", playerParama.getLectrum());
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
+            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
+
+            //set mastery levels
+            for(String spell : magicListener.getSpellNames()){
+                data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spell, playerParama.getMasteryLevel(spell));
+                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
+            }
+        }
+        data.saveConfig();
+    }
+
+    /**
+     * Save a player's Lectrum, Levels, Experience,
+     * and Mastery to the config.yml file.
+     * @param player The player to be saved
+     */
+    public void savePlayerData(Player player){
+        PlayerParama playerParama = getPlayerParama(player);
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", playerParama.getLectrum());
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
+        data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
+
+        //set mastery levels
+        for(String spell : magicListener.getSpellNames()){
+            data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spell, playerParama.getMasteryLevel(spell));
+            data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
+        }
+
+        data.saveConfig();
     }
 
     public PlayerParama getPlayerParama(Player player){

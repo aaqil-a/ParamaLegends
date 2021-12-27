@@ -64,7 +64,7 @@ public class ReaperListener implements Listener{
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(defender);
-            int level = player.getLevelFromClassType(ClassGameType.REAPER);
+            int level = player.getClassLevel(ClassGameType.REAPER);
             //blade mail
             if (player.checkLevel(4, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
@@ -94,7 +94,7 @@ public class ReaperListener implements Listener{
             LivingEntity defender = (LivingEntity) event.getEntity();
             Player attacker = (Player) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(attacker);
-            int level = player.getLevelFromClassType(ClassGameType.REAPER);
+            int level = player.getClassLevel(ClassGameType.REAPER);
             //bloody fervour
             if (player.checkLevel(7, ClassGameType.REAPER, true)) {
                 Random rand = new Random();
@@ -111,7 +111,7 @@ public class ReaperListener implements Listener{
         if (event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
             PlayerParama player = plugin.getPlayerParama(attacker);
-            int level = player.getLevelFromClassType(ClassGameType.REAPER);
+            int level = player.getClassLevel(ClassGameType.REAPER);
             ItemStack item = Objects.requireNonNull(attacker.getPlayer()).getInventory().getItemInMainHand();
             switch (item.getType()) {
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {

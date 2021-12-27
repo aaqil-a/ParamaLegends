@@ -13,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,15 +30,20 @@ public class PlayerParama {
     private final HashMap<String, BukkitTask> playerTasks = new HashMap<>();
     private final HashMap<String, Entity> playerEntities = new HashMap<>();
     public final HashMap<String, BukkitTask> refreshReaperCooldown = new HashMap<>();
-    public final HashMap<String, BukkitTask> refreshTinkerCooldown = new HashMap<>();
     private final HashMap<String, Integer> magicMasteryLevel = new HashMap<>();
+    private final HashMap<String, Integer> magicMasteryExp = new HashMap<>();
     private final DataManager data;
     private int playerCurrentMana;
     private int playerManaLevel;
-    private int magicLevel;
-    private int swordsLevel;
-    private int archeryLevel;
-    private int reaperLevel;
+    private int magicLevel = 1;
+    private int magicExp = 0;
+    private int swordsLevel = 1;
+    private int swordsExp = 0;
+    private int archeryLevel = 1;
+    private int archeryExp = 0;
+    private int reaperLevel = 1;
+    private int reaperExp = 0;
+    private int lectrum = 50;
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
@@ -55,17 +59,21 @@ public class PlayerParama {
             data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", 0);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", 1);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", 0);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".mining", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".miningexp", 0);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", 1);
             data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", 0);
             data.saveConfig();
+        } else {
+            magicLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
+            swordsLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
+            archeryLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
+            reaperLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
+            magicExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magicexp");
+            swordsExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanshipexp");
+            archeryExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archeryexp");
+            reaperExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaperexp");
+            lectrum = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum");
         }
 
-        magicLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
-        swordsLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
-        archeryLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
-        reaperLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
         playerManaLevel = Math.max(Math.max(magicLevel,swordsLevel),Math.max(archeryLevel,reaperLevel));
         playerCurrentMana = 0;
         addPlayerManaRegenTasks();
@@ -82,7 +90,9 @@ public class PlayerParama {
         //set mastery levels
         for(String spell : plugin.magicListener.getSpellNames()){
             int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spell);
+            int masteryExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+".masteryexp."+spell);
             magicMasteryLevel.put(spell, masteryLevel);
+            magicMasteryExp.put(spell, masteryExp);
         }
     }
 
@@ -185,7 +195,7 @@ public class PlayerParama {
 
     // Determine if player level is high enough to cast a spell
     public boolean checkLevel(int level, ClassGameType type, boolean silent){
-        if(getLevelFromClassType(type) < level){
+        if(getClassLevel(type) < level){
             if(!silent) player.sendMessage(ChatColor.GRAY + "You do not understand how to use this spell yet.");
             return false;
         } else {
@@ -226,22 +236,93 @@ public class PlayerParama {
         }
     }
 
-    public void setLevel(ClassGameType type, int level){
-        switch(type){
-            case SWORDSMAN -> swordsLevel = level;
-            case MAGIC -> magicLevel = level;
-            case REAPER -> reaperLevel = level;
-            case ARCHERY -> archeryLevel = level;
-        }
-    }
-
-    public int getLevelFromClassType(ClassGameType type){
+    /**
+     * Returns the player's class level corresponding
+     * to a given class.
+     * @param type The class
+     * @return The player's class level
+     */
+    public int getClassLevel(ClassGameType type){
         return switch(type){
             case SWORDSMAN -> swordsLevel;
             case MAGIC -> magicLevel;
             case REAPER -> reaperLevel;
             case ARCHERY -> archeryLevel;
         };
+    }
+
+    /**
+     * Returns the player's class exp corresponding
+     * to a given class.
+     * @param type The class
+     * @return The player's class exp
+     */
+    public int getClassExp(ClassGameType type){
+        return switch(type){
+            case SWORDSMAN -> swordsExp;
+            case MAGIC -> magicExp;
+            case REAPER -> reaperExp;
+            case ARCHERY -> archeryExp;
+        };
+    }
+
+    /**
+     * Sets the player's class level
+     * @param type The class
+     * @param level The level to set to
+     */
+    public void setClassLevel(ClassGameType type, int level){
+        switch(type){
+            case SWORDSMAN -> swordsLevel = level;
+            case MAGIC -> magicLevel = level;
+            case REAPER -> reaperLevel = level;
+            case ARCHERY -> archeryLevel = level;
+        };
+    }
+
+    /**
+     * Sets the player's class exp
+     * @param type The class
+     * @param exp The amount of exp
+     */
+    public void setClassExp(ClassGameType type, int exp){
+        switch(type){
+            case SWORDSMAN -> swordsExp = exp;
+            case MAGIC -> magicExp = exp;
+            case REAPER -> reaperExp = exp;
+            case ARCHERY -> archeryExp = exp;
+        };
+    }
+
+    public void addMastery(String spellName, int exp){
+        int masteryLevel = getMasteryLevel(spellName);
+        if(masteryLevel == 0){
+            magicMasteryLevel.put(spellName, 1);
+            magicMasteryExp.put(spellName, exp);
+        } else {
+            int masteryExp = magicMasteryExp.get(spellName);
+            masteryExp += exp;
+
+            // level up
+            if(masteryExp >= plugin.magicListener.getMasteryLevelUp()[masteryLevel]){
+                masteryLevel += 1;
+                masteryExp = 0;
+
+                player.sendMessage(ChatColor.GOLD+
+                        switch(spellName){
+                            case "dragonbreath" -> "Dragon's Breath";
+                            case "flingearth" -> "Fling Earth";
+                            case "illusoryorb" -> "Illusory Orb";
+                            case "lifedrain" -> "Life Drain";
+                            case "summonlightning" -> "Summon Lightning";
+                            case "voicesofthedamned" -> "Voices of The Damned";
+                            default -> spellName.substring(0,1).toUpperCase()+spellName.substring(1);
+                        }
+                        +" mastery leveled up to "+(masteryLevel+1));
+                magicMasteryLevel.put(spellName, masteryLevel);
+            }
+            magicMasteryExp.put(spellName, masteryExp);
+        }
     }
 
     public void setSilenced(boolean silenced){
@@ -255,38 +336,32 @@ public class PlayerParama {
     }
 
     public void addLectrum(int amount){
-        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
         lectrum += amount;
-        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
-        data.saveConfig();
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
     }
     public void removeLectrum(int amount){
-        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
         lectrum -= amount;
-        data.getConfig().set("players."+player.getUniqueId().toString()+".lectrum", lectrum);
-        data.saveConfig();
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
+    }
+    public void setLectrum(int value){
+        lectrum = value;
     }
 
     public int getLectrum(){
-        return data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+        return lectrum;
     }
     public void addToReaperRefreshCooldown(String spell, BukkitTask task){
         refreshReaperCooldown.put(spell,task);
     }
     public void removeFromReaperRefreshCooldown(String spell){refreshReaperCooldown.remove(spell);}
-    public void addToTinkerRefreshCooldown(String spell, BukkitTask task){
-        refreshTinkerCooldown.put(spell,task);
-    }
-    public void removeFromTinkerRefreshCooldown(String spell){refreshTinkerCooldown.remove(spell);}
 
     public int getMasteryLevel(String key){
         if(magicMasteryLevel.containsKey(key)) return magicMasteryLevel.get(key);
         return 0;
     }
-    public void setMasteryLevel(String key, int level){
-        magicMasteryLevel.put(key, level);
+    public int getMasteryExp(String key){
+        if(magicMasteryExp.containsKey(key)) return magicMasteryExp.get(key);
+        return 0;
     }
 
     public Player getPlayer(){

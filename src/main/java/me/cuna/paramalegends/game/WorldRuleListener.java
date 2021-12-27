@@ -142,7 +142,7 @@ public class WorldRuleListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+        int lectrum = plugin.getPlayerParama(player).getLectrum();
         int lost = lectrum/10;
         plugin.getPlayerParama(player).removeLectrum(lost);
         player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");

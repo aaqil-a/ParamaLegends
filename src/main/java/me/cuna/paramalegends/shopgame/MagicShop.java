@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public class MagicShop extends GameShop {
     @Override
     public Inventory createGui(Player player, DataManager data){
         Inventory gui;
-        int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".magic");
+        int playerLevel = plugin.getPlayerParama(player).getClassLevel(ClassGameType.MAGIC);
         gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"5Magic Tomes");
 
         ItemStack item = new ItemStack(Material.EMERALD);
@@ -69,7 +70,7 @@ public class MagicShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);

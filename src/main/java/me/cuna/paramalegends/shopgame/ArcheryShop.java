@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -78,7 +79,7 @@ public class ArcheryShop extends GameShop {
     //Create shop gui
     @Override
     public Inventory createGui(Player player, DataManager data){
-        int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".archery");
+        int playerLevel = plugin.getPlayerParama(player).getClassLevel(ClassGameType.ARCHERY);
         Inventory gui;
         gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"aRanger Gear");
 
@@ -90,7 +91,7 @@ public class ArcheryShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);

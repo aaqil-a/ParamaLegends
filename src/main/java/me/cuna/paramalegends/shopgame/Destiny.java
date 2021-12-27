@@ -2,6 +2,8 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
+import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -79,19 +81,19 @@ public class Destiny implements Listener {
 
         //Open destiny gui depending on item pressed
         if (event.getSlot() == 1){
-            createGui2(player, "swordsmanship");
+            createGui2(player, ClassGameType.SWORDSMAN);
             player.closeInventory();
             player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 5){
-            createGui2(player, "magic");
+            createGui2(player, ClassGameType.MAGIC);
             player.closeInventory();
             player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 3){
-            createGui2(player, "archery");
+            createGui2(player, ClassGameType.ARCHERY);
             player.closeInventory();
             player.openInventory(gui2.get(player));
         } else if (event.getSlot() == 7){
-            createGui2(player, "reaper");
+            createGui2(player, ClassGameType.REAPER);
             player.closeInventory();
             player.openInventory(gui2.get(player));
         }
@@ -103,6 +105,7 @@ public class Destiny implements Listener {
     public void createGui(Player player){
         Inventory openGui = Bukkit.createInventory(null,9, ChatColor.COLOR_CHAR+"5Your Destiny");
         gui.put(player, openGui);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
 
         ItemStack item = new ItemStack(Material.IRON_SWORD);
         ItemMeta meta = item.getItemMeta();
@@ -114,8 +117,8 @@ public class Destiny implements Listener {
         // Swordsmanship
         meta.setDisplayName(ChatColor.RESET + "Swordsmanship");
         List<String> lore = new ArrayList<String>();
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanshipexp");
+        level = playerParama.getClassLevel(ClassGameType.SWORDSMAN);
+        exp = playerParama.getClassExp(ClassGameType.SWORDSMAN);
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeededSwordsman[level]-exp));
@@ -127,8 +130,8 @@ public class Destiny implements Listener {
         // Archery
         item.setType(Material.BOW);
         meta.setDisplayName(ChatColor.RESET + "Archery");
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archeryexp");
+        level = playerParama.getClassLevel(ClassGameType.ARCHERY);
+        exp = playerParama.getClassExp(ClassGameType.ARCHERY);
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
@@ -140,8 +143,8 @@ public class Destiny implements Listener {
         // Magic
         item.setType(Material.ENCHANTED_BOOK);
         meta.setDisplayName(ChatColor.RESET + "" + ChatColor.WHITE + "Magic");
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magicexp");
+        level = playerParama.getClassLevel(ClassGameType.MAGIC);
+        exp = playerParama.getClassExp(ClassGameType.MAGIC);
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
@@ -153,8 +156,8 @@ public class Destiny implements Listener {
         // Reaper
         item.setType(Material.IRON_HOE);
         meta.setDisplayName(ChatColor.RESET + "Reaper");
-        level = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
-        exp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaperexp");
+        level = playerParama.getClassLevel(ClassGameType.REAPER);
+        exp = playerParama.getClassExp(ClassGameType.REAPER);
         lore.add(ChatColor.RESET + "Level " + ChatColor.GOLD + "" + level);
         if(level < 10)
             lore.add(ChatColor.RESET + "EXP to level up: " + ChatColor.GOLD + "" + (xpNeeded[level]-exp));
@@ -166,10 +169,10 @@ public class Destiny implements Listener {
     }
 
     //Create gui of destiny
-    public void createGui2(Player player, String skill){
-        Inventory openGui = Bukkit.createInventory(null,54, ChatColor.COLOR_CHAR+"5Your "+skill.substring(0,1).toUpperCase() + skill.substring(1)+" Destiny");
+    public void createGui2(Player player, ClassGameType skill){
+        Inventory openGui = Bukkit.createInventory(null,54, ChatColor.COLOR_CHAR+"5Your "+skill.name().substring(0,1).toUpperCase() + skill.name().substring(1).toLowerCase()+" Destiny");
         gui2.put(player, openGui);
-        int playerLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+"."+skill);
+        int playerLevel = plugin.getPlayerParama(player).getClassLevel(skill);
         int itemLocations[] = {0, 48, 50, 40, 30, 31, 32, 22, 12, 14, 4};
 
         ItemStack item = new ItemStack(Material.LIME_WOOL);
@@ -185,7 +188,7 @@ public class Destiny implements Listener {
                 item.setType(Material.RED_WOOL);
             }
             meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level "+i);
-            lore = getLores(skill, i);
+            lore = getLores(skill.name().toLowerCase(), i);
             meta.setLore(lore);
             item.setItemMeta(meta);
             openGui.setItem(itemLocations[i], item);

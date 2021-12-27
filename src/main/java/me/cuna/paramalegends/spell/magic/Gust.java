@@ -111,7 +111,7 @@ public class Gust implements SpellParama {
                     Vector velocity = knocked.getVelocity().multiply(velocityMultiplier*masteryLevel);
                     knocked.setVelocity(velocity.add(knockback));
                     ((Damageable) knocked).damage(damage+0.069, player);
-                    if(knocked instanceof Monster) plugin.magicListener.addMastery(playerParama, "gust", 2);
+                    if(knocked instanceof Monster) playerParama.addMastery( "gust", 2);
                 }
             }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {

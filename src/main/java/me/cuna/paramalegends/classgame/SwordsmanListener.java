@@ -21,8 +21,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-
 public class SwordsmanListener implements Listener{
 
     private final ParamaLegends plugin;
@@ -63,7 +61,7 @@ public class SwordsmanListener implements Listener{
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     //Check if attack cripples and add to counter
-                    if(playerParama.getLevelFromClassType(ClassGameType.SWORDSMAN) >= 2){
+                    if(playerParama.getClassLevel(ClassGameType.SWORDSMAN) >= 2){
                         int crippleCount = attacker.getMetadata("CRIPPLE").get(0).asInt();
                         crippleCount++;
                         if(crippleCount >= 5){

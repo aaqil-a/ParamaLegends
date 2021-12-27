@@ -50,7 +50,7 @@ public class DamageModifyingListener implements Listener {
                 if(player.hasMetadata("WINDBOOSTPARAMA")){
                     projectile.getWorld().spawnParticle(Particle.SWEEP_ATTACK, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0);
                 }
-                if(playerParama.getLevelFromClassType(ClassGameType.ARCHERY) >= 7){
+                if(playerParama.getClassLevel(ClassGameType.ARCHERY) >= 7){
                     Random rand = new Random();
                     if(rand.nextInt(99) < 10){
                         damage*=1.2;
@@ -72,7 +72,7 @@ public class DamageModifyingListener implements Listener {
                     //swordmanship critical hit check
                     if(plugin.checkCustomDamageSource(damage) == null ||
                             plugin.checkCustomDamageSource(damage).equals(ClassGameType.SWORDSMAN)) {
-                        int playerLevel = playerParama.getLevelFromClassType(ClassGameType.SWORDSMAN);
+                        int playerLevel = playerParama.getClassLevel(ClassGameType.SWORDSMAN);
                         int critRoll = rand.nextInt(100);
                         if(attacker.hasMetadata("ENRAGING")){
                             if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)){

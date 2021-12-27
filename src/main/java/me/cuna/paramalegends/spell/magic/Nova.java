@@ -81,7 +81,7 @@ public class Nova implements SpellParama {
                         if (exploded instanceof Damageable) {
                             plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                             ((Damageable) exploded).damage(damage+masteryLevel*damageBonus+0.069, player);
-                            if(exploded instanceof Monster || exploded instanceof Phantom) plugin.magicListener.addMastery(playerParama, "nova", 10);
+                            if(exploded instanceof Monster || exploded instanceof Phantom) playerParama.addMastery("nova", 10);
                         }
                     }
                 }, 125);

@@ -34,9 +34,10 @@ public class PlayerManagerListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        plugin.savePlayerData(player);
         PlayerParama playerParama = getPlayerParama(event.getPlayer());
         if(playerParama != null){
-            Player player = playerParama.getPlayer();
             players.remove(player);
             playerParama.cancelAllTasks();
             playerParama.removeAllEntities();

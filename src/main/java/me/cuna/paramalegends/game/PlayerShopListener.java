@@ -136,7 +136,7 @@ public class PlayerShopListener implements Listener {
                                 return;
                             }
                             //check if player has enough lectrum
-                            int lectrum = data.getConfig().getInt("players."+player.getUniqueId().toString()+".lectrum");
+                            int lectrum = plugin.getPlayerParama(player).getLectrum();
                             if(lectrum < price){
                                 player.sendMessage(ChatColor.RED+"Insufficient lectrum.");
                                 return;
@@ -166,29 +166,38 @@ public class PlayerShopListener implements Listener {
                                         }
                                     }
                                     plugin.getPlayerParama(player).removeLectrum(price);
+                                    int tax = 0;
 
-                                    int lectrumSeller = data.getConfig().getInt("players."+uuid+".lectrum");
-                                    lectrumSeller += price;
-
-                                    player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
-                                    Player seller = plugin.getServer().getPlayer(UUID.fromString(uuid));
-                                    if(seller != null){
-                                        seller.sendMessage(ChatColor.GREEN+player.getName()+" purchased "+sign.getLine(3) + " " + sign.getLine(2) + " from you for " + price + " lectrum.");
-                                    }
                                     //check tax
                                     String mayorUuidString = data.getConfig().getString("mayoruuid");
                                     if(mayorUuidString != null && !mayorUuidString.isBlank()){
-                                        int lectrumMayor = data.getConfig().getInt("players."+mayorUuidString+".lectrum");
-                                        int tax = (int) Math.ceil(price/20d);
-                                        lectrumSeller -= tax;
-                                        lectrumMayor += tax;
-                                        data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor);
+                                        tax = (int) Math.ceil(price/20d);
+                                        Player mayor = plugin.getServer().getPlayer(UUID.fromString(mayorUuidString));
+                                        if(mayor != null){
+                                            plugin.getPlayerParama(mayor).addLectrum(tax);
+                                        } else {
+                                            int lectrumMayor = data.getConfig().getInt("players."+mayorUuidString+".lectrum");
+                                            data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor+tax);
+                                        }
                                         plugin.leaderboard.updateNetWorth(mayorUuidString);
                                     }
 
-                                    data.getConfig().set("players."+uuid+".lectrum", lectrumSeller);
-                                    data.saveConfig();
+                                    int lectrumSeller;
+                                    Player seller = plugin.getServer().getPlayer(UUID.fromString(uuid));
+
+                                    if(seller != null){
+                                        seller.sendMessage(ChatColor.GREEN+player.getName()+" purchased "+sign.getLine(3) + " " + sign.getLine(2) + " from you for " + price + " lectrum.");
+                                        plugin.getPlayerParama(seller).addLectrum(price-tax);
+                                    } else {
+                                        lectrumSeller = data.getConfig().getInt("players."+uuid+".lectrum");
+                                        data.getConfig().set("players."+uuid+".lectrum", lectrumSeller+price-tax);
+                                        data.saveConfig();
+                                    }
+
+                                    player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
+
                                     plugin.leaderboard.updateNetWorth(uuid);
+                                    plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
 
                                 } else {
                                     player.sendMessage(ChatColor.RED+"Shop out of stock.");

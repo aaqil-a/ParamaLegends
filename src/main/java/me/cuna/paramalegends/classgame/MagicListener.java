@@ -22,6 +22,7 @@ public class MagicListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
+    private final int[] masteryLevelUp = {0,100,200,400,600,800, Integer.MAX_VALUE};
 
     public final FlingEarth flingEarth;
     public final Ignite ignite;
@@ -165,43 +166,7 @@ public class MagicListener implements Listener {
         }
     }
 
-    //mastery listener
-    private final int[] masteryLevelUp = {0,100,200,400,600,800, Integer.MAX_VALUE};
-    public void addMastery(PlayerParama playerParama, String spellName, int exp){
-        Player player = playerParama.getPlayer();
-        int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spellName);
-        if(masteryLevel == 0){
-            data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, 1);
-            data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, exp);
-        } else {
-            int masteryExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+".masteryexp."+spellName);
-            masteryExp += exp;
-
-            // level up
-            if(masteryExp >= masteryLevelUp[masteryLevel]){
-                data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spellName, masteryLevel+1);
-                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, 0);
-                playerParama.setMasteryLevel(spellName, masteryLevel+1);
-
-                player.sendMessage(ChatColor.GOLD+
-                        switch(spellName){
-                            case "dragonbreath" -> "Dragon's Breath";
-                            case "flingearth" -> "Fling Earth";
-                            case "illusoryorb" -> "Illusory Orb";
-                            case "lifedrain" -> "Life Drain";
-                            case "summonlightning" -> "Summon Lightning";
-                            case "voicesofthedamned" -> "Voices of The Damned";
-                            default -> spellName.substring(0,1).toUpperCase()+spellName.substring(1);
-                        }
-                        +" mastery leveled up to "+(masteryLevel+1));
-            } else {
-                // no level up
-                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spellName, masteryExp);
-            }
-        }
-        data.saveConfig();
-    }
-
+    public int[] getMasteryLevelUp() { return masteryLevelUp; }
     public String[] getSpellNames(){
         return spellNames;
     }

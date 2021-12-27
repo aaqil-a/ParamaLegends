@@ -61,7 +61,7 @@ public class SummonLightning implements Listener, SpellParama {
                     if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
                         plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                         ((Damageable) ignited).damage(damage+masteryLevel*damageBonus+0.069, player);
-                        if(ignited instanceof Monster) plugin.magicListener.addMastery(playerParama, "summonlightning", 10);
+                        if(ignited instanceof Monster) playerParama.addMastery("summonlightning", 10);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {

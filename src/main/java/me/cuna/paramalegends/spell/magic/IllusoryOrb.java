@@ -95,7 +95,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                     plugin.experienceListener.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();
                     hit.damage(damage+damageBonus*masteryLevel+0.069, (Player) projectile.getShooter());
-                    if(hit instanceof Monster) plugin.magicListener.addMastery(playerParama, "illusoryorb", 5);
+                    if(hit instanceof Monster) playerParama.addMastery( "illusoryorb", 5);
                 }
             }
         }

@@ -34,14 +34,14 @@ public class Lectrum implements CommandExecutor {
             } else {
                 switch (args[0].toLowerCase()) {
                     case "balance" ->
-                        player.sendMessage(ChatColor.GOLD + "Your Lectrum: " + data.getConfig().getString("players." + player.getUniqueId().toString() + ".lectrum"));
+                        player.sendMessage(ChatColor.GOLD + "Your Lectrum: " + plugin.getPlayerParama(player).getLectrum());
                     case "pay" -> {
                         if (args.length == 3) {
                             try {
                                 int amount = Integer.parseInt(args[2]);
                                 Player receiver = Bukkit.getPlayer(args[1]);
                                 if (receiver != null) {
-                                    int senderLectrum = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum");
+                                    int senderLectrum = plugin.getPlayerParama(player).getLectrum();
                                     if (senderLectrum < amount) {
                                         player.sendMessage(ChatColor.RED + "Not enough lectrum!");
                                     } else {

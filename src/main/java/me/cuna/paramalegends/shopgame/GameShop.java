@@ -79,7 +79,7 @@ public class GameShop implements Listener {
         event.setCancelled(true);
 
         // Get lectrum of player
-        int lectrum = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum");
+        int lectrum = plugin.getPlayerParama(player).getLectrum();
 
         //Purchase specified item
         if (event.getSlot() != 0){
@@ -138,7 +138,7 @@ public class GameShop implements Listener {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + data.getConfig().getInt("players." + event.getWhoClicked().getUniqueId().toString() + ".lectrum"));
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama((Player) event.getWhoClicked()).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         inv.setItem(0, item);

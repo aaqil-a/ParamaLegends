@@ -64,7 +64,7 @@ public class DragonBreath implements SpellParama {
                             if(hit instanceof Mob || hit instanceof Player){
                                 plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
                                 ((Damageable) hit).damage(damage+damageBonus*masteryLevel+0.069, player);
-                                if(hit instanceof Monster || hit instanceof Phantom) plugin.magicListener.addMastery(playerParama, "dragonbreath", 1);
+                                if(hit instanceof Monster || hit instanceof Phantom) playerParama.addMastery("dragonbreath", 1);
                             }
                         }
                     }, 1, 5));
