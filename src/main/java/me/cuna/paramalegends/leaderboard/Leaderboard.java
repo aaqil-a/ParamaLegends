@@ -30,9 +30,10 @@ public class Leaderboard {
     }
 
     public void initNetWorth(){
-        for(String uuid : data.getConfig().getConfigurationSection("players").getKeys(false)){
-            if(uuid.length() == 36) updateNetWorth(uuid);
-            Bukkit.broadcastMessage(uuid);
+        if(data.getConfig().getConfigurationSection("players") != null) {
+            for (String uuid : data.getConfig().getConfigurationSection("players").getKeys(false)) {
+                if (uuid.length() == 36) updateNetWorth(uuid);
+            }
         }
         startNetWorthUpdateTask();
     }
@@ -43,7 +44,7 @@ public class Leaderboard {
             for(String uuid : toUpdateNetWorth) {
                 Player player = plugin.getServer().getPlayer(UUID.fromString(uuid));
                 if(player != null)
-                addToNetWorth(player.getName(), data.getConfig().getInt("players."+uuid+".lectrum"));
+                    addToNetWorth(player.getName(), data.getConfig().getInt("players."+uuid+".lectrum"));
                 else {
                     OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(uuid));
                     if(offlinePlayer.getName() != null){

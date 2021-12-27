@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityLiving;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEnderDragon;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEnderDragon;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -140,7 +140,7 @@ public class DragonFightListener implements Listener {
             switch(event.getNewPhase()){
                 //stun player being charged
                 case CHARGE_PLAYER -> {
-                    EntityLiving playerCraft = ((CraftEnderDragon) dragon).getHandle().getGoalTarget();
+                    EntityLiving playerCraft = ((CraftEnderDragon) dragon).getHandle().G();
                     Player player = (Player) playerCraft;
                     if(player != null){
                         PlayerParama playerParama = plugin.getPlayerParama(player);

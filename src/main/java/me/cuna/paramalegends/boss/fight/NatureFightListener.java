@@ -10,7 +10,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -616,9 +616,9 @@ public class NatureFightListener implements Listener {
                 //make horse follow player
                 Location location = player.getLocation();
                 Object pObject = ((CraftEntity) horse).getHandle();
-                PathEntity path = ((EntityInsentient) pObject).getNavigation().a(location.getX(), location.getY(), location.getZ(), 1);
+                PathEntity path = ((EntityInsentient) pObject).D().a(location.getX(), location.getY(), location.getZ(), 1);
                 if (path != null) {
-                    ((EntityInsentient) pObject).getNavigation().a(path, 2.0D);
+                    ((EntityInsentient) pObject).D().a(path, 2.0D);
                 }
                 //change target if player dead
                 if(!alive.contains(target)){

@@ -2,7 +2,7 @@ name: ParamaLegends
 version: 1.0.0
 author: cuna
 main: me.cuna.paramalegends.ParamaLegends
-api-version: 1.17
+api-version: 1.18
 commands:
   yourmom:
     description: Doing your mom, doing doing your mom.
