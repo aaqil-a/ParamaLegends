@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ParamaLegends extends JavaPlugin {
 
@@ -100,6 +101,7 @@ public class ParamaLegends extends JavaPlugin {
 
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
+    public final List<PlayerParama> toSave = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -183,7 +185,7 @@ public class ParamaLegends extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DispenserArmorListener(), this);
 
         //Start saving player's data every minute
-        Bukkit.getScheduler().runTaskTimer(this, this::saveAllOnlinePlayersData, 1200, 1200);
+        Bukkit.getScheduler().runTaskTimer(this, this::saveAllPlayerData, 1200, 1200);
     }
 
     public void initializeSummons(){
@@ -304,28 +306,30 @@ public class ParamaLegends extends JavaPlugin {
     }
 
     /**
-     * Save all online players' Lectrum, Levels, Experience,
+     * Save all players inside toSave
+     * Lectrum, Levels, Experience,
      * and Mastery to the config.yml file.
      */
-    public void saveAllOnlinePlayersData(){
-        for(Player player : Bukkit.getOnlinePlayers()){
-            PlayerParama playerParama = getPlayerParama(player);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", playerParama.getLectrum());
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
+    public void saveAllPlayerData(){
+        for(PlayerParama playerParama : toSave){
+            Player player = playerParama.getPlayer();
+            data.getConfig().set("players." + player.getUniqueId() + ".lectrum", playerParama.getLectrum());
+            data.getConfig().set("players." + player.getUniqueId() + ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
+            data.getConfig().set("players." + player.getUniqueId() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
+            data.getConfig().set("players." + player.getUniqueId() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
+            data.getConfig().set("players." + player.getUniqueId() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
+            data.getConfig().set("players." + player.getUniqueId() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
+            data.getConfig().set("players." + player.getUniqueId() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
+            data.getConfig().set("players." + player.getUniqueId() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
+            data.getConfig().set("players." + player.getUniqueId() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
 
             //set mastery levels
             for(String spell : magicListener.getSpellNames()){
-                data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spell, playerParama.getMasteryLevel(spell));
-                data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
+                data.getConfig().set("players."+player.getUniqueId()+".mastery."+spell, playerParama.getMasteryLevel(spell));
+                data.getConfig().set("players."+player.getUniqueId()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
             }
         }
+        toSave.clear();
         data.saveConfig();
     }
 
@@ -336,20 +340,20 @@ public class ParamaLegends extends JavaPlugin {
      */
     public void savePlayerData(Player player){
         PlayerParama playerParama = getPlayerParama(player);
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", playerParama.getLectrum());
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
-        data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
+        data.getConfig().set("players." + player.getUniqueId() + ".lectrum", playerParama.getLectrum());
+        data.getConfig().set("players." + player.getUniqueId()+ ".swordsmanship", playerParama.getClassLevel(ClassGameType.SWORDSMAN));
+        data.getConfig().set("players." + player.getUniqueId() + ".swordsmanshipexp", playerParama.getClassExp(ClassGameType.SWORDSMAN));
+        data.getConfig().set("players." + player.getUniqueId() + ".archery", playerParama.getClassLevel(ClassGameType.ARCHERY));
+        data.getConfig().set("players." + player.getUniqueId() + ".archeryexp", playerParama.getClassExp(ClassGameType.ARCHERY));
+        data.getConfig().set("players." + player.getUniqueId() + ".magic", playerParama.getClassLevel(ClassGameType.MAGIC));
+        data.getConfig().set("players." + player.getUniqueId() + ".magicexp", playerParama.getClassExp(ClassGameType.MAGIC));
+        data.getConfig().set("players." + player.getUniqueId() + ".reaper", playerParama.getClassLevel(ClassGameType.REAPER));
+        data.getConfig().set("players." + player.getUniqueId() + ".reaperexp", playerParama.getClassExp(ClassGameType.REAPER));
 
         //set mastery levels
         for(String spell : magicListener.getSpellNames()){
-            data.getConfig().set("players."+player.getUniqueId().toString()+".mastery."+spell, playerParama.getMasteryLevel(spell));
-            data.getConfig().set("players."+player.getUniqueId().toString()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
+            data.getConfig().set("players."+player.getUniqueId()+".mastery."+spell, playerParama.getMasteryLevel(spell));
+            data.getConfig().set("players."+player.getUniqueId()+".masteryexp."+spell, playerParama.getMasteryExp(spell));
         }
 
         data.saveConfig();

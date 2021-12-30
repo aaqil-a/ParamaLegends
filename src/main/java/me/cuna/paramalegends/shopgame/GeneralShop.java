@@ -236,11 +236,10 @@ public class GeneralShop extends GameShop {
     public void expandLand(Player player){
         Bukkit.broadcastMessage(ChatColor.GREEN+"The world around you feels safer.");
         int maxDepth = data.getConfig().getInt("world.maxdepth");
-        if(maxDepth >= 10){
-            maxDepth -= 10;
-            data.getConfig().set("world.maxdepth", maxDepth);
-            plugin.worldRuleListener.setMaxDepth(maxDepth);
-        }
+        maxDepth -= 10;
+        data.getConfig().set("world.maxdepth", maxDepth);
+        plugin.worldRuleListener.setMaxDepth(maxDepth);
+        data.saveConfig();
 
         //expand worldguard region
         // Get worldguard regions
@@ -250,6 +249,7 @@ public class GeneralShop extends GameShop {
         ProtectedRegion safezone = regions.getRegion("safezone");
         //        regions.removeRegion("safezone");
         //create safe zone
+        assert safezone != null;
         BlockVector3 min = safezone.getMinimumPoint();
         BlockVector3 max = safezone.getMaximumPoint();
         ProtectedRegion region = new ProtectedCuboidRegion("safezone", min.add(-16, 0, -16), max.add(16,0,16));
