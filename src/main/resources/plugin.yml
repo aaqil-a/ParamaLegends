@@ -76,6 +76,9 @@ commands:
   leaderboard:
     description: View the server's top players
     usage: /leaderboard
+  tip:
+    description: Tip another player
+    usage: /tip <player>
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

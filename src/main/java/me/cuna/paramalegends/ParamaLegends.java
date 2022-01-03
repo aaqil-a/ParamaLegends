@@ -92,6 +92,8 @@ public class ParamaLegends extends JavaPlugin {
     public SetMayor setMayor;
     public SetSafeZoneSize safeZone;
     public me.cuna.paramalegends.command.Leaderboard leaderboardCommand;
+    public Tip tip;
+
 
     public Recipes recipes;
     public AlcoholRecipes alcoholRecipes;
@@ -135,6 +137,7 @@ public class ParamaLegends extends JavaPlugin {
         safeZone = new SetSafeZoneSize(this);
         leaderboard = new Leaderboard(this);
         leaderboardCommand = new me.cuna.paramalegends.command.Leaderboard(this);
+        tip = new Tip(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -160,6 +163,8 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("setmayor").setExecutor(setMayor);
         getCommand("safezone").setExecutor(safeZone);
         getCommand("leaderboard").setExecutor(leaderboardCommand);
+        getCommand("tip").setExecutor(tip);
+
 
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);
