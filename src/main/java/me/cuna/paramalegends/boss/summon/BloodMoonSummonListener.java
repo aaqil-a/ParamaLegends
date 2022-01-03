@@ -68,7 +68,7 @@ public class BloodMoonSummonListener implements Listener {
         bloodMoonTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             if(Bukkit.getOnlinePlayers().isEmpty()) stopBloodMoonTask();
             if(bloodMoonCooldown > 0) bloodMoonCooldown--;
-            else if(Bukkit.getOnlinePlayers().size() >= 4){
+            else if(plugin.experienceListener.getWorldLevel() >= 3 && Bukkit.getOnlinePlayers().size() >= 4){
                 if(rand.nextInt(9)==0 && !isBloodMoonOccuring()){
                     //start blood moon
                     bloodMoonCooldown = 2;

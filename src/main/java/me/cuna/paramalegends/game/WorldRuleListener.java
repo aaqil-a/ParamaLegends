@@ -11,17 +11,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Objects;
 
 
 public class WorldRuleListener implements Listener {
@@ -146,6 +150,24 @@ public class WorldRuleListener implements Listener {
         int lost = lectrum/10;
         plugin.getPlayerParama(player).removeLectrum(lost);
         player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");
+    }
+
+    //disable nether on world level 1
+    @EventHandler
+    public void onPortal(PlayerPortalEvent event){
+        if(Objects.equals(Objects.requireNonNull(event.getTo()).getWorld(), plugin.getServer().getWorld("world_nether")) && plugin.experienceListener.getWorldLevel() <= 1){
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED+"You are much too weak to venture there.");
+        }
+    }
+
+    //limit enchants on world level 1
+    @EventHandler
+    public void onEnchant(EnchantItemEvent event){
+        if(event.getExpLevelCost() > 1 && plugin.experienceListener.getWorldLevel() <= 1){
+            event.setCancelled(true);
+            event.getEnchanter().sendMessage(ChatColor.RED+"The enchantment is too advanced for you to fathom.");
+        }
     }
 
     //listen for mana potion drink

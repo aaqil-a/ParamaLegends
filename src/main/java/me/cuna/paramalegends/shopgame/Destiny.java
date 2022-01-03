@@ -275,7 +275,7 @@ public class Destiny implements Listener {
                     }
                 }
             }
-            case "swordsmanship" -> {
+            case "swordsman" -> {
                 switch (level){
                     case 1 -> {
                         lore.add(ChatColor.RESET + "" +ChatColor.GOLD + "Precise Blade");

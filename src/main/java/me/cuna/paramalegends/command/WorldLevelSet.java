@@ -10,10 +10,10 @@ import org.bukkit.command.CommandSender;
 
 public class WorldLevelSet implements CommandExecutor {
 
-    public DataManager data;
+    public ParamaLegends plugin;
 
     public WorldLevelSet(final ParamaLegends plugin){
-        data = plugin.getData();
+        this.plugin = plugin;
     }
 
     public void sendUsage(CommandSender sender){
@@ -32,8 +32,7 @@ public class WorldLevelSet implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED+"Invalid level");
                 return true;
             }
-            data.getConfig().set("world.level", level);
-            data.saveConfig();
+            plugin.experienceListener.setWorldLevel(level);
 
         }
         return true;

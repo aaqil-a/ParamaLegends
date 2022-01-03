@@ -102,7 +102,7 @@ public class GeneralShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "4 Lectrum");
         potionMeta.setLore(lore);
         potionMeta.removeCustomEffect(PotionEffectType.HEAL);
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 260, 1), true);
+        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 500, 1), true);
         potionMeta.setColor(Color.PURPLE);
         potion.setItemMeta(potionMeta);
         gui.setItem(6, potion);

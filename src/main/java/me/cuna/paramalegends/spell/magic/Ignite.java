@@ -35,7 +35,7 @@ public class Ignite implements Listener, SpellParama {
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
-            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 1.5,
+            RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 10, FluidCollisionMode.NEVER, true, 1.5,
                     notPlayer);
             Location location = new Location(player.getWorld(),0,0,0);
             if(rayTrace != null) {
