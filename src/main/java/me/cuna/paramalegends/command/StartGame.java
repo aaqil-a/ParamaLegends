@@ -250,8 +250,8 @@ public class StartGame implements CommandExecutor {
 
 
             //create safe zone
-            BlockVector3 min = BlockVector3.at(locationX-size, 0, locationZ-size);
-            BlockVector3 max = BlockVector3.at(locationX+size, 256, locationZ+size);
+            BlockVector3 min = BlockVector3.at(locationX-size, -64, locationZ-size);
+            BlockVector3 max = BlockVector3.at(locationX+size, 320, locationZ+size);
             ProtectedRegion region = new ProtectedCuboidRegion("safezone", min, max);
             region.setPriority(1);
             region.setFlag(Flags.GREET_MESSAGE, ChatColor.GREEN + "You feel slightly more protected...");

@@ -278,6 +278,7 @@ public class PlayerParama {
             case REAPER -> reaperLevel = level;
             case ARCHERY -> archeryLevel = level;
         };
+        plugin.toSave.add(this);
     }
 
     /**
@@ -292,6 +293,7 @@ public class PlayerParama {
             case REAPER -> reaperExp = exp;
             case ARCHERY -> archeryExp = exp;
         };
+        plugin.toSave.add(this);
     }
 
     public void addMastery(String spellName, int exp){
@@ -323,6 +325,7 @@ public class PlayerParama {
             }
             magicMasteryExp.put(spellName, masteryExp);
         }
+        plugin.toSave.add(this);
     }
 
     public void setSilenced(boolean silenced){
@@ -338,13 +341,16 @@ public class PlayerParama {
     public void addLectrum(int amount){
         lectrum += amount;
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
+        plugin.toSave.add(this);
     }
     public void removeLectrum(int amount){
         lectrum -= amount;
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
+        plugin.toSave.add(this);
     }
     public void setLectrum(int value){
         lectrum = value;
+        plugin.toSave.add(this);
     }
 
     public int getLectrum(){
