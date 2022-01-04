@@ -50,7 +50,9 @@ public class Tip implements CommandExecutor {
                         Player receiver = Bukkit.getPlayer(args[0]);
                         if (receiver != null) {
                             int senderLectrum = plugin.getPlayerParama(player).getLectrum();
-                            if (senderLectrum < amount) {
+                            if(tipCooldown.contains(player)){
+                                player.sendMessage(ChatColor.RED+"Tip is on cooldown.");
+                            } else if (senderLectrum < amount) {
                                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
                             } else {
                                 plugin.getPlayerParama(receiver).addLectrum(amount);
