@@ -54,6 +54,8 @@ public class Tip implements CommandExecutor {
                                 player.sendMessage(ChatColor.RED+"Tip is on cooldown.");
                             } else if (senderLectrum < amount) {
                                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
+                            } else if(amount < 1){
+                                player.sendMessage(ChatColor.RED + "Invalid amount.");
                             } else {
                                 plugin.getPlayerParama(receiver).addLectrum(amount);
                                 plugin.getPlayerParama(player).removeLectrum(amount);
