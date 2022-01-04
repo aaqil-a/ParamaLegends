@@ -70,18 +70,6 @@ public class FlingEarth implements Listener, SpellParama {
                 ball.setVelocity(velocity);
                 playerParama.addEntity("FLINGEARTHBALL", ball);
             }, 5);
-            playerParama.addTask("EARTHTHROWN",
-                    Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                        playerParama.removeEntity("FLINGEARTHDIRT");
-                        Snowball ball = (Snowball) playerParama.getEntity("FLINGEARTHBALL");
-                        if(ball != null) {
-                            FallingBlock dirt = ball.getWorld().spawnFallingBlock(ball.getLocation(), Material.DIRT.createBlockData());
-                            playerParama.addEntity("FLINGEARTHDIRT", dirt);
-                            dirt.setGravity(false);
-                        } else {
-                            playerParama.cancelTask("EARTHTHROWN");
-                        }
-                    }, 6, 1));
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 playerParama.removeFromCooldown(this);
             }, cooldown);
@@ -98,11 +86,7 @@ public class FlingEarth implements Listener, SpellParama {
                 assert source != null;
                 Player player = plugin.getServer().getPlayer(source.getName());
                 PlayerParama playerParama = plugin.getPlayerParama(player);
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    playerParama.removeEntity("FLINGEARTHDIRT");
-                }, 2);
                 playerParama.removeEntity("FLINGEARTHBALL");
-                playerParama.cancelTask("EARTHTHROWN");
                 int masteryLevel = playerParama.getMasteryLevel("flingearth");
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
