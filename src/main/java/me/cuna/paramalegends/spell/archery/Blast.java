@@ -11,12 +11,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class Blast implements ArrowParama, Listener {
 
     private final int manaCost = 25;
-    private final int blastDamage = 8;
+    private final int blastDamage = 10;
+    private final int bonusDamage = 2;
     private final ParamaLegends plugin;
 
     public Blast(ParamaLegends plugin){
@@ -40,21 +42,22 @@ public class Blast implements ArrowParama, Listener {
         if (projectile instanceof Arrow && (projectile.getCustomName() != null)){
             Arrow arrow = (Arrow) projectile;
             if ("blast".equals(arrow.getCustomName())) {
-                explodeArrow(arrow);
+                arrow.setDamage(arrow.getDamage()+bonusDamage);
+                arrow.setCustomName("blast+");
+                explodeArrow(arrow, event.getHitEntity());
             }
         }
     }
 
-    public void explodeArrow(Arrow arrow){
+    public void explodeArrow(Arrow arrow, @Nullable Entity target){
         if(arrow.getShooter() instanceof Player){
-            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                List<Entity> entities = arrow.getNearbyEntities(2,2,2);
-                for(Entity hit : entities){
-                    if(hit instanceof Mob || hit instanceof Player){
-                        ((LivingEntity) hit).damage(blastDamage+0.016, (Player) arrow.getShooter());
-                    }
+            List<Entity> entities = arrow.getNearbyEntities(2.5,2.5,2.5);
+            for(Entity hit : entities){
+                if(hit.equals(target) || hit.equals(arrow.getShooter())) continue;
+                if(hit instanceof Mob || hit instanceof Player){
+                    ((LivingEntity) hit).damage(blastDamage+0.016, (Player) arrow.getShooter());
                 }
-            }, 5);
+            }
             arrow.getWorld().playSound(arrow.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.5f);
             arrow.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, arrow.getLocation(), 8, 0.5, 0.5, 5d, 0);
         }
