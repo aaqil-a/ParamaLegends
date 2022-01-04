@@ -44,6 +44,8 @@ public class Lectrum implements CommandExecutor {
                                     int senderLectrum = plugin.getPlayerParama(player).getLectrum();
                                     if (senderLectrum < amount) {
                                         player.sendMessage(ChatColor.RED + "Not enough lectrum!");
+                                    } else if(amount < 1) {
+                                        player.sendMessage(ChatColor.RED + "Invalid amount.");
                                     } else {
                                         plugin.getPlayerParama(receiver).addLectrum(amount);
                                         plugin.getPlayerParama(player).removeLectrum(amount);
