@@ -164,7 +164,7 @@ public class WorldRuleListener implements Listener {
     //limit enchants on world level 1
     @EventHandler
     public void onEnchant(EnchantItemEvent event){
-        if(event.getExpLevelCost() > 1 && plugin.experienceListener.getWorldLevel() <= 1){
+        if(event.whichButton() > 0 && plugin.experienceListener.getWorldLevel() <= 1){
             event.setCancelled(true);
             event.getEnchanter().sendMessage(ChatColor.RED+"The enchantment is too advanced for you to fathom.");
         }
