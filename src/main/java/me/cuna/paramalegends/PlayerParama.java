@@ -320,7 +320,7 @@ public class PlayerParama {
                             case "voicesofthedamned" -> "Voices of The Damned";
                             default -> spellName.substring(0,1).toUpperCase()+spellName.substring(1);
                         }
-                        +" mastery leveled up to "+(masteryLevel+1));
+                        +" mastery leveled up to "+(masteryLevel));
                 magicMasteryLevel.put(spellName, masteryLevel);
             }
             magicMasteryExp.put(spellName, masteryExp);
