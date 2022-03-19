@@ -19,7 +19,7 @@ public class Ignite implements Listener, SpellParama {
 
     private final ParamaLegends plugin;
     private final int manaCost = 20;
-    private final int damage = 3;
+    private final int damage = 1;
     private final int duration = 105;
     private final int cooldown = 140;
     private final int damageBonus = 1;
@@ -56,13 +56,13 @@ public class Ignite implements Listener, SpellParama {
                 }
                 if(ignited instanceof Damageable){
                     plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                    playerParama.addMastery( "ignite", 1);
                     playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                                 ignited.getWorld().spawnParticle(Particle.SMALL_FLAME, ignited.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
                                 if(ignited instanceof Monster || ignited instanceof Phantom || ignited instanceof Slime){
                                     ((Damageable) ignited).damage(damage+damageBonus*masteryLevel+0.069, player);
                                 }
-                                playerParama.addMastery( "ignite", 1);
                             }, 0, 20));
                     Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("IGNITED"+ignited.getUniqueId().toString()), duration);
                 }

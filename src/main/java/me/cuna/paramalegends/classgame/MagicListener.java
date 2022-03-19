@@ -18,6 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MagicListener implements Listener {
 
     private final ParamaLegends plugin;
@@ -45,6 +48,19 @@ public class MagicListener implements Listener {
             "summonlightning",
             "voicesofthedamned"
     };
+    public ArrayList<String> spellNamesFormatted = new ArrayList<>(Arrays.asList(
+            ChatColor.COLOR_CHAR+"5Fling Earth",
+            ChatColor.COLOR_CHAR+"5Ignite",
+            ChatColor.COLOR_CHAR+"5Gust",
+            ChatColor.COLOR_CHAR+"5Life Drain",
+            ChatColor.COLOR_CHAR+"5Blink",
+            ChatColor.COLOR_CHAR+"5Summon Lightning",
+            ChatColor.COLOR_CHAR+"5Illusory Orb",
+            ChatColor.COLOR_CHAR+"5Dragon's Breath",
+            ChatColor.COLOR_CHAR+"5Voices of the Damned",
+            ChatColor.COLOR_CHAR+"5Nova"
+    ));
+
 
     public MagicListener(final ParamaLegends plugin){
         this.plugin = plugin;

@@ -6,6 +6,7 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -16,6 +17,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExperienceListener implements Listener {
 
@@ -72,9 +77,64 @@ public class ExperienceListener implements Listener {
         };
         //Grant exp and lectrum to player according to mob killed
         if(!mob.equals("") && (skill != null)){
-            addExp(player, skill, data.getConfig().getInt("mobs."+mob+".exp"), data.getConfig().getInt("mobs."+mob+".lectrum"));
-            addLectrum(player, data.getConfig().getInt("mobs."+mob+".lectrum"));
+            int exp = data.getConfig().getInt("mobs."+mob+".exp");
+            int lectrum = data.getConfig().getInt("mobs."+mob+".lectrum");
+            addLectrum(player, lectrum);
+            PlayerParama playerParama = plugin.getPlayerParama(player);
+
+            //share exp with party for kills
+            if(playerParama.hasParty() && exp >= 10){
+                Set<PlayerParama> members = playerParama.getParty().getMembers();
+                //check if there are players in party < 60 blocks away
+                Set<PlayerParama> shared = new HashSet<>();
+                for(PlayerParama member : members){
+                    if(player.getLocation().distance(member.getPlayer().getLocation()) < 60) {
+                        shared.add(member);
+                    }
+                }
+
+                int sharedAmount = (int) (1.2 * exp / shared.size());
+                if(shared.size() == 1){
+                    sendActionBarMessage(player,lectrum,exp, skill);
+                    addExp(player, skill, exp);
+                } else{
+                    for(PlayerParama member : shared){
+                        ClassGameType skillShared = getHeldItemClass(member.getPlayer());
+                        addExp(member.getPlayer(), skillShared, sharedAmount);
+                        if(member.equals(playerParama)){
+                            sendActionBarMessage(member.getPlayer(),lectrum,sharedAmount, skillShared);
+                        } else {
+                            sendActionBarMessage(member.getPlayer(),0,sharedAmount, skillShared);
+                        }
+                    }
+                }
+            } else {
+                if(exp >= 10){
+                    sendActionBarMessage(player,lectrum,exp, skill);
+                }
+                addExp(player, skill, exp);
+            }
         }
+    }
+
+    public ClassGameType getHeldItemClass(Player player) {
+        ClassGameType skill = null;
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        switch (heldItem.getType()) {
+            case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> skill = ClassGameType.SWORDSMAN;
+            case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
+                if (heldItem.getItemMeta() != null && heldItem.getItemMeta().getDisplayName().contains("Scythe")) {
+                    skill = ClassGameType.REAPER;
+                }
+            }
+            case ENCHANTED_BOOK -> {
+                if (heldItem.getItemMeta() != null && plugin.magicListener.spellNamesFormatted.contains(heldItem.getItemMeta().getDisplayName())) {
+                    skill = ClassGameType.MAGIC;
+                }
+            }
+            case BOW -> skill = ClassGameType.ARCHERY;
+        }
+        return skill;
     }
 
     //Handle xp gained from killing mobs
@@ -124,18 +184,13 @@ public class ExperienceListener implements Listener {
         }
     }
 
-    public void addExp(Player player, ClassGameType skilltype, int amount){
-        addExp(player, skilltype, amount, 0);
-    }
-
     /**
      * Add a player's class experience for a given class
      * @param player The player to be rewarded
      * @param skillType The corresponding class
      * @param amount The amount of EXP to reward
-     * @param lectrum The amount of Lectrum to reward
      */
-    public void addExp(Player player, ClassGameType skillType, int amount, int lectrum){
+    public void addExp(Player player, ClassGameType skillType, int amount){
         String skill = switch(skillType){
             case ARCHERY -> "Archery";
             case MAGIC -> "Magic";
@@ -147,9 +202,6 @@ public class ExperienceListener implements Listener {
             int currLevel = playerParama.getClassLevel(skillType);
             int currExp = playerParama.getClassExp(skillType);
             currExp += amount;
-            if(amount >= 10){
-                sendActionBarMessage(player,lectrum, amount);
-            }
             if(skillType.equals(ClassGameType.SWORDSMAN)){
                 if(currExp >= xpNeededSwordsman[currLevel]){
                     if(currLevel < maxLevel[worldLevel]){
@@ -189,8 +241,12 @@ public class ExperienceListener implements Listener {
     }
 
     //send message action bar
-    public void sendActionBarMessage(Player player, int lectrum, int exp){
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp +" EXP"));
+    public void sendActionBarMessage(Player player, int lectrum, int exp, ClassGameType skill){
+        if(lectrum == 0){
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY  + "+" + exp + " " + skill.name().toUpperCase() + " EXP"));
+        } else {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp + " " + skill.name().toUpperCase() + " EXP"));
+        }
     }
 
     public void setWorldLevel(int worldLevel){

@@ -38,6 +38,9 @@ public class PlayerManagerListener implements Listener {
         plugin.savePlayerData(player);
         PlayerParama playerParama = getPlayerParama(event.getPlayer());
         plugin.toSave.remove(playerParama);
+        if(playerParama.hasParty()){
+            playerParama.getParty().leave(playerParama);
+        }
         if(playerParama != null){
             players.remove(player);
             playerParama.cancelAllTasks();

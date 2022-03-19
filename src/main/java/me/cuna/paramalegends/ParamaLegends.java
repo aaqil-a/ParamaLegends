@@ -23,6 +23,7 @@ import me.cuna.paramalegends.game.*;
 import me.cuna.paramalegends.leaderboard.Leaderboard;
 import me.cuna.paramalegends.lib.armorequip.ArmorListener;
 import me.cuna.paramalegends.lib.armorequip.DispenserArmorListener;
+import me.cuna.paramalegends.party.PartyManager;
 import me.cuna.paramalegends.shopgame.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -101,6 +102,9 @@ public class ParamaLegends extends JavaPlugin {
     public FoodRecipes foodRecipes;
     public FoodListener foodListener;
 
+    public PartyManager partyManager;
+    public PartyCommand partyCommand;
+
     private final int[] maxMana = {0,50,100,150,200,250,300,400,500,600,800};
     private final int[] manaRegen = {0,1,2,2,3,3,4,5,6,7,8};
     public final List<PlayerParama> toSave = new ArrayList<>();
@@ -140,6 +144,8 @@ public class ParamaLegends extends JavaPlugin {
         leaderboard = new Leaderboard(this);
         leaderboardCommand = new me.cuna.paramalegends.command.Leaderboard(this);
         tip = new Tip(this);
+        partyManager = new PartyManager(this);
+        partyCommand = new PartyCommand(this);
 
         initializeNPCShop();
         initializeGameClass();
@@ -166,7 +172,7 @@ public class ParamaLegends extends JavaPlugin {
         getCommand("safezone").setExecutor(safeZone);
         getCommand("leaderboard").setExecutor(leaderboardCommand);
         getCommand("tip").setExecutor(tip);
-
+        getCommand("party").setExecutor(partyCommand);
 
         getServer().getPluginManager().registerEvents(mobSpawnListener, this);
         getServer().getPluginManager().registerEvents(wiseOldManListener, this);

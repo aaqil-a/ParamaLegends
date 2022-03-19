@@ -79,6 +79,9 @@ commands:
   tip:
     description: Tip another player
     usage: /tip <player>
+  party:
+    description: Manage your party
+    usage: /party <create/invite/leave/kick/info/accept>
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

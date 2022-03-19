@@ -1,6 +1,8 @@
 package me.cuna.paramalegends;
 
+import jline.internal.Nullable;
 import me.cuna.paramalegends.classgame.ClassGameType;
+import me.cuna.paramalegends.party.Party;
 import me.cuna.paramalegends.spell.ArrowParama;
 import me.cuna.paramalegends.spell.AttackParama;
 import me.cuna.paramalegends.spell.SpellParama;
@@ -44,6 +46,8 @@ public class PlayerParama {
     private int reaperLevel = 1;
     private int reaperExp = 0;
     private int lectrum = 50;
+    private Party party = null;
+    private Party partyInvited = null;
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
@@ -353,6 +357,7 @@ public class PlayerParama {
         plugin.toSave.add(this);
     }
 
+
     public int getLectrum(){
         return lectrum;
     }
@@ -373,4 +378,32 @@ public class PlayerParama {
     public Player getPlayer(){
         return player;
     }
+
+    public boolean hasParty(){
+        return party != null;
+    }
+
+    public Party getParty(){
+        return party;
+    }
+
+    public void setParty(Party party){
+        this.party = party;
+        if(party != null){
+            party.getMembers().add(this);
+        }
+    }
+
+    public boolean hasPartyInvited(){
+        return partyInvited != null;
+    }
+
+    public Party getPartyInvited(){
+        return partyInvited;
+    }
+
+    public void setPartyInvited(Party party){
+        this.partyInvited = party;
+    }
+
 }
