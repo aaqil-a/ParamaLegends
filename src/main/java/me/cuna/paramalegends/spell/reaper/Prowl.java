@@ -25,7 +25,7 @@ public class Prowl implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Prowl");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Prowl");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.setMetadata("PROWL", new FixedMetadataValue(plugin, "PROWL"));
@@ -45,7 +45,7 @@ public class Prowl implements SpellParama {
             },200);
             playerParama.addToReaperRefreshCooldown("Prowl", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Prowl");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Prowl");
                     playerParama.removeFromCooldown(this);
                     playerParama.removeFromReaperRefreshCooldown("Prowl");
                 }

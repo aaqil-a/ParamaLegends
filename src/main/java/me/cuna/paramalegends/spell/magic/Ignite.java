@@ -31,7 +31,7 @@ public class Ignite implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Ignite");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Ignite");
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
@@ -55,7 +55,7 @@ public class Ignite implements Listener, SpellParama {
                     continue;
                 }
                 if(ignited instanceof Damageable){
-                    plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                    plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                     playerParama.addMastery( "ignite", 1);
                     playerParama.addTask("IGNITED"+ignited.getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -70,7 +70,7 @@ public class Ignite implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Ignite");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Ignite");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown- (long) cooldownReduction *masteryLevel);

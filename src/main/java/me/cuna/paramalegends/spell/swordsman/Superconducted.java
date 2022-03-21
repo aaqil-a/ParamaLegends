@@ -34,7 +34,7 @@ public class Superconducted implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Superconducted");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Superconducted");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -52,7 +52,7 @@ public class Superconducted implements Listener, SpellParama {
                 for(Entity damaged : toDamage){
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         if(damaged instanceof Damageable){
-                            plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                            plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                             ((Damageable) damaged).damage(damage+0.072, player);
                             createFireworkEffect(damaged.getLocation(), player);
                         }
@@ -69,7 +69,7 @@ public class Superconducted implements Listener, SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Superconducted");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Superconducted");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);

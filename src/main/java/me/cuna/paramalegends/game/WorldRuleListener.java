@@ -2,7 +2,6 @@ package me.cuna.paramalegends.game;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -37,7 +36,7 @@ public class WorldRuleListener implements Listener {
 
     public WorldRuleListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         maxDepth = data.getConfig().getInt("world.maxdepth");
     }
 
@@ -146,16 +145,16 @@ public class WorldRuleListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        int lectrum = plugin.getPlayerParama(player).getLectrum();
+        int lectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
         int lost = lectrum/10;
-        plugin.getPlayerParama(player).removeLectrum(lost);
+        plugin.playerManager.getPlayerParama(player).removeLectrum(lost);
         player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");
     }
 
     //disable nether on world level 1
     @EventHandler
     public void onPortal(PlayerPortalEvent event){
-        if(Objects.equals(Objects.requireNonNull(event.getTo()).getWorld(), plugin.getServer().getWorld("world_nether")) && plugin.experienceListener.getWorldLevel() <= 1){
+        if(Objects.equals(Objects.requireNonNull(event.getTo()).getWorld(), plugin.getServer().getWorld("world_nether")) && plugin.gameManager.experience.getWorldLevel() <= 1){
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED+"You are much too weak to venture there.");
         }
@@ -164,7 +163,7 @@ public class WorldRuleListener implements Listener {
     //limit enchants on world level 1
     @EventHandler
     public void onEnchant(EnchantItemEvent event){
-        if(event.whichButton() > 0 && plugin.experienceListener.getWorldLevel() <= 1){
+        if(event.whichButton() > 0 && plugin.gameManager.experience.getWorldLevel() <= 1){
             event.setCancelled(true);
             event.getEnchanter().sendMessage(ChatColor.RED+"The enchantment is too advanced for you to fathom.");
         }
@@ -177,14 +176,14 @@ public class WorldRuleListener implements Listener {
             if(event.getItem().getItemMeta() != null) {
                 switch(event.getItem().getItemMeta().getDisplayName()){
                     case ChatColor.COLOR_CHAR+"9Mana Potion" -> {
-                        plugin.getPlayerParama(event.getPlayer()).addMana(100);
+                        plugin.playerManager.getPlayerParama(event.getPlayer()).addMana(100);
                         event.setCancelled(true);
                         if(event.getPlayer().getItemInUse() != null){
                             event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
                         }
                     }
                     case ChatColor.COLOR_CHAR+"9Greater Mana Potion" -> {
-                        plugin.getPlayerParama(event.getPlayer()).addMana(200);
+                        plugin.playerManager.getPlayerParama(event.getPlayer()).addMana(200);
                         event.setCancelled(true);
                         if(event.getPlayer().getItemInUse() != null){
                             event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);

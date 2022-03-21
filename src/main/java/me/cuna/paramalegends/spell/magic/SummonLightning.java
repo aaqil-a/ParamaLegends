@@ -30,7 +30,7 @@ public class SummonLightning implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Summon Lightning");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Summon Lightning");
         } else {
             int masteryLevel = playerParama.getMasteryLevel("summonlightning");
             Player player = playerParama.getPlayer();
@@ -45,7 +45,7 @@ public class SummonLightning implements Listener, SpellParama {
                     location = rayTrace.getHitBlock().getLocation();
                 }
             } else{
-                plugin.sendOutOfRangeMessage(playerParama);
+                plugin.gameClassManager.sendOutOfRangeMessage(playerParama);
                 return;
             }
             if (playerParama.subtractMana( manaCost)) {
@@ -59,14 +59,14 @@ public class SummonLightning implements Listener, SpellParama {
                 player.getWorld().getHighestBlockAt(location.clone().add(0,0,-1)).getRelative(BlockFace.UP).setType(Material.FIRE);
                 for(Entity ignited : player.getWorld().getNearbyEntities(location, 3,4,3)){
                     if(ignited instanceof Damageable && !(ignited instanceof ArmorStand) && !(ignited.equals(player))){
-                        plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                        plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                         ((Damageable) ignited).damage(damage+masteryLevel*damageBonus+0.069, player);
                         if(ignited instanceof Monster) playerParama.addMastery("summonlightning", 10);
                     }
                 }
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Summon Lightning");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Summon Lightning");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown- (long) masteryLevel *cooldownReduction);

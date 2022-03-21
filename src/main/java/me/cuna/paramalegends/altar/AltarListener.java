@@ -25,7 +25,7 @@ public class AltarListener implements Listener {
 
     public AltarListener(ParamaLegends plugin, BossType type){
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
         this.typeName = switch(type){
             case START -> ChatColor.COLOR_CHAR+"6Occult Altar";
             case NATURE -> ChatColor.COLOR_CHAR+"aMysterious Sludge";

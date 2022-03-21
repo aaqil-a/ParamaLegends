@@ -29,12 +29,32 @@ public class DragonFightListener implements Listener {
     private int crystalCount;
     List<Player> alive = new ArrayList<>();
 
-
-
     public DragonFightListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
         crystalCount = 0;
+    }
+
+    public void sendStatistics(){
+        //send statistics
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
+        Player mostKills = getPlayer(kills);
+        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
+        Player mostDamageDealt = getPlayer(damageDealt);
+        if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
+        Player mostDamageTaken = getPlayer(damageTaken);
+        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: Nobody");
+        else Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: "+mostDamageTaken.getName());
+        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
+        for(Player player : plugin.getServer().getOnlinePlayers()){
+            if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
+            if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
+            else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
+            if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
+            else player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
+        }
     }
 
     @EventHandler
@@ -48,33 +68,24 @@ public class DragonFightListener implements Listener {
                     kills.put(player, 1);
                 }
             }
-            //send statistics
-            Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
-            Player mostKills = getPlayer(kills);
-            if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
-            else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
-            Player mostDamageDealt = getPlayer(damageDealt);
-            if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
-            else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
-            Player mostDamageTaken = getPlayer(damageTaken);
-            if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: Nobody");
-            else Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: "+mostDamageTaken.getName());
-            Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
+            sendStatistics();
+            //give player rewards
             for(Player player : plugin.getServer().getOnlinePlayers()){
-                if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
-                else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
-                if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
-                else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
-                if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
-                else player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
-            }
-            for(Player player : plugin.getServer().getOnlinePlayers()){
-                //give player rewards
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 playerParama.addLectrum(2000);
                 player.sendMessage(ChatColor.GOLD+"+2000 Lectrum");
             }
-            plugin.experienceListener.setWorldLevel(4);
+            //teleport dead players home
+            for(Player player : plugin.getServer().getOnlinePlayers()){
+                if(player.getGameMode().equals(GameMode.SPECTATOR)){
+                    player.teleport(Objects.requireNonNull(player.getServer().getWorld("world")).getSpawnLocation());
+                    player.setGameMode(GameMode.SURVIVAL);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
+                }
+            }
+            if(plugin.gameManager.experience.getWorldLevel() < 4){
+                plugin.gameManager.experience.setWorldLevel(4);
+            }
         } else if(event.getEntity().getType().equals(EntityType.ENDERMAN)){
             if(event.getEntity().getKiller()!=null) {
                 Player player = event.getEntity().getKiller();
@@ -143,7 +154,7 @@ public class DragonFightListener implements Listener {
                     EntityLiving playerCraft = ((CraftEnderDragon) dragon).getHandle().G();
                     Player player = (Player) playerCraft;
                     if(player != null){
-                        PlayerParama playerParama = plugin.getPlayerParama(player);
+                        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                         playerParama.setSilenced(true);
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 10));
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
@@ -368,26 +379,10 @@ public class DragonFightListener implements Listener {
 
     public void loseFight(){
         alive.clear();
-        //send statistics
-        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
-        Player mostKills = getPlayer(kills);
-        if(mostKills == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: Nobody");
-        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Kills: "+mostKills.getName());
-        Player mostDamageDealt = getPlayer(damageDealt);
-        if(mostDamageDealt == null) Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: Nobody");
-        else Bukkit.broadcastMessage(ChatColor.GREEN+"Most Damage Dealt: "+mostDamageDealt.getName());
-        Player mostDamageTaken = getPlayer(damageTaken);
-        if(mostDamageTaken == null) Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: Nobody");
-        else Bukkit.broadcastMessage(ChatColor.RED+"Most Damage Taken: "+mostDamageTaken.getName());
-        Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Your Statistics");
+        sendStatistics();
+        //teleport players home
         for(Player player : plugin.getServer().getOnlinePlayers()){
-            if(kills.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Kills: 0");
-            else player.sendMessage(ChatColor.GREEN+"Your Kills: "+kills.get(player));
-            if(damageDealt.get(player) == null) player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: 0");
-            else player.sendMessage(ChatColor.GREEN+"Your Damage Dealt: "+damageDealt.get(player));
-            if(damageTaken.get(player) == null) player.sendMessage(ChatColor.RED+"Your Damage Taken: 0");
-            else player.sendMessage(ChatColor.RED+"Your Damage Taken: "+damageTaken.get(player));
-            player.teleport(new Location(player.getServer().getWorld("world"), 329, 64, -158));
+            player.teleport(Objects.requireNonNull(player.getServer().getWorld("world")).getSpawnLocation());
             player.setGameMode(GameMode.SURVIVAL);
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
         }

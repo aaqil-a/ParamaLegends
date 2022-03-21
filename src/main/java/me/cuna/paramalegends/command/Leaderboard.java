@@ -24,7 +24,7 @@ public class Leaderboard implements CommandExecutor {
 
     public Leaderboard(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public ItemStack createBook(){

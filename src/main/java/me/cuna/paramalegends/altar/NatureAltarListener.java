@@ -28,7 +28,7 @@ public class NatureAltarListener extends AltarListener implements Listener {
     public NatureAltarListener(ParamaLegends plugin){
         super(plugin, BossType.NATURE);
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
     }
 
     public void spawnAltar(World world, int altarX, int altarY, int altarZ){

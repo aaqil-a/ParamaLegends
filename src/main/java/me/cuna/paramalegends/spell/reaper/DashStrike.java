@@ -26,7 +26,7 @@ public class DashStrike implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Dash Strike");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Dash Strike");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.setVelocity(player.getLocation().getDirection().setY(0).normalize().multiply(2));
@@ -52,7 +52,7 @@ public class DashStrike implements SpellParama {
             playerParama.addToCooldown(this);
             playerParama.addToReaperRefreshCooldown("Dash Strike", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Dash Strike");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Dash Strike");
                     playerParama.removeFromCooldown(this);
                     playerParama.removeFromReaperRefreshCooldown("Dash Strike");
                 }

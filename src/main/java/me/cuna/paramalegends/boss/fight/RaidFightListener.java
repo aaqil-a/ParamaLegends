@@ -3,6 +3,7 @@ package me.cuna.paramalegends.boss.fight;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
+import me.cuna.paramalegends.boss.BossManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -39,7 +40,7 @@ public class RaidFightListener implements Listener {
 
     public RaidFightListener(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
     }
 
     List<LivingEntity> entities = new ArrayList<>(); //list to store entities spawned. must not exceed 100
@@ -80,7 +81,7 @@ public class RaidFightListener implements Listener {
     //End raid if currently occuring
     public void endRaid(){
         Bukkit.broadcastMessage(ChatColor.DARK_PURPLE+"Cursed beings return to the void.");
-        plugin.raidSummonListener.setRaidOccuring(false);
+        plugin.bossManager.raidSummon.setRaidOccuring(false);
         spawnTask.cancel();
         endRaidTask.cancel();
         raidBossBar.removeAll();
@@ -89,8 +90,8 @@ public class RaidFightListener implements Listener {
             entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getEyeLocation(), 8, 0.5, 0.5, 0.5, 0);
             entity.remove();
         }
-        if(plugin.experienceListener.getWorldLevel() < 2){
-            plugin.experienceListener.setWorldLevel(2);
+        if(plugin.gameManager.experience.getWorldLevel() < 2){
+            plugin.gameManager.experience.setWorldLevel(2);
         }
         entities.clear();
         Bukkit.broadcastMessage(ChatColor.GOLD+""+ ChatColor.BOLD+"Most and Least Valuable Players");
@@ -128,7 +129,7 @@ public class RaidFightListener implements Listener {
 
 
             //give player rewards
-            PlayerParama playerParama = plugin.getPlayerParama(player);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
             playerParama.addLectrum(1000);
             player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
         }
@@ -317,7 +318,7 @@ public class RaidFightListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(plugin.raidSummonListener.isRaidOccuring()){
+        if(plugin.bossManager.raidSummon.isRaidOccuring()){
             if(event.getEntity() instanceof Player){
                 Player player = (Player) event.getEntity();
                 if(damageTaken.containsKey(player)){
@@ -338,7 +339,7 @@ public class RaidFightListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(plugin.raidSummonListener.isRaidOccuring()){
+        if(plugin.bossManager.raidSummon.isRaidOccuring()){
             Player player = event.getEntity();
             if(deaths.containsKey(player)){
                 deaths.put(player, deaths.get(player)+1);

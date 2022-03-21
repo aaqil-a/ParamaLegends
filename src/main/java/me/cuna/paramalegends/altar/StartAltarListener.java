@@ -21,7 +21,7 @@ public class StartAltarListener extends AltarListener implements Listener {
     public StartAltarListener(ParamaLegends plugin){
         super(plugin, BossType.START);
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
     }
 
     public void spawnAltar(World world, int altarX, int altarY, int altarZ){

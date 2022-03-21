@@ -32,7 +32,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Terrifying Cruelty");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Terrifying Cruelty");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -43,7 +43,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
                         BukkitTask hitEffect = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                             hit.getWorld().spawnParticle(Particle.SMOKE_NORMAL, hit.getLocation().add(0,1,0), 4, 0.5, 0.5, 0.5, 0);
                         }, 20, 20);
-                        plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                        plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                         hit.setMetadata("TERRIFIED", new FixedMetadataValue(plugin, "TERRIFIED"));
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
                             hit.removeMetadata("TERRIFIED", plugin);
@@ -54,7 +54,7 @@ public class TerrifyingCruelty implements Listener, SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Terrifying Cruelty");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Terrifying Cruelty");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);

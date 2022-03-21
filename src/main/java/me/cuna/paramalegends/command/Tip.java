@@ -17,12 +17,12 @@ import java.util.List;
 public class Tip implements CommandExecutor {
 
     public DataManager data;
-    private ParamaLegends plugin;
-    private List<Player> tipCooldown = new ArrayList<>();
+    private final ParamaLegends plugin;
+    private final List<Player> tipCooldown = new ArrayList<>();
 
     public Tip(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public void sendUsage(Player player){
@@ -49,7 +49,7 @@ public class Tip implements CommandExecutor {
                 if (args.length == 1 || args.length == 2) {
                         Player receiver = Bukkit.getPlayer(args[0]);
                         if (receiver != null) {
-                            int senderLectrum = plugin.getPlayerParama(player).getLectrum();
+                            int senderLectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
                             if(tipCooldown.contains(player)){
                                 player.sendMessage(ChatColor.RED+"Tip is on cooldown.");
                             } else if (senderLectrum < amount) {
@@ -57,8 +57,8 @@ public class Tip implements CommandExecutor {
                             } else if(amount < 1){
                                 player.sendMessage(ChatColor.RED + "Invalid amount.");
                             } else {
-                                plugin.getPlayerParama(receiver).addLectrum(amount);
-                                plugin.getPlayerParama(player).removeLectrum(amount);
+                                plugin.playerManager.getPlayerParama(receiver).addLectrum(amount);
+                                plugin.playerManager.getPlayerParama(player).removeLectrum(amount);
                                 Bukkit.broadcastMessage(ChatColor.YELLOW+player.getName()+ ChatColor.GOLD+" tipped " + ChatColor.YELLOW+ receiver.getName() + ChatColor.GOLD+" "+amount+" lectrum.");
                                 //play tip sound
                                 for(Player online : Bukkit.getOnlinePlayers()){

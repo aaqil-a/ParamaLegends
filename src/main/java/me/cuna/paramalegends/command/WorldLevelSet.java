@@ -32,7 +32,7 @@ public class WorldLevelSet implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED+"Invalid level");
                 return true;
             }
-            plugin.experienceListener.setWorldLevel(level);
+            plugin.gameManager.experience.setWorldLevel(level);
 
         }
         return true;

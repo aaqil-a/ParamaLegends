@@ -26,7 +26,7 @@ public class HuayraFury implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Huayra's Fury");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Huayra's Fury");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.sendMessage(ChatColor.GREEN+"Huayra's Fury activated.");
@@ -41,7 +41,7 @@ public class HuayraFury implements Listener, SpellParama {
             //remove fro mcooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Huayra's Fury");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Huayra's Fury");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);//1200

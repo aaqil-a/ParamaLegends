@@ -27,13 +27,11 @@ import java.util.Random;
 public class BloodRain implements Listener, ArrowParama {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
     private final int manaCost = 100;
     private final int cooldown = 700;
 
     public BloodRain(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = plugin.archeryListener;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -46,7 +44,7 @@ public class BloodRain implements Listener, ArrowParama {
           }
           Bukkit.getScheduler().runTaskLater(plugin, ()->{
               if(playerParama.checkCooldown(this)){
-                  plugin.sendNoLongerCooldownMessage(playerParama, "Blood Rain");
+                  plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Blood Rain");
                   playerParama.removeFromCooldown(this);
               }
           }, cooldown);
@@ -58,7 +56,7 @@ public class BloodRain implements Listener, ArrowParama {
         if(event.getEntity().hasMetadata("bloodArrow")){
             if(event.getEntity().getShooter() instanceof Player){
                 Player player = (Player) event.getEntity().getShooter();
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 Location location = event.getEntity().getLocation();
                 playerParama.addTask("BLOODARROW", Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Entity entity : Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 3.5, 3.5, 3.5)){

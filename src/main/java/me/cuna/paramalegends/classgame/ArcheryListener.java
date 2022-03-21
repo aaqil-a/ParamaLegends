@@ -15,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,7 +42,7 @@ public class ArcheryListener implements Listener{
 
     public ArcheryListener(ParamaLegends plugin) {
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         hunterEye = new HunterEye(plugin);
         viperBite = new ViperBite(plugin);
         totsukaCreation = new TotsukaCreation(plugin);
@@ -61,7 +60,7 @@ public class ArcheryListener implements Listener{
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
+        PlayerParama player = plugin.playerManager.getPlayerParama(event.getPlayer());
         if(event.getItem() == null){
             return;
         }
@@ -111,7 +110,7 @@ public class ArcheryListener implements Listener{
             ItemMeta arrowMeta = arrowItem.getItemMeta();
             Player player = (Player) event.getEntity();
             if(arrowMeta != null){
-                shootArrow(plugin.getPlayerParama(player), event, arrowMeta.getDisplayName());
+                shootArrow(plugin.playerManager.getPlayerParama(player), event, arrowMeta.getDisplayName());
             }
             if(event.getProjectile() instanceof AbstractArrow){
                 if(player.hasMetadata("WINDBOOSTPARAMA")){
@@ -137,7 +136,7 @@ public class ArcheryListener implements Listener{
             if(player.getItemInUse() != null && player.getItemInUse().getType().equals(Material.BOW)){
                 ItemStack bow = player.getItemInUse();
                 if(bow.getItemMeta() != null && bow.getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR+"4Blood Rain Bow")){
-                    bloodRain.shootArrow(plugin.getPlayerParama(player), event.getProjectile());
+                    bloodRain.shootArrow(plugin.playerManager.getPlayerParama(player), event.getProjectile());
                 }
             }
         }

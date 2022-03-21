@@ -21,7 +21,7 @@ public class HiddenStrike implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Hidden Strike");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Hidden Strike");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.setMetadata("HIDDENSTRIKE", new FixedMetadataValue(plugin, "HIDDENSTRIKE"));
@@ -29,7 +29,7 @@ public class HiddenStrike implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             playerParama.addToReaperRefreshCooldown("Hidden Strike", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Hidden Strike");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Hidden Strike");
                     playerParama.removeFromCooldown(this);
                     playerParama.removeFromReaperRefreshCooldown("Hidden Strike");
                 }

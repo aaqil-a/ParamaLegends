@@ -69,7 +69,7 @@ public class GeneralShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         gui.setItem(0, item);
@@ -238,7 +238,7 @@ public class GeneralShop extends GameShop {
         int maxDepth = data.getConfig().getInt("world.maxdepth");
         maxDepth -= 10;
         data.getConfig().set("world.maxdepth", maxDepth);
-        plugin.worldRuleListener.setMaxDepth(maxDepth);
+        plugin.gameManager.worldRule.setMaxDepth(maxDepth);
         data.saveConfig();
 
         //expand worldguard region

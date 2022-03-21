@@ -1,8 +1,8 @@
 package me.cuna.paramalegends.boss.fight;
 
-import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
+import me.cuna.paramalegends.boss.BossManager;
 import net.minecraft.world.entity.EntityInsentient;
 import net.minecraft.world.level.pathfinder.PathEntity;
 import org.bukkit.*;
@@ -33,8 +33,7 @@ import java.util.*;
 
 public class NatureFightListener implements Listener {
 
-    private ParamaLegends plugin;
-    private DataManager data;
+    private final ParamaLegends plugin;
     private final HashMap<Player, Integer> damageDealt = new HashMap<>();
     private final HashMap<Player, Integer> kills = new HashMap<>();
     private final HashMap<Player, Integer> damageTaken = new HashMap<>();
@@ -42,8 +41,6 @@ public class NatureFightListener implements Listener {
 
     public NatureFightListener(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     List<Entity> entities = new ArrayList<>(); //list to store entities spawned. must not exceed 100
@@ -314,7 +311,7 @@ public class NatureFightListener implements Listener {
             boss.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, boss.getLocation(), 8, 0.5, 0.5, 0.5, 0);
             boss.remove();
         }
-        plugin.natureSummonListener.setFightOccuring(false);
+        plugin.bossManager.natureSummon.setFightOccuring(false);
         bossBar.removeAll();
         for(Entity entity : entities){
             if(entity != null){
@@ -322,8 +319,8 @@ public class NatureFightListener implements Listener {
                 entity.remove();
             }
         }
-        if(plugin.experienceListener.getWorldLevel() < 3 && win){
-            plugin.experienceListener.setWorldLevel(3);
+        if(plugin.gameManager.experience.getWorldLevel() < 3 && win){
+            plugin.gameManager.experience.setWorldLevel(3);
         }
         //set gamemode back to survival and tp back
         for(Player player : Bukkit.getOnlinePlayers()){
@@ -350,7 +347,7 @@ public class NatureFightListener implements Listener {
         if(win){
             for(Player player : plugin.getServer().getOnlinePlayers()){
                 //give player rewards
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 playerParama.addLectrum(1000);
                 player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
             }
@@ -685,7 +682,7 @@ public class NatureFightListener implements Listener {
     //Add amount of void enitites slain if void entitiy is killed
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event){
-        if(plugin.natureSummonListener.isFightOccuring()){
+        if(plugin.bossManager.natureSummon.isFightOccuring()){
             if(entities.contains(event.getEntity())){
                 if(!bossBar.getTitle().contains("King Slime")){
                     double progress = bossBar.getProgress()-(1/((double) waveSize));
@@ -747,7 +744,7 @@ public class NatureFightListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(plugin.natureSummonListener.isFightOccuring()){
+        if(plugin.bossManager.natureSummon.isFightOccuring()){
             if(event.getEntity() instanceof Player){
                 Player player = (Player) event.getEntity();
                 if(damageTaken.containsKey(player)){
@@ -809,7 +806,7 @@ public class NatureFightListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(plugin.natureSummonListener.isFightOccuring()){
+        if(plugin.bossManager.natureSummon.isFightOccuring()){
             Player player=  event.getEntity();
             alive.remove(player);
             if(alive.size() == 0) {
@@ -824,7 +821,7 @@ public class NatureFightListener implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
-        if(plugin.natureSummonListener.isFightOccuring()){
+        if(plugin.bossManager.natureSummon.isFightOccuring()){
             event.setRespawnLocation(new Location(event.getPlayer().getWorld(), startX, startY, startZ));
         }
     }
@@ -841,7 +838,7 @@ public class NatureFightListener implements Listener {
     //cancel day burning of mobs
     @EventHandler
     public void onCombust(EntityCombustEvent event){
-        if(plugin.natureSummonListener.isFightOccuring() && entities.contains(event.getEntity())){
+        if(plugin.bossManager.natureSummon.isFightOccuring() && entities.contains(event.getEntity())){
             if(!(event instanceof EntityCombustByBlockEvent || event instanceof EntityCombustByEntityEvent)){
                 event.setCancelled(true);
             }

@@ -2,7 +2,6 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -32,7 +31,7 @@ public class GameShop implements Listener {
 
     public GameShop(final ParamaLegends plugin, String NPCName){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         this.NPCName = NPCName;
     }
 
@@ -79,7 +78,7 @@ public class GameShop implements Listener {
         event.setCancelled(true);
 
         // Get lectrum of player
-        int lectrum = plugin.getPlayerParama(player).getLectrum();
+        int lectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
 
         //Purchase specified item
         if (event.getSlot() != 0){
@@ -89,7 +88,7 @@ public class GameShop implements Listener {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
             } else {
-                plugin.getPlayerParama(player).removeLectrum(price);
+                plugin.playerManager.getPlayerParama(player).removeLectrum(price);
                 if(giveItem(event)) updateLectrum(event);
             }
         }
@@ -138,7 +137,7 @@ public class GameShop implements Listener {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama((Player) event.getWhoClicked()).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama((Player) event.getWhoClicked()).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         inv.setItem(0, item);

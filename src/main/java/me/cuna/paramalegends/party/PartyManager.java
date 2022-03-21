@@ -11,7 +11,7 @@ public class PartyManager {
 
     public PartyManager(ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public void createParty(PlayerParama playerParama){

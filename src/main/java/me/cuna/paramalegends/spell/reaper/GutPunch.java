@@ -37,7 +37,7 @@ public class GutPunch implements AttackParama {
                 playerParama.addToReaperRefreshCooldown("Gut Punch", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         playerParama.removeFromCooldown(this);
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Gut Punch");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Gut Punch");
                         playerParama.removeFromReaperRefreshCooldown("Gut Punch");
                     }
                 }, cooldown));

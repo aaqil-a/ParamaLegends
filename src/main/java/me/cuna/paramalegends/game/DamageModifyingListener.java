@@ -42,7 +42,7 @@ public class DamageModifyingListener implements Listener {
             Projectile projectile = (Projectile) event.getDamager();
             if(projectile.getShooter() instanceof Player){
                 Player player = (Player) projectile.getShooter();
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 if(event.getEntity().getLocation().distance(player.getLocation()) > 10){
                     damage *= 1.2;
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1f);
@@ -60,18 +60,18 @@ public class DamageModifyingListener implements Listener {
             }
         }
         if(event.getEntity().hasMetadata("HUNTEREYE")){
-            damage = plugin.increasedIncomingDamage(damage, 1.3);
+            damage = increasedIncomingDamage(damage, 1.3);
         }
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            PlayerParama playerParama = plugin.getPlayerParama(attacker);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             Random rand = new Random();
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
                     //swordmanship critical hit check
-                    if(plugin.checkCustomDamageSource(damage) == null ||
-                            plugin.checkCustomDamageSource(damage).equals(ClassGameType.SWORDSMAN)) {
+                    if(checkCustomDamageSource(damage) == null ||
+                            checkCustomDamageSource(damage).equals(ClassGameType.SWORDSMAN)) {
                         int playerLevel = playerParama.getClassLevel(ClassGameType.SWORDSMAN);
                         int critRoll = rand.nextInt(100);
                         if(attacker.hasMetadata("ENRAGING")){
@@ -114,12 +114,12 @@ public class DamageModifyingListener implements Listener {
                 //reaper passive check
                 case WOODEN_HOE, STONE_HOE, GOLDEN_HOE, IRON_HOE, DIAMOND_HOE, NETHERITE_HOE -> {
                     if(item.getItemMeta() != null && item.getItemMeta().getDisplayName().contains("Scythe")){
-                        if(plugin.checkCustomDamageSource(damage) == null
-                            || plugin.checkCustomDamageSource(damage).equals(ClassGameType.REAPER)) {
+                        if(checkCustomDamageSource(damage) == null
+                            || checkCustomDamageSource(damage).equals(ClassGameType.REAPER)) {
                             if(attacker.hasMetadata("HIDDENSTRIKE")){
                                 damage *= 1.5;
                                 attacker.getWorld().spawnParticle(Particle.CRIT_MAGIC, event.getEntity().getLocation().add(0,1,0),4, 0.5, 0.5, 0.5, 0.2);
-                                plugin.reaperListener.coatedBlade.attackEntity(playerParama, event.getEntity(), event.getDamage());
+                                plugin.gameClassManager.reaper.coatedBlade.attackEntity(playerParama, event.getEntity(), event.getDamage());
                                 attacker.removeMetadata("HIDDENSTRIKE", plugin);
                             }
                             if(attacker.hasMetadata("FORBIDDENSLASH")){
@@ -137,7 +137,7 @@ public class DamageModifyingListener implements Listener {
                 }
             }
             if(event.getEntity().hasMetadata("TERRIFIED")){
-                damage = plugin.increasedIncomingDamage(damage, 1.5);
+                damage = increasedIncomingDamage(damage, 1.5);
             }
         }
         if(event.getEntity() instanceof Player){
@@ -151,7 +151,7 @@ public class DamageModifyingListener implements Listener {
         }
         //reduce damage if slime king
         if(event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(ChatColor.COLOR_CHAR+"aKing Slime")){
-            damage *= (1/((double) (plugin.natureFightListener.getPlayerCount())));
+            damage *= (1/((double) (plugin.bossManager.natureFight.getPlayerCount())));
         }
         //reduce damage if ender dragon
         if(event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
@@ -215,4 +215,35 @@ public class DamageModifyingListener implements Listener {
         });
     }
 
+
+    public double increasedIncomingDamage(double damage, double multiplier){
+        String damageString = String.valueOf(damage);
+        double toAdd = 0;
+        if(damageString.substring(damageString.indexOf(".")).length() >= 4){
+            String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
+            switch (key) {
+                case ".069", ".068" -> toAdd = 0.069;
+                case ".034", ".033", ".035" -> toAdd = 0.034;
+                case ".072", ".073", ".071" -> toAdd = 0.072;
+                case ".016", ".015", ".017" -> toAdd = 0.016;
+            }
+        }
+        return damage*multiplier+toAdd;
+    }
+
+    public ClassGameType checkCustomDamageSource(double damage){
+        String damageString = String.valueOf(damage);
+        if(damageString.substring(damageString.indexOf(".")).length() >= 4){
+            String key = damageString.substring(damageString.indexOf("."),damageString.indexOf(".")+4);
+            return switch (key) {
+                case ".069", ".068" -> ClassGameType.MAGIC;
+                case ".034", ".033", ".035" -> ClassGameType.REAPER;
+                case ".072", ".073", ".071" -> ClassGameType.SWORDSMAN;
+                case ".016", ".015", ".017" -> ClassGameType.ARCHERY;
+                default -> null;
+            };
+
+        }
+        return null;
+    }
 }

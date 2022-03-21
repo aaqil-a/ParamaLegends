@@ -28,13 +28,13 @@ public class Soulstring implements SpellParama {
 
     public void castSpell(PlayerParama player){
         if(player.checkCooldown(this)){
-            plugin.sendCooldownMessage(player, "Soulstring");
+            plugin.gameClassManager.sendCooldownMessage(player, "Soulstring");
         } else if (player.subtractMana(manaCost)) {
             summonSoulstring(player.getPlayer());
             player.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(player.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(player, "Soulstring");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(player, "Soulstring");
                     player.removeFromCooldown(this);
                 }
             }, cooldown);
@@ -46,7 +46,7 @@ public class Soulstring implements SpellParama {
         Vector offset = player.getEyeLocation().getDirection().multiply(2.5);
         location.add(offset);
         if(!(location.getBlock().isEmpty() || location.getBlock().isLiquid())){
-            plugin.archeryListener.findAir(location);
+            plugin.gameClassManager.archery.findAir(location);
         }
 
         ItemStack shirt = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -55,7 +55,7 @@ public class Soulstring implements SpellParama {
         shirtMeta.setColor(Color.WHITE);
         shirt.setItemMeta(shirtMeta);
 
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addEntity("TURRET",
                 player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
                     armorStand.setCustomName(player.getName()+"'s Soulstring");
@@ -119,7 +119,7 @@ public class Soulstring implements SpellParama {
         double dummyY = dummy.getLocation().getY();
         double dummyZ = dummy.getLocation().getZ();
         dummy.setMetadata("AIMING", new FixedMetadataValue(plugin, "AIMING"));
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addTask("TURRETFOLLOW",
                 Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     double entityX = entity.getLocation().getX();

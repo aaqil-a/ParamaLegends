@@ -22,7 +22,7 @@ public class Enrage implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Enrage");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Enrage");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -42,7 +42,7 @@ public class Enrage implements SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Enrage");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Enrage");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);

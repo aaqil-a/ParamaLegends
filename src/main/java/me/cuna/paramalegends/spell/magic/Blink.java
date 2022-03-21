@@ -23,7 +23,7 @@ public class Blink implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Blink");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Blink");
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
@@ -48,10 +48,10 @@ public class Blink implements SpellParama {
                 player.getWorld().playSound(finalLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
             }, 5);
             player.getWorld().spawnParticle(Particle.SMOKE_LARGE, location.add(new Vector(0,2,0)), 10, 0.5, 0.5, 0.5);
-            plugin.magicListener.teleportToAir(player, location);
+            plugin.gameClassManager.magic.teleportToAir(player, location);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Blink");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Blink");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);

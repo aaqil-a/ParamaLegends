@@ -21,7 +21,7 @@ public class Recipes {
 
     public Recipes(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
 
         //add esoteric pearl
         ItemStack item = new ItemStack(Material.ENDER_PEARL);

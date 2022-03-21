@@ -1,9 +1,8 @@
-package me.cuna.paramalegends.fun;
+package me.cuna.paramalegends.alcohol;
 
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
-import me.cuna.paramalegends.food.FoodRecipes;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,7 @@ public class AlcoholRecipes {
 
     public AlcoholRecipes(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
 
         //apple wine
         ItemStack item = new ItemStack(Material.POTION);

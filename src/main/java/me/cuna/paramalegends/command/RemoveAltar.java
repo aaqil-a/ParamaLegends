@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RemoveAltar implements CommandExecutor {
 
@@ -22,7 +21,7 @@ public class RemoveAltar implements CommandExecutor {
 
     public RemoveAltar(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         customAltarNames.add(ChatColor.COLOR_CHAR+"6Occult Altar");
         customAltarNames.add(ChatColor.COLOR_CHAR+"aMysterious Sludge");
         customAltarNames.add(ChatColor.COLOR_CHAR+"0Indestructible Stone");

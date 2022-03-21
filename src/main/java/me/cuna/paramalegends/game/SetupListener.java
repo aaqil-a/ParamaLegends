@@ -27,7 +27,7 @@ public class SetupListener implements Listener {
 
     public SetupListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         verify = false;
     }
 
@@ -54,7 +54,7 @@ public class SetupListener implements Listener {
 
     private String path;
     public void markLocation(Player player, Block clicked){
-        if(plugin.setupGame.isCurrentlySettingUp() && clicked != null){
+        if(plugin.commandManager.setupGame.isCurrentlySettingUp() && clicked != null){
             //determine config.yml path for marked location type
             path = switch(markType){
                 case START -> "world.startlocation";
@@ -106,7 +106,7 @@ public class SetupListener implements Listener {
                 case START -> {
                     player.sendMessage(ChatColor.GREEN+"Starting area marked.");
 
-                    plugin.startAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ);
+                    plugin.altarManager.startAltar.spawnAltar(player.getWorld(), altarX, altarY, altarZ);
 
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark nature game area with wand.");
@@ -116,7 +116,7 @@ public class SetupListener implements Listener {
                 }
                 case NATURE -> {
                     Bukkit.getScheduler().runTaskLater(plugin, ()->
-                            plugin.natureAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
+                            plugin.altarManager.natureAltar.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
                     player.sendMessage(ChatColor.GREEN+"Nature area marked.");
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark earth game area with wand.");
@@ -126,7 +126,7 @@ public class SetupListener implements Listener {
                 }
                 case EARTH -> {
                     Bukkit.getScheduler().runTaskLater(plugin, ()->
-                            plugin.earthAltarListener.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
+                            plugin.altarManager.earthAltar.spawnAltar(player.getWorld(), altarX, altarY, altarZ), 20);
                     player.sendMessage(ChatColor.GREEN+"Earth area marked.");
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
                         player.sendMessage(ChatColor.GOLD+"Mark water game area with wand.");
@@ -141,7 +141,7 @@ public class SetupListener implements Listener {
     }
 
     public void finishSetup(Player player){
-        plugin.setupGame.setCurrentlySettingUp(false);
+        plugin.commandManager.setupGame.setCurrentlySettingUp(false);
         data.getConfig().set("world.level", 1);
         player.sendMessage(ChatColor.GREEN+"Parama Legends setup complete. Begin game with /startgame.");
         player.sendMessage(ChatColor.GRAY+"It is recommended to set spawn-protection in server.properties to 0.");

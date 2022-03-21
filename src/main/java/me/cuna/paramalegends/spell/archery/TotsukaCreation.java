@@ -33,7 +33,7 @@ public class TotsukaCreation implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Totsuka's Creation");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Totsuka's Creation");
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Snowball ball = player.launchProjectile(Snowball.class);
@@ -50,7 +50,7 @@ public class TotsukaCreation implements Listener, SpellParama {
             //remove from cooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Totsuka's Creation");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Totsuka's Creation");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);
@@ -58,7 +58,7 @@ public class TotsukaCreation implements Listener, SpellParama {
     }
 
     public void spawnWebs(Location location, Player player){
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addTask("TOTSUKA",
                 Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                     for(Entity rooted : Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 2, 2, 2)){

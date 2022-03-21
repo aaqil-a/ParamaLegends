@@ -41,7 +41,7 @@ public class MementoMori implements AttackParama {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
                         playerParama.removeFromCooldown(this);
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Memento Mori");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Memento Mori");
                     }
                 }, cooldown);//1202
             }

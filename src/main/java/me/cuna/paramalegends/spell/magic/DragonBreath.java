@@ -33,7 +33,7 @@ public class DragonBreath implements SpellParama {
             playerParama.cancelTask("DRAGONBREATHEFFECT");
             playerParama.getPlayer().sendMessage(ChatColor.GREEN+"Dragon's Breath deactivated.");
         } else if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Dragon's Breath");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Dragon's Breath");
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             Player player = playerParama.getPlayer();
@@ -62,7 +62,7 @@ public class DragonBreath implements SpellParama {
                                 continue;
                             }
                             if(hit instanceof Mob || hit instanceof Player){
-                                plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                                plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                                 ((Damageable) hit).damage(damage+damageBonus*masteryLevel+0.069, player);
                                 if(hit instanceof Monster || hit instanceof Phantom) playerParama.addMastery("dragonbreath", 1);
                             }
@@ -77,7 +77,7 @@ public class DragonBreath implements SpellParama {
             },duration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Dragon's Breath");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown- (long) cooldownReduction *masteryLevel);

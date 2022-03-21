@@ -3,6 +3,7 @@ package me.cuna.paramalegends.boss.fight;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
+import me.cuna.paramalegends.boss.BossManager;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.attribute.Attribute;
@@ -21,7 +22,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -37,8 +37,7 @@ public class BloodMoonListener implements Listener{
 
     public BloodMoonListener(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.data = plugin.dataManager;
     }
 
     public List<LivingEntity> entities = new ArrayList<>();
@@ -54,7 +53,7 @@ public class BloodMoonListener implements Listener{
 
     public void bossFight(World world){
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        plugin.bloodMoonSummonListener.setBloodMoonOccuring(true);
+        plugin.bossManager.bloodMoonSummon.setBloodMoonOccuring(true);
         Bukkit.broadcastMessage(ChatColor.DARK_RED+"The moon smolders crimson in everlasting torment.");
         createBloodMoonBossBar();
         entitiesSlain = 0;
@@ -87,7 +86,7 @@ public class BloodMoonListener implements Listener{
 
                 //Spawn squadron
                 Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                    if (plugin.bloodMoonSummonListener.isBloodMoonOccuring()) {
+                    if (plugin.bossManager.bloodMoonSummon.isBloodMoonOccuring()) {
                         //Determine whether to spawn ghast or not
                         if ((rand.nextInt(4) == 1) || (player.getLocation().getY() < world.getHighestBlockYAt(player.getLocation())))
                             entities.add(world.spawn(world.getHighestBlockAt(spawnLocation).getLocation().add(0, 10, 0), Ghast.class, ghast -> {
@@ -178,7 +177,7 @@ public class BloodMoonListener implements Listener{
             bloodMoonBossBar.removeAll();
             bloodMoonBossBar.setVisible(false);
         }
-        plugin.bloodMoonSummonListener.setBloodMoonOccuring(false);
+        plugin.bossManager.bloodMoonSummon.setBloodMoonOccuring(false);
         //Despawn current entities
         for(LivingEntity entity : entities){
             entity.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, entity.getEyeLocation(), 8, 0.5, 0.5, 0.5, 0);
@@ -207,7 +206,7 @@ public class BloodMoonListener implements Listener{
         if(victory){
             //give player rewards
             for(Player player : plugin.getServer().getOnlinePlayers()){
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 playerParama.addLectrum(400);
                 player.sendMessage(ChatColor.GOLD+"+400 Lectrum");
             }
@@ -302,8 +301,8 @@ public class BloodMoonListener implements Listener{
                  meta.addEnchant(Enchantment.ARROW_DAMAGE, 4, true);
                  meta.addEnchant(Enchantment.DURABILITY, 3, true);
                  lore.add(ChatColor.DARK_RED+"Summon a Blood Rain");
-                 lore.add(ChatColor.DARK_GRAY+"Mana Cost: "+plugin.archeryListener.bloodRain.getManaCost());
-                 lore.add(ChatColor.DARK_GRAY+"Cooldown: "+plugin.archeryListener.bloodRain.getCooldown()/20+" seconds");
+                 lore.add(ChatColor.DARK_GRAY+"Mana Cost: "+plugin.gameClassManager.archery.bloodRain.getManaCost());
+                 lore.add(ChatColor.DARK_GRAY+"Cooldown: "+plugin.gameClassManager.archery.bloodRain.getCooldown()/20+" seconds");
                  meta.setLore(lore);
                  gear.setItemMeta(meta);
             }
@@ -361,7 +360,7 @@ public class BloodMoonListener implements Listener{
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 4, true);
                 meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, new AttributeModifier("scythebonus", 3, AttributeModifier.Operation.ADD_NUMBER));
                 lore.add(ChatColor.DARK_RED+"Can be thrown");
-                lore.add(ChatColor.DARK_GRAY+"Mana Cost: "+plugin.reaperListener.vampireKnives.getManaCost());
+                lore.add(ChatColor.DARK_GRAY+"Mana Cost: "+plugin.gameClassManager.reaper.vampireKnives.getManaCost());
                 meta.setLore(lore);
                 gear.setItemMeta(meta);
             }
@@ -371,7 +370,7 @@ public class BloodMoonListener implements Listener{
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(plugin.bloodMoonSummonListener.isBloodMoonOccuring()){
+        if(plugin.bossManager.bloodMoonSummon.isBloodMoonOccuring()){
             if(event.getEntity() instanceof Player){
                 Player player = (Player) event.getEntity();
                 if(damageTaken.containsKey(player)){
@@ -397,7 +396,7 @@ public class BloodMoonListener implements Listener{
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(plugin.bloodMoonSummonListener.isBloodMoonOccuring()){
+        if(plugin.bossManager.bloodMoonSummon.isBloodMoonOccuring()){
             Player player = event.getEntity();
             if(deaths.containsKey(player)){
                 deaths.put(player, deaths.get(player)+1);
@@ -418,14 +417,14 @@ public class BloodMoonListener implements Listener{
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        if(plugin.bloodMoonSummonListener.isBloodMoonOccuring()){
+        if(plugin.bossManager.bloodMoonSummon.isBloodMoonOccuring()){
             bloodMoonBossBar.addPlayer(event.getPlayer());
         }
     }
 
     @EventHandler
     public void onAdvancementDone(PlayerAdvancementDoneEvent event){
-        if(plugin.bloodMoonSummonListener.isBloodMoonOccuring()){
+        if(plugin.bossManager.bloodMoonSummon.isBloodMoonOccuring()){
             Advancement advancement = event.getAdvancement();
             for(String c: advancement.getCriteria()) {
                 event.getPlayer().getAdvancementProgress(advancement).revokeCriteria(c);

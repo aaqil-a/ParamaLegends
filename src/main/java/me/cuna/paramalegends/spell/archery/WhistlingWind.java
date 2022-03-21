@@ -22,13 +22,11 @@ import java.util.Random;
 public class WhistlingWind implements Listener {
 
     private final ParamaLegends plugin;
-    private final ArcheryListener archeryListener;
     private final int manaCost = 120;
     private final Random rand;
 
     public WhistlingWind(ParamaLegends plugin){
         this.plugin = plugin;
-        this.archeryListener = plugin.archeryListener;
         rand = new Random();
     }
 

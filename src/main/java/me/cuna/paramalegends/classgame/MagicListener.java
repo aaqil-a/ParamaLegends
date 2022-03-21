@@ -3,7 +3,6 @@ package me.cuna.paramalegends.classgame;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.PlayerParama;
-import me.cuna.paramalegends.spell.SpellParama;
 import me.cuna.paramalegends.spell.magic.*;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -64,7 +63,7 @@ public class MagicListener implements Listener {
 
     public MagicListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
 
         //Initialize all spell instances
         flingEarth = new FlingEarth(plugin);
@@ -82,7 +81,7 @@ public class MagicListener implements Listener {
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
+        PlayerParama player = plugin.playerManager.getPlayerParama(event.getPlayer());
         if(event.getItem() == null){
             return;
         }

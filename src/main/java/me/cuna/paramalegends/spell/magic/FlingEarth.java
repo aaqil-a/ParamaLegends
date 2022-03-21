@@ -29,7 +29,7 @@ public class FlingEarth implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Fling Earth");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Fling Earth");
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Location location = player.getEyeLocation();
@@ -85,12 +85,12 @@ public class FlingEarth implements Listener, SpellParama {
                 ArmorStand source = (ArmorStand) projectile.getShooter();
                 assert source != null;
                 Player player = plugin.getServer().getPlayer(source.getName());
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 playerParama.removeEntity("FLINGEARTHBALL");
                 int masteryLevel = playerParama.getMasteryLevel("flingearth");
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
-                        plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                        plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                         Damageable hit = (Damageable) event.getHitEntity();
                         hit.damage(damage+damageBonus*masteryLevel+0.069, player);
                         if(event.getEntity() instanceof Monster || event.getEntity() instanceof Phantom) playerParama.addMastery( "flingearth", 1);

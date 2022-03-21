@@ -43,7 +43,7 @@ public class ViperBite implements Listener, ArrowParama {
                 Entity hit = event.getEntity();
                 if(!hit.hasMetadata("POISONPARAMA")){
                     hit.setMetadata("POISONPARAMA",new FixedMetadataValue(plugin,"POISONPARAMA"));
-                    PlayerParama player = plugin.getPlayerParama((Player) arrow.getShooter());
+                    PlayerParama player = plugin.playerManager.getPlayerParama((Player) arrow.getShooter());
                     player.addTask("VIPERBITE"+event.getEntity().getUniqueId().toString(),
                         Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                             if(event.getEntity() instanceof Damageable && arrow.getShooter() instanceof Player){

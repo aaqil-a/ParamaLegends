@@ -16,7 +16,7 @@ public class Mastery implements CommandExecutor {
 
     public Mastery(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public void sendUsage(CommandSender sender){
@@ -35,7 +35,7 @@ public class Mastery implements CommandExecutor {
             Player player = (Player) sender;
             if(args.length > 0){
                 String spell = args[0];
-                int level = plugin.getPlayerParama(player).getMasteryLevel(spell);
+                int level = plugin.playerManager.getPlayerParama(player).getMasteryLevel(spell);
                 if(level>0){
                     player.sendMessage(ChatColor.GOLD+spell.substring(0,1).toUpperCase()+spell.substring(1).toLowerCase()+" Mastery Level: "+level);
                 } else {

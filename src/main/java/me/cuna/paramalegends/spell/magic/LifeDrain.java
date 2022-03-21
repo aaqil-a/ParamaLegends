@@ -40,12 +40,12 @@ public class LifeDrain implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             Bukkit.getScheduler().runTaskLater(plugin, ()->{
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);
         } else if(playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Life Drain");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Life Drain");
         } else {
             int masteryLevel = playerParama.getMasteryLevel("lifedrain");
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
@@ -63,7 +63,7 @@ public class LifeDrain implements Listener, SpellParama {
                                         playerParama.addToCooldown(this);
                                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                                             if(playerParama.checkCooldown(this)){
-                                                plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                                                plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                                                 playerParama.removeFromCooldown(this);
                                             }
                                         }, cooldown);
@@ -71,7 +71,7 @@ public class LifeDrain implements Listener, SpellParama {
                                     } else if(playerParama.subtractMana( manaCost)){
                                         if(drained instanceof Player){
                                             drained.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
-                                            plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                                            plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                                             Player healed = (Player) drained;
                                             if(healed.getHealth() <= (healed.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healing) && player.getHealth() > healing){
                                                 healed.setHealth(healed.getHealth()+healing);
@@ -79,7 +79,7 @@ public class LifeDrain implements Listener, SpellParama {
                                             }
                                         } else {
                                             player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
-                                            plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                                            plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                                             ((Damageable) drained).damage(damage+masteryLevel*damageBonus+0.069, player);
                                             if(player.getHealth() <= (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healing)){
                                                 player.setHealth(player.getHealth()+healing);
@@ -91,7 +91,7 @@ public class LifeDrain implements Listener, SpellParama {
                                         playerParama.addToCooldown(this);
                                         Bukkit.getScheduler().runTaskLater(plugin, ()->{
                                             if(playerParama.checkCooldown(this)){
-                                                plugin.sendNoLongerCooldownMessage(playerParama, "Life Drain");
+                                                plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Life Drain");
                                                 playerParama.removeFromCooldown(this);
                                             }
                                         }, cooldown- (long) masteryLevel *cooldownReduction);

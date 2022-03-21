@@ -11,14 +11,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class PartyCommand implements CommandExecutor {
+public class Party implements CommandExecutor {
 
     public DataManager data;
     private ParamaLegends plugin;
 
-    public PartyCommand(final ParamaLegends plugin){
+    public Party(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public void sendUsage(Player player){
@@ -35,7 +35,7 @@ public class PartyCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
-            PlayerParama playerParama = plugin.getPlayerParama(player);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
             if(args.length == 0){
                 sendUsage(player);
                 return true;
@@ -44,7 +44,7 @@ public class PartyCommand implements CommandExecutor {
                 case "invite" -> {
                     if(args.length == 2){
                         Player invited = Bukkit.getPlayer(args[1]);
-                        PlayerParama playerParamaInvited = plugin.getPlayerParama(invited);
+                        PlayerParama playerParamaInvited = plugin.playerManager.getPlayerParama(invited);
                         if(invited != null){
                             if(playerParama.hasParty()){
                                 if(playerParamaInvited.hasParty()){
@@ -86,7 +86,7 @@ public class PartyCommand implements CommandExecutor {
                             if(kicked.equals(player)){
                                 player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
                             } else if(playerParama.hasParty()){
-                                playerParama.getParty().kick(plugin.getPlayerParama(kicked));
+                                playerParama.getParty().kick(plugin.playerManager.getPlayerParama(kicked));
                             } else {
                                 player.sendMessage(ChatColor.RED + "You are not in a party.");
                             }

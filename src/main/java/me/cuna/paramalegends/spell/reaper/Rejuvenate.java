@@ -24,14 +24,14 @@ public class Rejuvenate implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Rejuvenate");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Rejuvenate");
         } else if(playerParama.subtractMana(manaCost)){
-            playerParama.removeFromCooldown(plugin.reaperListener.blindingSand);
-            playerParama.removeFromCooldown(plugin.reaperListener.dashStrike);
-            playerParama.removeFromCooldown(plugin.reaperListener.forbiddenSlash);
-            playerParama.removeFromCooldown(plugin.reaperListener.gutPunch);
-            playerParama.removeFromCooldown(plugin.reaperListener.hiddenStrike);
-            playerParama.removeFromCooldown(plugin.reaperListener.prowl);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.blindingSand);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.dashStrike);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.forbiddenSlash);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.gutPunch);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.hiddenStrike);
+            playerParama.removeFromCooldown(plugin.gameClassManager.reaper.prowl);
             playerParama.addToCooldown(this);
             playerParama.refreshReaperCooldown.keySet().forEach(key -> {
                 playerParama.refreshReaperCooldown.get(key).cancel();
@@ -41,7 +41,7 @@ public class Rejuvenate implements SpellParama {
             playerParama.refreshReaperCooldown.clear();
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Rejuvenate");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Rejuvenate");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);

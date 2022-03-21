@@ -6,7 +6,6 @@ import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -19,7 +18,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Set;
 
 public class ExperienceListener implements Listener {
@@ -33,7 +32,7 @@ public class ExperienceListener implements Listener {
 
     public ExperienceListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         this.worldLevel = data.getConfig().getInt("world.level");
     }
 
@@ -80,16 +79,19 @@ public class ExperienceListener implements Listener {
             int exp = data.getConfig().getInt("mobs."+mob+".exp");
             int lectrum = data.getConfig().getInt("mobs."+mob+".lectrum");
             addLectrum(player, lectrum);
-            PlayerParama playerParama = plugin.getPlayerParama(player);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
 
             //share exp with party for kills
             if(playerParama.hasParty() && exp >= 10){
                 Set<PlayerParama> members = playerParama.getParty().getMembers();
                 //check if there are players in party < 60 blocks away
-                Set<PlayerParama> shared = new HashSet<>();
+                HashMap<PlayerParama, ClassGameType> shared = new HashMap<>();
                 for(PlayerParama member : members){
                     if(player.getLocation().distance(member.getPlayer().getLocation()) < 60) {
-                        shared.add(member);
+                        ClassGameType skillShared = getHeldItemClass(member.getPlayer());
+                        if(skillShared != null){
+                            shared.put(member, skillShared);
+                        }
                     }
                 }
 
@@ -98,13 +100,12 @@ public class ExperienceListener implements Listener {
                     sendActionBarMessage(player,lectrum,exp, skill);
                     addExp(player, skill, exp);
                 } else{
-                    for(PlayerParama member : shared){
-                        ClassGameType skillShared = getHeldItemClass(member.getPlayer());
-                        addExp(member.getPlayer(), skillShared, sharedAmount);
+                    for(PlayerParama member : shared.keySet()){
+                        addExp(member.getPlayer(), shared.get(member), sharedAmount);
                         if(member.equals(playerParama)){
-                            sendActionBarMessage(member.getPlayer(),lectrum,sharedAmount, skillShared);
+                            sendActionBarMessage(member.getPlayer(),lectrum,sharedAmount, shared.get(member));
                         } else {
-                            sendActionBarMessage(member.getPlayer(),0,sharedAmount, skillShared);
+                            sendActionBarMessage(member.getPlayer(),0,sharedAmount, shared.get(member));
                         }
                     }
                 }
@@ -128,7 +129,7 @@ public class ExperienceListener implements Listener {
                 }
             }
             case ENCHANTED_BOOK -> {
-                if (heldItem.getItemMeta() != null && plugin.magicListener.spellNamesFormatted.contains(heldItem.getItemMeta().getDisplayName())) {
+                if (heldItem.getItemMeta() != null && plugin.gameClassManager.magic.spellNamesFormatted.contains(heldItem.getItemMeta().getDisplayName())) {
                     skill = ClassGameType.MAGIC;
                 }
             }
@@ -198,7 +199,7 @@ public class ExperienceListener implements Listener {
             case REAPER -> "Reaper";
         };
         if(player != null){
-            PlayerParama playerParama = plugin.getPlayerParama(player);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
             int currLevel = playerParama.getClassLevel(skillType);
             int currExp = playerParama.getClassExp(skillType);
             currExp += amount;
@@ -236,7 +237,7 @@ public class ExperienceListener implements Listener {
     //Add lectrum gained to player
     public void addLectrum(Player player, int amount){
         if(player != null){
-            plugin.getPlayerParama(player).addLectrum(amount);
+            plugin.playerManager.getPlayerParama(player).addLectrum(amount);
         }
     }
 

@@ -36,12 +36,12 @@ public class IllusoryOrb implements Listener, SpellParama {
             EnderPearl orb = (EnderPearl) playerParama.getEntity("ILLUSORYORB");
             orb.remove();
             orb.getWorld().spawnParticle(Particle.FLASH, orb.getLocation(), 1);
-            plugin.magicListener.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
+            plugin.gameClassManager.magic.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
             playerParama.cancelTask("ORBFLASH");
             if(player.hasMetadata("ORBCASTED")) player.removeMetadata("ORBCASTED",plugin);
         } else {
             if(playerParama.checkCooldown(this)){
-                plugin.sendCooldownMessage(playerParama, "Illusory Orb");
+                plugin.gameClassManager.sendCooldownMessage(playerParama, "Illusory Orb");
             } else if (playerParama.subtractMana(manaCost)) {
                 int masteryLevel = playerParama.getMasteryLevel("illusoryorb");
                 EnderPearl newOrb = player.launchProjectile(EnderPearl.class);
@@ -65,7 +65,7 @@ public class IllusoryOrb implements Listener, SpellParama {
                 }, duration);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Illusory Orb");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Illusory Orb");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown- (long) cooldownReduction *masteryLevel);
@@ -90,9 +90,9 @@ public class IllusoryOrb implements Listener, SpellParama {
             event.setCancelled(true);
             if(event.getHitEntity() != null){
                 if(event.getHitEntity() instanceof Damageable){
-                    PlayerParama playerParama = plugin.getPlayerParama((Player) projectile.getShooter());
+                    PlayerParama playerParama = plugin.playerManager.getPlayerParama((Player) projectile.getShooter());
                     int masteryLevel = playerParama.getMasteryLevel("illusoryorb");
-                    plugin.experienceListener.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
+                    plugin.gameManager.experience.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();
                     hit.damage(damage+damageBonus*masteryLevel+0.069, (Player) projectile.getShooter());
                     if(hit instanceof Monster) playerParama.addMastery( "illusoryorb", 5);

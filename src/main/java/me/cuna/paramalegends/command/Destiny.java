@@ -16,7 +16,7 @@ public class Destiny implements CommandExecutor {
 
     public Destiny(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     // Command to Start Game
@@ -24,8 +24,8 @@ public class Destiny implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
-            plugin.wiseOldManListener.createGui(player);
-            player.openInventory(plugin.wiseOldManListener.gui.get(player));
+            plugin.shopManager.destiny.createGui(player);
+            player.openInventory(plugin.shopManager.destiny.gui.get(player));
             player.sendMessage(ChatColor.GOLD + "" + ChatColor.ITALIC + "Your destiny unravels before you.");
         }
         return false;

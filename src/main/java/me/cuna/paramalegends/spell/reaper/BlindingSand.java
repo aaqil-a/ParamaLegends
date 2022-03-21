@@ -31,7 +31,7 @@ public class BlindingSand implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Blinding Sand");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Blinding Sand");
         } else if(playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -58,7 +58,7 @@ public class BlindingSand implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             playerParama.addToReaperRefreshCooldown("Blinding Sand", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Blinding Sand");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Blinding Sand");
                     playerParama.removeFromCooldown(this);
                     playerParama.removeFromReaperRefreshCooldown("Blinding Sand");
                 }
@@ -73,7 +73,7 @@ public class BlindingSand implements Listener, SpellParama {
             if(projectile.getCustomName().equals("blindsand") && projectile.getShooter() instanceof Player){
                 event.setCancelled(true);
                 Player player = (Player) projectile.getShooter();
-                PlayerParama playerParama = plugin.getPlayerParama(player);
+                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.removeEntity("SANDBLOCK");
                 }, 2);

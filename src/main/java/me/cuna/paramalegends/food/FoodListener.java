@@ -5,9 +5,6 @@ import me.cuna.paramalegends.ParamaLegends;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,12 +14,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -30,12 +25,10 @@ public class FoodListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
-    public UUID armorUUID;
 
     public FoodListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        data = plugin.dataManager;
     }
 
     @EventHandler
@@ -44,7 +37,7 @@ public class FoodListener implements Listener {
             Player player = e.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
             if(item.getItemMeta() != null){
-                if(plugin.foodRecipes.getFoodNames().contains(item.getItemMeta().getDisplayName())){
+                if(plugin.foodManager.foodRecipes.getFoodNames().contains(item.getItemMeta().getDisplayName())){
                     if(player.hasMetadata("PARAMAFOOD")){
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "You are too satiated to eat any more."));
                     } else {
@@ -138,8 +131,8 @@ public class FoodListener implements Listener {
             if(event.getClickedBlock().getType() == Material.PLAYER_HEAD){
                 Location datax = data.getConfig().getLocation("coffeegrinder");
                 if(event.getClickedBlock().getLocation().equals(datax) && (event.getPlayer().getName().equalsIgnoreCase("ndhis") || event.getPlayer().getName().equalsIgnoreCase("Bludut") || event.getPlayer().isOp())){
-                    event.getPlayer().getWorld().dropItem(event.getClickedBlock().getLocation(), plugin.foodRecipes.getCoffeeGround());
-                    int lectrum = plugin.getPlayerParama(event.getPlayer()).getLectrum();
+                    event.getPlayer().getWorld().dropItem(event.getClickedBlock().getLocation(), plugin.foodManager.foodRecipes.getCoffeeGround());
+                    int lectrum = plugin.playerManager.getPlayerParama(event.getPlayer()).getLectrum();
                     if(lectrum < 10){
                         event.getPlayer().sendMessage(ChatColor.RED+"Insufficient lectrum.");
                     }else{

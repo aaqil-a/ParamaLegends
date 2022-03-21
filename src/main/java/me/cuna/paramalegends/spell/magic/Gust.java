@@ -28,7 +28,7 @@ public class Gust implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Gust");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Gust");
         } else if (playerParama.subtractMana(manaCost)) {
             playerParama.addToCooldown(this);
             int masteryLevel = playerParama.getMasteryLevel("gust");
@@ -107,7 +107,7 @@ public class Gust implements SpellParama {
                     continue;
                 }
                 if(knocked instanceof Damageable){
-                    plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                    plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                     Vector velocity = knocked.getVelocity().multiply(velocityMultiplier*masteryLevel);
                     knocked.setVelocity(velocity.add(knockback));
                     ((Damageable) knocked).damage(damage+0.069, player);
@@ -116,7 +116,7 @@ public class Gust implements SpellParama {
             }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Gust");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Gust");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown- (long) cooldownReduction *masteryLevel);

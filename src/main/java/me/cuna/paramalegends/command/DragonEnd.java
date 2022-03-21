@@ -18,7 +18,7 @@ public class DragonEnd implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-       plugin.dragonFightListener.loseFight();
+       plugin.bossManager.dragonFight.loseFight();
        return true;
     }
 

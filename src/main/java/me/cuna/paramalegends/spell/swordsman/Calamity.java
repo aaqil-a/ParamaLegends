@@ -28,7 +28,7 @@ public class Calamity implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Calamity");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Calamity");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -51,7 +51,7 @@ public class Calamity implements SpellParama {
                                 striked.getWorld().strikeLightningEffect(striked.getLocation());
                                 striked.getWorld().spawnParticle(Particle.FLASH, striked.getLocation().add(new Vector(0,1,0)), 5);
                                 ((Damageable) striked).damage(lightningDamage+0.072, player);
-                                plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                                plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                             }
                         }, 62, 20));
                 playerParama.addTask("CALAMITYEFFECT",
@@ -68,7 +68,7 @@ public class Calamity implements SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Calamity");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Calamity");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);

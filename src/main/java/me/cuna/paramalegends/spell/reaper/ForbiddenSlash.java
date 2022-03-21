@@ -21,7 +21,7 @@ public class ForbiddenSlash implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Forbidden Slash");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Forbidden Slash");
         } else if(playerParama.subtractMana(manaCost)){
             Player player = playerParama.getPlayer();
             player.setMetadata("FORBIDDENSLASH", new FixedMetadataValue(plugin, "FORBIDDENSLASH"));
@@ -29,7 +29,7 @@ public class ForbiddenSlash implements Listener, SpellParama {
             playerParama.addToCooldown(this);
             playerParama.addToReaperRefreshCooldown("Forbidden Slash", Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Forbidden Slash");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Forbidden Slash");
                     playerParama.removeFromCooldown(this);
                     playerParama.removeFromReaperRefreshCooldown("Forbidden Slash");
                 }

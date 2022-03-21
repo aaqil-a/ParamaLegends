@@ -22,7 +22,7 @@ public class WindBoost implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Wind Boost");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Wind Boost");
         } else if (playerParama.subtractMana(manaCost)) {
             Player player = playerParama.getPlayer();
             player.sendMessage(ChatColor.GREEN+"Wind Boost activated.");
@@ -41,7 +41,7 @@ public class WindBoost implements SpellParama {
             //remove fro mcooldown
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Wind Boost");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Wind Boost");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown);

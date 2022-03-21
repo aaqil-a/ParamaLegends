@@ -2,7 +2,6 @@ package me.cuna.paramalegends.game;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,7 +32,7 @@ public class PlayerShopListener implements Listener {
 
     public PlayerShopListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         key = new NamespacedKey(plugin, "shopowner");
     }
@@ -136,7 +135,7 @@ public class PlayerShopListener implements Listener {
                                 return;
                             }
                             //check if player has enough lectrum
-                            int lectrum = plugin.getPlayerParama(player).getLectrum();
+                            int lectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
                             if(lectrum < price){
                                 player.sendMessage(ChatColor.RED+"Insufficient lectrum.");
                                 return;
@@ -165,7 +164,7 @@ public class PlayerShopListener implements Listener {
                                             if(amount <= 0)break;
                                         }
                                     }
-                                    plugin.getPlayerParama(player).removeLectrum(price);
+                                    plugin.playerManager.getPlayerParama(player).removeLectrum(price);
                                     int tax = 0;
 
                                     //check tax
@@ -174,7 +173,7 @@ public class PlayerShopListener implements Listener {
                                         tax = (int) Math.ceil(price/20d);
                                         Player mayor = plugin.getServer().getPlayer(UUID.fromString(mayorUuidString));
                                         if(mayor != null){
-                                            plugin.getPlayerParama(mayor).addLectrum(tax);
+                                            plugin.playerManager.getPlayerParama(mayor).addLectrum(tax);
                                         } else {
                                             int lectrumMayor = data.getConfig().getInt("players."+mayorUuidString+".lectrum");
                                             data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor+tax);
@@ -187,7 +186,7 @@ public class PlayerShopListener implements Listener {
 
                                     if(seller != null){
                                         seller.sendMessage(ChatColor.GREEN+player.getName()+" purchased "+sign.getLine(3) + " " + sign.getLine(2) + " from you for " + price + " lectrum.");
-                                        plugin.getPlayerParama(seller).addLectrum(price-tax);
+                                        plugin.playerManager.getPlayerParama(seller).addLectrum(price-tax);
                                     } else {
                                         lectrumSeller = data.getConfig().getInt("players."+uuid+".lectrum");
                                         data.getConfig().set("players."+uuid+".lectrum", lectrumSeller+price-tax);

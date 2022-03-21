@@ -1,7 +1,7 @@
 package me.cuna.paramalegends;
 
-import jline.internal.Nullable;
 import me.cuna.paramalegends.classgame.ClassGameType;
+import me.cuna.paramalegends.game.PlayerManager;
 import me.cuna.paramalegends.party.Party;
 import me.cuna.paramalegends.spell.ArrowParama;
 import me.cuna.paramalegends.spell.AttackParama;
@@ -51,31 +51,31 @@ public class PlayerParama {
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
-        data = plugin.getData();
+        this.data = plugin.dataManager;
         this.player = player;
 
-        if (!data.getConfig().contains("players." + player.getUniqueId().toString())){
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".joined", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".lectrum", 50);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanship", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".swordsmanshipexp", 0);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".archery", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".archeryexp", 0);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".magic", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".magicexp", 0);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaper", 1);
-            data.getConfig().set("players." + player.getUniqueId().toString() + ".reaperexp", 0);
+        if (!data.getConfig().contains("players." + player.getUniqueId())){
+            data.getConfig().set("players." + player.getUniqueId() + ".joined", 1);
+            data.getConfig().set("players." + player.getUniqueId() + ".lectrum", 50);
+            data.getConfig().set("players." + player.getUniqueId() + ".swordsmanship", 1);
+            data.getConfig().set("players." + player.getUniqueId() + ".swordsmanshipexp", 0);
+            data.getConfig().set("players." + player.getUniqueId() + ".archery", 1);
+            data.getConfig().set("players." + player.getUniqueId() + ".archeryexp", 0);
+            data.getConfig().set("players." + player.getUniqueId() + ".magic", 1);
+            data.getConfig().set("players." + player.getUniqueId() + ".magicexp", 0);
+            data.getConfig().set("players." + player.getUniqueId() + ".reaper", 1);
+            data.getConfig().set("players." + player.getUniqueId() + ".reaperexp", 0);
             data.saveConfig();
         } else {
-            magicLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magic");
-            swordsLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanship");
-            archeryLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archery");
-            reaperLevel = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaper");
-            magicExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".magicexp");
-            swordsExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".swordsmanshipexp");
-            archeryExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".archeryexp");
-            reaperExp = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".reaperexp");
-            lectrum = data.getConfig().getInt("players." + player.getUniqueId().toString() + ".lectrum");
+            magicLevel = data.getConfig().getInt("players." + player.getUniqueId() + ".magic");
+            swordsLevel = data.getConfig().getInt("players." + player.getUniqueId() + ".swordsmanship");
+            archeryLevel = data.getConfig().getInt("players." + player.getUniqueId() + ".archery");
+            reaperLevel = data.getConfig().getInt("players." + player.getUniqueId() + ".reaper");
+            magicExp = data.getConfig().getInt("players." + player.getUniqueId() + ".magicexp");
+            swordsExp = data.getConfig().getInt("players." + player.getUniqueId() + ".swordsmanshipexp");
+            archeryExp = data.getConfig().getInt("players." + player.getUniqueId() + ".archeryexp");
+            reaperExp = data.getConfig().getInt("players." + player.getUniqueId() + ".reaperexp");
+            lectrum = data.getConfig().getInt("players." + player.getUniqueId() + ".lectrum");
         }
 
         playerManaLevel = Math.max(Math.max(magicLevel,swordsLevel),Math.max(archeryLevel,reaperLevel));
@@ -92,9 +92,9 @@ public class PlayerParama {
         }
 
         //set mastery levels
-        for(String spell : plugin.magicListener.getSpellNames()){
-            int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId().toString()+".mastery."+spell);
-            int masteryExp = data.getConfig().getInt("players."+player.getUniqueId().toString()+".masteryexp."+spell);
+        for(String spell : plugin.gameClassManager.magic.getSpellNames()){
+            int masteryLevel = data.getConfig().getInt("players."+player.getUniqueId()+".mastery."+spell);
+            int masteryExp = data.getConfig().getInt("players."+player.getUniqueId()+".masteryexp."+spell);
             magicMasteryLevel.put(spell, masteryLevel);
             magicMasteryExp.put(spell, masteryExp);
         }
@@ -103,11 +103,11 @@ public class PlayerParama {
     public void addPlayerManaRegenTasks() {
         //Create task to regenerate mana over time
         manaRegenTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (playerCurrentMana < plugin.getMaxMana()[playerManaLevel]) {
-                playerCurrentMana += plugin.getManaRegen()[playerManaLevel];
-                if (playerCurrentMana > plugin.getMaxMana()[playerManaLevel])
-                    playerCurrentMana = plugin.getMaxMana()[playerManaLevel];
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.getMaxMana()[playerManaLevel]));
+            if (playerCurrentMana < plugin.playerManager.getMaxMana()[playerManaLevel]) {
+                playerCurrentMana += plugin.playerManager.getManaRegen()[playerManaLevel];
+                if (playerCurrentMana > plugin.playerManager.getMaxMana()[playerManaLevel])
+                    playerCurrentMana = plugin.playerManager.getMaxMana()[playerManaLevel];
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.playerManager.getMaxMana()[playerManaLevel]));
             } else {
                 manaRegenTask.cancel();
             }
@@ -221,8 +221,8 @@ public class PlayerParama {
     }
 
     public void addMana(int mana){
-        playerCurrentMana = Math.min(playerCurrentMana+mana, plugin.getMaxMana()[playerManaLevel]);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.getMaxMana()[playerManaLevel]));
+        playerCurrentMana = Math.min(playerCurrentMana+mana, plugin.playerManager.getMaxMana()[playerManaLevel]);
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.playerManager.getMaxMana()[playerManaLevel]));
     }
 
     public void levelUpMana(int level){
@@ -282,7 +282,7 @@ public class PlayerParama {
             case REAPER -> reaperLevel = level;
             case ARCHERY -> archeryLevel = level;
         };
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
 
     /**
@@ -297,7 +297,7 @@ public class PlayerParama {
             case REAPER -> reaperExp = exp;
             case ARCHERY -> archeryExp = exp;
         };
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
 
     public void addMastery(String spellName, int exp){
@@ -310,7 +310,7 @@ public class PlayerParama {
             masteryExp += exp;
 
             // level up
-            if(masteryExp >= plugin.magicListener.getMasteryLevelUp()[masteryLevel]){
+            if(masteryExp >= plugin.gameClassManager.magic.getMasteryLevelUp()[masteryLevel]){
                 masteryLevel += 1;
                 masteryExp = 0;
 
@@ -329,7 +329,7 @@ public class PlayerParama {
             }
             magicMasteryExp.put(spellName, masteryExp);
         }
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
 
     public void setSilenced(boolean silenced){
@@ -345,16 +345,16 @@ public class PlayerParama {
     public void addLectrum(int amount){
         lectrum += amount;
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
     public void removeLectrum(int amount){
         lectrum -= amount;
         plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
     public void setLectrum(int value){
         lectrum = value;
-        plugin.toSave.add(this);
+        data.toSave.add(this);
     }
 
 

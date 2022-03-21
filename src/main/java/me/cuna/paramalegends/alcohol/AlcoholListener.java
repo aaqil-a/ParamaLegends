@@ -1,4 +1,4 @@
-package me.cuna.paramalegends.fun;
+package me.cuna.paramalegends.alcohol;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
@@ -32,7 +32,7 @@ public class AlcoholListener implements Listener {
 
     public AlcoholListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
 

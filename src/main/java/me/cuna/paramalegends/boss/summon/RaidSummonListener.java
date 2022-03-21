@@ -23,7 +23,7 @@ public class RaidSummonListener implements Listener {
 
     public RaidSummonListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     //Listen for summoning item usage
@@ -45,7 +45,7 @@ public class RaidSummonListener implements Listener {
                             Bukkit.broadcastMessage(ChatColor.DARK_PURPLE+"Shrieks and cries can be heard in the distance.");
                             isRaidOccuring = true;
                             event.getPlayer().getWorld().setTime(14000);
-                            plugin.raidFightListener.raidFight(event.getPlayer().getWorld());
+                            plugin.bossManager.raidFight.raidFight(event.getPlayer().getWorld());
                         } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"6Esoteric Pearl"+ChatColor.GRAY+" can only be used nearby the "+ChatColor.GOLD+"Occult Altar"+ChatColor.GRAY+".");
                     }
                 } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"6Esoteric Pearl"+ChatColor.GRAY+" cannot be used during a raid.");

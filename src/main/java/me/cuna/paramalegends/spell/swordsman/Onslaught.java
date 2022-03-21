@@ -31,7 +31,7 @@ public class Onslaught implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Onslaught");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Onslaught");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -46,7 +46,7 @@ public class Onslaught implements SpellParama {
                 playerParama.addTask("ONSLAUGHT", Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     for(Entity hit : entities){
                         if(hit instanceof Damageable && !(hit instanceof ArmorStand) && !(hit instanceof Player)){
-                            plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                            plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, hit.getLocation().add(0, 1,0), 1, 0, 0, 0, 0);
                             ((Damageable) hit).damage(damage+0.072, player);
                         }
@@ -64,7 +64,7 @@ public class Onslaught implements SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Onslaught");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Onslaught");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);
@@ -73,7 +73,7 @@ public class Onslaught implements SpellParama {
     }
 
     public void swordsAnimation(Player player){
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addEntity("SWORD1",
                 player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
                     armorStand.setInvisible(true);

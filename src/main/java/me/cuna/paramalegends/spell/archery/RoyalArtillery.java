@@ -29,7 +29,7 @@ public class RoyalArtillery implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Royal Artillery");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Royal Artillery");
         } else {
             Player player = playerParama.getPlayer();
             Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
@@ -43,7 +43,7 @@ public class RoyalArtillery implements Listener, SpellParama {
                     location = rayTrace.getHitBlock().getLocation();
                 }
             } else{
-                plugin.sendOutOfRangeMessage(playerParama);
+                plugin.gameClassManager.sendOutOfRangeMessage(playerParama);
                 return;
             }
             if (playerParama.subtractMana(manaCost)) {
@@ -65,7 +65,7 @@ public class RoyalArtillery implements Listener, SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Royal Artillery");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Royal Artillery");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);
@@ -82,7 +82,7 @@ public class RoyalArtillery implements Listener, SpellParama {
         double[] arrowMapX3 = {0,-1,2,-2,2};
         double[] arrowMapZ3 = {0,-2,-2,2,2};
 
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addTask("ROYALARTILLERY1",Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(int i = 0; i < 5; i++){
                         Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);

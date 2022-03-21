@@ -23,8 +23,7 @@ public class NatureSummonListener implements Listener {
 
     public NatureSummonListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        data = plugin.dataManager;
     }
 
     //Listen for summoning item usage
@@ -50,7 +49,7 @@ public class NatureSummonListener implements Listener {
                         }
                         Bukkit.broadcastMessage(ChatColor.GREEN+"The cries of living beings echo around you.");
                         isFightOccuring = true;
-                        plugin.natureFightListener.bossFight(event.getPlayer().getWorld(), event.getPlayer().getLocation());
+                        plugin.bossManager.natureFight.bossFight(event.getPlayer().getWorld(), event.getPlayer().getLocation());
                     } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"aMysterious Ooze"+ChatColor.GRAY+" can only be used nearby the "+ChatColor.GOLD+"Mysterious Sludge"+ChatColor.GRAY+".");
                 } else event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"aMysterious Ooze"+ChatColor.GRAY+" cannot be used during a fight.");
                 event.setCancelled(true);

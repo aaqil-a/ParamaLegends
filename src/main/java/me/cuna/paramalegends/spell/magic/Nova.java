@@ -29,7 +29,7 @@ public class Nova implements SpellParama {
 
     public void castSpell(PlayerParama playerParama) {
         if (playerParama.checkCooldown(this)) {
-            plugin.sendCooldownMessage(playerParama, "Nova");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Nova");
         } else {
             int masteryLevel = playerParama.getMasteryLevel("nova");
             Player player = playerParama.getPlayer();
@@ -44,7 +44,7 @@ public class Nova implements SpellParama {
                     locationExplosion = rayTrace.getHitBlock().getLocation();
                 }
             } else {
-                plugin.sendOutOfRangeMessage(playerParama);
+                plugin.gameClassManager.sendOutOfRangeMessage(playerParama);
                 return;
             }
             if (playerParama.subtractMana(manaCost)) {
@@ -57,14 +57,14 @@ public class Nova implements SpellParama {
                 }, 2, 10));
                 playerParama.addTask("FIREWORKEFFECT",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                            plugin.magicListener.createFireworkEffect(finalLocationExplosion, player);
+                            plugin.gameClassManager.magic.createFireworkEffect(finalLocationExplosion, player);
                         }, 0, 20) );
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.cancelTask("FIREWORKEFFECT");
                 }, 62);
                 playerParama.addTask("FIREWORKEFFECT2",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                            plugin.magicListener.createFireworkEffect(finalLocationExplosion, player);
+                            plugin.gameClassManager.magic.createFireworkEffect(finalLocationExplosion, player);
                         }, 70, 10));
                 playerParama.addTask("FIREWORKEFFECT3",
                         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -79,7 +79,7 @@ public class Nova implements SpellParama {
                     player.getWorld().createExplosion(finalLocationExplosion, 8F, true, true, player);
                     for (Entity exploded : player.getWorld().getNearbyEntities(finalLocationExplosion, 8, 10, 8)) {
                         if (exploded instanceof Damageable) {
-                            plugin.experienceListener.addExp(player, ClassGameType.MAGIC, 1);
+                            plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                             ((Damageable) exploded).damage(damage+masteryLevel*damageBonus+0.069, player);
                             if(exploded instanceof Monster || exploded instanceof Phantom) playerParama.addMastery("nova", 10);
                         }
@@ -87,7 +87,7 @@ public class Nova implements SpellParama {
                 }, 125);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if (playerParama.checkCooldown(this)) {
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Nova");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Nova");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown- (long) masteryLevel *cooldownReduction);

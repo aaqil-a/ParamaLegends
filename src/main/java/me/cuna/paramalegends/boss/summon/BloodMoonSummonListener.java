@@ -2,20 +2,16 @@ package me.cuna.paramalegends.boss.summon;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.boss.BossManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -23,6 +19,7 @@ public class BloodMoonSummonListener implements Listener {
 
     private final ParamaLegends plugin;
     public DataManager data;
+
     public boolean isBloodMoonOccuring = false;
     public int bloodMoonCooldown = 0;
     public BukkitTask bloodMoonTask = null;
@@ -30,8 +27,7 @@ public class BloodMoonSummonListener implements Listener {
 
     public BloodMoonSummonListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        data = plugin.dataManager;
     }
 
     //Listen for summoning item usage
@@ -50,7 +46,7 @@ public class BloodMoonSummonListener implements Listener {
                             bloodMoonCooldown = 2;
                             //reduce item (does it work?)
                             event.getItem().setAmount(event.getItem().getAmount()-1);
-                            plugin.bloodMoonListener.bossFight(event.getPlayer().getWorld());
+                            plugin.bossManager.bloodMoon.bossFight(event.getPlayer().getWorld());
                         } else {
                             event.getPlayer().sendMessage(ChatColor.COLOR_CHAR+"4Crimson Root"+ChatColor.GRAY+" can only be used at night.");
                         }
@@ -68,13 +64,13 @@ public class BloodMoonSummonListener implements Listener {
         bloodMoonTask = Bukkit.getScheduler().runTaskTimer(plugin, ()->{
             if(Bukkit.getOnlinePlayers().isEmpty()) stopBloodMoonTask();
             if(bloodMoonCooldown > 0) bloodMoonCooldown--;
-            else if(plugin.experienceListener.getWorldLevel() >= 3 && Bukkit.getOnlinePlayers().size() >= 4){
+            else if(plugin.gameManager.experience.getWorldLevel() >= 3 && Bukkit.getOnlinePlayers().size() >= 4){
                 if(rand.nextInt(9)==0 && !isBloodMoonOccuring()){
                     //start blood moon
                     bloodMoonCooldown = 2;
                     Bukkit.broadcastMessage(ChatColor.DARK_RED+"Cries of the dark resound sinisterly.");
                     Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        plugin.bloodMoonListener.bossFight(world);
+                        plugin.bossManager.bloodMoon.bossFight(world);
                     }, 1000);
                 }
             }

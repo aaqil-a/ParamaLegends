@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.List;
 import java.util.Objects;
 
 public class VoicesOfTheDamned implements Listener, SpellParama {
@@ -36,12 +35,12 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
 
     public VoicesOfTheDamned(ParamaLegends plugin){
         this.plugin = plugin;
-        this.data = plugin.getData();
+        this.data = plugin.dataManager;
     }
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Voices of the Damned");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Voices of the Damned");
         } else if (playerParama.subtractMana(manaCost)) {
             int masteryLevel = playerParama.getMasteryLevel("voicesofthedamned");
             Player player = playerParama.getPlayer();
@@ -126,7 +125,7 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
             }, livingDuration);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
-                    plugin.sendNoLongerCooldownMessage(playerParama, "Voices of the Damned");
+                    plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Voices of the Damned");
                     playerParama.removeFromCooldown(this);
                 }
             }, cooldown- (long) cooldownReduction *masteryLevel);
@@ -161,8 +160,8 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
         if(event.getDamager() instanceof Phantom || event.getDamager() instanceof Silverfish){
             if(event.getDamager().getCustomName() != null && event.getDamager().getCustomName().equals(ChatColor.DARK_PURPLE+"Damned Soul")){
                 Player summoner = Bukkit.getPlayer(event.getDamager().getMetadata("caster").get(0).asString());
-                plugin.experienceListener.addExp(summoner, ClassGameType.MAGIC, 1);
-                if(event.getDamager() instanceof Monster) plugin.getPlayerParama(summoner).addMastery( "voicesofthedamned", 5);
+                plugin.gameManager.experience.addExp(summoner, ClassGameType.MAGIC, 1);
+                if(event.getDamager() instanceof Monster) plugin.playerManager.getPlayerParama(summoner).addMastery( "voicesofthedamned", 5);
                 //Check if damned killed enemy and give exp if so
                 Damageable victim = (Damageable) event.getEntity();
                 if(event.getFinalDamage() > victim.getHealth()){
@@ -176,8 +175,8 @@ public class VoicesOfTheDamned implements Listener, SpellParama {
                     }
                     //Grant exp and lectrum to player according to mob killed
                     if(!mob.equals("")){
-                        plugin.experienceListener.addExp(summoner, ClassGameType.MAGIC, data.getConfig().getInt("mobs."+mob+".exp"));
-                        plugin.experienceListener.addLectrum(summoner, data.getConfig().getInt("mobs."+mob+".lectrum"));
+                        plugin.gameManager.experience.addExp(summoner, ClassGameType.MAGIC, data.getConfig().getInt("mobs."+mob+".exp"));
+                        plugin.gameManager.experience.addLectrum(summoner, data.getConfig().getInt("mobs."+mob+".lectrum"));
                     }
                 }
             }

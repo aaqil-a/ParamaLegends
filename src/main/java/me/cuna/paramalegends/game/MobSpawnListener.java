@@ -9,8 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.HashMap;
-
 public class MobSpawnListener implements Listener {
 
     private final ParamaLegends plugin;
@@ -18,14 +16,14 @@ public class MobSpawnListener implements Listener {
 
     public MobSpawnListener(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
 
     //Listen for mob spawns and set health, damage and other stats accordingly
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
-        int worldLevel = plugin.experienceListener.getWorldLevel();
+        int worldLevel = plugin.gameManager.experience.getWorldLevel();
         int bonusHealth;
         int bonusDamage;
         if(worldLevel >= 2) {
@@ -141,7 +139,7 @@ public class MobSpawnListener implements Listener {
             Arrow arrow = (Arrow) damager;
             if (arrow.getShooter() instanceof Skeleton || arrow.getShooter() instanceof Stray
                 || arrow.getShooter() instanceof Pillager) {
-                int worldLevel = plugin.experienceListener.getWorldLevel();
+                int worldLevel = plugin.gameManager.experience.getWorldLevel();
                 int bonusDamage = worldLevel>=2 ? worldLevel*2 : 0;
                 event.setDamage(event.getDamage()
                         + 5

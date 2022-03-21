@@ -20,7 +20,7 @@ public class WhatsNew implements CommandExecutor {
 
     public WhatsNew(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         whatsNewBook = createBook();
     }
 

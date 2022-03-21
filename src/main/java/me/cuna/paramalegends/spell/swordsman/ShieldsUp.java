@@ -34,7 +34,7 @@ public class ShieldsUp implements Listener, SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Shields Up");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Shields Up");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -48,7 +48,7 @@ public class ShieldsUp implements Listener, SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Shields Up");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Shields Up");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);
@@ -58,7 +58,7 @@ public class ShieldsUp implements Listener, SpellParama {
 
 
     public void shieldAnimation(Player player){
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         playerParama.addEntity("SHIELD1",
                 player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
                     armorStand.setInvisible(true);
@@ -149,7 +149,7 @@ public class ShieldsUp implements Listener, SpellParama {
             if(player.hasMetadata("SHIELDSUP")){
                 if(event.getDamager() instanceof Damageable){
                     Damageable attacker = (Damageable) event.getDamager();
-                    plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                    plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                     attacker.damage(Math.floor(event.getDamage()*0.15)+0.072);
                 }
             }

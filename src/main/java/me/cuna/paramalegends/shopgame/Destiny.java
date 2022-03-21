@@ -32,13 +32,11 @@ public class Destiny implements Listener {
     private final int[] xpNeeded;
     private final int[] xpNeededSwordsman;
 
-
-
     public Destiny(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
-        xpNeeded = plugin.experienceListener.xpNeeded;
-        xpNeededSwordsman = plugin.experienceListener.xpNeededSwordsman;
+        data = plugin.dataManager;
+        xpNeeded = plugin.gameManager.experience.xpNeeded;
+        xpNeededSwordsman = plugin.gameManager.experience.xpNeededSwordsman;
     }
 
     //open gui when right clicking npc
@@ -105,7 +103,7 @@ public class Destiny implements Listener {
     public void createGui(Player player){
         Inventory openGui = Bukkit.createInventory(null,9, ChatColor.COLOR_CHAR+"5Your Destiny");
         gui.put(player, openGui);
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
 
         ItemStack item = new ItemStack(Material.IRON_SWORD);
         ItemMeta meta = item.getItemMeta();
@@ -172,7 +170,7 @@ public class Destiny implements Listener {
     public void createGui2(Player player, ClassGameType skill){
         Inventory openGui = Bukkit.createInventory(null,54, ChatColor.COLOR_CHAR+"5Your "+skill.name().substring(0,1).toUpperCase() + skill.name().substring(1).toLowerCase()+" Destiny");
         gui2.put(player, openGui);
-        int playerLevel = plugin.getPlayerParama(player).getClassLevel(skill);
+        int playerLevel = plugin.playerManager.getPlayerParama(player).getClassLevel(skill);
         int itemLocations[] = {0, 48, 50, 40, 30, 31, 32, 22, 12, 14, 4};
 
         ItemStack item = new ItemStack(Material.LIME_WOOL);

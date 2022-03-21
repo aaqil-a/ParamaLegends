@@ -29,7 +29,7 @@ public class PhoenixDive implements SpellParama {
 
     public void castSpell(PlayerParama playerParama){
         if(playerParama.checkCooldown(this)){
-            plugin.sendCooldownMessage(playerParama, "Phoenix Dive");
+            plugin.gameClassManager.sendCooldownMessage(playerParama, "Phoenix Dive");
         } else {
             if(playerParama.subtractMana(manaCost)){
                 Player player = playerParama.getPlayer();
@@ -52,7 +52,7 @@ public class PhoenixDive implements SpellParama {
                             }
                             if(burned instanceof Damageable){
                                 BukkitTask burnEntity = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                    plugin.experienceListener.addExp(player, ClassGameType.SWORDSMAN, 1);
+                                    plugin.gameManager.experience.addExp(player, ClassGameType.SWORDSMAN, 1);
                                     burned.getWorld().spawnParticle(Particle.SMALL_FLAME, burned.getLocation().add(0,1,0), 5, 0.5, 0.5, 0.5, 0);
                                     ((Damageable) burned).damage(damage+0.072, player);
                                 }, 0, 20);
@@ -65,7 +65,7 @@ public class PhoenixDive implements SpellParama {
                 playerParama.addToCooldown(this);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     if(playerParama.checkCooldown(this)){
-                        plugin.sendNoLongerCooldownMessage(playerParama, "Phoenix Dive");
+                        plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Phoenix Dive");
                         playerParama.removeFromCooldown(this);
                     }
                 }, cooldown);

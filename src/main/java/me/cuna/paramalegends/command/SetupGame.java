@@ -20,7 +20,7 @@ public class SetupGame implements CommandExecutor {
 
     public SetupGame(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
         currentlySettingUp = false;
     }
 
@@ -47,7 +47,7 @@ public class SetupGame implements CommandExecutor {
                 wand.setItemMeta(meta);
                 ((Player) sender).getInventory().addItem(wand);
 
-                plugin.setupListener.setMarkType(BossType.START);
+                plugin.gameManager.setup.setMarkType(BossType.START);
             } else {
                 sender.sendMessage(ChatColor.RED+"Game has already been setup. Remove plugin config.yml file to restart game.");
             }

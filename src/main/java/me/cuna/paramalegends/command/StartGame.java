@@ -38,7 +38,7 @@ public class StartGame implements CommandExecutor {
 
     public StartGame(final ParamaLegends plugin){
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
     }
 
     public Material randomTempleBlock(){

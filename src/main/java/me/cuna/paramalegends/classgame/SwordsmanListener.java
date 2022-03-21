@@ -35,7 +35,7 @@ public class SwordsmanListener implements Listener{
     public final Superconducted superconducted;
     public SwordsmanListener(ParamaLegends plugin) {
         this.plugin = plugin;
-        data = plugin.getData();
+        data = plugin.dataManager;
 
         shieldsUp = new ShieldsUp(plugin);
         phoenixDive = new PhoenixDive(plugin);
@@ -56,7 +56,7 @@ public class SwordsmanListener implements Listener{
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            PlayerParama playerParama = plugin.getPlayerParama(attacker);
+            PlayerParama playerParama = plugin.playerManager.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
@@ -70,7 +70,7 @@ public class SwordsmanListener implements Listener{
                                 LivingEntity crippled = (LivingEntity) event.getEntity();
                                 crippled.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 4, false, false, false));
                                 BukkitTask bleed = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                    plugin.experienceListener.addExp(attacker, ClassGameType.SWORDSMAN, 1);
+                                    plugin.gameManager.experience.addExp(attacker, ClassGameType.SWORDSMAN, 1);
                                     crippled.damage(1.072);
                                 }, 0, 20);
                                 Bukkit.getScheduler().runTaskLater(plugin, bleed::cancel, 82);
@@ -98,7 +98,7 @@ public class SwordsmanListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getItem();
-        PlayerParama playerParama = plugin.getPlayerParama(player);
+        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
         if (item.getItemMeta() != null)
             switch (item.getItemMeta().getDisplayName()) {
                 case ChatColor.COLOR_CHAR+"2Shields Up" -> {
