@@ -37,15 +37,16 @@ public class MagicListener implements Listener {
     public final VoicesOfTheDamned voicesOfTheDamned;
     public final Nova nova;
     public String[] spellNames = {
-            "dragonbreath",
             "flingearth",
-            "gust",
             "ignite",
-            "illusoryorb",
+            "gust",
             "lifedrain",
-            "nova",
+            "blink",
             "summonlightning",
-            "voicesofthedamned"
+            "illusoryorb",
+            "dragonbreath",
+            "voicesofthedamned",
+            "nova",
     };
     public ArrayList<String> spellNamesFormatted = new ArrayList<>(Arrays.asList(
             ChatColor.COLOR_CHAR+"5Fling Earth",

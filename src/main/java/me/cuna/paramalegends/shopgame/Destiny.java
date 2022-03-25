@@ -168,6 +168,7 @@ public class Destiny implements Listener {
 
     //Create gui of destiny
     public void createGui2(Player player, ClassGameType skill){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         Inventory openGui = Bukkit.createInventory(null,54, ChatColor.COLOR_CHAR+"5Your "+skill.name().substring(0,1).toUpperCase() + skill.name().substring(1).toLowerCase()+" Destiny");
         gui2.put(player, openGui);
         int playerLevel = plugin.getPlayerParama(player).getClassLevel(skill);
@@ -187,6 +188,14 @@ public class Destiny implements Listener {
             }
             meta.setDisplayName(ChatColor.RESET + "" +ChatColor.DARK_PURPLE + "Level "+i);
             lore = getLores(skill.name().toLowerCase(), i);
+
+            //show mastery if magic
+            if(skill.equals(ClassGameType.MAGIC)){
+                //exclude blink
+                if(i != 5)
+                    lore.add(ChatColor.GOLD+"Mastery Level: " + playerParama.getMasteryLevel(plugin.gameClassManager.magic.getSpellNames()[i-1]));
+            }
+
             meta.setLore(lore);
             item.setItemMeta(meta);
             openGui.setItem(itemLocations[i], item);
