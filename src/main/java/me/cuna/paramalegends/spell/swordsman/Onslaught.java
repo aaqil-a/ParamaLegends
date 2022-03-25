@@ -73,7 +73,7 @@ public class Onslaught implements SpellParama {
     }
 
     public void swordsAnimation(Player player){
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addEntity("SWORD1",
                 player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
                     armorStand.setInvisible(true);

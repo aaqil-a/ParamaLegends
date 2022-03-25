@@ -71,7 +71,7 @@ public class DragonFightListener implements Listener {
             sendStatistics();
             //give player rewards
             for(Player player : plugin.getServer().getOnlinePlayers()){
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 playerParama.addLectrum(2000);
                 player.sendMessage(ChatColor.GOLD+"+2000 Lectrum");
             }
@@ -154,7 +154,7 @@ public class DragonFightListener implements Listener {
                     EntityLiving playerCraft = ((CraftEnderDragon) dragon).getHandle().G();
                     Player player = (Player) playerCraft;
                     if(player != null){
-                        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                        PlayerParama playerParama = plugin.getPlayerParama(player);
                         playerParama.setSilenced(true);
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 10));
                         Bukkit.getScheduler().runTaskLater(plugin, ()->{

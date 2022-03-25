@@ -82,7 +82,7 @@ public class RoyalArtillery implements Listener, SpellParama {
         double[] arrowMapX3 = {0,-1,2,-2,2};
         double[] arrowMapZ3 = {0,-2,-2,2,2};
 
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addTask("ROYALARTILLERY1",Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(int i = 0; i < 5; i++){
                         Location arrowLocation = location.clone().add(arrowMapX[i], 6, arrowMapZ[i]);

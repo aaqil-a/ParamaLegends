@@ -35,7 +35,7 @@ public class Party implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player){
             Player player = (Player) sender;
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+            PlayerParama playerParama = plugin.getPlayerParama(player);
             if(args.length == 0){
                 sendUsage(player);
                 return true;
@@ -44,7 +44,7 @@ public class Party implements CommandExecutor {
                 case "invite" -> {
                     if(args.length == 2){
                         Player invited = Bukkit.getPlayer(args[1]);
-                        PlayerParama playerParamaInvited = plugin.playerManager.getPlayerParama(invited);
+                        PlayerParama playerParamaInvited = plugin.getPlayerParama(invited);
                         if(invited != null){
                             if(playerParama.hasParty()){
                                 if(playerParamaInvited.hasParty()){
@@ -86,7 +86,7 @@ public class Party implements CommandExecutor {
                             if(kicked.equals(player)){
                                 player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
                             } else if(playerParama.hasParty()){
-                                playerParama.getParty().kick(plugin.playerManager.getPlayerParama(kicked));
+                                playerParama.getParty().kick(plugin.getPlayerParama(kicked));
                             } else {
                                 player.sendMessage(ChatColor.RED + "You are not in a party.");
                             }

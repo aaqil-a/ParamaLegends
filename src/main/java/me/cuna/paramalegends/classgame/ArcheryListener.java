@@ -60,7 +60,7 @@ public class ArcheryListener implements Listener{
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        PlayerParama player = plugin.playerManager.getPlayerParama(event.getPlayer());
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(event.getItem() == null){
             return;
         }
@@ -110,7 +110,7 @@ public class ArcheryListener implements Listener{
             ItemMeta arrowMeta = arrowItem.getItemMeta();
             Player player = (Player) event.getEntity();
             if(arrowMeta != null){
-                shootArrow(plugin.playerManager.getPlayerParama(player), event, arrowMeta.getDisplayName());
+                shootArrow(plugin.getPlayerParama(player), event, arrowMeta.getDisplayName());
             }
             if(event.getProjectile() instanceof AbstractArrow){
                 if(player.hasMetadata("WINDBOOSTPARAMA")){
@@ -136,7 +136,7 @@ public class ArcheryListener implements Listener{
             if(player.getItemInUse() != null && player.getItemInUse().getType().equals(Material.BOW)){
                 ItemStack bow = player.getItemInUse();
                 if(bow.getItemMeta() != null && bow.getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR+"4Blood Rain Bow")){
-                    bloodRain.shootArrow(plugin.playerManager.getPlayerParama(player), event.getProjectile());
+                    bloodRain.shootArrow(plugin.getPlayerParama(player), event.getProjectile());
                 }
             }
         }

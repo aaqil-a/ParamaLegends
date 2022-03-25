@@ -24,7 +24,7 @@ public class TotsukaCreation implements Listener, SpellParama {
     private final ParamaLegends plugin;
 
     private final int manaCost = 40;
-    private final int cooldown = 300;
+    private final int cooldown = 260;
     private final int duration = 140;
 
     public TotsukaCreation(ParamaLegends plugin){
@@ -58,7 +58,7 @@ public class TotsukaCreation implements Listener, SpellParama {
     }
 
     public void spawnWebs(Location location, Player player){
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addTask("TOTSUKA",
                 Bukkit.getScheduler().runTaskTimer(plugin, ()-> {
                     for(Entity rooted : Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 2, 2, 2)){

@@ -73,7 +73,7 @@ public class BlindingSand implements Listener, SpellParama {
             if(projectile.getCustomName().equals("blindsand") && projectile.getShooter() instanceof Player){
                 event.setCancelled(true);
                 Player player = (Player) projectile.getShooter();
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     playerParama.removeEntity("SANDBLOCK");
                 }, 2);

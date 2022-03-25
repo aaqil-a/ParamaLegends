@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,22 +45,13 @@ public class SwordsmanShop extends GameShop {
         return prices;
     }
 
-    //Attack player when npc attacked according to npc type
-    @Override
-    public void NPCAttack(Player player, Entity npc){
-        Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1,0), EntityType.AREA_EFFECT_CLOUD);
-        AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
-        cloud.setParticle(Particle.DAMAGE_INDICATOR);
-        cloud.setDuration(1);
-        player.damage(10, npc);
-    }
-
     //Create shop gui
     @Override
-    public Inventory createGui(Player player, DataManager data){
-        int playerLevel = plugin.playerManager.getPlayerParama(player).getClassLevel(ClassGameType.SWORDSMAN);
-        Inventory gui;
-        gui = Bukkit.createInventory(null,18, ChatColor.COLOR_CHAR+"2Swordsman Buffs");
+    public void createGui(Player player){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"2Swordsman Buffs");
+        playerParama.setOpenShopGui(shopGUI);
+        int playerLevel = plugin.getPlayerParama(player).getClassLevel(ClassGameType.SWORDSMAN);
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -68,10 +60,10 @@ public class SwordsmanShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        shopGUI.setItem(0, item);
         lore.clear();
 
         if(playerLevel >= 3){
@@ -89,7 +81,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(2, item);
+            shopGUI.setItem(2, item);
             lore.clear();
         }
         if(playerLevel >= 5){
@@ -105,7 +97,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "100 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(4, item);
+            shopGUI.setItem(4, item);
             lore.clear();
         }
         if(playerLevel >= 6){
@@ -122,7 +114,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(6, item);
+            shopGUI.setItem(6, item);
             lore.clear();
         }
         if(playerLevel >= 7){
@@ -138,7 +130,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "250 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(8, item);
+            shopGUI.setItem(8, item);
             lore.clear();
         }
         if(playerLevel >= 8){
@@ -155,7 +147,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(10, item);
+            shopGUI.setItem(10, item);
             lore.clear();
         }
         if(playerLevel >= 9){
@@ -173,7 +165,7 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(12, item);
+            shopGUI.setItem(12, item);
             lore.clear();
         }
         if(playerLevel >= 10){
@@ -191,10 +183,8 @@ public class SwordsmanShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "500 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(14, item);
+            shopGUI.setItem(14, item);
             lore.clear();
         }
-
-        return gui;
     }
 }

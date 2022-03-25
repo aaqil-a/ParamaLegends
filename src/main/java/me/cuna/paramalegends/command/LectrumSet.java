@@ -38,7 +38,7 @@ public class LectrumSet implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED+"Invalid lectrum");
                     return true;
                 }
-                plugin.playerManager.getPlayerParama(player).setLectrum(lectrum);
+                plugin.getPlayerParama(player).setLectrum(lectrum);
                 plugin.leaderboard.updateNetWorth(player.getUniqueId().toString());
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");

@@ -55,7 +55,7 @@ public class Soulstring implements SpellParama {
         shirtMeta.setColor(Color.WHITE);
         shirt.setItemMeta(shirtMeta);
 
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addEntity("TURRET",
                 player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
                     armorStand.setCustomName(player.getName()+"'s Soulstring");
@@ -119,7 +119,7 @@ public class Soulstring implements SpellParama {
         double dummyY = dummy.getLocation().getY();
         double dummyZ = dummy.getLocation().getZ();
         dummy.setMetadata("AIMING", new FixedMetadataValue(plugin, "AIMING"));
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addTask("TURRETFOLLOW",
                 Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     double entityX = entity.getLocation().getX();

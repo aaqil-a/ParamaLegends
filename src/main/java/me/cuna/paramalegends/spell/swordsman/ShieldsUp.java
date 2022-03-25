@@ -58,7 +58,7 @@ public class ShieldsUp implements Listener, SpellParama {
 
 
     public void shieldAnimation(Player player){
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addEntity("SHIELD1",
                 player.getWorld().spawn(new Location(player.getWorld(), 0, 256, 0), ArmorStand.class, armorStand -> {
                     armorStand.setInvisible(true);

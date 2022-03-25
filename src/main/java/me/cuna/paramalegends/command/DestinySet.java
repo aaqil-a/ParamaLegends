@@ -51,8 +51,8 @@ public class DestinySet implements CommandExecutor {
                     default -> null;
                 };
                 if(type != null){
-                    plugin.playerManager.getPlayerParama(player).setClassLevel(type, level);
-                    plugin.playerManager.getPlayerParama(player).setClassExp(type, 0);
+                    plugin.getPlayerParama(player).setClassLevel(type, level);
+                    plugin.getPlayerParama(player).setClassExp(type, 0);
                 } else {
                     sendDestinyNames(sender);
                 }

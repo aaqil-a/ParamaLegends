@@ -44,7 +44,7 @@ public class Leaderboard {
             for(String uuid : toUpdateNetWorth) {
                 Player player = plugin.getServer().getPlayer(UUID.fromString(uuid));
                 if(player != null)
-                    addToNetWorth(player.getName(), plugin.playerManager.getPlayerParama(player).getLectrum());
+                    addToNetWorth(player.getName(), plugin.getPlayerParama(player).getLectrum());
                 else {
                     OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(uuid));
                     if(offlinePlayer.getName() != null){

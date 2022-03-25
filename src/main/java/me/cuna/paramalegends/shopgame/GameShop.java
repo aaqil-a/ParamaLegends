@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -25,7 +26,6 @@ public class GameShop implements Listener {
 
     private final String NPCName;
     public final ParamaLegends plugin;
-    public final HashMap<Player, Inventory> gui = new HashMap<>();
     public DataManager data;
 
 
@@ -38,12 +38,12 @@ public class GameShop implements Listener {
     //Open gui when right click npc
     @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
-        Player player = event.getPlayer();
         if (event.getRightClicked() instanceof ArmorStand) {
             if (event.getRightClicked().getName().equals(NPCName)){
                 event.setCancelled(true);
-                gui.put(player, createGui(player, data));
-                player.openInventory(gui.get(player));
+                createGui(event.getPlayer());
+                PlayerParama playerParama = plugin.getPlayerParama(event.getPlayer());
+                event.getPlayer().openInventory(playerParama.getOpenShopGui().getGui());
             }
         }
     }
@@ -61,15 +61,17 @@ public class GameShop implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        Inventory gui = playerParama.getOpenShopGui().getGui();
+        
         //Check if item clicked is in gui
         if (event.getClickedInventory() == null)
             return;
-        if (event.getInventory().equals(gui.get(player)) && !event.getClickedInventory().equals(gui.get(player))) {
+        if (event.getInventory().equals(gui) && !event.getClickedInventory().equals(gui)) {
             event.setCancelled(true);
             return;
         }
-        if (!event.getClickedInventory().equals(gui.get(player)))
+        if (!event.getClickedInventory().equals(gui))
             return;
         if (event.getCurrentItem() == null)
             return;
@@ -78,7 +80,7 @@ public class GameShop implements Listener {
         event.setCancelled(true);
 
         // Get lectrum of player
-        int lectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
+        int lectrum = playerParama.getLectrum();
 
         //Purchase specified item
         if (event.getSlot() != 0){
@@ -88,7 +90,7 @@ public class GameShop implements Listener {
                 player.closeInventory();
                 player.sendMessage(ChatColor.RED + "Not enough lectrum!");
             } else {
-                plugin.playerManager.getPlayerParama(player).removeLectrum(price);
+                plugin.getPlayerParama(player).removeLectrum(price);
                 if(giveItem(event)) updateLectrum(event);
             }
         }
@@ -108,11 +110,6 @@ public class GameShop implements Listener {
         return true;
     }
 
-    //Attack player when npc attacked according to npc type
-    public void NPCAttack(Player player, Entity npc){
-        player.damage(10, npc);
-    }
-
     //Send player message when opening gui according to npc type
     public HashMap<Integer, Integer> getPrices(){
         return null;
@@ -124,9 +121,8 @@ public class GameShop implements Listener {
     }
 
     //Create gui
-    public Inventory createGui(Player player, DataManager data){
+    public void createGui(Player player){
         player.sendMessage("This NPC has no gui!");
-        return null;
     }
 
     //Update lectrum count after purchasing
@@ -137,7 +133,7 @@ public class GameShop implements Listener {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama((Player) event.getWhoClicked()).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama((Player) event.getWhoClicked()).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
         inv.setItem(0, item);

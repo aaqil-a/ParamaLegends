@@ -129,7 +129,7 @@ public class RaidFightListener implements Listener {
 
 
             //give player rewards
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+            PlayerParama playerParama = plugin.getPlayerParama(player);
             playerParama.addLectrum(1000);
             player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
         }

@@ -12,6 +12,7 @@ import me.cuna.paramalegends.party.PartyManager;
 import me.cuna.paramalegends.shopgame.*;
 import me.cuna.paramalegends.classgame.GameClassManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -50,5 +51,9 @@ public class ParamaLegends extends JavaPlugin {
 
         //Start saving player's data every minute
         Bukkit.getScheduler().runTaskTimer(this, dataManager::saveAllPlayerData, 1200, 1200);
+    }
+
+    public PlayerParama getPlayerParama(Player player){
+        return playerManager.getPlayerParama(player);
     }
 }

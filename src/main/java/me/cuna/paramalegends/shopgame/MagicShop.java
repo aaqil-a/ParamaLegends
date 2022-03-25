@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,22 +47,13 @@ public class MagicShop extends GameShop {
         return prices;
     }
 
-    //Attack player when npc attacked according to npc type
-    @Override
-    public void NPCAttack(Player player, Entity npc){
-        Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1,0), EntityType.AREA_EFFECT_CLOUD);
-        AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
-        cloud.setParticle(Particle.CRIT_MAGIC);
-        cloud.setDuration(1);
-        player.damage(10, npc);
-    }
-
     //Create shop gui
     @Override
-    public Inventory createGui(Player player, DataManager data){
-        Inventory gui;
-        int playerLevel = plugin.playerManager.getPlayerParama(player).getClassLevel(ClassGameType.MAGIC);
-        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"5Magic Tomes");
+    public void createGui(Player player){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"5Ancient Tomes");
+        playerParama.setOpenShopGui(shopGUI);
+        int playerLevel = playerParama.getClassLevel(ClassGameType.MAGIC);
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -70,10 +62,10 @@ public class MagicShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        shopGUI.setItem(0, item);
         lore.clear();
 
         // Fling Earth
@@ -89,7 +81,7 @@ public class MagicShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(2, item);
+        shopGUI.setItem(2, item);
         lore.clear();
 
         if(playerLevel >= 2){
@@ -105,7 +97,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(4, item);
+            shopGUI.setItem(4, item);
             lore.clear();
 
         }
@@ -121,7 +113,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "30 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(6, item);
+            shopGUI.setItem(6, item);
             lore.clear();
         }
         if(playerLevel >= 4){
@@ -136,7 +128,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "60 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(8, item);
+            shopGUI.setItem(8, item);
             lore.clear();
         }
         if(playerLevel >= 5){
@@ -151,7 +143,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "80 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(10, item);
+            shopGUI.setItem(10, item);
             lore.clear();
         }
         if(playerLevel >= 6){
@@ -168,7 +160,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(12, item);
+            shopGUI.setItem(12, item);
             lore.clear();
         }
         if(playerLevel >= 7){
@@ -186,7 +178,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(14, item);
+            shopGUI.setItem(14, item);
             lore.clear();
         }
         if(playerLevel >= 8){
@@ -204,7 +196,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(16, item);
+            shopGUI.setItem(16, item);
             lore.clear();
         }
         if(playerLevel >= 9){
@@ -221,7 +213,7 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(20, item);
+            shopGUI.setItem(20, item);
             lore.clear();
         }
         if(playerLevel >= 10){
@@ -235,11 +227,9 @@ public class MagicShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(24, item);
+            shopGUI.setItem(24, item);
             lore.clear();
         }
-
-        return gui;
     }
 
 

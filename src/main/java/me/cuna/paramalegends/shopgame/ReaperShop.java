@@ -2,6 +2,7 @@ package me.cuna.paramalegends.shopgame;
 
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,16 +42,6 @@ public class ReaperShop extends GameShop {
 
     public ReaperShop(final ParamaLegends plugin){
         super(plugin, ChatColor.COLOR_CHAR+"4Reaper Grindstone");
-    }
-
-    //Attack player when npc attacked according to npc type
-    @Override
-    public void NPCAttack(Player player, Entity npc){
-        Entity cloudEntity = player.getLocation().getWorld().spawnEntity(player.getLocation().add(0,1,0), EntityType.AREA_EFFECT_CLOUD);
-        AreaEffectCloud cloud = (AreaEffectCloud) cloudEntity;
-        cloud.setParticle(Particle.CRIT);
-        cloud.setDuration(1);
-        player.damage(10, npc);
     }
 
     //Get prices
@@ -134,7 +125,7 @@ public class ReaperShop extends GameShop {
                 lore = new ArrayList<>();
                 lore.add("");
                 lore.add(ChatColor.GRAY+ "When in Main Hand:");
-                lore.add(" " + ChatColor.DARK_GREEN + "" + newDamage + " Attack Damage");
+                lore.add(" " + ChatColor.DARK_GREEN + "" + (newDamage+1) + " Attack Damage");
             }
             meta.setLore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -147,10 +138,11 @@ public class ReaperShop extends GameShop {
 
     //Create shop gui
     @Override
-    public Inventory createGui(Player player, DataManager data){
-        int playerLevel = plugin.playerManager.getPlayerParama(player).getClassLevel(ClassGameType.REAPER);
-        Inventory gui;
-        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
+    public void createGui(Player player){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
+        playerParama.setOpenShopGui(shopGUI);
+        int playerLevel = playerParama.getClassLevel(ClassGameType.REAPER);
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -160,10 +152,10 @@ public class ReaperShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        shopGUI.setItem(0, item);
         lore.clear();
 
         item.setType(Material.ANVIL);
@@ -172,7 +164,7 @@ public class ReaperShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "5 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(4, item);
+        shopGUI.setItem(4, item);
         lore.clear();
 
         if(playerLevel >= 2){
@@ -190,7 +182,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "10 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(9, item);
+            shopGUI.setItem(9, item);
             lore.clear();
         }
         if(playerLevel >= 3){
@@ -205,7 +197,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "40 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(11, item);
+            shopGUI.setItem(11, item);
             lore.clear();
         }
         if(playerLevel >= 5){
@@ -220,7 +212,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "100 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(13, item);
+            shopGUI.setItem(13, item);
             lore.clear();
         }
         if(playerLevel >= 6){
@@ -235,7 +227,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "150 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(15, item);
+            shopGUI.setItem(15, item);
             lore.clear();
         }
         if(playerLevel >= 7){
@@ -251,7 +243,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "200 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(17, item);
+            shopGUI.setItem(17, item);
             lore.clear();
         }
         if(playerLevel >= 8){
@@ -268,7 +260,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "300 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(19, item);
+            shopGUI.setItem(19, item);
             lore.clear();
         }
         if(playerLevel >= 9){
@@ -285,7 +277,7 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "400 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(21, item);
+            shopGUI.setItem(21, item);
             lore.clear();
         }
         if(playerLevel >= 10){
@@ -301,9 +293,8 @@ public class ReaperShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "600 Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(23, item);
+            shopGUI.setItem(23, item);
             lore.clear();
         }
-        return gui;
     }
 }

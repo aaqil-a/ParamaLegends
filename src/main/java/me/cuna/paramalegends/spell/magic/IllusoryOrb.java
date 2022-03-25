@@ -90,7 +90,7 @@ public class IllusoryOrb implements Listener, SpellParama {
             event.setCancelled(true);
             if(event.getHitEntity() != null){
                 if(event.getHitEntity() instanceof Damageable){
-                    PlayerParama playerParama = plugin.playerManager.getPlayerParama((Player) projectile.getShooter());
+                    PlayerParama playerParama = plugin.getPlayerParama((Player) projectile.getShooter());
                     int masteryLevel = playerParama.getMasteryLevel("illusoryorb");
                     plugin.gameManager.experience.addExp((Player) projectile.getShooter(), ClassGameType.MAGIC, 1);
                     Damageable hit = (Damageable) event.getHitEntity();

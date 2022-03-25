@@ -206,7 +206,7 @@ public class BloodMoonListener implements Listener{
         if(victory){
             //give player rewards
             for(Player player : plugin.getServer().getOnlinePlayers()){
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 playerParama.addLectrum(400);
                 player.sendMessage(ChatColor.GOLD+"+400 Lectrum");
             }

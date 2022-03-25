@@ -63,7 +63,7 @@ public class ReaperListener implements Listener{
         if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity){
             Player defender = (Player) event.getEntity();
             LivingEntity attacker = (LivingEntity) event.getDamager();
-            PlayerParama player = plugin.playerManager.getPlayerParama(defender);
+            PlayerParama player = plugin.getPlayerParama(defender);
             int level = player.getClassLevel(ClassGameType.REAPER);
             //blade mail
             if (player.checkLevel(4, ClassGameType.REAPER, true)) {
@@ -93,7 +93,7 @@ public class ReaperListener implements Listener{
         if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity){
             LivingEntity defender = (LivingEntity) event.getEntity();
             Player attacker = (Player) event.getDamager();
-            PlayerParama player = plugin.playerManager.getPlayerParama(attacker);
+            PlayerParama player = plugin.getPlayerParama(attacker);
             int level = player.getClassLevel(ClassGameType.REAPER);
             //bloody fervour
             if (player.checkLevel(7, ClassGameType.REAPER, true)) {
@@ -110,7 +110,7 @@ public class ReaperListener implements Listener{
     public void onEntityDamageByEntityWeapon(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            PlayerParama player = plugin.playerManager.getPlayerParama(attacker);
+            PlayerParama player = plugin.getPlayerParama(attacker);
             int level = player.getClassLevel(ClassGameType.REAPER);
             ItemStack item = Objects.requireNonNull(attacker.getPlayer()).getInventory().getItemInMainHand();
             switch (item.getType()) {
@@ -162,7 +162,7 @@ public class ReaperListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getItem();
-        PlayerParama player = plugin.playerManager.getPlayerParama(event.getPlayer());
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(item.getItemMeta() != null){
             switch(item.getItemMeta().getDisplayName()){
                 case ChatColor.COLOR_CHAR+"4Hidden Strike" -> {

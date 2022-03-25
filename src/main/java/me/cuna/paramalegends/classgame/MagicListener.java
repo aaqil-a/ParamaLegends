@@ -81,7 +81,7 @@ public class MagicListener implements Listener {
     //When player right clicks a spell
     @EventHandler
     public void onCastSpell(PlayerInteractEvent event){
-        PlayerParama player = plugin.playerManager.getPlayerParama(event.getPlayer());
+        PlayerParama player = plugin.getPlayerParama(event.getPlayer());
         if(event.getItem() == null){
             return;
         }

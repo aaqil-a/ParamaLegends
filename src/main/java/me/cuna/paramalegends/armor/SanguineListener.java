@@ -87,7 +87,7 @@ public class SanguineListener implements Listener {
     }
 
     public void addSanguineEffect(Player player, String piece){
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         if(!playerParama.hasTask("SANGUINEEFFECT"+piece)){
             playerParama.addTask("SANGUINEEFFECT"+piece,
                     Bukkit.getScheduler().runTaskTimer(plugin, ()->{
@@ -96,7 +96,7 @@ public class SanguineListener implements Listener {
         }
     }
     public void removeSanguineEffect(Player player, String piece){
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.cancelTask("SANGUINEEFFECT"+piece);
     }
 

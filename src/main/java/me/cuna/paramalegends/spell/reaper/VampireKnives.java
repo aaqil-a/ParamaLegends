@@ -52,7 +52,7 @@ public class VampireKnives implements SpellParama {
     }
 //
 //    public void knivesAnimation(Player player){
-//        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+//        PlayerParama playerParama = plugin.getPlayerParama(player);
 //        Vector direction = player.getLocation().getDirection();
 //        Vector left = new Vector(-1*direction.getZ(), 0, direction.getX());
 //        left.normalize();

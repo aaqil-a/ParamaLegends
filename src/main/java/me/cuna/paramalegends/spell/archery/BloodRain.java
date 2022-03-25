@@ -56,7 +56,7 @@ public class BloodRain implements Listener, ArrowParama {
         if(event.getEntity().hasMetadata("bloodArrow")){
             if(event.getEntity().getShooter() instanceof Player){
                 Player player = (Player) event.getEntity().getShooter();
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 Location location = event.getEntity().getLocation();
                 playerParama.addTask("BLOODARROW", Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                     for(Entity entity : Objects.requireNonNull(location.getWorld()).getNearbyEntities(location, 3.5, 3.5, 3.5)){

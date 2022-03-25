@@ -145,9 +145,9 @@ public class WorldRuleListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        int lectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
+        int lectrum = plugin.getPlayerParama(player).getLectrum();
         int lost = lectrum/10;
-        plugin.playerManager.getPlayerParama(player).removeLectrum(lost);
+        plugin.getPlayerParama(player).removeLectrum(lost);
         player.sendMessage(ChatColor.RED+"You lost " + lost + " lectrum upon dying.");
     }
 
@@ -176,14 +176,14 @@ public class WorldRuleListener implements Listener {
             if(event.getItem().getItemMeta() != null) {
                 switch(event.getItem().getItemMeta().getDisplayName()){
                     case ChatColor.COLOR_CHAR+"9Mana Potion" -> {
-                        plugin.playerManager.getPlayerParama(event.getPlayer()).addMana(100);
+                        plugin.getPlayerParama(event.getPlayer()).addMana(100);
                         event.setCancelled(true);
                         if(event.getPlayer().getItemInUse() != null){
                             event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);
                         }
                     }
                     case ChatColor.COLOR_CHAR+"9Greater Mana Potion" -> {
-                        plugin.playerManager.getPlayerParama(event.getPlayer()).addMana(200);
+                        plugin.getPlayerParama(event.getPlayer()).addMana(200);
                         event.setCancelled(true);
                         if(event.getPlayer().getItemInUse() != null){
                             event.getPlayer().getItemInUse().setAmount(event.getPlayer().getItemInUse().getAmount()-1);

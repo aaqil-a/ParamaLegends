@@ -79,7 +79,7 @@ public class ExperienceListener implements Listener {
             int exp = data.getConfig().getInt("mobs."+mob+".exp");
             int lectrum = data.getConfig().getInt("mobs."+mob+".lectrum");
             addLectrum(player, lectrum);
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+            PlayerParama playerParama = plugin.getPlayerParama(player);
 
             //share exp with party for kills
             if(playerParama.hasParty() && exp >= 10){
@@ -199,7 +199,7 @@ public class ExperienceListener implements Listener {
             case REAPER -> "Reaper";
         };
         if(player != null){
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+            PlayerParama playerParama = plugin.getPlayerParama(player);
             int currLevel = playerParama.getClassLevel(skillType);
             int currExp = playerParama.getClassExp(skillType);
             currExp += amount;
@@ -237,7 +237,7 @@ public class ExperienceListener implements Listener {
     //Add lectrum gained to player
     public void addLectrum(Player player, int amount){
         if(player != null){
-            plugin.playerManager.getPlayerParama(player).addLectrum(amount);
+            plugin.getPlayerParama(player).addLectrum(amount);
         }
     }
 

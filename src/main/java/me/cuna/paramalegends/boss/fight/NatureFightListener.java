@@ -347,7 +347,7 @@ public class NatureFightListener implements Listener {
         if(win){
             for(Player player : plugin.getServer().getOnlinePlayers()){
                 //give player rewards
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 playerParama.addLectrum(1000);
                 player.sendMessage(ChatColor.GOLD+"+1000 Lectrum");
             }

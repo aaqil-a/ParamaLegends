@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
+
 
 public class Mastery implements CommandExecutor {
 
@@ -34,8 +36,8 @@ public class Mastery implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player) sender;
             if(args.length > 0){
-                String spell = args[0];
-                int level = plugin.playerManager.getPlayerParama(player).getMasteryLevel(spell);
+                String spell = args[0].toLowerCase();
+                int level = plugin.getPlayerParama(player).getMasteryLevel(spell);
                 if(level>0){
                     player.sendMessage(ChatColor.GOLD+spell.substring(0,1).toUpperCase()+spell.substring(1).toLowerCase()+" Mastery Level: "+level);
                 } else {

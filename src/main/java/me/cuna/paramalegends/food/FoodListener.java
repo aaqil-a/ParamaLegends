@@ -132,7 +132,7 @@ public class FoodListener implements Listener {
                 Location datax = data.getConfig().getLocation("coffeegrinder");
                 if(event.getClickedBlock().getLocation().equals(datax) && (event.getPlayer().getName().equalsIgnoreCase("ndhis") || event.getPlayer().getName().equalsIgnoreCase("Bludut") || event.getPlayer().isOp())){
                     event.getPlayer().getWorld().dropItem(event.getClickedBlock().getLocation(), plugin.foodManager.foodRecipes.getCoffeeGround());
-                    int lectrum = plugin.playerManager.getPlayerParama(event.getPlayer()).getLectrum();
+                    int lectrum = plugin.getPlayerParama(event.getPlayer()).getLectrum();
                     if(lectrum < 10){
                         event.getPlayer().sendMessage(ChatColor.RED+"Insufficient lectrum.");
                     }else{

@@ -45,7 +45,7 @@ public class Neurotoxin implements Listener, ArrowParama {
                 Entity hit = event.getEntity();
                 if(!hit.hasMetadata("POISONPARAMA")){
                     hit.setMetadata("POISONPARAMA",new FixedMetadataValue(plugin,"POISONPARAMA"));
-                    PlayerParama player = plugin.playerManager.getPlayerParama((Player) arrow.getShooter());
+                    PlayerParama player = plugin.getPlayerParama((Player) arrow.getShooter());
                     player.addTask("NEUROTOXIN"+event.getEntity().getUniqueId().toString(),
                             Bukkit.getScheduler().runTaskTimer(plugin, ()->{
                                 ((LivingEntity) event.getEntity()).damage(damage+0.016, (Entity) arrow.getShooter());

@@ -34,21 +34,21 @@ public class Lectrum implements CommandExecutor {
             } else {
                 switch (args[0].toLowerCase()) {
                     case "balance" ->
-                        player.sendMessage(ChatColor.GOLD + "Your Lectrum: " + plugin.playerManager.getPlayerParama(player).getLectrum());
+                        player.sendMessage(ChatColor.GOLD + "Your Lectrum: " + plugin.getPlayerParama(player).getLectrum());
                     case "pay" -> {
                         if (args.length == 3) {
                             try {
                                 int amount = Integer.parseInt(args[2]);
                                 Player receiver = Bukkit.getPlayer(args[1]);
                                 if (receiver != null) {
-                                    int senderLectrum = plugin.playerManager.getPlayerParama(player).getLectrum();
+                                    int senderLectrum = plugin.getPlayerParama(player).getLectrum();
                                     if (senderLectrum < amount) {
                                         player.sendMessage(ChatColor.RED + "Not enough lectrum!");
                                     } else if(amount < 1) {
                                         player.sendMessage(ChatColor.RED + "Invalid amount.");
                                     } else {
-                                        plugin.playerManager.getPlayerParama(receiver).addLectrum(amount);
-                                        plugin.playerManager.getPlayerParama(player).removeLectrum(amount);
+                                        plugin.getPlayerParama(receiver).addLectrum(amount);
+                                        plugin.getPlayerParama(player).removeLectrum(amount);
                                         player.sendMessage(ChatColor.GOLD + "Successfully sent " + amount + " lectrum to " + args[1] + ".");
                                         receiver.sendMessage(ChatColor.GOLD + "Received " + amount + " lectrum from " + player.getName() + ".");
                                     }

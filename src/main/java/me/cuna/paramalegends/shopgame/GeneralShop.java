@@ -12,6 +12,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -58,9 +59,10 @@ public class GeneralShop extends GameShop {
 
     //Create shop gui
     @Override
-    public Inventory createGui(Player player, DataManager data){
-        Inventory gui;
-        gui = Bukkit.createInventory(null,18, ChatColor.COLOR_CHAR+"6Odd Wares");
+    public void createGui(Player player){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        ShopGUI shopGUI = new ShopGUI(plugin,  18,ChatColor.COLOR_CHAR+"6Odd Wares");
+        playerParama.setOpenShopGui(shopGUI);
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -69,10 +71,10 @@ public class GeneralShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        shopGUI.setItem(0, item);
         lore.clear();
 
         // Classic Arrows
@@ -82,7 +84,7 @@ public class GeneralShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "1 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(2, item);
+        shopGUI.setItem(2, item);
         lore.clear();
 
         // Healing Potion
@@ -94,7 +96,7 @@ public class GeneralShop extends GameShop {
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HEAL, 1, 1), true);
         potionMeta.setColor(Color.FUCHSIA);
         potion.setItemMeta(potionMeta);
-        gui.setItem(4, potion);
+        shopGUI.setItem(4, potion);
         lore.clear();
 
         // Healing Potion
@@ -105,7 +107,7 @@ public class GeneralShop extends GameShop {
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 500, 1), true);
         potionMeta.setColor(Color.PURPLE);
         potion.setItemMeta(potionMeta);
-        gui.setItem(6, potion);
+        shopGUI.setItem(6, potion);
         lore.clear();
 
         // Expanse Fund
@@ -119,7 +121,7 @@ public class GeneralShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "5 Lectrum");
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(8, item);
+        shopGUI.setItem(8, item);
         lore.clear();
 
         // Alcohol License
@@ -135,7 +137,7 @@ public class GeneralShop extends GameShop {
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
-        gui.setItem(10, item);
+        shopGUI.setItem(10, item);
         lore.clear();
 
         // Mana Potion
@@ -148,7 +150,7 @@ public class GeneralShop extends GameShop {
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 0, 0), true);
         potionMeta.setColor(Color.BLUE);
         potion.setItemMeta(potionMeta);
-        gui.setItem(12, potion);
+        shopGUI.setItem(12, potion);
         lore.clear();
 
         // Greater Mana Potion
@@ -157,10 +159,8 @@ public class GeneralShop extends GameShop {
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "20 Lectrum");
         potionMeta.setLore(lore);
         potion.setItemMeta(potionMeta);
-        gui.setItem(14, potion);
+        shopGUI.setItem(14, potion);
         lore.clear();
-
-        return gui;
     }
 
 

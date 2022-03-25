@@ -1,8 +1,8 @@
 package me.cuna.paramalegends;
 
 import me.cuna.paramalegends.classgame.ClassGameType;
-import me.cuna.paramalegends.game.PlayerManager;
 import me.cuna.paramalegends.party.Party;
+import me.cuna.paramalegends.shopgame.ShopGUI;
 import me.cuna.paramalegends.spell.ArrowParama;
 import me.cuna.paramalegends.spell.AttackParama;
 import me.cuna.paramalegends.spell.SpellParama;
@@ -48,6 +48,7 @@ public class PlayerParama {
     private int lectrum = 50;
     private Party party = null;
     private Party partyInvited = null;
+    private ShopGUI openShopGui = null;
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
@@ -404,6 +405,14 @@ public class PlayerParama {
 
     public void setPartyInvited(Party party){
         this.partyInvited = party;
+    }
+
+    public void setOpenShopGui(ShopGUI gui){
+        this.openShopGui = gui;
+    }
+
+    public ShopGUI getOpenShopGui(){
+        return this.openShopGui;
     }
 
 }

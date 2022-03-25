@@ -1,17 +1,15 @@
 package me.cuna.paramalegends.shopgame;
 
-import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.PlayerParama;
 import me.cuna.paramalegends.classgame.ClassGameType;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,41 +45,13 @@ public class ArcheryShop extends GameShop {
         return prices;
     }
 
-    //Attack player when npc attacked according to npc type
-    @Override
-    public void NPCAttack(Player player, Entity npc){
-        player.getWorld().playSound(npc.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1f, 0f);
-        Arrow arrow1 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(3,0,3), EntityType.ARROW);
-        arrow1.setVelocity(new Vector(-0.5, 0, -0.5));
-        arrow1.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        Arrow arrow2 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(0,4,0), EntityType.ARROW);
-        arrow2.setVelocity(new Vector(0,-1,0));
-        arrow2.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        Arrow arrow3 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(-3,0,3), EntityType.ARROW);
-        arrow3.setVelocity(new Vector(0.5,0,-0.5));
-        arrow3.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        Arrow arrow4 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(3,0,-3), EntityType.ARROW);
-        arrow4.setVelocity(new Vector(-0.5,0,0.5));
-        arrow4.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        Arrow arrow5 = (Arrow) player.getWorld().spawnEntity(player.getEyeLocation().add(-3,0,-3), EntityType.ARROW);
-        arrow5.setVelocity(new Vector(0.5,0,0.5));
-        arrow5.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            arrow1.remove();
-            arrow2.remove();
-            arrow3.remove();
-            arrow4.remove();
-            arrow5.remove();
-            player.damage(10, npc);
-        }, 6);
-    }
-
     //Create shop gui
     @Override
-    public Inventory createGui(Player player, DataManager data){
-        int playerLevel = plugin.playerManager.getPlayerParama(player).getClassLevel(ClassGameType.ARCHERY);
-        Inventory gui;
-        gui = Bukkit.createInventory(null,27, ChatColor.COLOR_CHAR+"aRanger Gear");
+    public void createGui(Player player){
+        PlayerParama playerParama = plugin.getPlayerParama(player);
+        ShopGUI shopGUI = new ShopGUI(plugin,27,ChatColor.COLOR_CHAR+"aRanger Gear");
+        playerParama.setOpenShopGui(shopGUI);
+        int playerLevel = playerParama.getClassLevel(ClassGameType.ARCHERY);
 
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
@@ -91,10 +61,10 @@ public class ArcheryShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.playerManager.getPlayerParama(player).getLectrum());
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);
-        gui.setItem(0, item);
+        shopGUI.setItem(0, item);
         lore.clear();
 
         //Hunter's Eye
@@ -112,7 +82,7 @@ public class ArcheryShop extends GameShop {
         tippedArrowMeta.setLore(lore);
         tippedArrowItem.setAmount(8);
         tippedArrowItem.setItemMeta(tippedArrowMeta);
-        gui.setItem(2, tippedArrowItem);
+        shopGUI.setItem(2, tippedArrowItem);
         lore.clear();
 
         if(playerLevel >= 2){
@@ -127,7 +97,7 @@ public class ArcheryShop extends GameShop {
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
-            gui.setItem(4, tippedArrowItem);
+            shopGUI.setItem(4, tippedArrowItem);
             lore.clear();
         }
         if(playerLevel >= 3){
@@ -144,7 +114,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(6)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(6, item);
+            shopGUI.setItem(6, item);
             lore.clear();
         }
         if(playerLevel >= 4){
@@ -160,7 +130,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(8)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(8, item);
+            shopGUI.setItem(8, item);
             lore.clear();
         }
         if(playerLevel >= 5){
@@ -176,7 +146,7 @@ public class ArcheryShop extends GameShop {
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
-            gui.setItem(10, tippedArrowItem);
+            shopGUI.setItem(10, tippedArrowItem);
             lore.clear();
         }
         if(playerLevel >= 6){
@@ -192,7 +162,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(12)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(12, item);
+            shopGUI.setItem(12, item);
             lore.clear();
         }
         if(playerLevel >= 7){
@@ -209,7 +179,7 @@ public class ArcheryShop extends GameShop {
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
-            gui.setItem(14, tippedArrowItem);
+            shopGUI.setItem(14, tippedArrowItem);
             lore.clear();
             // Huayra's Fury
             item.setType(Material.SKELETON_SKULL);
@@ -225,7 +195,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(16)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(16, item);
+            shopGUI.setItem(16, item);
             lore.clear();
         }
         if(playerLevel >= 8){
@@ -240,7 +210,7 @@ public class ArcheryShop extends GameShop {
             tippedArrowMeta.setLore(lore);
             tippedArrowItem.setItemMeta(tippedArrowMeta);
             tippedArrowItem.setAmount(8);
-            gui.setItem(20, tippedArrowItem);
+            shopGUI.setItem(20, tippedArrowItem);
             lore.clear();
         }
         if(playerLevel >= 9){
@@ -255,7 +225,7 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(22)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(22, item);
+            shopGUI.setItem(22, item);
             lore.clear();
         }
         if(playerLevel >= 10){
@@ -270,9 +240,8 @@ public class ArcheryShop extends GameShop {
             lore.add(ChatColor.RESET + "" + ChatColor.GOLD + prices.get(24)+" Lectrum");
             meta.setLore(lore);
             item.setItemMeta(meta);
-            gui.setItem(24, item);
+            shopGUI.setItem(24, item);
             lore.clear();
         }
-        return gui;
     }
 }

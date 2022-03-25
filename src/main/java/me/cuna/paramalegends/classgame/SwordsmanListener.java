@@ -56,7 +56,7 @@ public class SwordsmanListener implements Listener{
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(attacker);
+            PlayerParama playerParama = plugin.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             switch (item.getType()){
                 case WOODEN_SWORD, STONE_SWORD, GOLDEN_SWORD, IRON_SWORD, DIAMOND_SWORD, NETHERITE_SWORD -> {
@@ -98,7 +98,7 @@ public class SwordsmanListener implements Listener{
         }
         //Check if held item is book
         ItemStack item = event.getItem();
-        PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+        PlayerParama playerParama = plugin.getPlayerParama(player);
         if (item.getItemMeta() != null)
             switch (item.getItemMeta().getDisplayName()) {
                 case ChatColor.COLOR_CHAR+"2Shields Up" -> {

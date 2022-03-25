@@ -61,7 +61,7 @@ public class FlingEarth implements Listener, SpellParama {
                 dummy.teleport(dummy.getLocation().add(new Vector(0,-2,0)));
                 Snowball ball = dummy.launchProjectile(Snowball.class, player.getEyeLocation().getDirection().multiply(2.5));
                 dummy.remove();
-                ball.setCustomName("iceball");
+                ball.setCustomName("dirtball");
                 Vector velocity = ball.getVelocity();
                 velocity.multiply(1);
                 ball.setItem(new ItemStack(Material.DIRT));
@@ -80,20 +80,21 @@ public class FlingEarth implements Listener, SpellParama {
     public void onProjectileHit(ProjectileHitEvent event){
         Projectile projectile = event.getEntity();
         if(projectile instanceof Snowball && projectile.getCustomName() != null){ // Check if ice ball hits
-            if(projectile.getCustomName().equals("iceball")){
+            if(projectile.getCustomName().equals("dirtball")){
                 event.setCancelled(true);
                 ArmorStand source = (ArmorStand) projectile.getShooter();
                 assert source != null;
                 Player player = plugin.getServer().getPlayer(source.getName());
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 playerParama.removeEntity("FLINGEARTHBALL");
+
                 int masteryLevel = playerParama.getMasteryLevel("flingearth");
                 if(event.getHitEntity() != null){
                     if(event.getHitEntity() instanceof Damageable){
                         plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                         Damageable hit = (Damageable) event.getHitEntity();
                         hit.damage(damage+damageBonus*masteryLevel+0.069, player);
-                        if(event.getEntity() instanceof Monster || event.getEntity() instanceof Phantom) playerParama.addMastery( "flingearth", 1);
+                        if(event.getHitEntity() instanceof Monster || event.getHitEntity() instanceof Phantom) playerParama.addMastery( "flingearth", 1);
                     }
                 }
                 projectile.remove();

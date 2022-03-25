@@ -42,7 +42,7 @@ public class DamageModifyingListener implements Listener {
             Projectile projectile = (Projectile) event.getDamager();
             if(projectile.getShooter() instanceof Player){
                 Player player = (Player) projectile.getShooter();
-                PlayerParama playerParama = plugin.playerManager.getPlayerParama(player);
+                PlayerParama playerParama = plugin.getPlayerParama(player);
                 if(event.getEntity().getLocation().distance(player.getLocation()) > 10){
                     damage *= 1.2;
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1f);
@@ -64,7 +64,7 @@ public class DamageModifyingListener implements Listener {
         }
         if(event.getDamager() instanceof Player) {
             Player attacker = (Player) event.getDamager();
-            PlayerParama playerParama = plugin.playerManager.getPlayerParama(attacker);
+            PlayerParama playerParama = plugin.getPlayerParama(attacker);
             ItemStack item = attacker.getPlayer().getInventory().getItemInMainHand();
             Random rand = new Random();
             switch (item.getType()){
