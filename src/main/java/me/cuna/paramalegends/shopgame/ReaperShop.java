@@ -140,7 +140,7 @@ public class ReaperShop extends GameShop {
     @Override
     public void createGui(Player player){
         PlayerParama playerParama = plugin.getPlayerParama(player);
-        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
+        ShopGUI shopGUI = new ShopGUI(plugin,  this, 27,ChatColor.COLOR_CHAR+"4Reaper's Weaponry");
         playerParama.setOpenShopGui(shopGUI);
         int playerLevel = playerParama.getClassLevel(ClassGameType.REAPER);
 

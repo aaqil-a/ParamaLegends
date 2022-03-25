@@ -61,7 +61,7 @@ public class GeneralShop extends GameShop {
     @Override
     public void createGui(Player player){
         PlayerParama playerParama = plugin.getPlayerParama(player);
-        ShopGUI shopGUI = new ShopGUI(plugin,  18,ChatColor.COLOR_CHAR+"6Odd Wares");
+        ShopGUI shopGUI = new ShopGUI(plugin,  this, 18,ChatColor.COLOR_CHAR+"6Odd Wares");
         playerParama.setOpenShopGui(shopGUI);
 
         ItemStack item = new ItemStack(Material.EMERALD);

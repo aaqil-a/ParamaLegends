@@ -51,7 +51,7 @@ public class MagicShop extends GameShop {
     @Override
     public void createGui(Player player){
         PlayerParama playerParama = plugin.getPlayerParama(player);
-        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"5Ancient Tomes");
+        ShopGUI shopGUI = new ShopGUI(plugin,  this,27,ChatColor.COLOR_CHAR+"5Ancient Tomes");
         playerParama.setOpenShopGui(shopGUI);
         int playerLevel = playerParama.getClassLevel(ClassGameType.MAGIC);
 

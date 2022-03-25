@@ -49,7 +49,7 @@ public class ArcheryShop extends GameShop {
     @Override
     public void createGui(Player player){
         PlayerParama playerParama = plugin.getPlayerParama(player);
-        ShopGUI shopGUI = new ShopGUI(plugin,27,ChatColor.COLOR_CHAR+"aRanger Gear");
+        ShopGUI shopGUI = new ShopGUI(plugin,this, 27,ChatColor.COLOR_CHAR+"aRanger Gear");
         playerParama.setOpenShopGui(shopGUI);
         int playerLevel = playerParama.getClassLevel(ClassGameType.ARCHERY);
 
@@ -60,7 +60,7 @@ public class ArcheryShop extends GameShop {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.RESET + "Your Lectrum");
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "" + plugin.getPlayerParama(player).getLectrum());
         meta.setLore(lore);
         item.setItemMeta(meta);

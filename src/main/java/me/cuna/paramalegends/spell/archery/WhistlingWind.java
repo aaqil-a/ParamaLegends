@@ -70,15 +70,7 @@ public class WhistlingWind implements Listener {
             if(targetLocation.distance(sourceLocation) < 1.5){
                 hitEntity(shooter, target);
                 //fire next whistling wind
-                Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                    List <Entity> entities = shooter.getNearbyEntities(15,15,15);
-                    entities.removeIf(entity -> (!(entity instanceof Monster || entity instanceof Phantom || entity instanceof Slime) || entity.equals(target) || entity.isDead()));
-                    if(entities.size()>0){
-                        shootArrowToEntity(shooter, target, entities.get(rand.nextInt(entities.size())));
-                    } else {
-                        returnArrow(shooter, target);
-                    }
-                }, 8);
+                fireWhistlingWind(shooter, target);
             } else {
                 //adjust target and source locations
                 targetLocation.add(0,-0.5,0);
@@ -112,15 +104,7 @@ public class WhistlingWind implements Listener {
                         hitEntity(shooter, target);
                         arrow.remove();
                         //fire next whistling wind
-                        Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                            List <Entity> entities = shooter.getNearbyEntities(15,15,15);
-                            entities.removeIf(entity -> (!(entity instanceof Monster || entity instanceof Phantom || entity instanceof Slime) || entity.equals(target) || entity.isDead()));
-                            if(entities.size()>0){
-                                shootArrowToEntity(shooter, target, entities.get(rand.nextInt(entities.size())));
-                            } else {
-                                returnArrow(shooter, target);
-                            }
-                        }, 8);
+                        fireWhistlingWind(shooter, target);
                     }
                 }, 20);
             }
@@ -206,15 +190,7 @@ public class WhistlingWind implements Listener {
                     hitEntity(shooter, hit);
                     arrow.removeMetadata("TARGETWHISTLINGWIND", plugin);
                     //fire next whistling wind
-                    Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                        List <Entity> entities = shooter.getNearbyEntities(15,15,15);
-                        entities.removeIf(entity -> (!(entity instanceof Monster || entity instanceof Phantom || entity instanceof Slime) || entity.equals(hit) || entity.isDead()));
-                        if(entities.size()>0){
-                            shootArrowToEntity(shooter, hit, entities.get(rand.nextInt(entities.size())));
-                        } else {
-                            returnArrow(shooter, hit);
-                        }
-                    }, 8);
+                    fireWhistlingWind(shooter, hit);
                 } else if(event.getHitEntity() != null){
                     Player shooter = (Player) arrow.getShooter();
                     hitEntity(shooter, event.getHitEntity());
@@ -235,6 +211,18 @@ public class WhistlingWind implements Listener {
                 }
             }
         }
+    }
+
+    public void fireWhistlingWind(Player shooter, Entity hit) {
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            List<Entity> entities = shooter.getNearbyEntities(15,15,15);
+            entities.removeIf(entity -> (!(entity instanceof Monster || entity instanceof Phantom || entity instanceof Slime) || entity.equals(hit) || entity.isDead()));
+            if(entities.size()>0){
+                shootArrowToEntity(shooter, hit, entities.get(rand.nextInt(entities.size())));
+            } else {
+                returnArrow(shooter, hit);
+            }
+        }, 8);
     }
 
     public void givePlayerWhistlingWind(Player player, ItemStack item){

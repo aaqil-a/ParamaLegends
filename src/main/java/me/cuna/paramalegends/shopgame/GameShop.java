@@ -43,7 +43,7 @@ public class GameShop implements Listener {
                 event.setCancelled(true);
                 createGui(event.getPlayer());
                 PlayerParama playerParama = plugin.getPlayerParama(event.getPlayer());
-                event.getPlayer().openInventory(playerParama.getOpenShopGui().getGui());
+                event.getPlayer().openInventory(playerParama.getOpenShopGui().getInventory());
             }
         }
     }
@@ -55,46 +55,6 @@ public class GameShop implements Listener {
         if(armorStand instanceof ArmorStand) {
             if(armorStand.getName().equals(NPCName)) event.setCancelled(true);
         }
-    }
-
-    //Handle events when item clicked in gui
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        PlayerParama playerParama = plugin.getPlayerParama(player);
-        Inventory gui = playerParama.getOpenShopGui().getGui();
-        
-        //Check if item clicked is in gui
-        if (event.getClickedInventory() == null)
-            return;
-        if (event.getInventory().equals(gui) && !event.getClickedInventory().equals(gui)) {
-            event.setCancelled(true);
-            return;
-        }
-        if (!event.getClickedInventory().equals(gui))
-            return;
-        if (event.getCurrentItem() == null)
-            return;
-        if (event.getCurrentItem().getItemMeta() == null)
-            return;
-        event.setCancelled(true);
-
-        // Get lectrum of player
-        int lectrum = playerParama.getLectrum();
-
-        //Purchase specified item
-        if (event.getSlot() != 0){
-            // Gets price of clicked item
-            int price = getPrices().get(event.getSlot());
-            if (lectrum < price) {
-                player.closeInventory();
-                player.sendMessage(ChatColor.RED + "Not enough lectrum!");
-            } else {
-                plugin.getPlayerParama(player).removeLectrum(price);
-                if(giveItem(event)) updateLectrum(event);
-            }
-        }
-
     }
 
     //Purchase item from gui

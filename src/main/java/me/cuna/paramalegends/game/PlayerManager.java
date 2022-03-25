@@ -52,13 +52,6 @@ public class PlayerManager implements Listener {
         playerParama.removeAllEntities();
 
         // remove player from plugin memory
-        plugin.shopManager.destiny.gui.remove(player);
-        plugin.shopManager.destiny.gui2.remove(player);
-        plugin.shopManager.archeryShop.gui.remove(player);
-        plugin.shopManager.generalShop.gui.remove(player);
-        plugin.shopManager.reaperShop.gui.remove(player);
-        plugin.shopManager.magicShop.gui.remove(player);
-        plugin.shopManager.swordsmanShop.gui.remove(player);
         plugin.altarManager.earthAltar.gui.remove(player);
         plugin.altarManager.natureAltar.gui.remove(player);
         plugin.alcoholManager.alcohol.playersDrunk.remove(player);

@@ -49,7 +49,7 @@ public class SwordsmanShop extends GameShop {
     @Override
     public void createGui(Player player){
         PlayerParama playerParama = plugin.getPlayerParama(player);
-        ShopGUI shopGUI = new ShopGUI(plugin,  27,ChatColor.COLOR_CHAR+"2Swordsman Buffs");
+        ShopGUI shopGUI = new ShopGUI(plugin,  this,27,ChatColor.COLOR_CHAR+"2Swordsman Buffs");
         playerParama.setOpenShopGui(shopGUI);
         int playerLevel = plugin.getPlayerParama(player).getClassLevel(ClassGameType.SWORDSMAN);
 
