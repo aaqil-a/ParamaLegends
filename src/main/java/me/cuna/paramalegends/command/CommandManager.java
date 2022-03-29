@@ -22,6 +22,7 @@ public class CommandManager {
     public Leaderboard leaderboard;
     public Tip tip;
     public Party party;
+    public Coords coords;
 
     public CommandManager(ParamaLegends plugin){
         this.plugin = plugin;
@@ -43,7 +44,8 @@ public class CommandManager {
         leaderboard = new Leaderboard(plugin);
         tip = new Tip(plugin);
         party = new Party(plugin);
-        
+        coords = new Coords(plugin);
+
         setCommandExecutors();
     }
     
@@ -65,5 +67,8 @@ public class CommandManager {
         plugin.getCommand("leaderboard").setExecutor(leaderboard);
         plugin.getCommand("tip").setExecutor(tip);
         plugin.getCommand("party").setExecutor(party);
+        plugin.getCommand("coords").setExecutor(coords);
+
+
     }
 }
