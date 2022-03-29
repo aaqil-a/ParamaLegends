@@ -50,7 +50,7 @@ public class LifeDrain implements Listener, SpellParama {
             int masteryLevel = playerParama.getMasteryLevel("lifedrain");
             Predicate<Entity> notPlayer = entity -> !(entity.equals(player));
             RayTraceResult rayTrace = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), range+rangeBonus*masteryLevel, FluidCollisionMode.NEVER,
-                    true, 1.5, notPlayer);
+                    true, 1.2, notPlayer);
             if(rayTrace != null) {
                 if (rayTrace.getHitEntity() != null) {
                     Entity drained = rayTrace.getHitEntity();
@@ -81,8 +81,12 @@ public class LifeDrain implements Listener, SpellParama {
                                             player.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(new Vector(0,1,0)), 4, 0.5, 0.5, 0.5, 0);
                                             plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                                             ((Damageable) drained).damage(damage+masteryLevel*damageBonus+0.069, player);
-                                            if(player.getHealth() <= (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healing)){
-                                                player.setHealth(player.getHealth()+healing);
+                                            int healed = healing + (masteryLevel >= 4 ? 1 : 0);
+                                            Bukkit.broadcastMessage(healed+"");
+                                            if(player.getHealth() <= (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healed)){
+                                                player.setHealth(player.getHealth()+healed);
+                                            } else {
+                                                player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
                                             }
                                         }
                                         if(drained instanceof Monster) playerParama.addMastery( "lifedrain", 3);

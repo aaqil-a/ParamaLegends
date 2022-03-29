@@ -33,6 +33,8 @@ public class Gust implements SpellParama {
             Player player = playerParama.getPlayer();
             Location location = player.getEyeLocation();
             Vector direction = player.getLocation().getDirection();
+            direction.setY(0);
+            direction.normalize();
 
             BoundingBox gustBox = plugin.gameClassManager.magic.getBoxInFrontOfLocation(location, direction, 10);
 
@@ -41,9 +43,9 @@ public class Gust implements SpellParama {
                 if(knocked.equals(player)){
                     continue;
                 }
-                if(knocked instanceof Damageable){
+                if(knocked instanceof Damageable && !(knocked instanceof ArmorStand)){
                     plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
-                    knocked.setVelocity(knocked.getVelocity().add(direction.multiply(1.4+velocityMultiplier*masteryLevel)));
+                    knocked.setVelocity(knocked.getVelocity().add(direction.multiply(2+velocityMultiplier*masteryLevel)));
                     ((Damageable) knocked).damage(damage+0.069, player);
                     if(knocked instanceof Monster) playerParama.addMastery( "gust", 2);
                 }
