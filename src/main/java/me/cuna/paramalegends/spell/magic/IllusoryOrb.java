@@ -36,6 +36,7 @@ public class IllusoryOrb implements Listener, SpellParama {
             EnderPearl orb = (EnderPearl) playerParama.getEntity("ILLUSORYORB");
             orb.remove();
             orb.getWorld().spawnParticle(Particle.FLASH, orb.getLocation(), 1);
+            player.setFallDistance(0);
             plugin.gameClassManager.magic.teleportToAir(player, orb.getLocation(), player.getLocation().getDirection());
             playerParama.cancelTask("ORBFLASH");
             if(player.hasMetadata("ORBCASTED")) player.removeMetadata("ORBCASTED",plugin);

@@ -423,6 +423,7 @@ public class NatureFightListener implements Listener {
                         .setBaseValue(2000);
             slime.setHealth(2000);
             slime.setAware(true);
+            slime.setMetadata("BOSS", new FixedMetadataValue(plugin, "BOSS"));
             Objects.requireNonNull(slime.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE))
                     .setBaseValue(6);
             slime.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);

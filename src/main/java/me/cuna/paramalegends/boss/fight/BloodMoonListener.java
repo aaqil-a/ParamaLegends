@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -95,6 +96,7 @@ public class BloodMoonListener implements Listener{
                                         .setBaseValue(40);
                                 ghast.setHealth(40);
                                 ghast.setCustomName(ChatColor.COLOR_CHAR + "4Blood Moon Ghast");
+                                ghast.setMetadata("BOSS", new FixedMetadataValue(plugin, "BOSS"));
                             }));
 
                         spawnLocation.add(-1, 0, -1);
