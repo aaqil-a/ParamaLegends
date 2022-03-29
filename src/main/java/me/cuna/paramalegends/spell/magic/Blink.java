@@ -41,14 +41,14 @@ public class Blink implements SpellParama {
             }
             playerParama.addToCooldown(this);
             location.setDirection(player.getLocation().getDirection());
-            player.getWorld().spawnParticle(Particle.SMOKE_LARGE, player.getEyeLocation(), 10, 0.5, 0.5, 0.5);
+            player.getWorld().spawnParticle(Particle.DRAGON_BREATH, player.getEyeLocation(), 16, 0.5, 0.5, 0.5, 0.2);
             Location finalLocation = location;
             Bukkit.getScheduler().runTaskLater(plugin, ()->{
                 player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
                 player.getWorld().playSound(finalLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
             }, 5);
-            player.getWorld().spawnParticle(Particle.SMOKE_LARGE, location.add(new Vector(0,2,0)), 10, 0.5, 0.5, 0.5);
             plugin.gameClassManager.magic.teleportToAir(player, location);
+            player.getWorld().spawnParticle(Particle.DRAGON_BREATH, player.getEyeLocation(), 16, 0.5, 0.5, 0.5, 0.2);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
                     plugin.gameClassManager.sendNoLongerCooldownMessage(playerParama, "Blink");

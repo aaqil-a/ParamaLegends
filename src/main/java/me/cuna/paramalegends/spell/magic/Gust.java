@@ -69,7 +69,7 @@ public class Gust implements SpellParama {
             Vector direction = player.getLocation().getDirection();
 
             player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getLocation().getDirection().multiply(2)).add(new Vector(0,0.5,0)), 8, 1, 0.5, 1, 0);
-            player.setVelocity(player.getVelocity().add(direction.multiply(1+velocityMultiplier*masteryLevel)));
+            player.setVelocity(player.getVelocity().add(direction.multiply(1.1+velocityMultiplier*masteryLevel)));
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if(playerParama.checkCooldown(this)){
