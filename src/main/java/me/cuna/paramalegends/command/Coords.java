@@ -1,6 +1,5 @@
 package me.cuna.paramalegends.command;
 
-import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -23,6 +23,7 @@ public class CommandManager {
     public Tip tip;
     public Party party;
     public Coords coords;
+    public VoteKick voteKick;
 
     public CommandManager(ParamaLegends plugin){
         this.plugin = plugin;
@@ -45,6 +46,7 @@ public class CommandManager {
         tip = new Tip(plugin);
         party = new Party(plugin);
         coords = new Coords(plugin);
+        voteKick = new VoteKick(plugin);
 
         setCommandExecutors();
     }
@@ -68,7 +70,7 @@ public class CommandManager {
         plugin.getCommand("tip").setExecutor(tip);
         plugin.getCommand("party").setExecutor(party);
         plugin.getCommand("coords").setExecutor(coords);
-
+        plugin.getCommand("votekick").setExecutor(voteKick);
 
     }
 }

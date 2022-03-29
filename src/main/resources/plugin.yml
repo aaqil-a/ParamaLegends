@@ -82,6 +82,9 @@ commands:
   coords:
     description: Broadcast your coordinates
     usage: /coords
+  votekick:
+    description: Vote to kick a player
+    usage: /votekick <player>
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.
