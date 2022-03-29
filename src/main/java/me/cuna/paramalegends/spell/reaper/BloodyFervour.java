@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
 
-public class BloodyFervour implements AttackParama {
+public class    BloodyFervour implements AttackParama {
 
     private final ParamaLegends plugin;
     private final int cooldown = 202;

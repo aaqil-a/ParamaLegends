@@ -10,6 +10,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -121,11 +122,12 @@ public class TotsukaCreation implements Listener, SpellParama {
     }
 
     @EventHandler
-    public void onBreakWeb(BlockBreakEvent event){
+    public void onDropWeb(BlockDropItemEvent event){
         if(event.getBlock().hasMetadata("TOTSUKAWEB")){
-            event.setDropItems(false);
+            event.setCancelled(true);
         }
     }
+
 
     public int getManaCost(){
         return manaCost;

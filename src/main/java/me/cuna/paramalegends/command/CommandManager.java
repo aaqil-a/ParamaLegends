@@ -24,6 +24,7 @@ public class CommandManager {
     public Party party;
     public Coords coords;
     public VoteKick voteKick;
+    public Practice practice;
 
     public CommandManager(ParamaLegends plugin){
         this.plugin = plugin;
@@ -47,6 +48,7 @@ public class CommandManager {
         party = new Party(plugin);
         coords = new Coords(plugin);
         voteKick = new VoteKick(plugin);
+        practice = new Practice(plugin);
 
         setCommandExecutors();
     }
@@ -71,6 +73,7 @@ public class CommandManager {
         plugin.getCommand("party").setExecutor(party);
         plugin.getCommand("coords").setExecutor(coords);
         plugin.getCommand("votekick").setExecutor(voteKick);
+        plugin.getCommand("practice").setExecutor(practice);
 
     }
 }

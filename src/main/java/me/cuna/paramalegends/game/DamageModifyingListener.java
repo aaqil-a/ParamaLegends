@@ -161,13 +161,17 @@ public class DamageModifyingListener implements Listener {
         if(event.getDamager().getType().equals(EntityType.ELDER_GUARDIAN)){
             damage *= 2;
         }
+
         if(event.getDamager().getType().equals(EntityType.PLAYER)){
-            spawnDamageIndicator(event.getEntity(), damage);
+            spawnDamageIndicator(event.getEntity(), damage, event.getDamager().hasMetadata("PRACTICE"));
         }
         if(event.getDamager() instanceof Projectile){
             if(((Projectile) event.getDamager()).getShooter() instanceof Player){
-                spawnDamageIndicator(event.getEntity(), damage);
+                spawnDamageIndicator(event.getEntity(), damage, event.getDamager().hasMetadata("PRACTICE"));
             }
+        }
+        if(event.getDamager().hasMetadata("PRACTICE")){
+            damage = 0;
         }
         event.setDamage(damage);
     }
@@ -184,12 +188,14 @@ public class DamageModifyingListener implements Listener {
         event.setDamage(damage);
     }
 
-    public void spawnDamageIndicator(Entity entity, double damage){
+    public void spawnDamageIndicator(Entity entity, double damage, boolean practice){
         ChatColor color = ChatColor.YELLOW;
-        if(damage > 50){
-            color = ChatColor.RED;
+        if(practice) {
+            color = ChatColor.GREEN;
         } else if(damage > 100){
             color = ChatColor.GOLD;
+        } else if(damage > 50){
+            color = ChatColor.RED;
         }
         ChatColor finalColor = color;
         Location location = entity.getLocation();

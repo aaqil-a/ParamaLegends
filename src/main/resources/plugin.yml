@@ -85,6 +85,9 @@ commands:
   votekick:
     description: Vote to kick a player
     usage: /votekick <player>
+  practice:
+    description: Toggle practice mode
+    usage: /practice
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.
