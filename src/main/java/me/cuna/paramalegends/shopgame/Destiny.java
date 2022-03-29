@@ -193,7 +193,7 @@ public class Destiny implements Listener {
             if(skill.equals(ClassGameType.MAGIC)){
                 //exclude blink
                 if(i != 5)
-                    lore.add(ChatColor.GOLD+"Mastery Level: " + playerParama.getMasteryLevel(plugin.gameClassManager.magic.getSpellNames()[i-1]));
+                    lore.add(ChatColor.GOLD+"Mastery level: " + playerParama.getMasteryLevel(plugin.gameClassManager.magic.getSpellNames()[i-1]));
             }
 
             meta.setLore(lore);

@@ -47,16 +47,8 @@ public class DragonBreath implements SpellParama {
                     Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                         Location location = player.getEyeLocation();
                         Vector direction = location.getDirection();
-                        //create rectangular box in front of player
-                        Location start = location.clone().add(new Vector(-0.7*direction.getZ(), 0, 0.7*direction.getX()));
-                        Location end = location.clone().add((new Vector(0.7*direction.getZ(), 0, -0.7*direction.getX())));
-                        end.add(direction.clone().multiply(7));
-                        //expand boxes y value
-                        end.add(0, 2, 0);
-                        start.add(0, -2 ,0);
-                        BoundingBox breathBox = new BoundingBox(
-                                start.getX(), start.getY(), start.getZ(),
-                                end.getX(), end.getY(), end.getZ());
+                        BoundingBox breathBox = plugin.gameClassManager.magic.getBoxInFrontOfLocation(location, direction, 7);
+
                         for(Entity hit : player.getWorld().getNearbyEntities(breathBox)){
                             if(hit.equals(player)){
                                 continue;

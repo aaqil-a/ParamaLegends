@@ -15,6 +15,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -105,7 +106,12 @@ public class MagicListener implements Listener {
                     break;
                 case ChatColor.COLOR_CHAR+"5Gust":
                     if(player.checkLevel(3, ClassGameType.MAGIC) && player.isNotSilenced()){
-                        gust.castSpell(player);
+                        if (event.getAction().equals(Action.LEFT_CLICK_AIR)
+                                || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                            gust.castSpellSelf(player);
+                        } else {
+                            gust.castSpell(player);
+                        }
                     }
                     break;
                 case ChatColor.COLOR_CHAR+"5Life Drain":
@@ -180,6 +186,19 @@ public class MagicListener implements Listener {
         } else if(location.getBlock().getRelative(BlockFace.EAST).getType().isAir()){
             player.teleport(location.add(1,0,0));
         }
+    }
+
+    public BoundingBox getBoxInFrontOfLocation(Location location, Vector direction, int scale){
+        Location start = location.clone().add(new Vector(-0.7*direction.getZ(), 0, 0.7*direction.getX()));
+        Location end = location.clone().add((new Vector(0.7*direction.getZ(), 0, -0.7*direction.getX())));
+        end.add(direction.clone().multiply(scale));
+        //expand boxes y value
+        end.add(0, 2, 0);
+        start.add(0, -2 ,0);
+
+        return new BoundingBox(
+                start.getX(), start.getY(), start.getZ(),
+                end.getX(), end.getY(), end.getZ());
     }
 
     public int[] getMasteryLevelUp() { return masteryLevelUp; }

@@ -49,8 +49,18 @@ public class ShopManager implements Listener {
         PlayerParama playerParama = plugin.getPlayerParama(player);
         ShopGUI gui = playerParama.getOpenShopGui();
 
-        if (gui == null
-            || event.getClickedInventory() == null
+
+        if (gui == null){
+            return;
+        }
+
+        //player has gui open but clicks in own inventory
+        if(event.getInventory().equals(gui.getInventory()) && !event.getClickedInventory().equals(gui.getInventory())){
+            event.setCancelled(true);
+            return;
+        }
+
+        if( event.getClickedInventory() == null
             || !event.getClickedInventory().equals(gui.getInventory())
             || event.getCurrentItem() == null
             || event.getCurrentItem().getItemMeta() == null)

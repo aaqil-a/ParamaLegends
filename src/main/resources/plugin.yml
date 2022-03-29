@@ -50,9 +50,6 @@ commands:
   whatsnew:
     description: Check out what's new in the ParamaLegends plugin.
     usage: /whatsnew
-  mastery:
-    description: Check your mastery of a magic spell.
-    usage: /mastery <spellname>
   bloodmoon:
     description: Start or stop a blood moon event.
     usage: /bloodmoon <start/stop>

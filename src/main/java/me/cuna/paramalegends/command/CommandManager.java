@@ -15,7 +15,6 @@ public class CommandManager {
     public LectrumSet lectrumSet;
     public WorldLevelSet worldLevelSet;
     public WhatsNew whatsNew;
-    public Mastery mastery;
     public BloodMoon bloodMoon;
     public DragonEnd dragonEnd;
     public SetMayor setMayor;
@@ -37,7 +36,6 @@ public class CommandManager {
         spawnAltar = new SpawnAltar(plugin);
         removeAltar = new RemoveAltar(plugin);
         worldLevelSet = new WorldLevelSet(plugin);
-        mastery = new Mastery(plugin);
         bloodMoon = new BloodMoon(plugin);
         dragonEnd = new DragonEnd(plugin);
         setMayor = new SetMayor(plugin);
@@ -60,7 +58,6 @@ public class CommandManager {
         plugin.getCommand("lectrumset").setExecutor(lectrumSet);
         plugin.getCommand("worldlevelset").setExecutor(worldLevelSet);
         plugin.getCommand("whatsnew").setExecutor(whatsNew);
-        plugin.getCommand("mastery").setExecutor(mastery);
         plugin.getCommand("bloodmoon").setExecutor(bloodMoon);
         plugin.getCommand("dragonfightstop").setExecutor(dragonEnd);
         plugin.getCommand("setmayor").setExecutor(setMayor);
