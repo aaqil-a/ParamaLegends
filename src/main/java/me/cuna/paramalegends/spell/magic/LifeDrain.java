@@ -82,7 +82,6 @@ public class LifeDrain implements Listener, SpellParama {
                                             plugin.gameManager.experience.addExp(player, ClassGameType.MAGIC, 1);
                                             ((Damageable) drained).damage(damage+masteryLevel*damageBonus+0.069, player);
                                             int healed = healing + (masteryLevel >= 4 ? 1 : 0);
-                                            Bukkit.broadcastMessage(healed+"");
                                             if(player.getHealth() <= (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()-healed)){
                                                 player.setHealth(player.getHealth()+healed);
                                             } else {

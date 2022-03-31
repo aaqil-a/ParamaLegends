@@ -53,7 +53,7 @@ public class GameClassManager {
 
 
     public void sendCooldownMessage(PlayerParama player, String spell){
-        player.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown."));
+        player.displayActionBarMessage(ChatColor.DARK_PURPLE + spell + ChatColor.GRAY + " is on cooldown.");
     }
     public void sendNoLongerCooldownMessage(PlayerParama player, String spell){
         player.getPlayer().sendMessage(ChatColor.DARK_PURPLE + spell + ChatColor.DARK_GREEN + " is no longer on cooldown.");

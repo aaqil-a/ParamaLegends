@@ -44,7 +44,7 @@ public class DamageModifyingListener implements Listener {
                 Player player = (Player) projectile.getShooter();
                 PlayerParama playerParama = plugin.getPlayerParama(player);
                 if(event.getEntity().getLocation().distance(player.getLocation()) > 10){
-                    damage *= 1.2;
+                    damage *= 1.1;
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_STRONG, 1f, 1f);
                 }
                 if(player.hasMetadata("WINDBOOSTPARAMA")){

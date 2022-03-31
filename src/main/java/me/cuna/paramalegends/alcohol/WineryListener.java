@@ -121,13 +121,13 @@ public class WineryListener implements Listener {
                 meta.removeCustomEffect(PotionEffectType.POISON);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 0), true);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.SATURATION, 160, 0), true);
-                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
+                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+1_728_000)); //expires in 24 real hours
                 meta.setLore(lore);
             }
             case "Pale Ale" -> {
                 meta.removeCustomEffect(PotionEffectType.POISON);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 0), true);
-                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
+                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+1_728_000));
                 meta.setLore(lore);
             }
             case "Vodka" -> {
@@ -135,7 +135,7 @@ public class WineryListener implements Listener {
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 1800, 0), true);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 1800, 0), true);
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1800, 0), true);
-                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+168000));
+                lore.add(ChatColor.DARK_GRAY+"ID: "+(time+1_728_000));
                 meta.setLore(lore);
             }
         }

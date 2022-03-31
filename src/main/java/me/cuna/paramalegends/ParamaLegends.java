@@ -31,6 +31,7 @@ public class ParamaLegends extends JavaPlugin {
     public GameManager gameManager;
     public PlayerManager playerManager;
     public Leaderboard leaderboard;
+    public Recipes recipes;
 
     @Override
     public void onEnable() {
@@ -48,6 +49,7 @@ public class ParamaLegends extends JavaPlugin {
         playerManager = new PlayerManager(this);
         alcoholManager = new AlcoholManager(this);
         shopManager = new ShopManager(this);
+        recipes = new Recipes(this);
 
         //Start saving player's data every minute
         Bukkit.getScheduler().runTaskTimer(this, dataManager::saveAllPlayerData, 1200, 1200);

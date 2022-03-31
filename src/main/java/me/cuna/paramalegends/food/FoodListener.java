@@ -39,7 +39,7 @@ public class FoodListener implements Listener {
             if(item.getItemMeta() != null){
                 if(plugin.foodManager.foodRecipes.getFoodNames().contains(item.getItemMeta().getDisplayName())){
                     if(player.hasMetadata("PARAMAFOOD")){
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "You are too satiated to eat any more."));
+                        plugin.getPlayerParama(player).displayActionBarMessage(ChatColor.GRAY + "You are too satiated to eat any more.");
                     } else {
                         switch (item.getItemMeta().getDisplayName()) {
                             case ChatColor.COLOR_CHAR + "5Sushi" -> {

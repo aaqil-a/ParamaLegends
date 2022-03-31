@@ -244,9 +244,9 @@ public class ExperienceListener implements Listener {
     //send message action bar
     public void sendActionBarMessage(Player player, int lectrum, int exp, ClassGameType skill){
         if(lectrum == 0){
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY  + "+" + exp + " " + skill.name().toUpperCase() + " EXP"));
+            plugin.getPlayerParama(player).displayActionBarMessage(ChatColor.GRAY  + "+" + exp + " " + skill.name().toUpperCase() + " EXP");
         } else {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp + " " + skill.name().toUpperCase() + " EXP"));
+            plugin.getPlayerParama(player).displayActionBarMessage(ChatColor.GRAY + "+" + lectrum + " Lectrum " + "+" + exp + " " + skill.name().toUpperCase() + " EXP");
         }
     }
 

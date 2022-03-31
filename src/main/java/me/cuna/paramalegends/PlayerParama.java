@@ -49,6 +49,7 @@ public class PlayerParama {
     private Party party = null;
     private Party partyInvited = null;
     private ShopGUI openShopGui = null;
+    private boolean displayingMessage = false;
 
     public PlayerParama(ParamaLegends plugin, Player player){
         this.plugin = plugin;
@@ -108,7 +109,9 @@ public class PlayerParama {
                 playerCurrentMana += plugin.playerManager.getManaRegen()[playerManaLevel];
                 if (playerCurrentMana > plugin.playerManager.getMaxMana()[playerManaLevel])
                     playerCurrentMana = plugin.playerManager.getMaxMana()[playerManaLevel];
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.playerManager.getMaxMana()[playerManaLevel]));
+                if(!this.displayingMessage){
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BLUE + "Mana: " + playerCurrentMana + "/" + plugin.playerManager.getMaxMana()[playerManaLevel]));
+                }
             } else {
                 manaRegenTask.cancel();
             }
@@ -216,7 +219,7 @@ public class PlayerParama {
             addPlayerManaRegenTasks();
             return true;
         } else {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "Not enough mana."));
+            displayActionBarMessage(ChatColor.RED + "Not enough mana.");
             return false;
         }
     }
@@ -338,7 +341,7 @@ public class PlayerParama {
     }
     public boolean isNotSilenced(){
         if(silenced){
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "You are silenced!"));
+            displayActionBarMessage(ChatColor.RED + "You are silenced!");
         }
         return !silenced;
     }
@@ -415,4 +418,11 @@ public class PlayerParama {
         return this.openShopGui;
     }
 
+    public void displayActionBarMessage(String message){
+        this.displayingMessage = true;
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+        Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            this.displayingMessage = false;
+        }, 60);
+    }
 }
