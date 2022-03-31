@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class VoteKick implements CommandExecutor {
 
     private final ParamaLegends plugin;
-    private final HashMap<Player, Integer> playerVotesMap = new HashMap<>();
+    public final HashMap<Player, Integer> playerVotesMap = new HashMap<>();
 
     public VoteKick(final ParamaLegends plugin){
         this.plugin = plugin;
@@ -32,13 +32,14 @@ public class VoteKick implements CommandExecutor {
             } else {
                 Player kicked = Bukkit.getPlayer(args[0]);
                 if(kicked != null){
-                    //need more than half to kick a playerol
+                    //need more than half to kick a player
                     int votesNeeded = Bukkit.getOnlinePlayers().size()/2+1;
 
                     if(playerVotesMap.containsKey(kicked)){
                         playerVotesMap.put(kicked, playerVotesMap.get(kicked)+1);
                         if(playerVotesMap.get(kicked) >= votesNeeded){
                             //kick
+                            playerVotesMap.remove(kicked);
                             kicked.kickPlayer(ChatColor.RED+"You have been voted off the server!");
                             Bukkit.broadcastMessage(ChatColor.GOLD+kicked.getName() + " has been kicked.");
                         } else {
@@ -55,10 +56,13 @@ public class VoteKick implements CommandExecutor {
                             Bukkit.broadcastMessage(ChatColor.GOLD+sender.getName() + " has begun a vote to kick " + kicked.getName() + ". 1/" + votesNeeded + " votes to kick.");
 
                             //vote kick time out
-                            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                                Bukkit.broadcastMessage(ChatColor.GOLD+"Vote to kick " + kicked.getName() + " has ended.");
-                                playerVotesMap.remove(kicked);
-                            }, 600);
+                            plugin.getPlayerParama(kicked).addTask("VOTEKICK",
+                                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                    if(playerVotesMap.containsKey(kicked)){
+                                        Bukkit.broadcastMessage(ChatColor.GOLD+"Vote to kick " + kicked.getName() + " has ended.");
+                                        playerVotesMap.remove(kicked);
+                                    }
+                                }, 600));
                         }
                     }
                 } else {

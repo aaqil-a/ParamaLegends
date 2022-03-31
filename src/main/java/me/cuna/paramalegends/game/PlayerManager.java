@@ -57,6 +57,7 @@ public class PlayerManager implements Listener {
         plugin.alcoholManager.alcohol.playersDrunk.remove(player);
         plugin.alcoholManager.alcohol.playerBarrier.remove(player);
         plugin.alcoholManager.alcohol.playerFallTasks.remove(player);
+        plugin.commandManager.voteKick.playerVotesMap.remove(player);
     }
 
     public PlayerParama getPlayerParama(Player player){
