@@ -66,14 +66,16 @@ public class SwordsmanListener implements Listener{
                         crippleCount++;
                         if(crippleCount >= 5){
                             crippleCount = 0;
-                            if(event.getEntity() instanceof LivingEntity){
-                                LivingEntity crippled = (LivingEntity) event.getEntity();
+                            if(event.getEntity() instanceof LivingEntity crippled){
                                 crippled.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 4, false, false, false));
-                                BukkitTask bleed = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                                    plugin.gameManager.experience.addExp(attacker, ClassGameType.SWORDSMAN, 1);
-                                    crippled.damage(1.072);
-                                }, 0, 20);
-                                Bukkit.getScheduler().runTaskLater(plugin, bleed::cancel, 82);
+                                playerParama.addTask("CRIPPLE"+crippled.getUniqueId(),
+                                        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                                            plugin.gameManager.experience.addExp(attacker, ClassGameType.SWORDSMAN, 1);
+                                            crippled.damage(1.072, attacker);
+                                        }, 0, 20));
+                                Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                                    playerParama.cancelTask("CRIPPLE"+crippled.getUniqueId());
+                                }, 82);
                             }
                         }
                         attacker.setMetadata("CRIPPLE", new FixedMetadataValue(plugin, crippleCount));
