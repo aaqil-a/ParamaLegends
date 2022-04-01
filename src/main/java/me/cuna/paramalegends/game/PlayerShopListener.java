@@ -33,7 +33,6 @@ public class PlayerShopListener implements Listener {
     public PlayerShopListener(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.dataManager;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
         key = new NamespacedKey(plugin, "shopowner");
     }
 

@@ -9,9 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -116,16 +116,45 @@ public class TotsukaCreation implements Listener, SpellParama {
             event.getBlock().setMetadata("TOTSUKAWEB", new FixedMetadataValue(plugin, true));
             //remove block after
             Bukkit.getScheduler().runTaskLater(plugin, ()->{
+                event.getBlock().removeMetadata("TOTSUKAWEB", plugin);
                 event.getBlock().breakNaturally(new ItemStack(Material.IRON_PICKAXE));
             }, 140);
         }
     }
 
     @EventHandler
-    public void onDropWeb(BlockDropItemEvent event){
+    public void onBreakWeb(BlockBreakEvent event){
         if(event.getBlock().hasMetadata("TOTSUKAWEB")){
+            event.setDropItems(false);
+            event.getBlock().removeMetadata("TOTSUKAWEB", plugin);
+        }
+    }
+
+    @EventHandler
+    public void onWaterBreakWeb(BlockFromToEvent event){
+        if(event.getToBlock().hasMetadata("TOTSUKAWEB")){
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onExplodeWeb(BlockExplodeEvent event){
+        event.blockList().stream()
+                .filter(b -> b.hasMetadata("TOTSUKAWEB"))
+                .forEach(b -> {
+                    b.removeMetadata("TOTSUKAWEB", plugin);
+                    b.breakNaturally(new ItemStack(Material.IRON_PICKAXE));
+                });
+    }
+
+    @EventHandler
+    public void onExplodeWebByEntity(EntityExplodeEvent event){
+        event.blockList().stream()
+                .filter(b -> b.hasMetadata("TOTSUKAWEB"))
+                .forEach(b -> {
+                    b.removeMetadata("TOTSUKAWEB", plugin);
+                    b.breakNaturally(new ItemStack(Material.IRON_PICKAXE));
+                });
     }
 
 
