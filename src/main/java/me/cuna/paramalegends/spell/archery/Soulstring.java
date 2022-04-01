@@ -6,6 +6,9 @@ import me.cuna.paramalegends.classgame.ArcheryListener;
 import me.cuna.paramalegends.spell.SpellParama;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -14,13 +17,15 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 
-public class Soulstring implements SpellParama {
+public class Soulstring implements SpellParama, Listener {
 
     private final ParamaLegends plugin;
     private final int manaCost = 100;
-    private final int cooldown = 600;
+    private final int cooldown = 900;
 
     public Soulstring(ParamaLegends plugin){
         this.plugin = plugin;
@@ -57,8 +62,7 @@ public class Soulstring implements SpellParama {
 
         PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addEntity("TURRET",
-                player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand -> {
-                    armorStand.setCustomName(player.getName()+"'s Soulstring");
+                player.getWorld().spawn(location.clone().add(0, -0.1, 0), ArmorStand.class, armorStand -> {
                     Objects.requireNonNull(armorStand.getEquipment()).setItemInMainHand(new ItemStack(Material.BOW));
                     armorStand.getEquipment().setChestplate(shirt);
                     armorStand.setArms(true);
@@ -72,7 +76,7 @@ public class Soulstring implements SpellParama {
                     armorStand.setCustomName("soulstring shooter");
                 }));
        playerParama.addEntity("TURRETTEXT",
-               player.getWorld().spawn(new Location(player.getWorld(), 0,256,0), ArmorStand.class, armorStand-> {
+               player.getWorld().spawn(location, ArmorStand.class, armorStand-> {
                    armorStand.setCustomName(ChatColor.GREEN + player.getName()+"'s Soulstring");
                    armorStand.setCustomNameVisible(true);
                    armorStand.setVisible(false);
@@ -84,17 +88,14 @@ public class Soulstring implements SpellParama {
        playerParama.addTask("TURRETEFFECT",
                Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                    player.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, location.clone().add(0, 1, 0), 8, 0.5, 0.5, 0.5, 0);
+                   player.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, location.clone().add(0, 1, 0), 8, 0.5, 0.5, 0.5, 0);
                }, 0, 100));
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            playerParama.getEntity("TURRET").teleport(location.clone().add(0, -0.1, 0));
-            playerParama.getEntity("TURRETTEXT").teleport(location);
-        }, 2);
         playerParama.addTask("TURRETSHOOT",
                 Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     if(!playerParama.getEntity("TURRET").hasMetadata("AIMING")){
                         shootSoulstring(player, (ArmorStand) playerParama.getEntity("TURRET"));
                     }
-                }, 40, 20));
+                }, 20, 11));
         Bukkit.getScheduler().runTaskLater(plugin, ()->playerParama.cancelTask("TURRETSHOOT"), 385);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             playerParama.removeEntity("TURRET");
@@ -104,42 +105,45 @@ public class Soulstring implements SpellParama {
     }
 
     public void shootSoulstring(Player player, ArmorStand dummy){
-        for(Entity hit: player.getNearbyEntities(10,10,10)){
-            if(hit instanceof Silverfish || hit instanceof Phantom)
-                continue;
-            if(hit instanceof Monster && dummy.hasLineOfSight(hit)){
-                aimSoulstring(player, dummy, hit);
-                break;
-            }
-        }
+        player.getNearbyEntities(10, 10, 10).stream()
+                .filter(e -> (e instanceof Monster || e instanceof Slime) && !e.isDead())
+                .findAny()
+                .ifPresent(e ->
+                    aimSoulstring(player, dummy, (LivingEntity) e));
     }
 
-    public void aimSoulstring(Player player, ArmorStand dummy, Entity entity){
-        double dummyX = dummy.getLocation().getX();
-        double dummyY = dummy.getLocation().getY();
-        double dummyZ = dummy.getLocation().getZ();
+    public void aimSoulstring(Player player, ArmorStand dummy, LivingEntity entity){
+        double dummyX = dummy.getEyeLocation().getX();
+        double dummyY = dummy.getEyeLocation().getY();
+        double dummyZ = dummy.getEyeLocation().getZ();
         dummy.setMetadata("AIMING", new FixedMetadataValue(plugin, "AIMING"));
         PlayerParama playerParama = plugin.getPlayerParama(player);
         playerParama.addTask("TURRETFOLLOW",
                 Bukkit.getScheduler().runTaskTimer(plugin, ()->{
-                    double entityX = entity.getLocation().getX();
-                    double entityY = entity.getLocation().getY();
-                    double entityZ = entity.getLocation().getZ();
+                    double entityX = entity.getEyeLocation().getX();
+                    double entityY = entity.getEyeLocation().getY();
+                    double entityZ = entity.getEyeLocation().getZ();
                     Vector direction = new Vector(entityX-dummyX, entityY-dummyY-0.5, entityZ-dummyZ);
                     dummy.teleport(dummy.getLocation().setDirection(direction.normalize()));
-                }, 0, 2));
+                }, 0, 1));
         Bukkit.getScheduler().runTaskLater(plugin, ()->{
-            playerParama.cancelTask("TURRETFOLLOW");
-            Bukkit.getScheduler().runTaskLater(plugin, ()->{
-                Arrow arrow = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
-                arrow.setShooter(player);
-                arrow.setGravity(false);
-                arrow.setVelocity(arrow.getVelocity().multiply(1.5));
-                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 20);
-            }, 3);
+            Arrow arrow = dummy.launchProjectile(Arrow.class, dummy.getLocation().getDirection());
+            arrow.setShooter(player);
+            arrow.setGravity(false);
+            arrow.setDamage(6.016);
+            arrow.setMetadata("SOULSTRINGARROW", new FixedMetadataValue(plugin, true));
+            arrow.setVelocity(arrow.getVelocity().multiply(2));
+            arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+            Bukkit.getScheduler().runTaskLater(plugin, arrow::remove, 20);
             dummy.removeMetadata("AIMING", plugin);
-        }, 30);
+        }, 4);
+    }
+
+    @EventHandler
+    public void onPlayerHitBySoulstring(EntityDamageByEntityEvent event){
+        if(event.getEntity() instanceof Player && event.getDamager().hasMetadata("SOULSTRINGARROW")){
+            event.setCancelled(true);
+        }
     }
 
     public int getManaCost(){

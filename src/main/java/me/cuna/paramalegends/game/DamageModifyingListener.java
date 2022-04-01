@@ -32,7 +32,6 @@ public class DamageModifyingListener implements Listener {
         player.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_ATTACK, 1f, 1f);
     }
 
-
     //Modifying entity to entity attacks
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
@@ -172,18 +171,6 @@ public class DamageModifyingListener implements Listener {
         }
         if(event.getDamager().hasMetadata("PRACTICE")){
             damage = 0;
-        }
-        event.setDamage(damage);
-    }
-
-    //Modifying entity damage by anything
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event){
-        double damage = event.getDamage();
-        if(event.getEntity() instanceof Player){
-            Player player = (Player) event.getEntity();
-            // increase elder guardian
-
         }
         event.setDamage(damage);
     }

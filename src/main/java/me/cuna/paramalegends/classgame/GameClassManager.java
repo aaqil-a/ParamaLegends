@@ -39,6 +39,7 @@ public class GameClassManager {
         plugin.getServer().getPluginManager().registerEvents(archery.royalArtillery, plugin);
         plugin.getServer().getPluginManager().registerEvents(archery.totsukaCreation, plugin);
         plugin.getServer().getPluginManager().registerEvents(archery.whistlingWind, plugin);
+        plugin.getServer().getPluginManager().registerEvents(archery.soulstring, plugin);
 
         plugin.getServer().getPluginManager().registerEvents(magic.flingEarth, plugin);
         plugin.getServer().getPluginManager().registerEvents(magic.illusoryOrb, plugin);
