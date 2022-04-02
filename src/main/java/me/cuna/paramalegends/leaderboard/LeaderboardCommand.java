@@ -29,6 +29,7 @@ public class LeaderboardCommand implements CommandExecutor {
         data = plugin.dataManager;
 
         criteria.add(manager.netWorthCriteria);
+        criteria.add(manager.playTimeCriteria);
     }
 
     public ItemStack createBook(){
