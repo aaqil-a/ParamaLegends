@@ -7,6 +7,7 @@ import me.cuna.paramalegends.command.*;
 import me.cuna.paramalegends.food.FoodManager;
 import me.cuna.paramalegends.alcohol.AlcoholManager;
 import me.cuna.paramalegends.game.*;
+import me.cuna.paramalegends.leaderboard.LeaderboardManager;
 import me.cuna.paramalegends.leaderboard.NetWorth;
 import me.cuna.paramalegends.party.PartyManager;
 import me.cuna.paramalegends.shopgame.*;
@@ -30,7 +31,7 @@ public class ParamaLegends extends JavaPlugin {
     public AltarManager altarManager;
     public GameManager gameManager;
     public PlayerManager playerManager;
-    public NetWorth leaderboard;
+    public LeaderboardManager leaderboard;
     public Recipes recipes;
 
     @Override
@@ -48,6 +49,7 @@ public class ParamaLegends extends JavaPlugin {
         playerManager = new PlayerManager(this);
         alcoholManager = new AlcoholManager(this);
         shopManager = new ShopManager(this);
+        leaderboard = new LeaderboardManager(this);
         recipes = new Recipes(this);
 
         //Start saving player's data every minute

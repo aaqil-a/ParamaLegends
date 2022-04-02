@@ -1,6 +1,7 @@
 package me.cuna.paramalegends.command;
 
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.leaderboard.LeaderboardCommand;
 
 public class CommandManager {
 
@@ -19,7 +20,7 @@ public class CommandManager {
     public DragonEnd dragonEnd;
     public SetMayor setMayor;
     public SetSafeZoneSize safeZone;
-    public Leaderboard leaderboard;
+    public LeaderboardCommand leaderboard;
     public Tip tip;
     public Party party;
     public Coords coords;
@@ -43,7 +44,6 @@ public class CommandManager {
         dragonEnd = new DragonEnd(plugin);
         setMayor = new SetMayor(plugin);
         safeZone = new SetSafeZoneSize(plugin);
-        leaderboard = new Leaderboard(plugin);
         tip = new Tip(plugin);
         party = new Party(plugin);
         coords = new Coords(plugin);
@@ -68,7 +68,6 @@ public class CommandManager {
         plugin.getCommand("dragonfightstop").setExecutor(dragonEnd);
         plugin.getCommand("setmayor").setExecutor(setMayor);
         plugin.getCommand("safezone").setExecutor(safeZone);
-        plugin.getCommand("leaderboard").setExecutor(leaderboard);
         plugin.getCommand("tip").setExecutor(tip);
         plugin.getCommand("party").setExecutor(party);
         plugin.getCommand("coords").setExecutor(coords);

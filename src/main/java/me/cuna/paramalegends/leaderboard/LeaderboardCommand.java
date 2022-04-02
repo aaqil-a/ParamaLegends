@@ -1,10 +1,9 @@
-package me.cuna.paramalegends.command;
+package me.cuna.paramalegends.leaderboard;
 
 import com.mojang.datafixers.util.Pair;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
 import me.cuna.paramalegends.leaderboard.LeaderboardCriteria;
-import me.cuna.paramalegends.leaderboard.NetWorth;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -15,22 +14,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
-public class Leaderboard implements CommandExecutor {
+public class LeaderboardCommand implements CommandExecutor {
 
     private final ParamaLegends plugin;
     private final List<LeaderboardCriteria> criteria = new ArrayList<>();
     private final Pair<String, Integer> blank = new Pair<>("---", 0);
     public DataManager data;
 
-    public Leaderboard(final ParamaLegends plugin){
+    public LeaderboardCommand(final ParamaLegends plugin, LeaderboardManager manager){
         this.plugin = plugin;
         data = plugin.dataManager;
 
-        criteria.add(new NetWorth(plugin));
+        criteria.add(manager.netWorthCriteria);
     }
 
     public ItemStack createBook(){

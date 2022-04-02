@@ -21,7 +21,6 @@ repositories {
     maven {
         name = 'minecraft-repo'
         url = 'https://libraries.minecraft.net/'
-        // this lets gradle know where to look for authlib
     }
     mavenLocal()
 }
