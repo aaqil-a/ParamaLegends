@@ -348,12 +348,12 @@ public class PlayerParama {
 
     public void addLectrum(int amount){
         lectrum += amount;
-        plugin.leaderboard.netWorthCriteria.updateNetWorth(player.getUniqueId().toString());
+        plugin.leaderboard.netWorthCriteria.update(player.getUniqueId().toString());
         data.toSave.add(this);
     }
     public void removeLectrum(int amount){
         lectrum -= amount;
-        plugin.leaderboard.netWorthCriteria.updateNetWorth(player.getUniqueId().toString());
+        plugin.leaderboard.netWorthCriteria.update(player.getUniqueId().toString());
         data.toSave.add(this);
     }
     public void setLectrum(int value){

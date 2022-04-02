@@ -177,7 +177,7 @@ public class PlayerShopListener implements Listener {
                                             int lectrumMayor = data.getConfig().getInt("players."+mayorUuidString+".lectrum");
                                             data.getConfig().set("players."+mayorUuidString+".lectrum", lectrumMayor+tax);
                                         }
-                                        plugin.leaderboard.netWorthCriteria.updateNetWorth(mayorUuidString);
+                                        plugin.leaderboard.netWorthCriteria.update(mayorUuidString);
                                     }
 
                                     int lectrumSeller;
@@ -194,8 +194,8 @@ public class PlayerShopListener implements Listener {
 
                                     player.sendMessage(ChatColor.GREEN+"Purchased " + sign.getLine(3) + " " + sign.getLine(2) + " for " + price + " lectrum.");
 
-                                    plugin.leaderboard.netWorthCriteria.updateNetWorth(uuid);
-                                    plugin.leaderboard.netWorthCriteria.updateNetWorth(player.getUniqueId().toString());
+                                    plugin.leaderboard.netWorthCriteria.update(uuid);
+                                    plugin.leaderboard.netWorthCriteria.update(player.getUniqueId().toString());
 
                                 } else {
                                     player.sendMessage(ChatColor.RED+"Shop out of stock.");

@@ -39,7 +39,7 @@ public class LectrumSet implements CommandExecutor {
                     return true;
                 }
                 plugin.getPlayerParama(player).setLectrum(lectrum);
-                plugin.leaderboard.netWorthCriteria.updateNetWorth(player.getUniqueId().toString());
+                plugin.leaderboard.netWorthCriteria.update(player.getUniqueId().toString());
             } else {
                 sender.sendMessage(ChatColor.RED + "Player not found");
             }
