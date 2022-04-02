@@ -7,7 +7,7 @@ import me.cuna.paramalegends.command.*;
 import me.cuna.paramalegends.food.FoodManager;
 import me.cuna.paramalegends.alcohol.AlcoholManager;
 import me.cuna.paramalegends.game.*;
-import me.cuna.paramalegends.leaderboard.Leaderboard;
+import me.cuna.paramalegends.leaderboard.NetWorth;
 import me.cuna.paramalegends.party.PartyManager;
 import me.cuna.paramalegends.shopgame.*;
 import me.cuna.paramalegends.classgame.GameClassManager;
@@ -30,7 +30,7 @@ public class ParamaLegends extends JavaPlugin {
     public AltarManager altarManager;
     public GameManager gameManager;
     public PlayerManager playerManager;
-    public Leaderboard leaderboard;
+    public NetWorth leaderboard;
     public Recipes recipes;
 
     @Override
@@ -44,7 +44,6 @@ public class ParamaLegends extends JavaPlugin {
         bossManager = new BossManager(this);
         armorManager = new ArmorManager(this);
         altarManager = new AltarManager(this);
-        leaderboard = new Leaderboard(this);
         partyManager = new PartyManager(this);
         playerManager = new PlayerManager(this);
         alcoholManager = new AlcoholManager(this);

@@ -3,6 +3,8 @@ package me.cuna.paramalegends.command;
 import com.mojang.datafixers.util.Pair;
 import me.cuna.paramalegends.DataManager;
 import me.cuna.paramalegends.ParamaLegends;
+import me.cuna.paramalegends.leaderboard.LeaderboardCriteria;
+import me.cuna.paramalegends.leaderboard.NetWorth;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -20,46 +22,45 @@ import java.util.List;
 public class Leaderboard implements CommandExecutor {
 
     private final ParamaLegends plugin;
+    private final List<LeaderboardCriteria> criteria = new ArrayList<>();
+    private final Pair<String, Integer> blank = new Pair<>("---", 0);
     public DataManager data;
 
     public Leaderboard(final ParamaLegends plugin){
         this.plugin = plugin;
         data = plugin.dataManager;
+
+        criteria.add(new NetWorth(plugin));
     }
 
     public ItemStack createBook(){
-        List<Pair<String, Integer>> top = new ArrayList<>(plugin.leaderboard.getNetWorth());
-
-        Collections.reverse(top);
-
-        Pair<String, Integer> blank = new Pair<>("---", 0);
-
-        //fill if empty
-        if(top.size() < 10){
-            for(int i = top.size(); i < 10; i++){
-                top.add(i, blank);
-            }
-        }
-
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta)  book.getItemMeta();
-        assert meta != null;
-        meta.addPage(
-                ""+
-                        ChatColor.GOLD+ChatColor.BOLD+"Top Net Worth\n"
-                        +ChatColor.BLACK+String.format("1\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(0).getFirst(), top.get(0).getSecond())
-                        +ChatColor.BLACK+String.format("2\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(1).getFirst(), top.get(1).getSecond())
-                        +ChatColor.BLACK+String.format("3\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(2).getFirst(), top.get(2).getSecond())
-                        +ChatColor.BLACK+String.format("4\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(3).getFirst(), top.get(3).getSecond())
-                        +ChatColor.BLACK+String.format("5\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(4).getFirst(), top.get(4).getSecond())
-                        +ChatColor.BLACK+String.format("6\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(5).getFirst(), top.get(5).getSecond())
-                        ,ChatColor.BLACK+String.format("7\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(6).getFirst(), top.get(6).getSecond())
-                        +ChatColor.BLACK+String.format("8\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(7).getFirst(), top.get(7).getSecond())
-                        +ChatColor.BLACK+String.format("9\u2022 "+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(8).getFirst(), top.get(8).getSecond())
-                        +ChatColor.BLACK+String.format("10\u2022"+ChatColor.GOLD+"%s\n  "+ChatColor.GRAY+" %s Lectrum\n", top.get(9).getFirst(), top.get(9).getSecond())
-        );
         meta.setAuthor("ParamaLegends");
         meta.setTitle("Leaderboards");
+
+        criteria.forEach(criteria -> {
+            List<Pair<String, Integer>> top = criteria.getLeaderboard().stream().toList();
+            String name = criteria.getName();
+            String criterion = criteria.getCriterion();
+
+
+            StringBuilder firstPage = new StringBuilder("" + ChatColor.GOLD + ChatColor.BOLD + String.format("Top %s \n", name));
+            for(int i = 0; i <= Math.min(top.size()-1, 5); i++){
+                firstPage.append(ChatColor.BLACK).append(String.format("%d\u2022 " + ChatColor.GOLD + "%s\n  " + ChatColor.GRAY + " %d %s\n", i+1,top.get(i).getFirst(), top.get(i).getSecond(), criterion));
+            }
+
+            StringBuilder secondPage = new StringBuilder();
+            for(int i = 6; i <= Math.min(top.size()-1, 9); i++){
+                secondPage.append(ChatColor.BLACK).append(String.format("%d\u2022 " + ChatColor.GOLD + "%s\n  " + ChatColor.GRAY + " %d %s\n", i+1,top.get(i).getFirst(), top.get(i).getSecond(), criterion));
+            }
+
+            meta.addPage(
+                firstPage.toString(),
+                        secondPage.toString()
+            );
+        });
+
         book.setItemMeta(meta);
         return book;
     }
