@@ -15,9 +15,10 @@ public abstract class LeaderboardCriteria {
     protected final DataManager data;
     protected final Set<String> toUpdate = new HashSet<>();
     protected final SortedSet<Pair<String, Integer>> leaderboard = new TreeSet<>((o1, o2) -> {
-        int lectrum1 = o1.getSecond();
-        int lectrum2 = o2.getSecond();
-        return Integer.compare(lectrum2, lectrum1);
+        int l1 = o1.getSecond();
+        int l2 = o2.getSecond();
+        if(l1 == l2) return String.CASE_INSENSITIVE_ORDER.compare(o1.getFirst(), o2.getFirst());
+        return Integer.compare(l2, l1);
     });
     protected String name = "";
     protected String criterion = "";
@@ -45,7 +46,9 @@ public abstract class LeaderboardCriteria {
 
     protected void addToLeaderboard(String name, int value){
         Pair<String, Integer> player = new Pair<>(name, value);
-        leaderboard.remove(findInLeaderboard(player));
+        if(findInLeaderboard(player) != null){
+            leaderboard.remove(findInLeaderboard(player));
+        }
         leaderboard.add(player);
     }
 
