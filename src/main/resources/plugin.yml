@@ -88,6 +88,15 @@ commands:
   practice:
     description: Toggle practice mode
     usage: /practice
+  bal:
+    description: Check lectrum
+    usage: /bal
+  balance:
+    description: Check lectrum
+    usage: /balance
+  pay:
+    description: Pay lectrum
+    usage: /pay [player] [amount]
 permissions:
   paramalegends.gameadmin:
     description: Allows you to start and modify the current Parama Legends game.

@@ -30,6 +30,9 @@ public class LeaderboardCommand implements CommandExecutor {
 
         criteria.add(manager.netWorthCriteria);
         criteria.add(manager.playTimeCriteria);
+        criteria.add(manager.playerKillsCriteria);
+        criteria.add(manager.mobKillsCriteria);
+        criteria.add(manager.deathsCriteria);
     }
 
     public ItemStack createBook(){
